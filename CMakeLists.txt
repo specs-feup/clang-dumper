@@ -30,19 +30,29 @@ set(CLANG_VERSION 16)
 # mingw-w64-x86_64-openmp-<version> // OpenMP
 #
 if(WIN32)
-	SET(MINGW_BASEDIR "c:/mingw64-clang-${CLANG_VERSION}")
+    SET(MINGW_BASEDIR "c:/mingw64-clang-${CLANG_VERSION}")
 endif()
 
 # Set compiler
 # Often these do not work... replace with direct invocation in command line
 if(WIN32)
-	# E.g., cmake -DCMAKE_C_COMPILER="c:/mingw64-clang-16/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/mingw64-clang-16/bin/clang++.exe" -DCMAKE_LINKER="C:/mingw64-clang-16/bin/lld-link.exe" ..
-	SET(CMAKE_C_COMPILER "${MINGW_BASEDIR}/bin/clang.exe")
-	SET(CMAKE_CXX_COMPILER "${MINGW_BASEDIR}/bin/clang++.exe")
-	SET(CMAKE_LINKER "${MINGW_BASEDIR}/bin/lld-link.exe")
+    # E.g., cmake -DCMAKE_C_COMPILER="c:/mingw64-clang-16/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/mingw64-clang-16/bin/clang++.exe" -DCMAKE_LINKER="C:/mingw64-clang-16/bin/lld-link.exe" ..
+    if(NOT DEFINED CMAKE_C_COMPILER)
+        SET(CMAKE_C_COMPILER "${MINGW_BASEDIR}/bin/clang.exe")
+    endif()
+    if(NOT DEFINED CMAKE_CXX_COMPILER)
+        SET(CMAKE_CXX_COMPILER "${MINGW_BASEDIR}/bin/clang++.exe")
+    endif()
+    if(NOT DEFINED CMAKE_LINKER)
+        SET(CMAKE_LINKER "${MINGW_BASEDIR}/bin/lld-link.exe")
+    endif()
 else()
-	SET(CMAKE_C_COMPILER "clang-${CLANG_VERSION}")
-	SET(CMAKE_CXX_COMPILER "clang++-${CLANG_VERSION}")
+    if(NOT DEFINED CMAKE_C_COMPILER)
+        SET(CMAKE_C_COMPILER "clang-${CLANG_VERSION}")
+    endif()
+    if(NOT DEFINED CMAKE_CXX_COMPILER)
+        SET(CMAKE_CXX_COMPILER "clang++-${CLANG_VERSION}")
+    endif()
 endif()
 
 message(STATUS "Tried to set C compiler to: ${CMAKE_C_COMPILER}")
@@ -50,15 +60,15 @@ message(STATUS "Tried to set C++ compiler to: ${CMAKE_CXX_COMPILER}")
 
 # Set libraries
 if(WIN32)
-	SET(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
-	SET(LLVM_DIR "${MINGW_BASEDIR}/lib/cmake/llvm")
+    SET(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
+    SET(LLVM_DIR "${MINGW_BASEDIR}/lib/cmake/llvm")
 elseif(APPLE)
-	# Point CMake to Homebrew's LLVM and Clang config packages
-	set(Clang_DIR  "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang"  CACHE PATH "Path to ClangConfig.cmake")
-	set(LLVM_DIR   "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm"   CACHE PATH "Path to LLVMConfig.cmake")
+    # Point CMake to Homebrew's LLVM and Clang config packages
+    set(Clang_DIR  "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang"  CACHE PATH "Path to ClangConfig.cmake")
+    set(LLVM_DIR   "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm"   CACHE PATH "Path to LLVMConfig.cmake")
 else()
-	SET(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
-	SET(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
+    SET(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
+    SET(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
 endif()
 
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
@@ -124,9 +134,9 @@ add_custom_target (
 
 # Only build plugin if not on Windows or MacOS
 if(NOT WIN32 AND NOT APPLE)
-	add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
-	target_compile_features(plugin PRIVATE cxx_std_20)
-	add_dependencies(plugin clang_enums)
+    add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
+    target_compile_features(plugin PRIVATE cxx_std_20)
+    add_dependencies(plugin clang_enums)
 endif()
 
 
@@ -138,9 +148,9 @@ add_dependencies(tool clang_enums)
 
 message(STATUS "SYSTEM PROCESSOR: '${CMAKE_SYSTEM_PROCESSOR}'")
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
-	set(PROCESSOR_PREFIX "ARM")
+    set(PROCESSOR_PREFIX "ARM")
 else()
-	set(PROCESSOR_PREFIX "X86")
+    set(PROCESSOR_PREFIX "X86")
 endif()
 
 
@@ -148,14 +158,14 @@ endif()
 
 
 if(WIN32)
-	target_link_directories(tool PRIVATE "${MINGW_BASEDIR}/lib")
-	target_link_libraries(tool
-			clang-cpp
-			LLVM
-	)  
+    target_link_directories(tool PRIVATE "${MINGW_BASEDIR}/lib")
+    target_link_libraries(tool
+            clang-cpp
+            LLVM
+    )  
 else()
 #	set(LLVM_LINK_LLVM_DYLIB OFF)
-	target_link_libraries( tool
+    target_link_libraries( tool
     clangAnalysis
     clangAPINotes
     clangARCMigrate
@@ -283,9 +293,9 @@ endif()
 # If on MacOS, change the expected location of libLLVM.dylib and libzstd.1.dylib
 # To check changes, use 'otool -L tool'
 if(APPLE)
-	add_custom_command (
-		TARGET tool POST_BUILD
-		COMMAND install_name_tool -change /usr/local/opt/llvm@${CLANG_VERSION}/lib/libLLVM.dylib @executable_path/libLLVM.dylib "$<TARGET_FILE:tool>"
-		COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
-	)
+    add_custom_command (
+        TARGET tool POST_BUILD
+        COMMAND install_name_tool -change /usr/local/opt/llvm@${CLANG_VERSION}/lib/libLLVM.dylib @executable_path/libLLVM.dylib "$<TARGET_FILE:tool>"
+        COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
+    )
 endif()

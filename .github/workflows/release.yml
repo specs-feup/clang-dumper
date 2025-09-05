@@ -40,13 +40,22 @@ jobs:
                 cmake ninja-build \
                 zlib1g-dev libedit-dev libzstd-dev libpolly-${CLANG_VERSION}-dev
 
+      - name: Toolchain diagnostics
+        run: |
+          set -eux
+          node -v
+          cmake --version
+          ninja --version
+          clang-${CLANG_VERSION} --version
+          ld.lld-${CLANG_VERSION} --version || true
+
       - name: Configure (CMake)
         run: |
             cmake -S . -B build \
                 -G Ninja \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
-                -DClang_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/clang
+                -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
 
       - name: Build
         run: cmake --build build --config Release -- -v
@@ -89,9 +98,17 @@ jobs:
             mingw-w64-x86_64-clang
             mingw-w64-x86_64-clang-tools-extra
             mingw-w64-x86_64-nodejs
-            mingw-w64-x86_64-libedit
             mingw-w64-x86_64-zstd
             mingw-w64-x86_64-zlib
+
+      - name: Toolchain diagnostics (MSYS2)
+        shell: msys2 {0}
+        run: |
+          set -eux
+          node -v
+          cmake --version
+          ninja --version
+          clang --version
 
       - name: Configure (CMake)
         shell: msys2 {0}
@@ -142,14 +159,26 @@ jobs:
         run: |
           set -eux
           brew update
-          brew install llvm@${CLANG_VERSION} ninja zstd libedit
+          brew install llvm@${CLANG_VERSION} ninja zstd libedit libomp pkg-config
           echo "LLVM_PREFIX=$(brew --prefix llvm@${CLANG_VERSION})" >> $GITHUB_ENV
+          echo "PATH=${LLVM_PREFIX}/bin:${PATH}" >> $GITHUB_ENV
+
+      - name: Toolchain diagnostics
+        run: |
+          set -eux
+          node -v
+          cmake --version
+          ninja --version
+          "${LLVM_PREFIX}/bin/clang" --version
+          clang --version || true
 
       - name: Configure (CMake)
         run: |
           cmake -S . -B build \
               -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
+              -DCMAKE_CXX_COMPILER="${LLVM_PREFIX}/bin/clang++" \
               -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
               -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang"
 
