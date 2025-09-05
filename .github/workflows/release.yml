@@ -36,7 +36,6 @@ jobs:
             sudo apt-get install -y \
                 llvm-${CLANG_VERSION}-dev \
                 libclang-${CLANG_VERSION}-dev \
-                lld-${CLANG_VERSION} \
                 cmake ninja-build \
                 zlib1g-dev libedit-dev libzstd-dev libpolly-${CLANG_VERSION}-dev
 
@@ -46,8 +45,7 @@ jobs:
           node -v
           cmake --version
           ninja --version
-          clang-${CLANG_VERSION} --version
-          ld.lld-${CLANG_VERSION} --version || true
+          clang-${CLANG_VERSION} --version || true
 
       - name: Configure (CMake)
         run: |
@@ -58,7 +56,9 @@ jobs:
                 -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
 
       - name: Build
-        run: cmake --build build --config Release -- all -v
+        run: |
+            cd build
+            ninja all -v
 
       - name: Package artifact
         run: |
