@@ -37,7 +37,8 @@ jobs:
                 llvm-${CLANG_VERSION}-dev \
                 libclang-${CLANG_VERSION}-dev \
                 lld-${CLANG_VERSION} \
-                cmake ninja-build
+                cmake ninja-build \
+                zlib1g-dev libedit-dev libzstd-dev libpolly-${CLANG_VERSION}-dev
 
       - name: Configure (CMake)
         run: |
@@ -88,6 +89,9 @@ jobs:
             mingw-w64-x86_64-clang
             mingw-w64-x86_64-clang-tools-extra
             mingw-w64-x86_64-nodejs
+            mingw-w64-x86_64-libedit
+            mingw-w64-x86_64-zstd
+            mingw-w64-x86_64-zlib
 
       - name: Configure (CMake)
         shell: msys2 {0}
@@ -138,7 +142,7 @@ jobs:
         run: |
           set -eux
           brew update
-          brew install llvm@${CLANG_VERSION} ninja
+          brew install llvm@${CLANG_VERSION} ninja zstd libedit
           echo "LLVM_PREFIX=$(brew --prefix llvm@${CLANG_VERSION})" >> $GITHUB_ENV
 
       - name: Configure (CMake)
@@ -172,7 +176,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - name: Cancel (delete) the release on failure
-        if: ${{ failure() }}
+        if: ${{ needs.build-linux.result != 'success' || needs.build-windows.result != 'success' || needs.build-macos.result != 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.event.release.tag_name }}
@@ -186,5 +190,5 @@ jobs:
           curl -sS -X DELETE -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "${api}/releases/${id}"
           echo "Release deleted."
       - name: Success note
-        if: ${{ success() }}
+        if: ${{ needs.build-linux.result == 'success' && needs.build-windows.result == 'success' && needs.build-macos.result == 'success' }}
         run: echo "All builds succeeded and assets are attached to the release."
