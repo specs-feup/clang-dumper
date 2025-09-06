@@ -50,6 +50,7 @@ jobs:
             mkdir build
             cd build
             cmake .. \
+                -G Ninja \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
                 -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
