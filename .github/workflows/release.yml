@@ -28,8 +28,6 @@ jobs:
       - name: Install LLVM/Clang ${{ env.CLANG_VERSION }} (apt.llvm.org)
         run: |
             set -eux
-            sudo apt-get update
-            sudo apt-get install -y wget software-properties-common gnupg lsb-release
             wget https://apt.llvm.org/llvm.sh
             chmod +x llvm.sh
             sudo ./llvm.sh ${CLANG_VERSION}
@@ -49,8 +47,9 @@ jobs:
 
       - name: Configure (CMake)
         run: |
-            cmake -S . -B build \
-                -G Ninja \
+            mkdir build
+            cd build
+            cmake .. \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
                 -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
@@ -63,8 +62,10 @@ jobs:
       - name: Package artifact
         run: |
             set -eux
-            cp build/tool ./clang-dumper
-            tar -czf clang-dumper-linux.tar.gz clang-dumper
+            mv build/tool ./clang-dumper-linux-x86_64-standalone
+            mv build/libplugin.so ./clang-dumper-linux-x86_64-plugin.so
+            tar -czf clang-dumper-linux-x86_64-standalone.tar.gz clang-dumper-linux-x86_64-standalone
+            tar -czf clang-dumper-linux-x86_64-plugin.tar.gz clang-dumper-linux-x86_64-plugin.so
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2
@@ -132,14 +133,15 @@ jobs:
           set -eux
           cd build
           test -f tool.exe
-          zip -9 ../clang-dumper-windows.zip tool.exe
+          mv tool.exe clang-dumper-windows-x86_64-standalone.exe
+          zip -9 ../clang-dumper-windows-x86_64-standalone.zip clang-dumper-windows-x86_64-standalone.exe
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
-            clang-dumper-windows.zip
+            clang-dumper-windows-x86_64-standalone.zip
 
   build-macos:
     name: Build (macOS)
@@ -183,20 +185,23 @@ jobs:
               -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang"
 
       - name: Build
-        run: cmake --build build --config Release -- tool -v
+        run: cmake --build build --config Release -- all -v
 
       - name: Package artifact
         run: |
           set -eux
-          cp build/tool ./clang-dumper
-          tar -czf clang-dumper-macos.tar.gz clang-dumper
+          cp build/tool ./clang-dumper-macos-arm64-standalone
+          cp build/libplugin.so ./clang-dumper-macos-arm64-plugin.so
+          tar -czf clang-dumper-macos-arm64-standalone.tar.gz clang-dumper-macos-arm64-standalone
+          tar -czf clang-dumper-macos-arm64-plugin.tar.gz clang-dumper-macos-arm64-plugin.so
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
-            clang-dumper-macos.tar.gz
+            clang-dumper-macos-arm64-standalone.tar.gz
+            clang-dumper-macos-arm64-plugin.tar.gz
 
   finalize:
     name: Finalize or cancel release
