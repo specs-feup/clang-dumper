@@ -195,15 +195,13 @@ jobs:
               -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang"
 
       - name: Build
-        run: cmake --build build --config Release --target all --verbose
+        run: cmake --build build --config Release --target tool --verbose
 
       - name: Package artifact
         run: |
           set -eux
           cp build/tool ./clang-dumper-macos-arm64-standalone
-          cp build/libplugin.so ./clang-dumper-macos-arm64-plugin.dylib
           tar -czf clang-dumper-macos-arm64-standalone.tar.gz clang-dumper-macos-arm64-standalone
-          tar -czf clang-dumper-macos-arm64-plugin.tar.gz clang-dumper-macos-arm64-plugin.dylib
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2
@@ -211,7 +209,6 @@ jobs:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
             clang-dumper-macos-arm64-standalone.tar.gz
-            clang-dumper-macos-arm64-plugin.tar.gz
 
   finalize:
     name: Finalize or cancel release
