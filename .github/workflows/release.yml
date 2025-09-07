@@ -199,9 +199,9 @@ jobs:
         run: |
           set -eux
           cp build/tool ./clang-dumper-macos-arm64-standalone
-          cp build/libplugin.so ./clang-dumper-macos-arm64-plugin.so
+          cp build/libplugin.so ./clang-dumper-macos-arm64-plugin.dylib
           tar -czf clang-dumper-macos-arm64-standalone.tar.gz clang-dumper-macos-arm64-standalone
-          tar -czf clang-dumper-macos-arm64-plugin.tar.gz clang-dumper-macos-arm64-plugin.so
+          tar -czf clang-dumper-macos-arm64-plugin.tar.gz clang-dumper-macos-arm64-plugin.dylib
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2

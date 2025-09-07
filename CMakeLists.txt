@@ -77,6 +77,24 @@ message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
 add_compile_options(-Wsuggest-override)
 
 find_package(ZLIB REQUIRED)
+# Some distributions ship LLVM with a LibEdit dependency (LLVMLineEditor target)
+# but do not provide a LibEdit::LibEdit CMake target unless the user installs
+# an extra FindLibEdit module. Create an imported interface target if missing
+# so that LLVM's exported targets referencing LibEdit::LibEdit do not break
+# configuration. We try to locate the actual 'edit' library; if not found we
+# still create an empty interface target (rare case) which is usually fine if
+# we never link LLVMLineEditor into our final binaries.
+if(NOT TARGET LibEdit::LibEdit)
+    find_library(LIBEDIT_LIB NAMES edit)
+    if(LIBEDIT_LIB)
+        add_library(LibEdit::LibEdit INTERFACE IMPORTED)
+        set_target_properties(LibEdit::LibEdit PROPERTIES INTERFACE_LINK_LIBRARIES "${LIBEDIT_LIB}")
+        message(STATUS "Found libedit: ${LIBEDIT_LIB}; created LibEdit::LibEdit target")
+    else()
+        add_library(LibEdit::LibEdit INTERFACE IMPORTED)
+        message(WARNING "libedit not found; created empty LibEdit::LibEdit target. If link errors referencing edit/readline occur, install libedit-dev.")
+    endif()
+endif()
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
 
@@ -193,6 +211,17 @@ add_executable(tool ${SOURCE_FILES} src/tool.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
 add_dependencies(tool clang_enums)
 
+# Size optimization flags (Option 3): place each function/data in its own section
+target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
+
+# Locate binutils tools early for post-build debug splitting
+if(NOT CMAKE_OBJCOPY)
+    find_program(CMAKE_OBJCOPY NAMES objcopy)
+endif()
+if(NOT CMAKE_STRIP)
+    find_program(CMAKE_STRIP NAMES strip)
+endif()
+
 
 message(STATUS "SYSTEM PROCESSOR: '${CMAKE_SYSTEM_PROCESSOR}'")
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
@@ -205,138 +234,96 @@ endif()
 #set_property(TARGET tool PROPERTY INTERPROCEDURAL_OPTIMIZATION OFF)
 
 
-if(WIN32)
-    target_link_directories(tool PRIVATE "${MINGW_BASEDIR}/lib")
-    target_link_libraries(tool
-            clang-cpp
-            LLVM
-    )  
+message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
+find_program(LLVM_CONFIG_EXE NAMES llvm-config-${CLANG_VERSION} llvm-config)
+if(NOT LLVM_CONFIG_EXE)
+    message(FATAL_ERROR "llvm-config (version ${CLANG_VERSION}) not found; cannot build statically linked 'tool'.")
 else()
-#	set(LLVM_LINK_LLVM_DYLIB OFF)
-    target_link_libraries( tool
-    clangAnalysis
-    clangAPINotes
-    clangARCMigrate
-    clangAST
-    clangASTMatchers
-    clangBasic
-    #clangChangeNamespace
-    clangCodeGen
-    clangCrossTU
-    clangDependencyScanning
-    clangDirectoryWatcher
-    #clangDoc
-    clangDriver
-    clangDynamicASTMatchers
-    clangEdit
-    clangFormat
-    clangFrontend
-    clangFrontendTool
-    clangHandleCXX
-    clangHandleLLVM
-    clangIndex
-    clangIndexSerialization
-    clangLex
-    #clangMove
-    clangParse
-    #clangReorderFields
-    clangRewrite
-    clangRewriteFrontend
-    clangSema
-    clangSerialization
-    clangStaticAnalyzerCheckers
-    clangStaticAnalyzerCore
-    clangStaticAnalyzerFrontend
-    clangTooling
-    clangToolingASTDiff
-    clangToolingCore
-    clangToolingInclusions
-    clangToolingRefactoring
-    clangToolingSyntax
-    clangTransformer
-    #DynamicLibraryLib
+    execute_process(COMMAND ${LLVM_CONFIG_EXE} --libdir OUTPUT_VARIABLE LLVM_LIBDIR_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(LLVM_LIBDIR ${LLVM_LIBDIR_RAW})
+    if(WIN32)
+        target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
+    endif()
+    # Automatic discovery of Clang static archives, minus known bulky/irrelevant ones.
+    # We exclude clangd* (language server), clangTidy* (analysis modules), *Proto/Monitoring*
+    # which pull protobuf or service code we do not use. This keeps maintenance low
+    # while avoiding the massive over-linking that led to unresolved driver/sarif references.
+    file(GLOB CLANG_ARCHIVES_ALL "${LLVM_LIBDIR}/libclang*.a")
+    list(FILTER CLANG_ARCHIVES_ALL EXCLUDE REGEX "libclang-cpp[.]a$")
+    set(CLANG_ARCHIVES ${CLANG_ARCHIVES_ALL})
+    # Drop clangd and tidy related archives
+    list(FILTER CLANG_ARCHIVES EXCLUDE REGEX "libclangd.*[.]a$")
+    list(FILTER CLANG_ARCHIVES EXCLUDE REGEX "libclangTidy.*[.]a$")
+    # Drop ancillary tooling pieces we do not rely on (may be added back if needed)
+    list(FILTER CLANG_ARCHIVES EXCLUDE REGEX "libclang(ChangeNamespace|Doc|ExtractAPI|Format|Move|ApplyReplacements|DirectoryWatcher|DependencyScanning|Daemon.*|IncludeFixer.*|Pseudo.*|DynamicASTMatchers|dMonitoringServiceProto|dRemoteIndex.*|dSupport|dRemoteMarshalling)[.]a$")
+    message(STATUS "Filtered Clang archives (auto): ${CLANG_ARCHIVES}")
+    execute_process(COMMAND ${LLVM_CONFIG_EXE} --libs --system-libs --link-static OUTPUT_VARIABLE LLVM_LIBS_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REGEX REPLACE "\n" " " LLVM_LIBS_RAW "${LLVM_LIBS_RAW}")
+    string(REGEX MATCHALL "-l[^ ]+" LLVM_LIBS_WITH_PREFIX "${LLVM_LIBS_RAW}")
+    set(LLVM_LIBS_CLEAN "")
+    foreach(flag IN LISTS LLVM_LIBS_WITH_PREFIX)
+        string(REGEX REPLACE "^-l" "" name "${flag}")
+        list(APPEND LLVM_LIBS_CLEAN ${name})
+    endforeach()
 
-    # LLVM libraries, as given by 'llvm-config --libs'
-    LLVMWindowsManifest
-    LLVMXRay
-    LLVMLibDriver
-    #LLVMDlltoolDriver
-    LLVMCoverage
-    #LLVMLineEditor
-    #LLVMXCoreDisassembler
-    #LLVMXCoreCodeGen
-    #LLVMXCoreDesc
-    #LLVMXCoreInfo
-    LLVM${PROCESSOR_PREFIX}Disassembler
-    LLVM${PROCESSOR_PREFIX}AsmParser
-    LLVM${PROCESSOR_PREFIX}CodeGen
-    LLVM${PROCESSOR_PREFIX}Desc
-    LLVM${PROCESSOR_PREFIX}Info
-    #LLVMARMUtils
-    #LLVMAArch64Utils
-    LLVMOrcJIT
-    LLVMMCJIT
-    LLVMJITLink
-    #LLVMOrcTargetProcess
-    #LLVMOrcShared
-    #LLVMInterpreter
-    LLVMExecutionEngine
-    LLVMRuntimeDyld
-    LLVMSymbolize
-    LLVMDebugInfoPDB
-    LLVMDebugInfoGSYM
-    LLVMOption
-    LLVMObjectYAML
-    #LLVMMCA
-    #LLVMMCDisassembler
-    LLVMLTO
-    #LLVMPasses
-    LLVMCFGuard
-    LLVMCoroutines
-    LLVMObjCARCOpts
-    LLVMipo
-    LLVMVectorize
-    LLVMLinker
-    LLVMInstrumentation
-    LLVMFrontendOpenMP
-    LLVMFrontendOpenACC
-    LLVMExtensions
-    LLVMDWARFLinker
-    LLVMGlobalISel
-    LLVMMIRParser
-    #LLVMAsmPrinter
-    LLVMDebugInfoDWARF
-    LLVMSelectionDAG
-    LLVMCodeGen
-    LLVMIRReader
-    #LLVMAsmParser
-    LLVMInterfaceStub
-    LLVMFileCheck
-    LLVMFuzzMutate
-    LLVMTarget
-    #LLVMScalarOpts
-    #LLVMInstCombine
-    #LLVMAggressiveInstCombine
-    LLVMTransformUtils
-    LLVMBitWriter
-    LLVMAnalysis
-    #LLVMProfileData
-    LLVMObject
-    #LLVMTextAPI
-    #LLVMMCParser
-    #LLVMMC
-    #LLVMDebugInfoCodeView
-    #LLVMDebugInfoMSF
-    #LLVMBitReader
-    #LLVMCore
-    #LLVMRemarks
-    #LLVMBitstreamReader
-    #LLVMBinaryFormat
-    #LLVMTableGen
-    #LLVMSupport
-    #LLVMDemangle
-)
+    # Filter (Option 4): retain only host target backends to reduce size.
+    execute_process(COMMAND ${LLVM_CONFIG_EXE} --host-target OUTPUT_VARIABLE LLVM_HOST_TARGET_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(LLVM_HOST_TARGET ${LLVM_HOST_TARGET_RAW})
+    # Map common triples to backend substring patterns used in library names.
+    if(LLVM_HOST_TARGET MATCHES "x86_64")
+        set(HOST_BACKEND_REGEX "X86")
+    elseif(LLVM_HOST_TARGET MATCHES "aarch64")
+        set(HOST_BACKEND_REGEX "AArch64")
+    elseif(LLVM_HOST_TARGET MATCHES "arm")
+        set(HOST_BACKEND_REGEX "ARM")
+    elseif(LLVM_HOST_TARGET MATCHES "riscv")
+        set(HOST_BACKEND_REGEX "RISCV")
+    else()
+        set(HOST_BACKEND_REGEX "")
+    endif()
+    if(HOST_BACKEND_REGEX)
+        set(FILTERED_LLVM_LIBS "")
+        foreach(lib IN LISTS LLVM_LIBS_CLEAN)
+            # If it looks like a target-specific codegen/asm/disassembler lib and does not match host, skip.
+            if(lib MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
+                if(NOT lib MATCHES "${HOST_BACKEND_REGEX}")
+                    continue()
+                endif()
+            endif()
+            list(APPEND FILTERED_LLVM_LIBS ${lib})
+        endforeach()
+        set(LLVM_LIBS_CLEAN ${FILTERED_LLVM_LIBS})
+        message(STATUS "Filtered LLVM target libs to host (${LLVM_HOST_TARGET} -> ${HOST_BACKEND_REGEX}).")
+    else()
+        message(STATUS "Unknown host target '${LLVM_HOST_TARGET}', keeping all LLVM target libs.")
+    endif()
+    if(CLANG_ARCHIVES STREQUAL "")
+        message(FATAL_ERROR "No Clang static archives (libclang*.a) found in ${LLVM_LIBDIR}; cannot build statically linked 'tool'. Install libclang static dev packages.")
+    else()
+        message(STATUS "Using Clang archives: ${CLANG_ARCHIVES}")
+        message(STATUS "LLVM libs: ${LLVM_LIBS_CLEAN}")
+    if(APPLE)
+            # On Apple we need -force_load semantics so that object files inside the archives
+            # that are only referenced via plugin-like registration get pulled in.
+            target_link_options(tool PRIVATE -Wl,-force_load)
+            target_link_libraries(tool PRIVATE ${CLANG_ARCHIVES} ${LLVM_LIBS_CLEAN})
+        else()
+            # We must enclose the static archives inside a single start/end group so the linker
+            # can resolve circular dependencies between Clang and LLVM components. Previously we
+            # emitted -Wl,--start-group/-Wl,--end-group as link options which CMake placed before
+            # the object files, producing an empty group and leaving many unresolved symbols.
+            # Inject them directly in the library list to guarantee ordering after objects.
+            set(GROUPED_CLANG_LLVM_LIBS -Wl,--start-group ${CLANG_ARCHIVES} ${LLVM_LIBS_CLEAN} -Wl,--end-group)
+            target_link_libraries(tool PRIVATE ${GROUPED_CLANG_LLVM_LIBS})
+            # Keep static libstdc++/libgcc flags.
+            target_link_options(tool PRIVATE -static-libstdc++ -static-libgcc -Wl,--gc-sections)
+        endif()
+    endif()
 endif()
+
+# Plugin always dynamic (portable; small)
+target_link_libraries(plugin PRIVATE clang-cpp LLVM)
+
 
 # If on MacOS, change the expected location of libLLVM.dylib and libzstd.1.dylib
 # To check changes, use 'otool -L tool'
