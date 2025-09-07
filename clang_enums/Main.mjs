@@ -12,8 +12,8 @@ const outputFolder = process.argv[3];
 const llvmLibCmake = path.resolve(llvmFolder);
 const llvmPrefix = path.resolve(llvmLibCmake, "../../..");
 const compilerCmd = path.join(llvmPrefix, "bin", process.platform === "win32" ? "clang++.exe" : "clang++");
-const cppEnumsOutputFolder = path.join(outputFolder, "ClangEnums");
-const javaEnumsOutputFolder = path.join(outputFolder, "java_enums");
+const cppEnumsOutputFolder = path.join(outputFolder, "enums_cpp");
+const javaEnumsOutputFolder = path.join(outputFolder, "enums_java");
 
 console.log("Using LLVM folder '" + llvmFolder + "'");
 console.log("Using compiler '" + compilerCmd + "'");
