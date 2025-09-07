@@ -306,6 +306,7 @@ else()
             # On Apple we need -force_load semantics so that object files inside the archives
             # that are only referenced via plugin-like registration get pulled in.
             target_link_options(tool PRIVATE -Wl,-force_load)
+            target_link_directories(tool PRIVATE /opt/homebrew/lib)
             target_link_libraries(tool PRIVATE ${CLANG_ARCHIVES} ${LLVM_LIBS_CLEAN})
         else()
             # We must enclose the static archives inside a single start/end group so the linker
