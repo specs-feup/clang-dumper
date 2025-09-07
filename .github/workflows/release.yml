@@ -123,7 +123,7 @@ jobs:
           ls -l "${ZLIB_LIBRARY}" || (echo "Zlib library not found" && exit 1)
           test -f "${ZLIB_INCLUDE_DIR}/zlib.h" || (echo "zlib.h not found" && exit 1)
           # Add GCC include paths for clang preprocessing
-          export CPLUS_INCLUDE_PATH="${LLVM_BASE}/include/c++/15.2.0:${LLVM_BASE}/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
+          export CPLUS_INCLUDE_PATH="${LLVM_BASE}/include/c++/15.2.0:${LLVM_BASE}/include:/usr/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
           cmake -S . -B build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
