@@ -76,6 +76,7 @@ message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
 
 add_compile_options(-Wsuggest-override)
 
+find_package(ZLIB REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
 
@@ -86,7 +87,7 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 
 
 # Set the LLVM and Clang include directories
-include_directories(${LLVM_INCLUDE_DIRS})	
+include_directories(${LLVM_INCLUDE_DIRS})
 include_directories(${CLANG_INCLUDE_DIRS})
 
 #include_directories("/usr/lib/llvm-${CLANG_VERSION}/include/")

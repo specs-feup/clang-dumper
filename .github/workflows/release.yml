@@ -70,7 +70,8 @@ jobs:
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
-              clang-dumper-linux.tar.gz
+              clang-dumper-linux-x86_64-standalone.tar.gz
+              clang-dumper-linux-x86_64-plugin.tar.gz
 
   build-windows:
     name: Build (Windows)
@@ -123,7 +124,7 @@ jobs:
 
       - name: Build
         shell: msys2 {0}
-        run: cmake --build build --config Release -- tool -v
+        run: cmake --build build --config Release --target tool --verbose
 
       - name: Package artifact
         shell: msys2 {0}
@@ -160,8 +161,9 @@ jobs:
           set -eux
           brew update
           brew install llvm@${CLANG_VERSION} ninja zstd libedit libomp pkg-config
-          echo "LLVM_PREFIX=$(brew --prefix llvm@${CLANG_VERSION})" >> $GITHUB_ENV
-          echo "PATH=${LLVM_PREFIX}/bin:${PATH}" >> $GITHUB_ENV
+          LLVM_PREFIX=$(brew --prefix llvm@${CLANG_VERSION})
+          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
+          echo "PATH=${LLVM_PREFIX}/bin:${PATH}" >> "$GITHUB_ENV"
 
       - name: Toolchain diagnostics
         run: |
@@ -183,7 +185,7 @@ jobs:
               -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang"
 
       - name: Build
-        run: cmake --build build --config Release -- all -v
+        run: cmake --build build --config Release --target all --verbose
 
       - name: Package artifact
         run: |
