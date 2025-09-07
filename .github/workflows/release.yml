@@ -82,7 +82,8 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
 
-      - name: Set up MSYS2 with MinGW LLVM/Clang and tools
+      # Minimal, clean MSYS2 environment with only what we truly need.
+      - name: Set up MSYS2 (MinGW64)
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
@@ -96,54 +97,38 @@ jobs:
             mingw-w64-x86_64-llvm
             mingw-w64-x86_64-llvm-libs
             mingw-w64-x86_64-clang
-            mingw-w64-x86_64-clang-tools-extra
             mingw-w64-x86_64-nodejs
-            mingw-w64-x86_64-zstd
             mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-zstd
 
-      - name: Toolchain diagnostics (MSYS2)
+      - name: Toolchain diagnostics
         shell: msys2 {0}
         run: |
           set -eux
+          clang --version
+          llvm-config --version || true
           node -v
           cmake --version
           ninja --version
-          clang --version
 
       - name: Configure (CMake)
         shell: msys2 {0}
         run: |
-          set -euxo pipefail
-          # Force use of MSYS2 provided LLVM/Clang (version may differ from CLANG_VERSION variable)
-          LLVM_BASE="/mingw64"
-          export CMAKE_PREFIX_PATH="${LLVM_BASE}:${CMAKE_PREFIX_PATH:-}"
-          # Provide ZLIB hints (FindZLIB was failing even though package is installed)
-          ZLIB_INCLUDE_DIR="${LLVM_BASE}/include"
-          ZLIB_LIBRARY="${LLVM_BASE}/lib/libz.dll.a"
-          ls -l "${ZLIB_LIBRARY}" || (echo "Zlib library not found" && exit 1)
-          test -f "${ZLIB_INCLUDE_DIR}/zlib.h" || (echo "zlib.h not found" && exit 1)
-          # Add GCC & CRT include paths for clang preprocessing (CI only tweak)
-          # The enum generation step preprocesses Clang headers directly and was
-          # failing to find stdlib.h on GitHub Actions (but not on dev machines).
-          # Explicitly add the MinGW target include dir to both C and C++ search paths.
-          MINGW_TARGET_INCLUDE="${LLVM_BASE}/x86_64-w64-mingw32/include"
-          if [ -d "${MINGW_TARGET_INCLUDE}" ]; then
-            export C_INCLUDE_PATH="${MINGW_TARGET_INCLUDE}${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
-            export CPLUS_INCLUDE_PATH="${LLVM_BASE}/include/c++/15.2.0:${MINGW_TARGET_INCLUDE}:/usr/include:${LLVM_BASE}/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
-          else
-            echo "Warning: Expected MinGW target include dir not found: ${MINGW_TARGET_INCLUDE}" >&2
-          fi
+          set -eux
+          # Use the compilers in PATH explicitly to bypass hardcoded c:/mingw64-clang-${CLANG_VERSION} path in CMakeLists.
           cmake -S . -B build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DZLIB_LIBRARY="${ZLIB_LIBRARY}" \
-            -DZLIB_INCLUDE_DIR="${ZLIB_INCLUDE_DIR}" \
-            -DLLVM_DIR="${LLVM_BASE}/lib/cmake/llvm" \
-            -DClang_DIR="${LLVM_BASE}/lib/cmake/clang"
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DLLVM_DIR=/mingw64/lib/cmake/llvm \
+            -DClang_DIR=/mingw64/lib/cmake/clang
 
       - name: Build
         shell: msys2 {0}
-        run: cmake --build build --config Release --target tool --verbose
+        run: |
+          set -eux
+          cmake --build build --config Release --target tool --verbose
 
       - name: Package artifact
         shell: msys2 {0}
