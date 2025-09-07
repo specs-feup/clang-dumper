@@ -96,9 +96,64 @@ include_directories(${CLANG_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 add_definitions(${CLANG_DEFINITIONS})
 
-file (GLOB ENUM_FILES CONFIGURE_DEPENDS
-    "src/ClangEnums/enums_*.h"
-    "src/ClangEnums/enums_*.cpp")
+# -----------------------------------------------------------------------------
+# Generated Clang Enum Sources (build-time, not configure-time)
+# -----------------------------------------------------------------------------
+# We previously globbed the generated files at configure time and injected all
+# of them as separate translation units. This forced us to know their names
+# during configuration and caused repeated re-configurations / stale lists.
+#
+# New approach:
+# 1. A custom command (build step) runs the Node script that (re)generates the
+#    enum sources under src/ClangEnums/.
+# 2. Immediately after, a small CMake script (executed with -P at build time)
+#    scans the directory and writes a single aggregator translation unit
+#    (clang_enums_aggregated.cpp) which simply #includes every generated
+#    enums_*.cpp file. This file has a stable name so it can be listed in the
+#    targets without hardcoding any of the dynamic filenames.
+# 3. Targets only compile this single aggregator TU; individual generated
+#    .cpp files are included via the preprocessor and do not need to be
+#    enumerated in CMake.
+#
+# This satisfies:
+#  - No hardcoding of the generated enum file names.
+#  - Generation happens strictly at build time (not configuration).
+#  - Adding/removing enum files requires no CMake reconfigure.
+# -----------------------------------------------------------------------------
+
+# Directory for build-time helper + aggregated source
+set(ENUMS_GEN_DIR "${CMAKE_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY "${ENUMS_GEN_DIR}")
+set(ENUMS_AGGREGATED_SRC "${ENUMS_GEN_DIR}/clang_enums_aggregated.cpp")
+
+# Build-time script which creates the aggregator translation unit.
+set(GENERATE_ENUMS_AGG_SCRIPT "${ENUMS_GEN_DIR}/generate_enum_aggregator.cmake")
+file(WRITE "${GENERATE_ENUMS_AGG_SCRIPT}" "# Auto-generated helper (do not edit)\n")
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "# Scans src/enums_cpp for cpp files produced by the Node script\n")
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "file(GLOB ENUM_CPP_FILES \"src/enums_cpp/*.cpp\")\n")
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "file(WRITE \"${ENUMS_AGGREGATED_SRC}\" \"// Aggregated enum sources - generated at build time\\n\\n\")\n")
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "foreach(f IN LISTS ENUM_CPP_FILES)\n")
+# Use relative include path so we don't need to escape another variable; this is evaluated when the helper script runs at build time.
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "  file(APPEND \"${ENUMS_AGGREGATED_SRC}\" \"#include \\\"\${f}\\\"\\n\")\n")
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "endforeach()\n")
+
+# Collect Node generation script files as (re)build dependencies (best-effort).
+file(GLOB NODE_ENUM_SCRIPTS CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/clang_enums/*.mjs"
+    "${CMAKE_SOURCE_DIR}/clang_enums/*.js")
+
+add_custom_command(
+    OUTPUT "${ENUMS_AGGREGATED_SRC}"
+    COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Node) into src/ClangEnums ..."
+    COMMAND node "${CMAKE_SOURCE_DIR}/clang_enums/Main.mjs" ${LLVM_DIR} src/
+    COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS ${NODE_ENUM_SCRIPTS}
+    COMMENT "Run enum generator and aggregate sources"
+    VERBATIM
+)
+
+add_custom_target(clang_enums DEPENDS "${ENUMS_AGGREGATED_SRC}")
 
 set(SOURCE_FILES
     src/Clang/ClangAst.cpp
@@ -124,13 +179,8 @@ set(SOURCE_FILES
     src/ClangAstDumper/ClangAstDumperExtra.cpp
     src/ClangAstDumper/ClangAstDumperStmts.cpp
     src/ClangAstDumper/ClangAstDumperTypes.cpp
-    ${ENUM_FILES}
+    "${ENUMS_AGGREGATED_SRC}"
     )
-
-add_custom_target (
-    clang_enums
-    COMMAND node clang_enums/Main.mjs ${LLVM_DIR} src/
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # Only build plugin if not on Windows or MacOS
 if(NOT WIN32 AND NOT APPLE)
