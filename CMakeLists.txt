@@ -183,12 +183,9 @@ set(SOURCE_FILES
     "${ENUMS_AGGREGATED_SRC}"
     )
 
-# Only build plugin if not on Windows or MacOS
-if(NOT WIN32 AND NOT APPLE)
-    add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
-    target_compile_features(plugin PRIVATE cxx_std_20)
-    add_dependencies(plugin clang_enums)
-endif()
+add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
+target_compile_features(plugin PRIVATE cxx_std_20)
+add_dependencies(plugin clang_enums)
 
 
 
