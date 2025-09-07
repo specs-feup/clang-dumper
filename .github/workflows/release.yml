@@ -114,13 +114,21 @@ jobs:
         shell: msys2 {0}
         run: |
           set -euxo pipefail
-          MINGW_BASEDIR="C:/msys64/mingw64"
+          # Force use of MSYS2 provided LLVM/Clang (version may differ from CLANG_VERSION variable)
+          LLVM_BASE="/mingw64"
+          export CMAKE_PREFIX_PATH="${LLVM_BASE}:${CMAKE_PREFIX_PATH:-}"
+          # Provide ZLIB hints (FindZLIB was failing even though package is installed)
+          ZLIB_INCLUDE_DIR="${LLVM_BASE}/include"
+          ZLIB_LIBRARY="${LLVM_BASE}/lib/libz.dll.a"
+          ls -l "${ZLIB_LIBRARY}" || (echo "Zlib library not found" && exit 1)
+          test -f "${ZLIB_INCLUDE_DIR}/zlib.h" || (echo "zlib.h not found" && exit 1)
           cmake -S . -B build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DMINGW_BASEDIR="${MINGW_BASEDIR}" \
-            -DLLVM_DIR="${MINGW_BASEDIR}/lib/cmake/llvm" \
-            -DClang_DIR="${MINGW_BASEDIR}/lib/cmake/clang"
+            -DZLIB_LIBRARY="${ZLIB_LIBRARY}" \
+            -DZLIB_INCLUDE_DIR="${ZLIB_INCLUDE_DIR}" \
+            -DLLVM_DIR="${LLVM_BASE}/lib/cmake/llvm" \
+            -DClang_DIR="${LLVM_BASE}/lib/cmake/clang"
 
       - name: Build
         shell: msys2 {0}
