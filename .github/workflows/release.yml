@@ -124,6 +124,11 @@ jobs:
           export ZLIB_INCLUDE_DIR=/mingw64/include
           export ZLIB_LIBRARY=/mingw64/lib/libz.dll.a
           export LLVM_CONFIG_EXECUTABLE=/mingw64/bin/llvm-config
+          # Ensure Clang/GCC headers are visible to standalone clang++ preprocessing
+          # (required by the Node enum generator which runs clang++ -E)
+          export C_INCLUDE_PATH="/mingw64/include:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include"
+          export CPLUS_INCLUDE_PATH="/mingw64/include/c++/15.2.0:/mingw64/include"
+          export CPATH="$C_INCLUDE_PATH:$CPLUS_INCLUDE_PATH"
           test -x "$LLVM_CONFIG_EXECUTABLE"
           test -f "$ZLIB_INCLUDE_DIR/zlib.h"
           test -f "$ZLIB_LIBRARY"
