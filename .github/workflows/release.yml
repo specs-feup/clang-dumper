@@ -114,6 +114,16 @@ jobs:
           cmake --version
           ninja --version
 
+      - name: Header search diagnostics
+        shell: msys2 {0}
+        run: |
+          set -eux
+          echo '#include <cstdlib>' > test.cpp
+          clang++ -E -v test.cpp 2>&1 | sed -n '1,160p'
+          echo '---'
+          echo '#include <stdlib.h>' > test_c.c
+          clang -E -v test_c.c 2>&1 | sed -n '1,160p'
+
       - name: Configure (CMake)
         shell: msys2 {0}
         run: |
@@ -124,11 +134,6 @@ jobs:
           export ZLIB_INCLUDE_DIR=/mingw64/include
           export ZLIB_LIBRARY=/mingw64/lib/libz.dll.a
           export LLVM_CONFIG_EXECUTABLE=/mingw64/bin/llvm-config
-          # Ensure Clang/GCC headers are visible to standalone clang++ preprocessing
-          # (required by the Node enum generator which runs clang++ -E)
-          export C_INCLUDE_PATH="/mingw64/include:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include"
-          export CPLUS_INCLUDE_PATH="/mingw64/include/c++/15.2.0:/mingw64/include"
-          export CPATH="$C_INCLUDE_PATH:$CPLUS_INCLUDE_PATH"
           test -x "$LLVM_CONFIG_EXECUTABLE"
           test -f "$ZLIB_INCLUDE_DIR/zlib.h"
           test -f "$ZLIB_LIBRARY"
@@ -137,6 +142,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER=clang \
             -DCMAKE_CXX_COMPILER=clang++ \
+            -DMINGW_BASEDIR=/mingw64 \
             -DLLVM_CONFIG_EXECUTABLE="$LLVM_CONFIG_EXECUTABLE" \
             -DLLVM_DIR=/mingw64/lib/cmake/llvm \
             -DClang_DIR=/mingw64/lib/cmake/clang \
