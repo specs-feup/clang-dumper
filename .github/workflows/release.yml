@@ -75,93 +75,61 @@ jobs:
 
   build-windows:
     name: Build (Windows)
-    runs-on: windows-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout tag
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}
 
-      # Minimal, clean MSYS2 environment with only what we truly need.
-      - name: Set up MSYS2 (MinGW64)
-        uses: msys2/setup-msys2@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          msystem: MINGW64
-          update: true
-          install: >-
-            base-devel
-            git
-            cmake
-            ninja
-            zip
-            mingw-w64-x86_64-nodejs
-            mingw-w64-x86_64-zlib
-            mingw-w64-x86_64-zstd
-            mingw-w64-x86_64-llvm-${{ env.CLANG_VERSION }}
-            mingw-w64-x86_64-llvm-libs-${{ env.CLANG_VERSION }}
-            mingw-w64-x86_64-clang-${{ env.CLANG_VERSION }}
-            mingw-w64-x86_64-clang-tools-extra-${{ env.CLANG_VERSION }}
+            node-version: '20'
+
+      - name: Install LLVM/Clang ${{ env.CLANG_VERSION }} (apt.llvm.org)
+        run: |
+            set -eux
+            wget https://apt.llvm.org/llvm.sh
+            chmod +x llvm.sh
+            sudo ./llvm.sh ${CLANG_VERSION}
+            sudo apt-get install -y \
+                llvm-${CLANG_VERSION}-dev \
+                libclang-${CLANG_VERSION}-dev \
+                cmake ninja-build \
+                mingw-w64 gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
+                zlib1g-dev libedit-dev libzstd-dev libpolly-${CLANG_VERSION}-dev
 
       - name: Toolchain diagnostics
-        shell: msys2 {0}
         run: |
           set -eux
-          clang --version
-          llvm-config --version || true
           node -v
           cmake --version
           ninja --version
-
-      - name: Header search diagnostics
-        shell: msys2 {0}
-        run: |
-          set -eux
-          echo '#include <cstdlib>' > test.cpp
-          clang++ -E -v test.cpp 2>&1 | sed -n '1,160p'
-          echo '---'
-          echo '#include <stdlib.h>' > test_c.c
-          clang -E -v test_c.c 2>&1 | sed -n '1,160p'
+          clang-${CLANG_VERSION} --version || true
 
       - name: Configure (CMake)
-        shell: msys2 {0}
         run: |
-          # Prefer /mingw64 packages over /usr (avoid pulling msys LLVM 16 w/out zlib headers)
-          export PATH="/mingw64/bin:$PATH"
-          export CMAKE_PREFIX_PATH="/mingw64${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
-          # Zlib hints (FindZLIB fails otherwise because only mingw variant installed)
-          export ZLIB_INCLUDE_DIR=/mingw64/include
-          export ZLIB_LIBRARY=/mingw64/lib/libz.dll.a
-          export LLVM_CONFIG_EXECUTABLE=/mingw64/bin/llvm-config
-          test -x "$LLVM_CONFIG_EXECUTABLE"
-          test -f "$ZLIB_INCLUDE_DIR/zlib.h"
-          test -f "$ZLIB_LIBRARY"
-          cmake -S . -B build \
-            -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_C_COMPILER=clang \
-            -DCMAKE_CXX_COMPILER=clang++ \
-            -DMINGW_BASEDIR=/mingw64 \
-            -DLLVM_CONFIG_EXECUTABLE="$LLVM_CONFIG_EXECUTABLE" \
-            -DLLVM_DIR=/mingw64/lib/cmake/llvm \
-            -DClang_DIR=/mingw64/lib/cmake/clang \
-            -DZLIB_INCLUDE_DIR=$ZLIB_INCLUDE_DIR \
-            -DZLIB_LIBRARY=$ZLIB_LIBRARY \
-            -DCMAKE_PREFIX_PATH="/mingw64/lib/cmake${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+            cmake -S . -B build \
+                -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_SYSTEM_NAME=Windows \
+                -DCMAKE_C_COMPILER=clang-${CLANG_VERSION} \
+                -DCMAKE_C_COMPILER_TARGET=x86_64-w64-windows-gnu \
+                -DCMAKE_CXX_COMPILER=clang++-${CLANG_VERSION} \
+                -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu \
+                -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
+                -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
 
       - name: Build
-        shell: msys2 {0}
         run: |
-          set -eux
           cmake --build build --config Release --target tool --verbose
 
       - name: Package artifact
-        shell: msys2 {0}
         run: |
           set -eux
-          cd build
-          test -f tool.exe
-          mv tool.exe clang-dumper-windows-x86_64-standalone.exe
-          zip -9 ../clang-dumper-windows-x86_64-standalone.zip clang-dumper-windows-x86_64-standalone.exe
+          mv build/tool.exe build/clang-dumper-windows-x86_64-standalone.exe
+          zip -9 clang-dumper-windows-x86_64-standalone.zip build/clang-dumper-windows-x86_64-standalone.exe
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2
