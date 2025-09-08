@@ -5,32 +5,29 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CLANG_VERSION 16)
 
-# Set base folder in Windows
-#
-# Convention for MinGW packages that were downloaded from https://repo.msys2.org/mingw/mingw64/
-# Download matching versions of clang and llvm packages, extract them to a folder (e.g. mingw64-clang-<version>)
-# You have to download:
-# mingw-w64-x86_64-llvm-<version>
-# mingw-w64-x86_64-llvm-libs-<version>
-# mingw-w64-x86_64-clang-<version>
-# mingw-w64-x86_64-clang-tools-extra-<version>
-#
-# The executable will still need the dynamic LLVM library to run
-# It can be found in c:/mingw64-clang-${CLANG_VERSION}/bin/libLLVM-${CLANG_VERSION}.dll
-#
-#
-# For creating a zip with libcxx, you can use Winlibs (https://winlibs.com/#download-release), find a release close the Clang version, and use the following folders, in the same order (it is important:
-#  mingw64/lib/clang/${CLANG_VERSION}/include
-#  mingw64/include/c++/%GCCVER%
-#  mingw64/include/c++/%GCCVER%/x86_64-w64-mingw32
-#  mingw64/x86_64-w64-mingw32/include
-#  mingw64/include
-#
-# Also download from https://repo.msys2.org/mingw/mingw64/ and include:
-# mingw-w64-x86_64-openmp-<version> // OpenMP
-#
+# --- Windows/MSYS2 auto-detection -------------------------------------------------
+# Original logic assumed a manually prepared c:/mingw64-clang-${CLANG_VERSION} tree.
+# In CI (GitHub Actions with MSYS2) the toolchain lives under /mingw64 instead and
+# versions advance (e.g. clang 20) even if CLANG_VERSION is left at 16 for other OSes.
+# We auto-detect that scenario to avoid mixing system LLVM 16 configs with clang 20.
 if(WIN32)
-    SET(MINGW_BASEDIR "c:/mingw64-clang-${CLANG_VERSION}")
+    if(DEFINED ENV{MINGW_BASEDIR} AND EXISTS "$ENV{MINGW_BASEDIR}")
+        set(MINGW_BASEDIR "$ENV{MINGW_BASEDIR}")
+    elseif(EXISTS "c:/mingw64-clang-${CLANG_VERSION}")
+        set(MINGW_BASEDIR "c:/mingw64-clang-${CLANG_VERSION}")
+    elseif(EXISTS "/mingw64/bin/clang.exe")
+        # Running under MSYS2 runtime (GitHub Actions, etc.)
+        set(MINGW_BASEDIR "/mingw64")
+        # Derive the actual major clang version if possible (updates CLANG_VERSION for downstream messages)
+        execute_process(COMMAND /mingw64/bin/clang --version OUTPUT_VARIABLE _clang_ver OUTPUT_STRIP_TRAILING_WHITESPACE)
+        string(REGEX MATCH "version ([0-9]+)" _match "${_clang_ver}")
+        if(CMAKE_MATCH_1)
+            set(CLANG_VERSION "${CMAKE_MATCH_1}")
+        endif()
+    else()
+        message(WARNING "Could not determine MSYS2 toolchain location; falling back to c:/mingw64-clang-${CLANG_VERSION}")
+        set(MINGW_BASEDIR "c:/mingw64-clang-${CLANG_VERSION}")
+    endif()
 endif()
 
 # Set compiler
@@ -60,8 +57,16 @@ message(STATUS "Tried to set C++ compiler to: ${CMAKE_CXX_COMPILER}")
 
 # Set libraries
 if(WIN32)
-    SET(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
-    SET(LLVM_DIR "${MINGW_BASEDIR}/lib/cmake/llvm")
+    # Prefer directories under detected MINGW_BASEDIR; fall back to system if not present.
+    if(EXISTS "${MINGW_BASEDIR}/lib/cmake/llvm" AND EXISTS "${MINGW_BASEDIR}/lib/cmake/clang")
+        set(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
+        set(LLVM_DIR  "${MINGW_BASEDIR}/lib/cmake/llvm")
+    else()
+        message(WARNING "Expected LLVM/Clang config packages not found under ${MINGW_BASEDIR}; falling back to system locations (may cause version mismatch).")
+        # System fallback matching traditional layout (still parameterized by CLANG_VERSION)
+        set(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
+        set(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
+    endif()
 elseif(APPLE)
     # Point CMake to Homebrew's LLVM and Clang config packages
     set(Clang_DIR  "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang"  CACHE PATH "Path to ClangConfig.cmake")
