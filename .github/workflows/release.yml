@@ -97,25 +97,10 @@ jobs:
             mingw-w64-x86_64-nodejs
             mingw-w64-x86_64-zlib
             mingw-w64-x86_64-zstd
-
-      - name: Install pinned LLVM/Clang ${{ env.CLANG_VERSION }} (MSYS2 archived)
-        shell: msys2 {0}
-        run: |
-          set -eux
-          PKG_BASE=https://repo.msys2.org/mingw/mingw64
-          # Packages to pin (order matters: core libs before tools-extra)
-          for p in llvm-libs llvm clang-libs clang clang-tools-extra; do
-            file=$(curl -s "$PKG_BASE/" | grep -o "mingw-w64-x86_64-${p}-${CLANG_VERSION}[^\"']*pkg.tar.zst" | sort | tail -1 || true)
-            if [ -z "$file" ]; then
-              echo "Failed to locate archived package for ${p} version ${CLANG_VERSION}" >&2
-              exit 1
-            fi
-            echo "Downloading $file" >&2
-            curl -L -O "$PKG_BASE/$file"
-            pacman -U --noconfirm "$file"
-          done
-          clang --version
-          llvm-config --version
+            mingw-w64-x86_64-llvm-${{ env.CLANG_VERSION }}
+            mingw-w64-x86_64-llvm-libs-${{ env.CLANG_VERSION }}
+            mingw-w64-x86_64-clang-${{ env.CLANG_VERSION }}
+            mingw-w64-x86_64-clang-tools-extra-${{ env.CLANG_VERSION }}
 
       - name: Toolchain diagnostics
         shell: msys2 {0}
