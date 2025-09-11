@@ -289,3 +289,11 @@ if(APPLE)
 		COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
 	)
 endif()
+
+# Linux
+if(NOT APPLE AND NOT WIN32)
+	add_custom_command (
+		TARGET tool POST_BUILD
+		COMMAND patchelf --set-rpath '$ORIGIN' "$<TARGET_FILE:tool>"
+	)
+endif()
