@@ -307,7 +307,7 @@ jobs:
           echo "Linux: ${{ needs.build-and-test-linux.result }}"
           echo "Windows: ${{ needs.build-and-test-windows.result }}"
           echo "macOS: ${{ needs.build-and-test-macos.result }}"
-          
+
           if [ "${{ needs.build-and-test-linux.result }}" != "success" ]; then
             echo "❌ Linux build failed"
             exit 1
@@ -320,5 +320,5 @@ jobs:
             echo "❌ macOS build failed"
             exit 1
           fi
-          
+
           echo "✅ All platform builds succeeded!"
