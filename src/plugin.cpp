@@ -7,8 +7,10 @@ public:
   Plugin() { DumpResources::init(0, 0); }
   ~Plugin() override { DumpResources::finish(); }
 
-  virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
-                                                         StringRef file) override;
+  std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
+                                                 StringRef file) override {
+    return DumpAstAction::CreateASTConsumer(CI, file);
+  }
 
   bool ParseArgs(const CompilerInstance &CI,
                  const std::vector<std::string> &args) override {
