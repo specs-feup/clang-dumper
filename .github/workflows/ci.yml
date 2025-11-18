@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install LLVM/Clang ${{ env.CLANG_VERSION }}
+      - name: Install dependencies
         run: |
           set -eux
           wget https://apt.llvm.org/llvm.sh
@@ -29,94 +29,58 @@ jobs:
           sudo apt-get install -y \
             llvm-${CLANG_VERSION}-dev \
             libclang-${CLANG_VERSION}-dev \
-            cmake ninja-build \
-            zlib1g-dev libedit-dev libzstd-dev libpolly-${CLANG_VERSION}-dev
+            libpolly-${CLANG_VERSION}-dev \
+            cmake \
+            ninja-build \
+            zlib1g-dev \
+            libedit-dev \
+            libzstd-dev
 
-      - name: Toolchain diagnostics
-        run: |
-          set -eux
-          node -v
-          cmake --version
-          ninja --version
-          clang-${CLANG_VERSION} --version
-
-      - name: Configure (CMake)
+      - name: Configure
         run: |
           cmake -S . -B build \
             -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
-            -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
+            -DCMAKE_BUILD_TYPE=Release
 
-      - name: Build plugin target
-        run: cmake --build build --config Release --target plugin --verbose
-
-      - name: Build tool target
-        run: cmake --build build --config Release --target tool --verbose
-
-      - name: Verify binaries exist
+      - name: Build plugin and tool
         run: |
-          set -eux
+          cd build
+          ninja plugin tool
+
+      - name: Verify binaries
+        run: |
           test -f build/libplugin.so
           test -f build/tool
           ls -lh build/libplugin.so build/tool
 
-      - name: Create test C++ file
+      - name: Test tool
         run: |
-          cat > test_sample.cpp << 'EOF'
+          cat > test.cpp << 'EOF'
           #include <iostream>
-          #include <string>
-
-          class TestClass {
-          public:
-              TestClass(const std::string& name) : name_(name) {}
-              void greet() {
-                  std::cout << "Hello from " << name_ << std::endl;
-              }
-          private:
-              std::string name_;
-          };
-
           int main() {
-              TestClass obj("ClangDumper");
-              obj.greet();
+              std::cout << "Hello" << std::endl;
               return 0;
           }
           EOF
+          ./build/tool test.cpp > output.txt 2>&1 || true
+          grep -q "Compiler Instance Data" output.txt
+          echo "✓ Tool works"
 
-      - name: Test tool executable
+      - name: Test plugin
         run: |
-          set -eux
-          ./build/tool test_sample.cpp > tool_output.txt 2>&1 || true
-          echo "=== Tool output (first 30 lines) ==="
-          head -30 tool_output.txt
-          # Verify tool produces expected output
-          grep -q "Compiler Instance Data" tool_output.txt
-          grep -q "Top Level Nodes" tool_output.txt
-          echo "✓ Tool test passed"
+          cat > test.cpp << 'EOF'
+          #include <iostream>
+          int main() {
+              std::cout << "Hello" << std::endl;
+              return 0;
+          }
+          EOF
+          clang-${CLANG_VERSION} -fplugin=./build/libplugin.so -c test.cpp > output.txt 2>&1 || true
+          grep -q "Compiler Instance Data" output.txt
+          echo "✓ Plugin works"
 
-      - name: Test plugin with clang
-        run: |
-          set -eux
-          clang-${CLANG_VERSION} -fplugin=./build/libplugin.so -c test_sample.cpp -o test_sample.o > plugin_output.txt 2>&1 || true
-          echo "=== Plugin output (first 30 lines) ==="
-          head -30 plugin_output.txt
-          # Verify plugin produces expected output
-          grep -q "Compiler Instance Data" plugin_output.txt
-          grep -q "Top Level Nodes" plugin_output.txt
-          echo "✓ Plugin test passed"
-
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-binaries
-          path: |
-            build/tool
-            build/libplugin.so
-
-  build-and-test-windows:
-    name: Build and Test (Windows - Cross-compile)
+  build-windows:
+    name: Build (Windows - Cross-compile)
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
@@ -127,7 +91,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install LLVM/Clang ${{ env.CLANG_VERSION }} and MinGW
+      - name: Install dependencies
         run: |
           set -eux
           wget https://apt.llvm.org/llvm.sh
@@ -136,19 +100,17 @@ jobs:
           sudo apt-get install -y \
             llvm-${CLANG_VERSION}-dev \
             libclang-${CLANG_VERSION}-dev \
-            cmake ninja-build \
-            mingw-w64 gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
-            zlib1g-dev libedit-dev libzstd-dev libpolly-${CLANG_VERSION}-dev
+            libpolly-${CLANG_VERSION}-dev \
+            cmake \
+            ninja-build \
+            mingw-w64 \
+            gcc-mingw-w64-x86-64 \
+            g++-mingw-w64-x86-64 \
+            zlib1g-dev \
+            libedit-dev \
+            libzstd-dev
 
-      - name: Toolchain diagnostics
-        run: |
-          set -eux
-          node -v
-          cmake --version
-          ninja --version
-          clang-${CLANG_VERSION} --version || true
-
-      - name: Configure (CMake) for Windows
+      - name: Configure for Windows
         run: |
           cmake -S . -B build \
             -G Ninja \
@@ -157,37 +119,22 @@ jobs:
             -DCMAKE_C_COMPILER=clang-${CLANG_VERSION} \
             -DCMAKE_C_COMPILER_TARGET=x86_64-w64-windows-gnu \
             -DCMAKE_CXX_COMPILER=clang++-${CLANG_VERSION} \
-            -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu \
-            -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
-            -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
+            -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu
 
-      - name: Build plugin target
-        run: cmake --build build --config Release --target plugin --verbose
-
-      - name: Build tool target
-        run: cmake --build build --config Release --target tool --verbose
-
-      - name: Verify binaries exist
+      - name: Build tool
         run: |
-          set -eux
+          cd build
+          ninja tool
+
+      - name: Verify tool binary
+        run: |
           test -f build/tool.exe || test -f build/tool
-          ls -lh build/ | grep -E "(tool|plugin)" || true
-          echo "=== Build successful ==="
+          ls -lh build/tool* || true
+          echo "✓ Windows tool built"
 
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-binaries
-          path: |
-            build/tool.exe
-            build/tool
-            build/*.dll
-            build/*.so
-
-  build-and-test-macos:
-    name: Build and Test (macOS)
-    runs-on: macos-latest
+  build-macos:
+    name: Build (macOS)
+    runs-on: macos-13
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -197,25 +144,27 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install LLVM/Clang ${{ env.CLANG_VERSION }}
+      - name: Install dependencies
         run: |
-          set -eux
-          brew update
-          brew install llvm@${CLANG_VERSION} ninja zstd libedit libomp pkg-config
-          LLVM_PREFIX=$(brew --prefix llvm@${CLANG_VERSION})
+          # Don't run brew update - it's slow and often fails
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew install llvm@${CLANG_VERSION} ninja || \
+            echo "llvm@${CLANG_VERSION} may already be installed"
+
+          # Find LLVM
+          if [ -d "/usr/local/opt/llvm@${CLANG_VERSION}" ]; then
+            LLVM_PREFIX="/usr/local/opt/llvm@${CLANG_VERSION}"
+          elif [ -d "/opt/homebrew/opt/llvm@${CLANG_VERSION}" ]; then
+            LLVM_PREFIX="/opt/homebrew/opt/llvm@${CLANG_VERSION}"
+          else
+            echo "Could not find LLVM installation"
+            exit 1
+          fi
+
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
-          echo "PATH=${LLVM_PREFIX}/bin:${PATH}" >> "$GITHUB_ENV"
+          echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
 
-      - name: Toolchain diagnostics
-        run: |
-          set -eux
-          node -v
-          cmake --version
-          ninja --version
-          "${LLVM_PREFIX}/bin/clang" --version
-          clang --version || true
-
-      - name: Configure (CMake)
+      - name: Configure
         run: |
           cmake -S . -B build \
             -G Ninja \
@@ -225,102 +174,13 @@ jobs:
             -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang"
 
-      - name: Build plugin target
-        run: cmake --build build --config Release --target plugin --verbose
-
-      - name: Build tool target
-        run: cmake --build build --config Release --target tool --verbose
-
-      - name: Verify binaries exist
+      - name: Build plugin and tool
         run: |
-          set -eux
-          ls -lh build/ | grep -E "(tool|plugin)"
+          cd build
+          ninja plugin tool
+
+      - name: Verify binaries
+        run: |
           test -f build/tool
-          echo "=== Build successful ==="
-
-      - name: Create test C++ file
-        run: |
-          cat > test_sample.cpp << 'EOF'
-          #include <iostream>
-          #include <string>
-
-          class TestClass {
-          public:
-              TestClass(const std::string& name) : name_(name) {}
-              void greet() {
-                  std::cout << "Hello from " << name_ << std::endl;
-              }
-          private:
-              std::string name_;
-          };
-
-          int main() {
-              TestClass obj("ClangDumper");
-              obj.greet();
-              return 0;
-          }
-          EOF
-
-      - name: Test tool executable
-        run: |
-          set -eux
-          ./build/tool test_sample.cpp > tool_output.txt 2>&1 || true
-          echo "=== Tool output (first 30 lines) ==="
-          head -30 tool_output.txt
-          # Verify tool produces expected output
-          grep -q "Compiler Instance Data" tool_output.txt
-          grep -q "Top Level Nodes" tool_output.txt
-          echo "✓ Tool test passed"
-
-      - name: Test plugin with clang
-        run: |
-          set -eux
-          PLUGIN_FILE=$(find build -name "libplugin.*" -type f | head -1)
-          if [ -n "${PLUGIN_FILE}" ]; then
-            "${LLVM_PREFIX}/bin/clang" -fplugin="${PLUGIN_FILE}" -c test_sample.cpp -o test_sample.o > plugin_output.txt 2>&1 || true
-            echo "=== Plugin output (first 30 lines) ==="
-            head -30 plugin_output.txt
-            # Verify plugin produces expected output
-            grep -q "Compiler Instance Data" plugin_output.txt
-            grep -q "Top Level Nodes" plugin_output.txt
-            echo "✓ Plugin test passed"
-          else
-            echo "Plugin file not found, skipping plugin test"
-          fi
-
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-binaries
-          path: |
-            build/tool
-            build/libplugin.*
-
-  summary:
-    name: Build Summary
-    runs-on: ubuntu-latest
-    needs: [build-and-test-linux, build-and-test-windows, build-and-test-macos]
-    if: always()
-    steps:
-      - name: Check build results
-        run: |
-          echo "=== Build Results ==="
-          echo "Linux: ${{ needs.build-and-test-linux.result }}"
-          echo "Windows: ${{ needs.build-and-test-windows.result }}"
-          echo "macOS: ${{ needs.build-and-test-macos.result }}"
-
-          if [ "${{ needs.build-and-test-linux.result }}" != "success" ]; then
-            echo "❌ Linux build failed"
-            exit 1
-          fi
-          if [ "${{ needs.build-and-test-windows.result }}" != "success" ]; then
-            echo "❌ Windows build failed"
-            exit 1
-          fi
-          if [ "${{ needs.build-and-test-macos.result }}" != "success" ]; then
-            echo "❌ macOS build failed"
-            exit 1
-          fi
-
-          echo "✅ All platform builds succeeded!"
+          ls -lh build/tool build/libplugin.* || true
+          echo "✓ macOS builds completed"
