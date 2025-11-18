@@ -119,7 +119,9 @@ jobs:
             -DCMAKE_C_COMPILER=clang-${CLANG_VERSION} \
             -DCMAKE_C_COMPILER_TARGET=x86_64-w64-windows-gnu \
             -DCMAKE_CXX_COMPILER=clang++-${CLANG_VERSION} \
-            -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu
+            -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu \
+            -DLLVM_DIR=/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm \
+            -DClang_DIR=/usr/lib/cmake/clang-${CLANG_VERSION}
 
       - name: Build tool
         run: |
@@ -151,18 +153,28 @@ jobs:
           brew install llvm@${CLANG_VERSION} ninja || \
             echo "llvm@${CLANG_VERSION} may already be installed"
 
-          # Find LLVM
+          # Find LLVM and set for subsequent steps
           if [ -d "/usr/local/opt/llvm@${CLANG_VERSION}" ]; then
             LLVM_PREFIX="/usr/local/opt/llvm@${CLANG_VERSION}"
           elif [ -d "/opt/homebrew/opt/llvm@${CLANG_VERSION}" ]; then
             LLVM_PREFIX="/opt/homebrew/opt/llvm@${CLANG_VERSION}"
           else
             echo "Could not find LLVM installation"
+            brew --prefix llvm@${CLANG_VERSION} || true
             exit 1
           fi
 
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
+          ls -la "${LLVM_PREFIX}/bin/" || true
+
+      - name: Verify LLVM installation
+        run: |
+          echo "LLVM_PREFIX=${LLVM_PREFIX}"
+          test -n "${LLVM_PREFIX}" || (echo "LLVM_PREFIX not set"; exit 1)
+          test -d "${LLVM_PREFIX}" || (echo "LLVM_PREFIX directory does not exist"; exit 1)
+          test -f "${LLVM_PREFIX}/bin/clang" || (echo "clang not found"; exit 1)
+          "${LLVM_PREFIX}/bin/clang" --version
 
       - name: Configure
         run: |
