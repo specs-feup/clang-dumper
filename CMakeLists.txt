@@ -56,21 +56,29 @@ message(STATUS "Tried to set C compiler to: ${CMAKE_C_COMPILER}")
 message(STATUS "Tried to set C++ compiler to: ${CMAKE_CXX_COMPILER}")
 
 # Set libraries
-if(WIN32)
-    # Prefer directories under detected MINGW_BASEDIR; fall back to system if not present.
-    if(EXISTS "${MINGW_BASEDIR}/lib/cmake/llvm" AND EXISTS "${MINGW_BASEDIR}/lib/cmake/clang")
-        set(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
-        set(LLVM_DIR  "${MINGW_BASEDIR}/lib/cmake/llvm")
-    else()
-        message(WARNING "Expected LLVM/Clang config packages not found under ${MINGW_BASEDIR}; falling back to system locations (may cause version mismatch).")
-        # System fallback matching traditional layout (still parameterized by CLANG_VERSION)
-        set(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
-        set(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
+if(WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    # For cross-compilation, check if LLVM_DIR and Clang_DIR are already set
+    if(NOT DEFINED LLVM_DIR OR NOT DEFINED Clang_DIR)
+        # Prefer directories under detected MINGW_BASEDIR; fall back to system if not present.
+        if(DEFINED MINGW_BASEDIR AND EXISTS "${MINGW_BASEDIR}/lib/cmake/llvm" AND EXISTS "${MINGW_BASEDIR}/lib/cmake/clang")
+            set(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
+            set(LLVM_DIR  "${MINGW_BASEDIR}/lib/cmake/llvm")
+        else()
+            message(WARNING "Expected LLVM/Clang config packages not found under ${MINGW_BASEDIR}; falling back to system locations (may cause version mismatch).")
+            # System fallback matching traditional layout (still parameterized by CLANG_VERSION)
+            set(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
+            set(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
+        endif()
     endif()
 elseif(APPLE)
     # Point CMake to Homebrew's LLVM and Clang config packages
-    set(Clang_DIR  "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang"  CACHE PATH "Path to ClangConfig.cmake")
-    set(LLVM_DIR   "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm"   CACHE PATH "Path to LLVMConfig.cmake")
+    # Allow override via command line by not using FORCE
+    if(NOT DEFINED LLVM_DIR)
+        set(LLVM_DIR "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
+    endif()
+    if(NOT DEFINED Clang_DIR)
+        set(Clang_DIR "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang" CACHE PATH "Path to ClangConfig.cmake")
+    endif()
 else()
     SET(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
     SET(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
@@ -246,7 +254,7 @@ if(NOT LLVM_CONFIG_EXE)
 else()
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --libdir OUTPUT_VARIABLE LLVM_LIBDIR_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     set(LLVM_LIBDIR ${LLVM_LIBDIR_RAW})
-    if(WIN32)
+    if(WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
         target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
     endif()
     # Automatic discovery of Clang static archives, minus known bulky/irrelevant ones.
@@ -311,7 +319,14 @@ else()
             # On Apple we need -force_load semantics so that object files inside the archives
             # that are only referenced via plugin-like registration get pulled in.
             target_link_options(tool PRIVATE -Wl,-force_load)
-            target_link_directories(tool PRIVATE /opt/homebrew/lib)
+            # Try to find homebrew lib directory dynamically
+            if(DEFINED ENV{LLVM_PREFIX})
+                target_link_directories(tool PRIVATE "$ENV{LLVM_PREFIX}/lib")
+            elseif(EXISTS "/opt/homebrew/lib")
+                target_link_directories(tool PRIVATE /opt/homebrew/lib)
+            elseif(EXISTS "/usr/local/lib")
+                target_link_directories(tool PRIVATE /usr/local/lib)
+            endif()
             target_link_libraries(tool PRIVATE ${CLANG_ARCHIVES} ${LLVM_LIBS_CLEAN})
         else()
             # We must enclose the static archives inside a single start/end group so the linker
@@ -333,10 +348,11 @@ target_link_libraries(plugin PRIVATE clang-cpp LLVM)
 
 # If on MacOS, change the expected location of libLLVM.dylib and libzstd.1.dylib
 # To check changes, use 'otool -L tool'
-if(APPLE)
-    add_custom_command (
-        TARGET tool POST_BUILD
-        COMMAND install_name_tool -change /usr/local/opt/llvm@${CLANG_VERSION}/lib/libLLVM.dylib @executable_path/libLLVM.dylib "$<TARGET_FILE:tool>"
-        COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
-    )
-endif()
+# Note: This is optional and may fail if paths don't match - commented out for CI builds
+# if(APPLE)
+#     add_custom_command (
+#         TARGET tool POST_BUILD
+#         COMMAND install_name_tool -change /usr/local/opt/llvm@${CLANG_VERSION}/lib/libLLVM.dylib @executable_path/libLLVM.dylib "$<TARGET_FILE:tool>"
+#         COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
+#     )
+# endif()

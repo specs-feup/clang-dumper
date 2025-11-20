@@ -177,6 +177,8 @@ jobs:
           "${LLVM_PREFIX}/bin/clang" --version
 
       - name: Configure
+        env:
+          LLVM_PREFIX: ${{ env.LLVM_PREFIX }}
         run: |
           cmake -S . -B build \
             -G Ninja \
