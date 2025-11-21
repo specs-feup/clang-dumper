@@ -72,12 +72,12 @@ if(WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
     endif()
 elseif(APPLE)
     # Point CMake to Homebrew's LLVM and Clang config packages
-    # Allow override via command line by not using FORCE
-    if(NOT DEFINED LLVM_DIR)
-        set(LLVM_DIR "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
+    # Allow override via command line
+    if(NOT LLVM_DIR)
+        set(LLVM_DIR "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm")
     endif()
-    if(NOT DEFINED Clang_DIR)
-        set(Clang_DIR "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang" CACHE PATH "Path to ClangConfig.cmake")
+    if(NOT Clang_DIR)
+        set(Clang_DIR "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang")
     endif()
 else()
     SET(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")

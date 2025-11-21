@@ -177,8 +177,6 @@ jobs:
           "${LLVM_PREFIX}/bin/clang" --version
 
       - name: Configure
-        env:
-          LLVM_PREFIX: ${{ env.LLVM_PREFIX }}
         run: |
           cmake -S . -B build \
             -G Ninja \
@@ -189,6 +187,8 @@ jobs:
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang"
 
       - name: Build plugin and tool
+        env:
+          LLVM_PREFIX: ${{ env.LLVM_PREFIX }}
         run: |
           cd build
           ninja plugin tool
