@@ -10,25 +10,29 @@ on:
 env:
   BUILD_DIR: build/linux
   CMAKE_BUILD_TYPE: Release
+  LLVM_VERSION: 16
+  NODE_VERSION: 22
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      CC: clang-16
-      CXX: clang++-16
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set compilers
+        run: |
+          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
 
       - name: Install LLVM and dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            clang-16 \
-            llvm-16-dev \
-            libclang-16-dev \
-            libpolly-16-dev \
+            clang-${{ env.LLVM_VERSION }} \
+            llvm-${{ env.LLVM_VERSION }}-dev \
+            libclang-${{ env.LLVM_VERSION }}-dev \
+            libpolly-${{ env.LLVM_VERSION }}-dev \
             zlib1g-dev \
             libedit-dev \
             libzstd-dev
@@ -36,7 +40,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Configure
         run: cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE"

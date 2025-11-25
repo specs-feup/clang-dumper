@@ -12,6 +12,7 @@ env:
   CMAKE_BUILD_TYPE: Release
   LLVM_VERSION: 21.1.6
   LLVM_INSTALL_DIR: C:/llvm
+  NODE_VERSION: 22
 
 jobs:
   build:
@@ -64,7 +65,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Configure CMake
         shell: pwsh
