@@ -1,0 +1,45 @@
+name: Linux Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+env:
+  BUILD_DIR: build/linux
+  CMAKE_BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CC: clang-16
+      CXX: clang++-16
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LLVM and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang-16 \
+            llvm-16-dev \
+            libclang-16-dev \
+            libpolly-16-dev \
+            zlib1g-dev \
+            libedit-dev \
+            libzstd-dev
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure
+        run: cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE"
+
+      - name: Build plugin & tool
+        run: cmake --build "$BUILD_DIR" --target plugin tool --parallel

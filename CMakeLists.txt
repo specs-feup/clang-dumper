@@ -5,12 +5,22 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CLANG_VERSION 16)
 
+# --- MSVC static linking option ---------------------------------------------------
+# When USE_MSVC_STATIC is ON, we use MSVC with prebuilt LLVM binaries and static linking.
+# This path uses CMake config files and file globbing instead of llvm-config.
+option(USE_MSVC_STATIC "Use MSVC with prebuilt LLVM static libraries" OFF)
+
+# LLVM_INSTALL_DIR can be set to point to the prebuilt LLVM installation
+if(NOT DEFINED LLVM_INSTALL_DIR AND DEFINED ENV{LLVM_INSTALL_DIR})
+    set(LLVM_INSTALL_DIR "$ENV{LLVM_INSTALL_DIR}")
+endif()
+
 # --- Windows/MSYS2 auto-detection -------------------------------------------------
 # Original logic assumed a manually prepared c:/mingw64-clang-${CLANG_VERSION} tree.
 # In CI (GitHub Actions with MSYS2) the toolchain lives under /mingw64 instead and
 # versions advance (e.g. clang 20) even if CLANG_VERSION is left at 16 for other OSes.
 # We auto-detect that scenario to avoid mixing system LLVM 16 configs with clang 20.
-if(WIN32)
+if(WIN32 AND NOT USE_MSVC_STATIC)
     if(DEFINED ENV{MINGW_BASEDIR} AND EXISTS "$ENV{MINGW_BASEDIR}")
         set(MINGW_BASEDIR "$ENV{MINGW_BASEDIR}")
     elseif(EXISTS "c:/mingw64-clang-${CLANG_VERSION}")
@@ -32,7 +42,8 @@ endif()
 
 # Set compiler
 # Often these do not work... replace with direct invocation in command line
-if(WIN32)
+# Skip compiler override for MSVC builds (let CMake use the Visual Studio generator)
+if(WIN32 AND NOT USE_MSVC_STATIC)
     # E.g., cmake -DCMAKE_C_COMPILER="c:/mingw64-clang-16/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/mingw64-clang-16/bin/clang++.exe" -DCMAKE_LINKER="C:/mingw64-clang-16/bin/lld-link.exe" ..
     if(NOT DEFINED CMAKE_C_COMPILER)
         SET(CMAKE_C_COMPILER "${MINGW_BASEDIR}/bin/clang.exe")
@@ -43,7 +54,7 @@ if(WIN32)
     if(NOT DEFINED CMAKE_LINKER)
         SET(CMAKE_LINKER "${MINGW_BASEDIR}/bin/lld-link.exe")
     endif()
-else()
+elseif(NOT WIN32)
     if(NOT DEFINED CMAKE_C_COMPILER)
         SET(CMAKE_C_COMPILER "clang-${CLANG_VERSION}")
     endif()
@@ -52,11 +63,23 @@ else()
     endif()
 endif()
 
-message(STATUS "Tried to set C compiler to: ${CMAKE_C_COMPILER}")
-message(STATUS "Tried to set C++ compiler to: ${CMAKE_CXX_COMPILER}")
+if(NOT USE_MSVC_STATIC)
+    message(STATUS "Tried to set C compiler to: ${CMAKE_C_COMPILER}")
+    message(STATUS "Tried to set C++ compiler to: ${CMAKE_CXX_COMPILER}")
+endif()
 
 # Set libraries
-if(WIN32)
+if(USE_MSVC_STATIC AND DEFINED LLVM_INSTALL_DIR)
+    # MSVC with prebuilt LLVM: use provided install directory
+    message(STATUS "Using MSVC static build with LLVM from: ${LLVM_INSTALL_DIR}")
+    # LLVM_DIR and Clang_DIR should be passed via command line or set here
+    if(NOT DEFINED LLVM_DIR)
+        set(LLVM_DIR "${LLVM_INSTALL_DIR}/lib/cmake/llvm")
+    endif()
+    if(NOT DEFINED Clang_DIR)
+        set(Clang_DIR "${LLVM_INSTALL_DIR}/lib/cmake/clang")
+    endif()
+elseif(WIN32 AND NOT USE_MSVC_STATIC)
     # Prefer directories under detected MINGW_BASEDIR; fall back to system if not present.
     if(EXISTS "${MINGW_BASEDIR}/lib/cmake/llvm" AND EXISTS "${MINGW_BASEDIR}/lib/cmake/clang")
         set(Clang_DIR "${MINGW_BASEDIR}/lib/cmake/clang")
@@ -79,9 +102,25 @@ endif()
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
 
-add_compile_options(-Wsuggest-override)
+# Compiler warning flags (MSVC uses different flags)
+if(MSVC)
+    # MSVC equivalent warnings - /W4 is a good baseline
+    add_compile_options(/W3)
+else()
+    add_compile_options(-Wsuggest-override)
+endif()
 
-find_package(ZLIB REQUIRED)
+# ZLIB handling - on Windows with MSVC and prebuilt LLVM, we may need to skip or stub ZLIB
+if(USE_MSVC_STATIC)
+    # The prebuilt LLVM binaries include zlib statically, so we don't need to find it separately
+    # Create a stub target if ZLIB::ZLIB is referenced
+    if(NOT TARGET ZLIB::ZLIB)
+        add_library(ZLIB::ZLIB INTERFACE IMPORTED)
+        message(STATUS "MSVC static build: ZLIB assumed to be bundled with LLVM")
+    endif()
+else()
+    find_package(ZLIB REQUIRED)
+endif()
 # Some distributions ship LLVM with a LibEdit dependency (LLVMLineEditor target)
 # but do not provide a LibEdit::LibEdit CMake target unless the user installs
 # an extra FindLibEdit module. Create an imported interface target if missing
@@ -206,10 +245,12 @@ set(SOURCE_FILES
     "${ENUMS_AGGREGATED_SRC}"
     )
 
-add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
-target_compile_features(plugin PRIVATE cxx_std_20)
-add_dependencies(plugin clang_enums)
-
+# Plugin target - skip for MSVC static builds (requires shared clang-cpp which isn't available)
+if(NOT USE_MSVC_STATIC)
+    add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
+    target_compile_features(plugin PRIVATE cxx_std_20)
+    add_dependencies(plugin clang_enums)
+endif()
 
 
 add_executable(tool ${SOURCE_FILES} src/tool.cpp)
@@ -217,7 +258,12 @@ target_compile_features(tool PRIVATE cxx_std_20)
 add_dependencies(tool clang_enums)
 
 # Size optimization flags (Option 3): place each function/data in its own section
-target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
+# MSVC uses different flags for this
+if(MSVC)
+    target_compile_options(tool PRIVATE /Gy)  # Function-level linking
+else()
+    target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
+endif()
 
 # Locate binutils tools early for post-build debug splitting
 if(NOT CMAKE_OBJCOPY)
@@ -239,11 +285,91 @@ endif()
 #set_property(TARGET tool PROPERTY INTERPROCEDURAL_OPTIMIZATION OFF)
 
 
-message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
-find_program(LLVM_CONFIG_EXE NAMES llvm-config-${CLANG_VERSION} llvm-config)
-if(NOT LLVM_CONFIG_EXE)
-    message(FATAL_ERROR "llvm-config (version ${CLANG_VERSION}) not found; cannot build statically linked 'tool'.")
+# --- MSVC Static Linking Path -----------------------------------------------------
+# When using MSVC with prebuilt LLVM binaries, we use a different approach:
+# - No llvm-config available, so we use CMake's find_package results and file globbing
+# - Static libraries are .lib files instead of .a
+# - Different linker flags
+if(USE_MSVC_STATIC)
+    message(STATUS "Configuring 'tool' for MSVC static linking")
+    
+    # Get LLVM library directory from the found package
+    get_filename_component(LLVM_LIBDIR "${LLVM_DIR}/../.." ABSOLUTE)
+    message(STATUS "LLVM library directory: ${LLVM_LIBDIR}")
+    
+    # Include directories should already be set by find_package, but ensure they're there
+    target_include_directories(tool PRIVATE "${LLVM_INSTALL_DIR}/include")
+    
+    # Discover Clang static libraries (.lib files)
+    file(GLOB CLANG_LIBS_ALL "${LLVM_LIBDIR}/clang*.lib")
+    set(CLANG_LIBS ${CLANG_LIBS_ALL})
+    # Exclude clangd and clang-tidy related libraries
+    list(FILTER CLANG_LIBS EXCLUDE REGEX "clangd.*[.]lib$")
+    list(FILTER CLANG_LIBS EXCLUDE REGEX "clangTidy.*[.]lib$")
+    # Exclude other unnecessary libraries
+    list(FILTER CLANG_LIBS EXCLUDE REGEX "clang(ChangeNamespace|Doc|ExtractAPI|Format|Move|ApplyReplacements|DirectoryWatcher|DependencyScanning|Daemon|IncludeFixer|Pseudo|DynamicASTMatchers)[^.]*[.]lib$")
+    
+    message(STATUS "Clang libraries found: ${CLANG_LIBS}")
+    
+    # Discover LLVM static libraries
+    file(GLOB LLVM_LIBS_ALL "${LLVM_LIBDIR}/LLVM*.lib")
+    set(LLVM_LIBS ${LLVM_LIBS_ALL})
+    
+    # Filter to keep only host target backend (X86 for Windows x64)
+    set(HOST_BACKEND_REGEX "X86")
+    set(FILTERED_LLVM_LIBS "")
+    foreach(lib IN LISTS LLVM_LIBS)
+        get_filename_component(libname "${lib}" NAME_WE)
+        # If it looks like a target-specific codegen/asm/disassembler lib and does not match host, skip.
+        if(libname MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
+            if(NOT libname MATCHES "${HOST_BACKEND_REGEX}")
+                continue()
+            endif()
+        endif()
+        list(APPEND FILTERED_LLVM_LIBS ${lib})
+    endforeach()
+    set(LLVM_LIBS ${FILTERED_LLVM_LIBS})
+    
+    message(STATUS "LLVM libraries (filtered): ${LLVM_LIBS}")
+    
+    # Discover additional support libraries (lld, etc.)
+    file(GLOB LLD_LIBS "${LLVM_LIBDIR}/lld*.lib")
+    
+    # Windows system libraries needed for LLVM
+    set(WINDOWS_SYSTEM_LIBS
+        version
+        ole32
+        oleaut32
+        uuid
+        advapi32
+        shell32
+        psapi
+        ntdll
+    )
+    
+    # Link everything together
+    # MSVC linker handles circular dependencies automatically, no need for --start-group/--end-group
+    target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
+    target_link_libraries(tool PRIVATE 
+        ${CLANG_LIBS}
+        ${LLVM_LIBS}
+        ${LLD_LIBS}
+        ${WINDOWS_SYSTEM_LIBS}
+    )
+    
+    # Use static runtime (/MT for Release, /MTd for Debug)
+    set_property(TARGET tool PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    
+    # Linker optimizations
+    target_link_options(tool PRIVATE /OPT:REF /OPT:ICF)
+
 else()
+    # --- Original non-MSVC static linking path ---
+    message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
+    find_program(LLVM_CONFIG_EXE NAMES llvm-config-${CLANG_VERSION} llvm-config)
+    if(NOT LLVM_CONFIG_EXE)
+        message(FATAL_ERROR "llvm-config (version ${CLANG_VERSION}) not found; cannot build statically linked 'tool'.")
+    else()
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --libdir OUTPUT_VARIABLE LLVM_LIBDIR_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     set(LLVM_LIBDIR ${LLVM_LIBDIR_RAW})
     if(WIN32)
@@ -307,7 +433,7 @@ else()
     else()
         message(STATUS "Using Clang archives: ${CLANG_ARCHIVES}")
         message(STATUS "LLVM libs: ${LLVM_LIBS_CLEAN}")
-    if(APPLE)
+        if(APPLE)
             # On Apple we need -force_load semantics so that object files inside the archives
             # that are only referenced via plugin-like registration get pulled in.
             target_link_options(tool PRIVATE -Wl,-force_load)
@@ -325,10 +451,13 @@ else()
             target_link_options(tool PRIVATE -static-libstdc++ -static-libgcc -Wl,--gc-sections)
         endif()
     endif()
-endif()
+    endif()  # end of if(NOT LLVM_CONFIG_EXE) else block
+endif()  # end of if(USE_MSVC_STATIC) else block
 
-# Plugin always dynamic (portable; small)
-target_link_libraries(plugin PRIVATE clang-cpp LLVM)
+# Plugin always dynamic (portable; small) - skip for MSVC static builds
+if(NOT USE_MSVC_STATIC)
+    target_link_libraries(plugin PRIVATE clang-cpp LLVM)
+endif()
 
 
 # If on MacOS, change the expected location of libLLVM.dylib and libzstd.1.dylib

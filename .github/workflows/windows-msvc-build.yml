@@ -1,0 +1,90 @@
+name: Windows MSVC Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+env:
+  BUILD_DIR: build/windows-msvc
+  CMAKE_BUILD_TYPE: Release
+  LLVM_VERSION: 21.1.6
+  LLVM_INSTALL_DIR: C:/llvm
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download and extract LLVM prebuilt binaries
+        shell: pwsh
+        run: |
+          $llvmUrl = "https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ env.LLVM_VERSION }}/clang+llvm-${{ env.LLVM_VERSION }}-x86_64-pc-windows-msvc.tar.xz"
+          $archivePath = "$env:TEMP\llvm.tar.xz"
+          $extractPath = "$env:TEMP\llvm-extract"
+          
+          Write-Host "Downloading LLVM from $llvmUrl..."
+          Invoke-WebRequest -Uri $llvmUrl -OutFile $archivePath -UseBasicParsing
+          
+          Write-Host "Extracting LLVM..."
+          New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
+          
+          # Extract .tar.xz using tar (available on Windows)
+          tar -xf $archivePath -C $extractPath
+          
+          # Find the extracted folder and move to final location
+          $extractedFolder = Get-ChildItem -Path $extractPath -Directory | Select-Object -First 1
+          Write-Host "Extracted folder: $($extractedFolder.FullName)"
+          
+          # Move to final install location
+          if (Test-Path "${{ env.LLVM_INSTALL_DIR }}") {
+            Remove-Item -Recurse -Force "${{ env.LLVM_INSTALL_DIR }}"
+          }
+          Move-Item -Path $extractedFolder.FullName -Destination "${{ env.LLVM_INSTALL_DIR }}"
+          
+          Write-Host "LLVM installed to ${{ env.LLVM_INSTALL_DIR }}"
+          Get-ChildItem "${{ env.LLVM_INSTALL_DIR }}" | Select-Object Name
+
+      - name: Verify LLVM libraries
+        shell: pwsh
+        run: |
+          Write-Host "Checking LLVM library directory..."
+          $libDir = "${{ env.LLVM_INSTALL_DIR }}/lib"
+          Write-Host "Contents of $libDir :"
+          Get-ChildItem $libDir -Filter "*.lib" | Select-Object -First 30 Name
+          Write-Host "..."
+          Write-Host "Total .lib files: $((Get-ChildItem $libDir -Filter '*.lib').Count)"
+          Write-Host "Clang libs: $((Get-ChildItem $libDir -Filter 'clang*.lib').Count)"
+          Write-Host "LLVM libs: $((Get-ChildItem $libDir -Filter 'LLVM*.lib').Count)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -S . -B "${{ env.BUILD_DIR }}" `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DCMAKE_BUILD_TYPE="${{ env.CMAKE_BUILD_TYPE }}" `
+            -DLLVM_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/llvm" `
+            -DClang_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/clang" `
+            -DLLVM_INSTALL_DIR="${{ env.LLVM_INSTALL_DIR }}" `
+            -DUSE_MSVC_STATIC=ON
+
+      - name: Build tool
+        shell: pwsh
+        run: |
+          cmake --build "${{ env.BUILD_DIR }}" --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-dumper-tool-windows-msvc
+          path: ${{ env.BUILD_DIR }}/${{ env.CMAKE_BUILD_TYPE }}/tool.exe
