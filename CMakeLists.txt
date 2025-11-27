@@ -469,3 +469,57 @@ if(APPLE)
         COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
     )
 endif()
+
+# Test target - runs Python test script
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_FOUND)
+    # Tool tests
+    add_custom_target(test-tool
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool>
+        DEPENDS tool
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running clang-dumper tool tests..."
+    )
+
+    # Test generation target - generates expected output files (uses tool mode)
+    add_custom_target(test-generate
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool> --generate
+        DEPENDS tool
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating expected test outputs..."
+    )
+
+    # Plugin tests - only available when plugin is built (not MSVC static)
+    if(NOT USE_MSVC_STATIC)
+        # Determine the clang path for plugin tests
+        # We need the actual clang compiler, not whatever CMAKE_CXX_COMPILER is set to
+        if(WIN32)
+            set(CLANG_FOR_PLUGIN "${MINGW_BASEDIR}/bin/clang++.exe")
+        elseif(APPLE)
+            set(CLANG_FOR_PLUGIN "/usr/local/opt/llvm@${CLANG_VERSION}/bin/clang++")
+        else()
+            set(CLANG_FOR_PLUGIN "clang++-${CLANG_VERSION}")
+        endif()
+
+        add_custom_target(test-plugin
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode plugin --path $<TARGET_FILE:plugin> --clang-path ${CLANG_FOR_PLUGIN}
+            DEPENDS plugin
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Running clang-dumper plugin tests..."
+        )
+
+        # Combined test target that runs both tool and plugin tests
+        add_custom_target(test
+            DEPENDS test-tool test-plugin
+            COMMENT "Running all clang-dumper tests..."
+        )
+    else()
+        # On MSVC, test target only runs tool tests
+        add_custom_target(test
+            DEPENDS test-tool
+            COMMENT "Running clang-dumper tests..."
+        )
+    endif()
+else()
+    message(WARNING "Python3 not found. Test targets will not be available. Please install Python 3 to enable testing.")
+endif()
