@@ -7,8 +7,15 @@ public:
   Plugin() { DumpResources::init(0, 0); }
   ~Plugin() override { DumpResources::finish(); }
 
-  virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
-                                                         StringRef file) override;
+  // Both DumpAstAction (via ASTFrontendAction) and PluginASTAction declare
+  // CreateASTConsumer as a virtual method. PluginASTAction declares it as
+  // pure virtual, so we must provide an implementation here. We delegate to
+  // DumpAstAction's implementation which contains the actual AST consumer
+  // creation logic shared with the standalone tool.
+  std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
+                                                 StringRef file) override {
+    return DumpAstAction::CreateASTConsumer(CI, file);
+  }
 
   bool ParseArgs(const CompilerInstance &CI,
                  const std::vector<std::string> &args) override {

@@ -1,20 +1,30 @@
 #!/usr/bin/env python3
 """
-Test runner for clang-dumper tool.
+Test runner for clang-dumper tool and plugin.
 
-Runs the tool on sample C/C++ source files, normalizes memory addresses in the output,
-and compares against expected baseline files.
+Runs the tool or plugin on sample C/C++ source files, normalizes memory addresses
+in the output, and compares against expected baseline files.
 
 Usage:
-    python run_tests.py --tool-path /path/to/tool
-    python run_tests.py --tool-path /path/to/tool --generate  # Generate expected files
+    # Tool mode (default)
+    python run_tests.py --mode tool --path /path/to/tool
+    python run_tests.py --mode tool --path /path/to/tool --generate
+
+    # Plugin mode
+    python run_tests.py --mode plugin --path /path/to/plugin.so --clang-path /path/to/clang
+    python run_tests.py --mode plugin --path /path/to/plugin.so --clang-path /path/to/clang --generate
 """
 
 import argparse
+import platform
 import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Literal, get_args
+
+# Type alias for mode
+Mode = Literal["tool", "plugin"]
 
 # Fixed IDs for each test file (randomized but deterministic)
 # Every test file MUST have an entry here - no default fallback to catch typos
@@ -124,14 +134,45 @@ def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[
     return errors
 
 
-def run_tool(tool_path: str, input_file: str, test_id: int) -> tuple[int, str, str]:
+def run_tool(
+    mode: Mode,
+    path: str,
+    input_file: str,
+    test_id: int,
+    clang_path: str | None = None,
+) -> tuple[int, str, str]:
     """
-    Run the clang-dumper tool on an input file.
+    Run the clang-dumper tool or plugin on an input file.
+
+    Args:
+        mode: Either "tool" or "plugin"
+        path: Path to the tool executable or plugin shared library
+        input_file: Path to the input source file
+        test_id: The test ID for address disambiguation
+        clang_path: Path to clang executable (required for plugin mode)
 
     Returns:
         tuple: (return_code, stdout, stderr)
     """
-    cmd = [tool_path, f"-id={test_id}", input_file, "--"]
+    if mode == "tool":
+        cmd = [path, f"-id={test_id}", input_file, "--"]
+    else:
+        # Plugin mode - invoke clang with the plugin loaded
+        assert clang_path is not None, "clang_path required for plugin mode"
+        cmd = [
+            clang_path,
+            f"-fplugin={path}",
+            "-Xclang",
+            "-plugin",
+            "-Xclang",
+            "DumpAst",
+            "-Xclang",
+            "-plugin-arg-DumpAst",
+            "-Xclang",
+            f"-file-id={test_id}",
+            "-fsyntax-only",
+            input_file,
+        ]
 
     result = subprocess.run(
         cmd,
@@ -155,11 +196,13 @@ def discover_tests(inputs_dir: Path) -> list[Path]:
 
 
 def run_single_test(
-    tool_path: str,
+    mode: Mode,
+    path: str,
     input_file: Path,
     expected_dir: Path,
     inputs_dir: Path,
     generate: bool,
+    clang_path: str | None = None,
 ) -> tuple[bool, str]:
     """
     Run a single test case.
@@ -183,8 +226,10 @@ def run_single_test(
             f"Run with --generate to create it, or check if the test is properly registered."
         )
 
-    # Run the tool
-    return_code, stdout, stderr = run_tool(tool_path, str(input_file), test_id)
+    # Run the tool or plugin
+    return_code, stdout, stderr = run_tool(
+        mode, path, str(input_file), test_id, clang_path
+    )
 
     if return_code != 0:
         return False, f"Tool exited with code {return_code}\nstderr: {stderr}"
@@ -232,12 +277,37 @@ def run_single_test(
     return False, "Unknown difference"
 
 
+def get_default_plugin_extension() -> str:
+    """Get the default plugin file extension for the current platform."""
+    system = platform.system()
+    if system == "Darwin":  # macOS
+        return ".dylib"
+    elif system == "Windows":
+        return ".dll"
+    else:
+        return ".so"
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Test runner for clang-dumper tool")
+    parser = argparse.ArgumentParser(
+        description="Test runner for clang-dumper tool and plugin"
+    )
+    mode_choices = list(get_args(Mode))
     parser.add_argument(
-        "--tool-path",
+        "--mode",
+        choices=mode_choices,
+        default=mode_choices[0],
+        help="Test mode: 'tool' for standalone executable, 'plugin' for clang plugin (default: tool)",
+    )
+    parser.add_argument(
+        "--path",
         required=True,
-        help="Path to the clang-dumper tool executable",
+        help="Path to the clang-dumper tool executable or plugin shared library",
+    )
+    parser.add_argument(
+        "--clang-path",
+        default=None,
+        help="Path to clang executable (required for plugin mode)",
     )
     parser.add_argument(
         "--generate",
@@ -251,6 +321,10 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Validate plugin mode requirements
+    if args.mode == "plugin" and args.clang_path is None:
+        parser.error("--clang-path is required when using --mode plugin")
 
     # Resolve paths
     if args.test_dir:
@@ -269,11 +343,34 @@ def main():
         print(f"ERROR: Expected directory not found: {expected_dir}", file=sys.stderr)
         sys.exit(1)
 
-    # Verify tool exists
-    tool_path = Path(args.tool_path)
-    if not tool_path.exists():
-        print(f"ERROR: Tool not found: {tool_path}", file=sys.stderr)
+    # Verify target path exists (tool executable or plugin library)
+    target_path = Path(args.path)
+    if not target_path.exists():
+        print(
+            f"ERROR: {'Plugin' if args.mode == 'plugin' else 'Tool'} not found: {target_path}",
+            file=sys.stderr,
+        )
         sys.exit(1)
+
+    # Verify clang path for plugin mode
+    clang_path: str | None = None
+    if args.mode == "plugin":
+        clang_path_obj = Path(args.clang_path)
+        # On Windows, also check with .exe extension
+        if not clang_path_obj.exists() and platform.system() == "Windows":
+            clang_path_obj = Path(args.clang_path + ".exe")
+        if not clang_path_obj.exists():
+            # Try to find it in PATH
+            import shutil
+
+            found_clang = shutil.which(args.clang_path)
+            if found_clang:
+                clang_path = found_clang
+            else:
+                print(f"ERROR: Clang not found: {args.clang_path}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            clang_path = str(clang_path_obj)
 
     # Discover and run tests
     tests = discover_tests(inputs_dir)
@@ -299,7 +396,10 @@ def main():
         )
         sys.exit(1)
 
-    print(f"{'Generating' if args.generate else 'Running'} {len(tests)} test(s)...")
+    print(
+        f"{'Generating' if args.generate else 'Running'} {len(tests)} test(s) "
+        f"in {args.mode} mode..."
+    )
     print()
 
     passed = 0
@@ -308,11 +408,13 @@ def main():
     for test_file in tests:
         test_name = test_file.name
         success, message = run_single_test(
-            str(tool_path),
-            test_file,
-            expected_dir,
-            inputs_dir,
-            args.generate,
+            mode=args.mode,
+            path=str(target_path),
+            input_file=test_file,
+            expected_dir=expected_dir,
+            inputs_dir=inputs_dir,
+            generate=args.generate,
+            clang_path=clang_path,
         )
 
         if success:
