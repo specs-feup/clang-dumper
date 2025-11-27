@@ -471,18 +471,22 @@ if(APPLE)
 endif()
 
 # Test target - runs Python test script
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
-add_custom_target(test
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --tool-path $<TARGET_FILE:tool>
-    DEPENDS tool
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running clang-dumper tests..."
-)
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_FOUND)
+    add_custom_target(test
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --tool-path $<TARGET_FILE:tool>
+        DEPENDS tool
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running clang-dumper tests..."
+    )
 
-# Test generation target - generates expected output files
-add_custom_target(test-generate
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --tool-path $<TARGET_FILE:tool> --generate
-    DEPENDS tool
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Generating expected test outputs..."
-)
+    # Test generation target - generates expected output files
+    add_custom_target(test-generate
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --tool-path $<TARGET_FILE:tool> --generate
+        DEPENDS tool
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating expected test outputs..."
+    )
+else()
+    message(WARNING "Python3 not found. Test targets 'test' and 'test-generate' will not be available. Please install Python 3 to enable testing.")
+endif()

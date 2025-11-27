@@ -202,6 +202,7 @@ def run_single_test(
 
     if generate:
         # Generate mode: save normalized output as expected
+        expected_file.parent.mkdir(parents=True, exist_ok=True)
         expected_file.write_text(normalized_output, encoding="utf-8")
         return True, f"Generated {expected_file}"
 
