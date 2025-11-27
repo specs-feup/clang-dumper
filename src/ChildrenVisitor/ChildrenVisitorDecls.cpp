@@ -302,7 +302,7 @@ void ClangAstDumper::VisitCXXMethodDeclChildren(
     // Types related to "this"
     if (D->isInstance()) {
         VisitTypeTop(D->getThisType());
-        VisitTypeTop(D->getThisObjectType());
+        VisitTypeTop(D->getThisType()->getPointeeType());
     }
 }
 

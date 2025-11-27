@@ -260,30 +260,31 @@ void DumpAstAction::dumpCompilerInstanceData(CompilerInstance &CI,
 
     clava::dump(file.str());
 
-    clava::dump(CI.getInvocation().getLangOpts()->LineComment);
+    clava::dump(CI.getInvocation().getLangOpts().LineComment);
     // Derived from Std.isC89 in Clang 3.8
-    clava::dump(CI.getInvocation().getLangOpts()->GNUInline);
-    clava::dump(CI.getInvocation().getLangOpts()->C99);
-    clava::dump(CI.getInvocation().getLangOpts()->C11);
-    clava::dump(CI.getInvocation().getLangOpts()->CPlusPlus);
-    clava::dump(CI.getInvocation().getLangOpts()->CPlusPlus11);
-    clava::dump(CI.getInvocation().getLangOpts()->CPlusPlus14);
-    clava::dump(CI.getInvocation().getLangOpts()->CPlusPlus17);
-    clava::dump(CI.getInvocation().getLangOpts()->CPlusPlus20);
-    clava::dump(CI.getInvocation().getLangOpts()->CPlusPlus2b);
-    clava::dump(CI.getInvocation().getLangOpts()->Digraphs);
-    clava::dump(CI.getInvocation().getLangOpts()->GNUMode);
-    clava::dump(CI.getInvocation().getLangOpts()->HexFloats);
+    clava::dump(CI.getInvocation().getLangOpts().GNUInline);
+    clava::dump(CI.getInvocation().getLangOpts().C99);
+    clava::dump(CI.getInvocation().getLangOpts().C11);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus11);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus14);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus17);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus20);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus23);
+    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus26);
+    clava::dump(CI.getInvocation().getLangOpts().Digraphs);
+    clava::dump(CI.getInvocation().getLangOpts().GNUMode);
+    clava::dump(CI.getInvocation().getLangOpts().HexFloats);
 
-    clava::dump(CI.getInvocation().getLangOpts()->OpenCL);
-    clava::dump(CI.getInvocation().getLangOpts()->OpenCLVersion);
-    clava::dump(CI.getInvocation().getLangOpts()->NativeHalfType);
+    clava::dump(CI.getInvocation().getLangOpts().OpenCL);
+    clava::dump(CI.getInvocation().getLangOpts().OpenCLVersion);
+    clava::dump(CI.getInvocation().getLangOpts().NativeHalfType);
 
-    clava::dump(CI.getInvocation().getLangOpts()->CUDA);
+    clava::dump(CI.getInvocation().getLangOpts().CUDA);
 
-    clava::dump(CI.getInvocation().getLangOpts()->Bool);
-    clava::dump(CI.getInvocation().getLangOpts()->Half);
-    clava::dump(CI.getInvocation().getLangOpts()->WChar);
+    clava::dump(CI.getInvocation().getLangOpts().Bool);
+    clava::dump(CI.getInvocation().getLangOpts().Half);
+    clava::dump(CI.getInvocation().getLangOpts().WChar);
 
     clava::dump(CI.getTarget().getCharWidth());
     clava::dump(CI.getTarget().getFloatWidth());

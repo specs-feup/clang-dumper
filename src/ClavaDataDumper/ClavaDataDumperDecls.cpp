@@ -213,7 +213,7 @@ void clava::ClavaDataDumper::DumpNamedDeclData(const NamedDecl *D) {
 
     clava::dump(D->isCXXClassMember());
     clava::dump(D->isCXXInstanceMember());
-    clava::dump(clava::LINKAGE[D->getFormalLinkage()]);
+    clava::dump(clava::LINKAGE[static_cast<int>(D->getFormalLinkage())]);
     clava::dump(clava::VISIBILITY[D->getVisibility()]);
 }
 
@@ -237,7 +237,7 @@ void clava::ClavaDataDumper::DumpTagDeclData(const TagDecl *D) {
     // Hierarchy
     DumpTypeDeclData(D);
 
-    clava::dump(clava::TAG_KIND[D->getTagKind()]);
+    clava::dump(clava::TAG_KIND[static_cast<int>(D->getTagKind())]);
     clava::dump(D->isCompleteDefinition());
 }
 
@@ -351,7 +351,7 @@ void clava::ClavaDataDumper::DumpFunctionDeclData(const FunctionDecl *D) {
     clava::dump(clava::STORAGE_CLASS[D->getStorageClass()]);
     clava::dump(D->isInlineSpecified());
     clava::dump(D->isVirtualAsWritten());
-    clava::dump(D->isPure());
+    clava::dump(D->isPureVirtual());
     clava::dump(D->isDeletedAsWritten());
     clava::dump(D->isExplicitlyDefaulted());
 
@@ -398,7 +398,7 @@ void clava::ClavaDataDumper::DumpCXXMethodDeclData(const CXXMethodDecl *D) {
 
     if (D->isInstance()) {
         clava::dump(clava::getId(D->getThisType(), id));
-        clava::dump(clava::getId(D->getThisObjectType(), id));
+        clava::dump(clava::getId(D->getThisType()->getPointeeType(), id));
     } else {
         clava::dump(clava::getId((const Type *)nullptr, id));
         clava::dump(clava::getId((const Type *)nullptr, id));
@@ -566,16 +566,16 @@ void clava::ClavaDataDumper::DumpLinkageSpecDeclData(const LinkageSpecDecl *D) {
     DumpDeclData(D);
 
     switch (D->getLanguage()) {
-    case LinkageSpecDecl::LanguageIDs::lang_c:
+    case LinkageSpecLanguageIDs::C:
         clava::dump(clava::LINKAGE_LANGUAGE[0]);
         break;
-    case LinkageSpecDecl::LanguageIDs::lang_cxx:
+    case LinkageSpecLanguageIDs::CXX:
         clava::dump(clava::LINKAGE_LANGUAGE[1]);
         break;
     default:
         throw std::invalid_argument("ClangDataDumper::DumpLinkageSpecDeclData()"
                                     ":: Case not implemented, '" +
-                                    std::to_string(D->getLanguage()) + "'");
+                                    std::to_string(static_cast<int>(D->getLanguage())) + "'");
     }
 }
 

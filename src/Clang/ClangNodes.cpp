@@ -162,7 +162,7 @@ const std::string clava::getId(const Expr *addr, int id) {
     return getId((void *)addr, id);
 }
 
-const std::string clava::getId(Optional<const Expr *> addr, int id) {
+const std::string clava::getId(std::optional<const Expr *> addr, int id) {
     if (!addr.has_value()) {
         return "nullptr_expr";
     }
@@ -511,11 +511,11 @@ void clava::dump(const clang::DesignatedInitExpr::Designator *designator) {
     } else if (designator->isArrayDesignator()) {
         // Dump kind
         clava::dump(clava::DESIGNATOR_KIND[1]);
-        clava::dump(designator->getFirstExprIndex());
+        clava::dump(designator->getArrayIndex());
     } else if (designator->isArrayRangeDesignator()) {
         // Dump kind
         clava::dump(clava::DESIGNATOR_KIND[2]);
-        clava::dump(designator->getFirstExprIndex());
+        clava::dump(designator->getArrayIndex());
     } else {
 
         throw std::invalid_argument(
