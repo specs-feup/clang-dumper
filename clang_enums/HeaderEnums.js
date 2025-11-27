@@ -92,7 +92,7 @@ export default class HeaderEnums {
 
     const filename = "enums_" + headerFile.replace(".", "_") + ".cpp";
 
-    let code = '#include "ClangEnums.h"\n\n';
+    let code = '#include "../ClangEnums/ClangEnums.h"\n\n';
 
     // Generate code for each of the enums
     for (const enumName in this.enumMap) {
