@@ -469,3 +469,20 @@ if(APPLE)
         COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
     )
 endif()
+
+# Test target - runs Python test script
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_custom_target(test
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --tool-path $<TARGET_FILE:tool>
+    DEPENDS tool
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running clang-dumper tests..."
+)
+
+# Test generation target - generates expected output files
+add_custom_target(test-generate
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --tool-path $<TARGET_FILE:tool> --generate
+    DEPENDS tool
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Generating expected test outputs..."
+)

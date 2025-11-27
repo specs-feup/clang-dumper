@@ -47,3 +47,6 @@ jobs:
 
       - name: Build plugin & tool
         run: cmake --build "$BUILD_DIR" --target plugin tool --parallel
+
+      - name: Run tests
+        run: cmake --build "$BUILD_DIR" --target test
