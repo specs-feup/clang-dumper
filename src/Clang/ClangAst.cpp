@@ -231,6 +231,10 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
         // TODO: Replace with a global counter. Necessary to enable usage in Clava Node.
     }
 
+    // Register preprocessor callbacks for tracking includes
+    // This must be done before AST processing begins
+    CI.getPreprocessor().addPPCallbacks(std::make_unique<IncludeDumper>(CI));
+
     dumpCompilerInstanceData(CI, file);
 
     // Dump id->file data
@@ -247,9 +251,6 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
 }
 
 void DumpAstAction::ExecuteAction() {
-    CompilerInstance &CI = getCompilerInstance();
-    CI.getPreprocessor().addPPCallbacks(std::make_unique<IncludeDumper>(CI));
-
     ASTFrontendAction::ExecuteAction();
 }
 

@@ -1,0 +1,714 @@
+<Compiler Instance Data>
+<TEST_DIR>/implicit-cast-dump.c
+1
+0
+1
+1
+0
+0
+0
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+8
+32
+64
+128
+8
+16
+32
+64
+64
+<Id-File Map>
+0
+<TEST_DIR>/implicit-cast-dump.c
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<PointerTypeData>
+ADDR_003
+PointerType
+void *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_002
+<Id to Class Map>
+ADDR_003
+PointerType
+<Visited Children>
+ADDR_004
+0
+<FunctionProtoTypeData>
+ADDR_004
+FunctionProtoType
+void (void *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+1
+1
+ADDR_003
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_004
+FunctionProtoType
+<Top Level Types>
+ADDR_004
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_005
+0
+<ParmVarDeclData>
+ADDR_005
+ParmVarDecl
+<TEST_DIR>/implicit-cast-dump.c
+3
+11
+<TEST_DIR>/implicit-cast-dump.c
+3
+15
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+NoLinkage
+Default
+ADDR_003
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_005
+ParmVarDecl
+<Visited Children>
+ADDR_001
+1
+ADDR_005
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/implicit-cast-dump.c
+3
+1
+<TEST_DIR>/implicit-cast-dump.c
+3
+16
+0
+0
+0
+0
+0
+0
+0
+0
+
+foo1
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_004
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Top Level Nodes>
+ADDR_006
+<Visited Children>
+ADDR_007
+0
+<QualTypeData>
+ADDR_007
+QualType
+void *const
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_003
+<Id to Class Map>
+ADDR_007
+QualType
+<Visited Children>
+ADDR_008
+0
+<FunctionProtoTypeData>
+ADDR_008
+FunctionProtoType
+void (void *const)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+1
+1
+ADDR_007
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_008
+FunctionProtoType
+<Top Level Types>
+ADDR_008
+<Top Level Types>
+ADDR_007
+<Visited Children>
+ADDR_009
+0
+<ParmVarDeclData>
+ADDR_009
+ParmVarDecl
+<TEST_DIR>/implicit-cast-dump.c
+4
+11
+<TEST_DIR>/implicit-cast-dump.c
+4
+15
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+NoLinkage
+Default
+ADDR_007
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_009
+ParmVarDecl
+<Visited Children>
+ADDR_006
+1
+ADDR_009
+<FunctionDeclData>
+ADDR_006
+FunctionDecl
+<TEST_DIR>/implicit-cast-dump.c
+4
+1
+<TEST_DIR>/implicit-cast-dump.c
+4
+22
+0
+0
+0
+0
+0
+0
+0
+0
+
+foo2
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_008
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_006
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_006
+FunctionDecl
+<Top Level Nodes>
+ADDR_010
+<Visited Children>
+ADDR_011
+0
+<FunctionTypeData>
+ADDR_011
+FunctionNoProtoType
+void ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+<Id to Class Map>
+ADDR_011
+FunctionNoProtoType
+<Top Level Types>
+ADDR_011
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_012
+0
+<DeclRefExprData>
+ADDR_012
+DeclRefExpr
+<TEST_DIR>/implicit-cast-dump.c
+10
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+
+0
+ADDR_001
+<Id to Class Map>
+ADDR_012
+DeclRefExpr
+<Visited Children>
+ADDR_013
+0
+<PointerTypeData>
+ADDR_013
+PointerType
+void (*)(void *)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_004
+<Id to Class Map>
+ADDR_013
+PointerType
+<Top Level Types>
+ADDR_013
+<Visited Children>
+ADDR_014
+1
+ADDR_012
+<ExprData>
+ADDR_014
+ImplicitCastExpr
+<TEST_DIR>/implicit-cast-dump.c
+10
+3
+<end>
+0
+0
+ADDR_013
+0
+0
+0
+<Id to Class Map>
+ADDR_014
+ImplicitCastExpr
+<Visited Children>
+ADDR_015
+0
+<BuiltinTypeData>
+ADDR_015
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_015
+BuiltinType
+<Top Level Types>
+ADDR_015
+<Visited Children>
+ADDR_016
+0
+<IntegerLiteralData>
+ADDR_016
+IntegerLiteral
+<TEST_DIR>/implicit-cast-dump.c
+10
+8
+<end>
+0
+0
+ADDR_015
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_016
+IntegerLiteral
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_017
+1
+ADDR_016
+<ExprData>
+ADDR_017
+ImplicitCastExpr
+<TEST_DIR>/implicit-cast-dump.c
+10
+8
+<end>
+0
+0
+ADDR_003
+0
+0
+0
+<Id to Class Map>
+ADDR_017
+ImplicitCastExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_018
+2
+ADDR_014
+ADDR_017
+<CallExprData>
+ADDR_018
+CallExpr
+<TEST_DIR>/implicit-cast-dump.c
+10
+3
+<TEST_DIR>/implicit-cast-dump.c
+10
+9
+0
+0
+ADDR_002
+0
+0
+0
+ADDR_001
+<Id to Class Map>
+ADDR_018
+CallExpr
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_019
+0
+<DeclRefExprData>
+ADDR_019
+DeclRefExpr
+<TEST_DIR>/implicit-cast-dump.c
+13
+3
+<end>
+0
+0
+ADDR_008
+0
+0
+0
+
+0
+ADDR_006
+<Id to Class Map>
+ADDR_019
+DeclRefExpr
+<Visited Children>
+ADDR_020
+0
+<PointerTypeData>
+ADDR_020
+PointerType
+void (*)(void *const)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_008
+<Id to Class Map>
+ADDR_020
+PointerType
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_021
+1
+ADDR_019
+<ExprData>
+ADDR_021
+ImplicitCastExpr
+<TEST_DIR>/implicit-cast-dump.c
+13
+3
+<end>
+0
+0
+ADDR_020
+0
+0
+0
+<Id to Class Map>
+ADDR_021
+ImplicitCastExpr
+<Top Level Types>
+ADDR_015
+<Visited Children>
+ADDR_022
+0
+<IntegerLiteralData>
+ADDR_022
+IntegerLiteral
+<TEST_DIR>/implicit-cast-dump.c
+13
+8
+<end>
+0
+0
+ADDR_015
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_022
+IntegerLiteral
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_023
+1
+ADDR_022
+<ExprData>
+ADDR_023
+ImplicitCastExpr
+<TEST_DIR>/implicit-cast-dump.c
+13
+8
+<end>
+0
+0
+ADDR_003
+0
+0
+0
+<Id to Class Map>
+ADDR_023
+ImplicitCastExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_024
+2
+ADDR_021
+ADDR_023
+<CallExprData>
+ADDR_024
+CallExpr
+<TEST_DIR>/implicit-cast-dump.c
+13
+3
+<TEST_DIR>/implicit-cast-dump.c
+13
+9
+0
+0
+ADDR_002
+0
+0
+0
+ADDR_006
+<Id to Class Map>
+ADDR_024
+CallExpr
+<Visited Children>
+ADDR_025
+2
+ADDR_018
+ADDR_024
+<StmtData>
+ADDR_025
+CompoundStmt
+<TEST_DIR>/implicit-cast-dump.c
+7
+12
+<TEST_DIR>/implicit-cast-dump.c
+15
+1
+0
+0
+<Id to Class Map>
+ADDR_025
+CompoundStmt
+<Visited Children>
+ADDR_010
+1
+ADDR_025
+<FunctionDeclData>
+ADDR_010
+FunctionDecl
+<TEST_DIR>/implicit-cast-dump.c
+7
+1
+<TEST_DIR>/implicit-cast-dump.c
+15
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+bar
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_011
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_010
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_010
+FunctionDecl

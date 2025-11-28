@@ -1,0 +1,42 @@
+class TestClass {
+
+	public:
+	TestClass operator--()
+	{
+		TestClass temp;
+		return temp;
+	}
+	
+	// Post-fix decrement
+	TestClass operator--(int)
+	{
+		TestClass temp;
+		return temp;
+	}
+
+};
+
+
+TestClass operator|=(TestClass a, TestClass b)
+{
+   return a;
+}
+
+
+
+void operatorOrEqualTest() {
+	TestClass a;
+	a|=a;
+}
+
+void operatorDecrementTest() {
+	TestClass a;
+	--a;
+	a--;
+}
+
+int main() {
+   
+   return 0;
+}
+

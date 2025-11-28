@@ -1,0 +1,6580 @@
+<Compiler Instance Data>
+<TEST_DIR>/ast-dump-expr.c
+1
+0
+1
+1
+0
+0
+0
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+8
+32
+64
+128
+8
+16
+32
+64
+64
+<Id-File Map>
+0
+<TEST_DIR>/ast-dump-expr.c
+<TEST_DIR>/ast-dump-expr.c:4:3: warning: left operand of comma operator has no effect [-Wunused-value]
+  1, 2, 3;
+  ^
+<TEST_DIR>/ast-dump-expr.c:4:6: warning: left operand of comma operator has no effect [-Wunused-value]
+  1, 2, 3;
+     ^
+<TEST_DIR>/ast-dump-expr.c:4:9: warning: expression result unused [-Wunused-value]
+  1, 2, 3;
+        ^
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<FunctionProtoTypeData>
+ADDR_003
+FunctionProtoType
+void (void)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_003
+FunctionProtoType
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_004
+0
+<BuiltinTypeData>
+ADDR_004
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_004
+BuiltinType
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_005
+0
+<IntegerLiteralData>
+ADDR_005
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+4
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_005
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_006
+0
+<IntegerLiteralData>
+ADDR_006
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+4
+6
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+2
+%CLAVA_SOURCE_END%
+2
+<Id to Class Map>
+ADDR_006
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_007
+2
+ADDR_005
+ADDR_006
+<BinaryOperatorData>
+ADDR_007
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+4
+3
+<TEST_DIR>/ast-dump-expr.c
+4
+6
+0
+0
+ADDR_004
+0
+0
+0
+Comma
+<Id to Class Map>
+ADDR_007
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_008
+0
+<IntegerLiteralData>
+ADDR_008
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+4
+9
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+3
+%CLAVA_SOURCE_END%
+3
+<Id to Class Map>
+ADDR_008
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_009
+2
+ADDR_007
+ADDR_008
+<BinaryOperatorData>
+ADDR_009
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+4
+3
+<TEST_DIR>/ast-dump-expr.c
+4
+9
+0
+0
+ADDR_004
+0
+0
+0
+Comma
+<Id to Class Map>
+ADDR_009
+BinaryOperator
+<Visited Children>
+ADDR_010
+1
+ADDR_009
+<StmtData>
+ADDR_010
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+3
+18
+<TEST_DIR>/ast-dump-expr.c
+10
+1
+0
+0
+<Id to Class Map>
+ADDR_010
+CompoundStmt
+<Visited Children>
+ADDR_001
+1
+ADDR_010
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+3
+1
+<TEST_DIR>/ast-dump-expr.c
+10
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+Comma
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_003
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Top Level Nodes>
+ADDR_011
+<Visited Children>
+ADDR_012
+0
+<FunctionProtoTypeData>
+ADDR_012
+FunctionProtoType
+void (int)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+1
+1
+ADDR_004
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_012
+FunctionProtoType
+<Top Level Types>
+ADDR_012
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_013
+0
+<ParmVarDeclData>
+ADDR_013
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+12
+17
+<TEST_DIR>/ast-dump-expr.c
+12
+21
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_013
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_014
+0
+<DeclRefExprData>
+ADDR_014
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+13
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_013
+<Id to Class Map>
+ADDR_014
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_015
+0
+<IntegerLiteralData>
+ADDR_015
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+13
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+12
+%CLAVA_SOURCE_END%
+12
+<Id to Class Map>
+ADDR_015
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_016
+2
+ADDR_014
+ADDR_015
+<BinaryOperatorData>
+ADDR_016
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+13
+3
+<TEST_DIR>/ast-dump-expr.c
+13
+7
+0
+0
+ADDR_004
+0
+0
+0
+Assign
+<Id to Class Map>
+ADDR_016
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_017
+0
+<DeclRefExprData>
+ADDR_017
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+18
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_013
+<Id to Class Map>
+ADDR_017
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_018
+0
+<DeclRefExprData>
+ADDR_018
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+18
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_013
+<Id to Class Map>
+ADDR_018
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_019
+1
+ADDR_018
+<ExprData>
+ADDR_019
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+18
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_019
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_020
+2
+ADDR_017
+ADDR_019
+<BinaryOperatorData>
+ADDR_020
+CompoundAssignOperator
+<TEST_DIR>/ast-dump-expr.c
+18
+3
+<TEST_DIR>/ast-dump-expr.c
+18
+8
+0
+0
+ADDR_004
+0
+0
+0
+AddAssign
+<Id to Class Map>
+ADDR_020
+CompoundAssignOperator
+<Visited Children>
+ADDR_021
+2
+ADDR_016
+ADDR_020
+<StmtData>
+ADDR_021
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+12
+24
+<TEST_DIR>/ast-dump-expr.c
+23
+1
+0
+0
+<Id to Class Map>
+ADDR_021
+CompoundStmt
+<Visited Children>
+ADDR_011
+2
+ADDR_013
+ADDR_021
+<FunctionDeclData>
+ADDR_011
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+12
+1
+<TEST_DIR>/ast-dump-expr.c
+23
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+Assignment
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_012
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_011
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_011
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c:26:11: warning: expression result unused [-Wunused-value]
+  a ? 0 : 1;
+          ^
+<TEST_DIR>/ast-dump-expr.c:33:8: warning: expression result unused [-Wunused-value]
+  a ?: 0;
+       ^
+<Top Level Nodes>
+ADDR_022
+<Top Level Types>
+ADDR_012
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_023
+0
+<ParmVarDeclData>
+ADDR_023
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+25
+19
+<TEST_DIR>/ast-dump-expr.c
+25
+23
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_023
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_024
+0
+<DeclRefExprData>
+ADDR_024
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+26
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_023
+<Id to Class Map>
+ADDR_024
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_025
+1
+ADDR_024
+<ExprData>
+ADDR_025
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+26
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_025
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_026
+0
+<IntegerLiteralData>
+ADDR_026
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+26
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_026
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_027
+0
+<IntegerLiteralData>
+ADDR_027
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+26
+11
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_027
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_028
+3
+ADDR_025
+ADDR_026
+ADDR_027
+<ExprData>
+ADDR_028
+ConditionalOperator
+<TEST_DIR>/ast-dump-expr.c
+26
+3
+<TEST_DIR>/ast-dump-expr.c
+26
+11
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_028
+ConditionalOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_029
+0
+<DeclRefExprData>
+ADDR_029
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+33
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_023
+<Id to Class Map>
+ADDR_029
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_030
+1
+ADDR_029
+<ExprData>
+ADDR_030
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+33
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_030
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_031
+1
+ADDR_030
+<ExprData>
+ADDR_031
+OpaqueValueExpr
+<TEST_DIR>/ast-dump-expr.c
+33
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_031
+OpaqueValueExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_032
+0
+<IntegerLiteralData>
+ADDR_032
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+33
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_032
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_033
+4
+ADDR_030
+ADDR_031
+ADDR_031
+ADDR_032
+<ExprData>
+ADDR_033
+BinaryConditionalOperator
+<TEST_DIR>/ast-dump-expr.c
+33
+3
+<TEST_DIR>/ast-dump-expr.c
+33
+8
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_033
+BinaryConditionalOperator
+<Visited Children>
+ADDR_034
+2
+ADDR_028
+ADDR_033
+<StmtData>
+ADDR_034
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+25
+26
+<TEST_DIR>/ast-dump-expr.c
+44
+1
+0
+0
+<Id to Class Map>
+ADDR_034
+CompoundStmt
+<Visited Children>
+ADDR_022
+2
+ADDR_023
+ADDR_034
+<FunctionDeclData>
+ADDR_022
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+25
+1
+<TEST_DIR>/ast-dump-expr.c
+44
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+Conditionals
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_012
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_022
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_022
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c:85:5: warning: equality comparison result unused [-Wunused-comparison]
+  a == b;
+  ~~^~~~
+<TEST_DIR>/ast-dump-expr.c:85:5: note: use '=' to turn this equality comparison into an assignment
+  a == b;
+    ^~
+    =
+<TEST_DIR>/ast-dump-expr.c:92:5: warning: inequality comparison result unused [-Wunused-comparison]
+  a != b;
+  ~~^~~~
+<TEST_DIR>/ast-dump-expr.c:92:5: note: use '|=' to turn this inequality comparison into an or-assignment
+  a != b;
+    ^~
+    |=
+<TEST_DIR>/ast-dump-expr.c:100:5: warning: relational comparison result unused [-Wunused-comparison]
+  a < b;
+  ~~^~~
+<TEST_DIR>/ast-dump-expr.c:107:5: warning: relational comparison result unused [-Wunused-comparison]
+  a > b;
+  ~~^~~
+<TEST_DIR>/ast-dump-expr.c:114:5: warning: relational comparison result unused [-Wunused-comparison]
+  a <= b;
+  ~~^~~~
+<TEST_DIR>/ast-dump-expr.c:121:5: warning: relational comparison result unused [-Wunused-comparison]
+  a >= b;
+  ~~^~~~
+<TEST_DIR>/ast-dump-expr.c:48:5: warning: expression result unused [-Wunused-value]
+  a || b;
+  ~ ^  ~
+<TEST_DIR>/ast-dump-expr.c:55:5: warning: expression result unused [-Wunused-value]
+  a && b;
+  ~ ^  ~
+<TEST_DIR>/ast-dump-expr.c:63:5: warning: expression result unused [-Wunused-value]
+  a | b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:70:5: warning: expression result unused [-Wunused-value]
+  a ^ b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:77:5: warning: expression result unused [-Wunused-value]
+  a & b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:129:5: warning: expression result unused [-Wunused-value]
+  a << b;
+  ~ ^  ~
+<TEST_DIR>/ast-dump-expr.c:136:5: warning: expression result unused [-Wunused-value]
+  a >> b;
+  ~ ^  ~
+<TEST_DIR>/ast-dump-expr.c:144:5: warning: expression result unused [-Wunused-value]
+  a + b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:151:5: warning: expression result unused [-Wunused-value]
+  a - b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:159:5: warning: expression result unused [-Wunused-value]
+  a * b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:166:5: warning: expression result unused [-Wunused-value]
+  a / b;
+  ~ ^ ~
+<TEST_DIR>/ast-dump-expr.c:173:5: warning: expression result unused [-Wunused-value]
+  a % b;
+  ~ ^ ~
+<Top Level Nodes>
+ADDR_035
+<Visited Children>
+ADDR_036
+0
+<FunctionProtoTypeData>
+ADDR_036
+FunctionProtoType
+void (int, int)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+2
+2
+ADDR_004
+ADDR_004
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_036
+FunctionProtoType
+<Top Level Types>
+ADDR_036
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_037
+0
+<ParmVarDeclData>
+ADDR_037
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+46
+22
+<TEST_DIR>/ast-dump-expr.c
+46
+26
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_037
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_038
+0
+<ParmVarDeclData>
+ADDR_038
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+46
+29
+<TEST_DIR>/ast-dump-expr.c
+46
+33
+0
+0
+0
+1
+1
+0
+0
+0
+
+b
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_038
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_039
+0
+<DeclRefExprData>
+ADDR_039
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+48
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_039
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_040
+1
+ADDR_039
+<ExprData>
+ADDR_040
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+48
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_040
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_041
+0
+<DeclRefExprData>
+ADDR_041
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+48
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_041
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_042
+1
+ADDR_041
+<ExprData>
+ADDR_042
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+48
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_042
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_043
+2
+ADDR_040
+ADDR_042
+<BinaryOperatorData>
+ADDR_043
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+48
+3
+<TEST_DIR>/ast-dump-expr.c
+48
+8
+0
+0
+ADDR_004
+0
+0
+0
+LOr
+<Id to Class Map>
+ADDR_043
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_044
+0
+<DeclRefExprData>
+ADDR_044
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+55
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_044
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_045
+1
+ADDR_044
+<ExprData>
+ADDR_045
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+55
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_045
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_046
+0
+<DeclRefExprData>
+ADDR_046
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+55
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_046
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_047
+1
+ADDR_046
+<ExprData>
+ADDR_047
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+55
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_047
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_048
+2
+ADDR_045
+ADDR_047
+<BinaryOperatorData>
+ADDR_048
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+55
+3
+<TEST_DIR>/ast-dump-expr.c
+55
+8
+0
+0
+ADDR_004
+0
+0
+0
+LAnd
+<Id to Class Map>
+ADDR_048
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_049
+0
+<DeclRefExprData>
+ADDR_049
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+63
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_049
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_050
+1
+ADDR_049
+<ExprData>
+ADDR_050
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+63
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_050
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_051
+0
+<DeclRefExprData>
+ADDR_051
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+63
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_051
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_052
+1
+ADDR_051
+<ExprData>
+ADDR_052
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+63
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_052
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_053
+2
+ADDR_050
+ADDR_052
+<BinaryOperatorData>
+ADDR_053
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+63
+3
+<TEST_DIR>/ast-dump-expr.c
+63
+7
+0
+0
+ADDR_004
+0
+0
+0
+Or
+<Id to Class Map>
+ADDR_053
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_054
+0
+<DeclRefExprData>
+ADDR_054
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+70
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_054
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_055
+1
+ADDR_054
+<ExprData>
+ADDR_055
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+70
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_055
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_056
+0
+<DeclRefExprData>
+ADDR_056
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+70
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_056
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_057
+1
+ADDR_056
+<ExprData>
+ADDR_057
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+70
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_057
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_058
+2
+ADDR_055
+ADDR_057
+<BinaryOperatorData>
+ADDR_058
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+70
+3
+<TEST_DIR>/ast-dump-expr.c
+70
+7
+0
+0
+ADDR_004
+0
+0
+0
+Xor
+<Id to Class Map>
+ADDR_058
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_059
+0
+<DeclRefExprData>
+ADDR_059
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+77
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_059
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_060
+1
+ADDR_059
+<ExprData>
+ADDR_060
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+77
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_060
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_061
+0
+<DeclRefExprData>
+ADDR_061
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+77
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_061
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_062
+1
+ADDR_061
+<ExprData>
+ADDR_062
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+77
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_062
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_063
+2
+ADDR_060
+ADDR_062
+<BinaryOperatorData>
+ADDR_063
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+77
+3
+<TEST_DIR>/ast-dump-expr.c
+77
+7
+0
+0
+ADDR_004
+0
+0
+0
+And
+<Id to Class Map>
+ADDR_063
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_064
+0
+<DeclRefExprData>
+ADDR_064
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+85
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_064
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_065
+1
+ADDR_064
+<ExprData>
+ADDR_065
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+85
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_065
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_066
+0
+<DeclRefExprData>
+ADDR_066
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+85
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_066
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_067
+1
+ADDR_066
+<ExprData>
+ADDR_067
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+85
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_067
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_068
+2
+ADDR_065
+ADDR_067
+<BinaryOperatorData>
+ADDR_068
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+85
+3
+<TEST_DIR>/ast-dump-expr.c
+85
+8
+0
+0
+ADDR_004
+0
+0
+0
+EQ
+<Id to Class Map>
+ADDR_068
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_069
+0
+<DeclRefExprData>
+ADDR_069
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+92
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_069
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_070
+1
+ADDR_069
+<ExprData>
+ADDR_070
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+92
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_070
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_071
+0
+<DeclRefExprData>
+ADDR_071
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+92
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_071
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_072
+1
+ADDR_071
+<ExprData>
+ADDR_072
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+92
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_072
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_073
+2
+ADDR_070
+ADDR_072
+<BinaryOperatorData>
+ADDR_073
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+92
+3
+<TEST_DIR>/ast-dump-expr.c
+92
+8
+0
+0
+ADDR_004
+0
+0
+0
+NE
+<Id to Class Map>
+ADDR_073
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_074
+0
+<DeclRefExprData>
+ADDR_074
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+100
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_074
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_075
+1
+ADDR_074
+<ExprData>
+ADDR_075
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+100
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_075
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_076
+0
+<DeclRefExprData>
+ADDR_076
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+100
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_076
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_077
+1
+ADDR_076
+<ExprData>
+ADDR_077
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+100
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_077
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_078
+2
+ADDR_075
+ADDR_077
+<BinaryOperatorData>
+ADDR_078
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+100
+3
+<TEST_DIR>/ast-dump-expr.c
+100
+7
+0
+0
+ADDR_004
+0
+0
+0
+LT
+<Id to Class Map>
+ADDR_078
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_079
+0
+<DeclRefExprData>
+ADDR_079
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+107
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_079
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_080
+1
+ADDR_079
+<ExprData>
+ADDR_080
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+107
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_080
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_081
+0
+<DeclRefExprData>
+ADDR_081
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+107
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_081
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_082
+1
+ADDR_081
+<ExprData>
+ADDR_082
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+107
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_082
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_083
+2
+ADDR_080
+ADDR_082
+<BinaryOperatorData>
+ADDR_083
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+107
+3
+<TEST_DIR>/ast-dump-expr.c
+107
+7
+0
+0
+ADDR_004
+0
+0
+0
+GT
+<Id to Class Map>
+ADDR_083
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_084
+0
+<DeclRefExprData>
+ADDR_084
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+114
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_084
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_085
+1
+ADDR_084
+<ExprData>
+ADDR_085
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+114
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_085
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_086
+0
+<DeclRefExprData>
+ADDR_086
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+114
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_086
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_087
+1
+ADDR_086
+<ExprData>
+ADDR_087
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+114
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_087
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_088
+2
+ADDR_085
+ADDR_087
+<BinaryOperatorData>
+ADDR_088
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+114
+3
+<TEST_DIR>/ast-dump-expr.c
+114
+8
+0
+0
+ADDR_004
+0
+0
+0
+LE
+<Id to Class Map>
+ADDR_088
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_089
+0
+<DeclRefExprData>
+ADDR_089
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+121
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_089
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_090
+1
+ADDR_089
+<ExprData>
+ADDR_090
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+121
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_090
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_091
+0
+<DeclRefExprData>
+ADDR_091
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+121
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_091
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_092
+1
+ADDR_091
+<ExprData>
+ADDR_092
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+121
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_092
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_093
+2
+ADDR_090
+ADDR_092
+<BinaryOperatorData>
+ADDR_093
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+121
+3
+<TEST_DIR>/ast-dump-expr.c
+121
+8
+0
+0
+ADDR_004
+0
+0
+0
+GE
+<Id to Class Map>
+ADDR_093
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_094
+0
+<DeclRefExprData>
+ADDR_094
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+129
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_094
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_095
+1
+ADDR_094
+<ExprData>
+ADDR_095
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+129
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_095
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_096
+0
+<DeclRefExprData>
+ADDR_096
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+129
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_096
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_097
+1
+ADDR_096
+<ExprData>
+ADDR_097
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+129
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_097
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_098
+2
+ADDR_095
+ADDR_097
+<BinaryOperatorData>
+ADDR_098
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+129
+3
+<TEST_DIR>/ast-dump-expr.c
+129
+8
+0
+0
+ADDR_004
+0
+0
+0
+Shl
+<Id to Class Map>
+ADDR_098
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_099
+0
+<DeclRefExprData>
+ADDR_099
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+136
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_099
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_100
+1
+ADDR_099
+<ExprData>
+ADDR_100
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+136
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_100
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_101
+0
+<DeclRefExprData>
+ADDR_101
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+136
+8
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_101
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_102
+1
+ADDR_101
+<ExprData>
+ADDR_102
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+136
+8
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_102
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_103
+2
+ADDR_100
+ADDR_102
+<BinaryOperatorData>
+ADDR_103
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+136
+3
+<TEST_DIR>/ast-dump-expr.c
+136
+8
+0
+0
+ADDR_004
+0
+0
+0
+Shr
+<Id to Class Map>
+ADDR_103
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_104
+0
+<DeclRefExprData>
+ADDR_104
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+144
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_104
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_105
+1
+ADDR_104
+<ExprData>
+ADDR_105
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+144
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_105
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_106
+0
+<DeclRefExprData>
+ADDR_106
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+144
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_106
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_107
+1
+ADDR_106
+<ExprData>
+ADDR_107
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+144
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_107
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_108
+2
+ADDR_105
+ADDR_107
+<BinaryOperatorData>
+ADDR_108
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+144
+3
+<TEST_DIR>/ast-dump-expr.c
+144
+7
+0
+0
+ADDR_004
+0
+0
+0
+Add
+<Id to Class Map>
+ADDR_108
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_109
+0
+<DeclRefExprData>
+ADDR_109
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+151
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_109
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_110
+1
+ADDR_109
+<ExprData>
+ADDR_110
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+151
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_110
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_111
+0
+<DeclRefExprData>
+ADDR_111
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+151
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_111
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_112
+1
+ADDR_111
+<ExprData>
+ADDR_112
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+151
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_112
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_113
+2
+ADDR_110
+ADDR_112
+<BinaryOperatorData>
+ADDR_113
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+151
+3
+<TEST_DIR>/ast-dump-expr.c
+151
+7
+0
+0
+ADDR_004
+0
+0
+0
+Sub
+<Id to Class Map>
+ADDR_113
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_114
+0
+<DeclRefExprData>
+ADDR_114
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+159
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_114
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_115
+1
+ADDR_114
+<ExprData>
+ADDR_115
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+159
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_115
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_116
+0
+<DeclRefExprData>
+ADDR_116
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+159
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_116
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_117
+1
+ADDR_116
+<ExprData>
+ADDR_117
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+159
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_117
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_118
+2
+ADDR_115
+ADDR_117
+<BinaryOperatorData>
+ADDR_118
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+159
+3
+<TEST_DIR>/ast-dump-expr.c
+159
+7
+0
+0
+ADDR_004
+0
+0
+0
+Mul
+<Id to Class Map>
+ADDR_118
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_119
+0
+<DeclRefExprData>
+ADDR_119
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+166
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_119
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_120
+1
+ADDR_119
+<ExprData>
+ADDR_120
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+166
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_120
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_121
+0
+<DeclRefExprData>
+ADDR_121
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+166
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_121
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_122
+1
+ADDR_121
+<ExprData>
+ADDR_122
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+166
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_122
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_123
+2
+ADDR_120
+ADDR_122
+<BinaryOperatorData>
+ADDR_123
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+166
+3
+<TEST_DIR>/ast-dump-expr.c
+166
+7
+0
+0
+ADDR_004
+0
+0
+0
+Div
+<Id to Class Map>
+ADDR_123
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_124
+0
+<DeclRefExprData>
+ADDR_124
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+173
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_037
+<Id to Class Map>
+ADDR_124
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_125
+1
+ADDR_124
+<ExprData>
+ADDR_125
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+173
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_125
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_126
+0
+<DeclRefExprData>
+ADDR_126
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+173
+7
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_126
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_127
+1
+ADDR_126
+<ExprData>
+ADDR_127
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+173
+7
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_127
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_128
+2
+ADDR_125
+ADDR_127
+<BinaryOperatorData>
+ADDR_128
+BinaryOperator
+<TEST_DIR>/ast-dump-expr.c
+173
+3
+<TEST_DIR>/ast-dump-expr.c
+173
+7
+0
+0
+ADDR_004
+0
+0
+0
+Rem
+<Id to Class Map>
+ADDR_128
+BinaryOperator
+<Visited Children>
+ADDR_129
+18
+ADDR_043
+ADDR_048
+ADDR_053
+ADDR_058
+ADDR_063
+ADDR_068
+ADDR_073
+ADDR_078
+ADDR_083
+ADDR_088
+ADDR_093
+ADDR_098
+ADDR_103
+ADDR_108
+ADDR_113
+ADDR_118
+ADDR_123
+ADDR_128
+<StmtData>
+ADDR_129
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+46
+36
+<TEST_DIR>/ast-dump-expr.c
+179
+1
+0
+0
+<Id to Class Map>
+ADDR_129
+CompoundStmt
+<Visited Children>
+ADDR_035
+3
+ADDR_037
+ADDR_038
+ADDR_129
+<FunctionDeclData>
+ADDR_035
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+46
+1
+<TEST_DIR>/ast-dump-expr.c
+179
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+BinaryOperators
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_036
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_035
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_035
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c:183:3: warning: expression result unused [-Wunused-value]
+  (float)a;
+  ^      ~
+<TEST_DIR>/ast-dump-expr.c:190:3: warning: expression result unused [-Wunused-value]
+  -a;
+  ^~
+<TEST_DIR>/ast-dump-expr.c:195:3: warning: expression result unused [-Wunused-value]
+  +a;
+  ^~
+<TEST_DIR>/ast-dump-expr.c:200:3: warning: expression result unused [-Wunused-value]
+  &a;
+  ^~
+<TEST_DIR>/ast-dump-expr.c:204:3: warning: expression result unused [-Wunused-value]
+  *b;
+  ^~
+<TEST_DIR>/ast-dump-expr.c:210:3: warning: expression result unused [-Wunused-value]
+  !a;
+  ^~
+<TEST_DIR>/ast-dump-expr.c:215:3: warning: expression result unused [-Wunused-value]
+  sizeof a;
+  ^~~~~~~~
+<TEST_DIR>/ast-dump-expr.c:219:3: warning: expression result unused [-Wunused-value]
+  sizeof(int);
+  ^~~~~~~~~~~
+<TEST_DIR>/ast-dump-expr.c:222:3: warning: expression result unused [-Wunused-value]
+  _Alignof(int);
+  ^~~~~~~~~~~~~
+<Top Level Nodes>
+ADDR_130
+<Visited Children>
+ADDR_131
+0
+<PointerTypeData>
+ADDR_131
+PointerType
+int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_004
+<Id to Class Map>
+ADDR_131
+PointerType
+<Visited Children>
+ADDR_132
+0
+<FunctionProtoTypeData>
+ADDR_132
+FunctionProtoType
+void (int, int *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+2
+2
+ADDR_004
+ADDR_131
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_132
+FunctionProtoType
+<Top Level Types>
+ADDR_132
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_133
+0
+<ParmVarDeclData>
+ADDR_133
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+181
+21
+<TEST_DIR>/ast-dump-expr.c
+181
+25
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_133
+ParmVarDecl
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_134
+0
+<ParmVarDeclData>
+ADDR_134
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+181
+28
+<TEST_DIR>/ast-dump-expr.c
+181
+33
+0
+0
+0
+1
+1
+0
+0
+0
+
+b
+0
+0
+0
+NoLinkage
+Default
+ADDR_131
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_134
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_135
+0
+<DeclRefExprData>
+ADDR_135
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+183
+10
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_133
+<Id to Class Map>
+ADDR_135
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_136
+1
+ADDR_135
+<ExprData>
+ADDR_136
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+183
+10
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_136
+ImplicitCastExpr
+<Visited Children>
+ADDR_137
+0
+<BuiltinTypeData>
+ADDR_137
+BuiltinType
+float
+NONE
+0
+0
+0
+nullptr_type
+Float
+float
+<Id to Class Map>
+ADDR_137
+BuiltinType
+<Top Level Types>
+ADDR_137
+<Visited Children>
+ADDR_138
+1
+ADDR_136
+<ExplicitCastExprData>
+ADDR_138
+CStyleCastExpr
+<TEST_DIR>/ast-dump-expr.c
+183
+3
+<TEST_DIR>/ast-dump-expr.c
+183
+10
+0
+0
+ADDR_137
+0
+0
+0
+IntegralToFloating
+ADDR_137
+<Id to Class Map>
+ADDR_138
+CStyleCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_139
+0
+<DeclRefExprData>
+ADDR_139
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+190
+4
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_133
+<Id to Class Map>
+ADDR_139
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_140
+1
+ADDR_139
+<ExprData>
+ADDR_140
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+190
+4
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_140
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_141
+1
+ADDR_140
+<UnaryOperatorData>
+ADDR_141
+UnaryOperator
+<TEST_DIR>/ast-dump-expr.c
+190
+3
+<TEST_DIR>/ast-dump-expr.c
+190
+4
+0
+0
+ADDR_004
+0
+0
+0
+Minus
+PREFIX
+<Id to Class Map>
+ADDR_141
+UnaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_142
+0
+<DeclRefExprData>
+ADDR_142
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+195
+4
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_133
+<Id to Class Map>
+ADDR_142
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_143
+1
+ADDR_142
+<ExprData>
+ADDR_143
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+195
+4
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_143
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_144
+1
+ADDR_143
+<UnaryOperatorData>
+ADDR_144
+UnaryOperator
+<TEST_DIR>/ast-dump-expr.c
+195
+3
+<TEST_DIR>/ast-dump-expr.c
+195
+4
+0
+0
+ADDR_004
+0
+0
+0
+Plus
+PREFIX
+<Id to Class Map>
+ADDR_144
+UnaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_145
+0
+<DeclRefExprData>
+ADDR_145
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+200
+4
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_133
+<Id to Class Map>
+ADDR_145
+DeclRefExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_146
+1
+ADDR_145
+<UnaryOperatorData>
+ADDR_146
+UnaryOperator
+<TEST_DIR>/ast-dump-expr.c
+200
+3
+<TEST_DIR>/ast-dump-expr.c
+200
+4
+0
+0
+ADDR_131
+0
+0
+0
+AddrOf
+PREFIX
+<Id to Class Map>
+ADDR_146
+UnaryOperator
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_147
+0
+<DeclRefExprData>
+ADDR_147
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+204
+4
+<end>
+0
+0
+ADDR_131
+1
+0
+0
+
+0
+ADDR_134
+<Id to Class Map>
+ADDR_147
+DeclRefExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_148
+1
+ADDR_147
+<ExprData>
+ADDR_148
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+204
+4
+<end>
+0
+0
+ADDR_131
+0
+0
+0
+<Id to Class Map>
+ADDR_148
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_149
+1
+ADDR_148
+<UnaryOperatorData>
+ADDR_149
+UnaryOperator
+<TEST_DIR>/ast-dump-expr.c
+204
+3
+<TEST_DIR>/ast-dump-expr.c
+204
+4
+0
+0
+ADDR_004
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_149
+UnaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_150
+1
+ADDR_149
+<ExprData>
+ADDR_150
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+204
+3
+<TEST_DIR>/ast-dump-expr.c
+204
+4
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_150
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_151
+0
+<DeclRefExprData>
+ADDR_151
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+210
+4
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_133
+<Id to Class Map>
+ADDR_151
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_152
+1
+ADDR_151
+<ExprData>
+ADDR_152
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+210
+4
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_152
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_153
+1
+ADDR_152
+<UnaryOperatorData>
+ADDR_153
+UnaryOperator
+<TEST_DIR>/ast-dump-expr.c
+210
+3
+<TEST_DIR>/ast-dump-expr.c
+210
+4
+0
+0
+ADDR_004
+0
+0
+0
+LNot
+PREFIX
+<Id to Class Map>
+ADDR_153
+UnaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_154
+0
+<DeclRefExprData>
+ADDR_154
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+215
+10
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_133
+<Id to Class Map>
+ADDR_154
+DeclRefExpr
+<Visited Children>
+ADDR_155
+0
+<BuiltinTypeData>
+ADDR_155
+BuiltinType
+unsigned long
+NONE
+0
+0
+0
+nullptr_type
+ULong
+unsigned long
+<Id to Class Map>
+ADDR_155
+BuiltinType
+<Top Level Types>
+ADDR_155
+<Visited Children>
+ADDR_156
+1
+ADDR_154
+<UnaryExprOrTypeTraitExprData>
+ADDR_156
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-dump-expr.c
+215
+3
+<TEST_DIR>/ast-dump-expr.c
+215
+10
+0
+0
+ADDR_155
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BEGIN%
+sizeof a
+%CLAVA_SOURCE_END%
+<Id to Class Map>
+ADDR_156
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_155
+<Visited Children>
+ADDR_157
+0
+<UnaryExprOrTypeTraitExprData>
+ADDR_157
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-dump-expr.c
+219
+3
+<TEST_DIR>/ast-dump-expr.c
+219
+13
+0
+0
+ADDR_155
+0
+0
+0
+SizeOf
+1
+ADDR_004
+%CLAVA_SOURCE_BEGIN%
+sizeof(int)
+%CLAVA_SOURCE_END%
+<Id to Class Map>
+ADDR_157
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_155
+<Visited Children>
+ADDR_158
+0
+<UnaryExprOrTypeTraitExprData>
+ADDR_158
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-dump-expr.c
+222
+3
+<TEST_DIR>/ast-dump-expr.c
+222
+15
+0
+0
+ADDR_155
+0
+0
+0
+AlignOf
+1
+ADDR_004
+%CLAVA_SOURCE_BEGIN%
+_Alignof(int)
+%CLAVA_SOURCE_END%
+<Id to Class Map>
+ADDR_158
+UnaryExprOrTypeTraitExpr
+<Visited Children>
+ADDR_159
+9
+ADDR_138
+ADDR_141
+ADDR_144
+ADDR_146
+ADDR_150
+ADDR_153
+ADDR_156
+ADDR_157
+ADDR_158
+<StmtData>
+ADDR_159
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+181
+36
+<TEST_DIR>/ast-dump-expr.c
+225
+1
+0
+0
+<Id to Class Map>
+ADDR_159
+CompoundStmt
+<Visited Children>
+ADDR_130
+3
+ADDR_133
+ADDR_134
+ADDR_159
+<FunctionDeclData>
+ADDR_130
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+181
+1
+<TEST_DIR>/ast-dump-expr.c
+225
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+UnaryOperators
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_132
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_130
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_130
+FunctionDecl
+<Top Level Nodes>
+ADDR_160
+<Visited Children>
+ADDR_161
+0
+<TagTypeData>
+ADDR_161
+RecordType
+struct S
+NONE
+0
+0
+0
+nullptr_type
+ADDR_160
+<Id to Class Map>
+ADDR_161
+RecordType
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_162
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_162
+FieldDecl
+<TEST_DIR>/ast-dump-expr.c
+228
+3
+<TEST_DIR>/ast-dump-expr.c
+228
+7
+0
+0
+0
+0
+0
+0
+0
+0
+S
+a
+0
+1
+1
+ExternalLinkage
+Default
+ADDR_004
+0
+0
+<Id to Class Map>
+ADDR_162
+FieldDecl
+<Visited Children>
+ADDR_160
+1
+ADDR_162
+<RecordDeclData>
+ADDR_160
+RecordDecl
+<TEST_DIR>/ast-dump-expr.c
+227
+1
+<TEST_DIR>/ast-dump-expr.c
+229
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+S
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_161
+Struct
+1
+0
+<Id to Class Map>
+ADDR_160
+RecordDecl
+<TEST_DIR>/ast-dump-expr.c:232:6: warning: expression result unused [-Wunused-value]
+  a[0];
+  ~ ~^
+<TEST_DIR>/ast-dump-expr.c:250:5: warning: expression result unused [-Wunused-value]
+  b.a;
+  ~ ^
+<TEST_DIR>/ast-dump-expr.c:255:6: warning: expression result unused [-Wunused-value]
+  c->a;
+  ~  ^
+<TEST_DIR>/ast-dump-expr.c:263:3: warning: expression result unused [-Wunused-value]
+  (int [4]){1, 2, 3, 4, };
+  ^~~~~~~~~~~~~~~~~~~~~~~
+<TEST_DIR>/ast-dump-expr.c:272:3: warning: expression result unused [-Wunused-value]
+  (struct S){1};
+  ^~~~~~~~~~~~~
+<Top Level Nodes>
+ADDR_163
+<Visited Children>
+ADDR_164
+0
+<ElaboratedTypeData>
+ADDR_164
+ElaboratedType
+struct S
+NONE
+0
+0
+0
+ADDR_161
+Struct
+
+ADDR_161
+<Id to Class Map>
+ADDR_164
+ElaboratedType
+<Visited Children>
+ADDR_165
+0
+<PointerTypeData>
+ADDR_165
+PointerType
+struct S *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_164
+<Id to Class Map>
+ADDR_165
+PointerType
+<Visited Children>
+ADDR_166
+0
+<FunctionProtoTypeData>
+ADDR_166
+FunctionProtoType
+void (int *, struct S, struct S *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+3
+3
+ADDR_131
+ADDR_164
+ADDR_165
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_166
+FunctionProtoType
+<Top Level Types>
+ADDR_166
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_167
+0
+<ParmVarDeclData>
+ADDR_167
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+231
+23
+<TEST_DIR>/ast-dump-expr.c
+231
+28
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+NoLinkage
+Default
+ADDR_131
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_167
+ParmVarDecl
+<Top Level Types>
+ADDR_164
+<Visited Children>
+ADDR_168
+0
+<ParmVarDeclData>
+ADDR_168
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+231
+31
+<TEST_DIR>/ast-dump-expr.c
+231
+40
+0
+0
+0
+1
+1
+0
+0
+0
+
+b
+0
+0
+0
+NoLinkage
+Default
+ADDR_164
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_168
+ParmVarDecl
+<Top Level Types>
+ADDR_165
+<Visited Children>
+ADDR_169
+0
+<ParmVarDeclData>
+ADDR_169
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+231
+43
+<TEST_DIR>/ast-dump-expr.c
+231
+53
+0
+0
+0
+1
+1
+0
+0
+0
+
+c
+0
+0
+0
+NoLinkage
+Default
+ADDR_165
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_169
+ParmVarDecl
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_170
+0
+<DeclRefExprData>
+ADDR_170
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+232
+3
+<end>
+0
+0
+ADDR_131
+1
+0
+0
+
+0
+ADDR_167
+<Id to Class Map>
+ADDR_170
+DeclRefExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_171
+1
+ADDR_170
+<ExprData>
+ADDR_171
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+232
+3
+<end>
+0
+0
+ADDR_131
+0
+0
+0
+<Id to Class Map>
+ADDR_171
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_172
+0
+<IntegerLiteralData>
+ADDR_172
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+232
+5
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_172
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_173
+2
+ADDR_171
+ADDR_172
+<ExprData>
+ADDR_173
+ArraySubscriptExpr
+<TEST_DIR>/ast-dump-expr.c
+232
+3
+<TEST_DIR>/ast-dump-expr.c
+232
+6
+0
+0
+ADDR_004
+1
+0
+0
+<Id to Class Map>
+ADDR_173
+ArraySubscriptExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_174
+1
+ADDR_173
+<ExprData>
+ADDR_174
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+232
+3
+<TEST_DIR>/ast-dump-expr.c
+232
+6
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_174
+ImplicitCastExpr
+<Top Level Types>
+ADDR_132
+<Visited Children>
+ADDR_175
+0
+<DeclRefExprData>
+ADDR_175
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+3
+<end>
+0
+0
+ADDR_132
+0
+0
+0
+
+0
+ADDR_130
+<Id to Class Map>
+ADDR_175
+DeclRefExpr
+<Visited Children>
+ADDR_176
+0
+<PointerTypeData>
+ADDR_176
+PointerType
+void (*)(int, int *)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_132
+<Id to Class Map>
+ADDR_176
+PointerType
+<Top Level Types>
+ADDR_176
+<Visited Children>
+ADDR_177
+1
+ADDR_175
+<ExprData>
+ADDR_177
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+3
+<end>
+0
+0
+ADDR_176
+0
+0
+0
+<Id to Class Map>
+ADDR_177
+ImplicitCastExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_178
+0
+<DeclRefExprData>
+ADDR_178
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+19
+<end>
+0
+0
+ADDR_131
+1
+0
+0
+
+0
+ADDR_167
+<Id to Class Map>
+ADDR_178
+DeclRefExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_179
+1
+ADDR_178
+<ExprData>
+ADDR_179
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+19
+<end>
+0
+0
+ADDR_131
+0
+0
+0
+<Id to Class Map>
+ADDR_179
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_180
+1
+ADDR_179
+<UnaryOperatorData>
+ADDR_180
+UnaryOperator
+<TEST_DIR>/ast-dump-expr.c
+239
+18
+<TEST_DIR>/ast-dump-expr.c
+239
+19
+0
+0
+ADDR_004
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_180
+UnaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_181
+1
+ADDR_180
+<ExprData>
+ADDR_181
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+18
+<TEST_DIR>/ast-dump-expr.c
+239
+19
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_181
+ImplicitCastExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_182
+0
+<DeclRefExprData>
+ADDR_182
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+22
+<end>
+0
+0
+ADDR_131
+1
+0
+0
+
+0
+ADDR_167
+<Id to Class Map>
+ADDR_182
+DeclRefExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_183
+1
+ADDR_182
+<ExprData>
+ADDR_183
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+22
+<end>
+0
+0
+ADDR_131
+0
+0
+0
+<Id to Class Map>
+ADDR_183
+ImplicitCastExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_184
+3
+ADDR_177
+ADDR_181
+ADDR_183
+<CallExprData>
+ADDR_184
+CallExpr
+<TEST_DIR>/ast-dump-expr.c
+239
+3
+<TEST_DIR>/ast-dump-expr.c
+239
+23
+0
+0
+ADDR_002
+0
+0
+0
+ADDR_130
+<Id to Class Map>
+ADDR_184
+CallExpr
+<Top Level Types>
+ADDR_164
+<Visited Children>
+ADDR_185
+0
+<DeclRefExprData>
+ADDR_185
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+250
+3
+<end>
+0
+0
+ADDR_164
+1
+0
+0
+
+0
+ADDR_168
+<Id to Class Map>
+ADDR_185
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_186
+1
+ADDR_185
+<MemberExprData>
+ADDR_186
+MemberExpr
+<TEST_DIR>/ast-dump-expr.c
+250
+3
+<TEST_DIR>/ast-dump-expr.c
+250
+5
+0
+0
+ADDR_004
+1
+0
+0
+0
+a
+ADDR_162
+ADDR_162
+PUBLIC
+<Id to Class Map>
+ADDR_186
+MemberExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_187
+1
+ADDR_186
+<ExprData>
+ADDR_187
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+250
+3
+<TEST_DIR>/ast-dump-expr.c
+250
+5
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_187
+ImplicitCastExpr
+<Top Level Types>
+ADDR_165
+<Visited Children>
+ADDR_188
+0
+<DeclRefExprData>
+ADDR_188
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+255
+3
+<end>
+0
+0
+ADDR_165
+1
+0
+0
+
+0
+ADDR_169
+<Id to Class Map>
+ADDR_188
+DeclRefExpr
+<Top Level Types>
+ADDR_165
+<Visited Children>
+ADDR_189
+1
+ADDR_188
+<ExprData>
+ADDR_189
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+255
+3
+<end>
+0
+0
+ADDR_165
+0
+0
+0
+<Id to Class Map>
+ADDR_189
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_190
+1
+ADDR_189
+<MemberExprData>
+ADDR_190
+MemberExpr
+<TEST_DIR>/ast-dump-expr.c
+255
+3
+<TEST_DIR>/ast-dump-expr.c
+255
+6
+0
+0
+ADDR_004
+1
+0
+0
+1
+a
+ADDR_162
+ADDR_162
+PUBLIC
+<Id to Class Map>
+ADDR_190
+MemberExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_191
+1
+ADDR_190
+<ExprData>
+ADDR_191
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+255
+3
+<TEST_DIR>/ast-dump-expr.c
+255
+6
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_191
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_192
+0
+<IntegerLiteralData>
+ADDR_192
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+263
+13
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_192
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_193
+0
+<IntegerLiteralData>
+ADDR_193
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+263
+16
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+2
+%CLAVA_SOURCE_END%
+2
+<Id to Class Map>
+ADDR_193
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_194
+0
+<IntegerLiteralData>
+ADDR_194
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+263
+19
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+3
+%CLAVA_SOURCE_END%
+3
+<Id to Class Map>
+ADDR_194
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_195
+0
+<IntegerLiteralData>
+ADDR_195
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+263
+22
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+4
+%CLAVA_SOURCE_END%
+4
+<Id to Class Map>
+ADDR_195
+IntegerLiteral
+<Visited Children>
+ADDR_196
+0
+<ConstantArrayTypeData>
+ADDR_196
+ConstantArrayType
+int[4]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_004
+4
+<Id to Class Map>
+ADDR_196
+ConstantArrayType
+<Top Level Types>
+ADDR_196
+<Top Level Types>
+ADDR_196
+<Visited Children>
+ADDR_197
+4
+ADDR_192
+ADDR_193
+ADDR_194
+ADDR_195
+<InitListExprData>
+ADDR_197
+InitListExpr
+<TEST_DIR>/ast-dump-expr.c
+263
+12
+<TEST_DIR>/ast-dump-expr.c
+263
+25
+0
+0
+ADDR_196
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_198
+<Id to Class Map>
+ADDR_197
+InitListExpr
+<Visited Children>
+ADDR_198
+4
+ADDR_192
+ADDR_193
+ADDR_194
+ADDR_195
+<InitListExprData>
+ADDR_198
+InitListExpr
+<TEST_DIR>/ast-dump-expr.c
+263
+12
+<TEST_DIR>/ast-dump-expr.c
+263
+25
+0
+0
+ADDR_196
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_197
+nullptr_expr
+<Id to Class Map>
+ADDR_198
+InitListExpr
+<Top Level Types>
+ADDR_196
+<Visited Children>
+ADDR_199
+1
+ADDR_198
+<CompoundLiteralExprData>
+ADDR_199
+CompoundLiteralExpr
+<TEST_DIR>/ast-dump-expr.c
+263
+3
+<TEST_DIR>/ast-dump-expr.c
+263
+25
+0
+0
+ADDR_196
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+(int [4]){1, 2, 3, 4, }
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_199
+CompoundLiteralExpr
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_200
+1
+ADDR_199
+<ExprData>
+ADDR_200
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+263
+3
+<TEST_DIR>/ast-dump-expr.c
+263
+25
+0
+0
+ADDR_131
+0
+0
+0
+<Id to Class Map>
+ADDR_200
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_201
+0
+<IntegerLiteralData>
+ADDR_201
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+272
+14
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_201
+IntegerLiteral
+<Top Level Types>
+ADDR_164
+<Top Level Types>
+ADDR_164
+<Visited Children>
+ADDR_202
+1
+ADDR_201
+<InitListExprData>
+ADDR_202
+InitListExpr
+<TEST_DIR>/ast-dump-expr.c
+272
+13
+<TEST_DIR>/ast-dump-expr.c
+272
+15
+0
+0
+ADDR_164
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_203
+<Id to Class Map>
+ADDR_202
+InitListExpr
+<Visited Children>
+ADDR_203
+1
+ADDR_201
+<InitListExprData>
+ADDR_203
+InitListExpr
+<TEST_DIR>/ast-dump-expr.c
+272
+13
+<TEST_DIR>/ast-dump-expr.c
+272
+15
+0
+0
+ADDR_164
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_202
+nullptr_expr
+<Id to Class Map>
+ADDR_203
+InitListExpr
+<Top Level Types>
+ADDR_164
+<Visited Children>
+ADDR_204
+1
+ADDR_203
+<CompoundLiteralExprData>
+ADDR_204
+CompoundLiteralExpr
+<TEST_DIR>/ast-dump-expr.c
+272
+3
+<TEST_DIR>/ast-dump-expr.c
+272
+15
+0
+0
+ADDR_164
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+(struct S){1}
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_204
+CompoundLiteralExpr
+<Top Level Types>
+ADDR_164
+<Visited Children>
+ADDR_205
+1
+ADDR_204
+<ExprData>
+ADDR_205
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+272
+3
+<TEST_DIR>/ast-dump-expr.c
+272
+15
+0
+0
+ADDR_164
+0
+0
+0
+<Id to Class Map>
+ADDR_205
+ImplicitCastExpr
+<Visited Children>
+ADDR_206
+6
+ADDR_174
+ADDR_184
+ADDR_187
+ADDR_191
+ADDR_200
+ADDR_205
+<StmtData>
+ADDR_206
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+231
+56
+<TEST_DIR>/ast-dump-expr.c
+277
+1
+0
+0
+<Id to Class Map>
+ADDR_206
+CompoundStmt
+<Visited Children>
+ADDR_163
+4
+ADDR_167
+ADDR_168
+ADDR_169
+ADDR_206
+<FunctionDeclData>
+ADDR_163
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+231
+1
+<TEST_DIR>/ast-dump-expr.c
+277
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+PostfixOperators
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_166
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_163
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_163
+FunctionDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_207
+0
+<IntegerLiteralData>
+ADDR_207
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+263
+9
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+4
+%CLAVA_SOURCE_END%
+4
+<Id to Class Map>
+ADDR_207
+IntegerLiteral
+<Top Level Nodes>
+ADDR_208
+<Visited Children>
+ADDR_209
+0
+<TagTypeData>
+ADDR_209
+EnumType
+enum E
+NONE
+0
+0
+0
+nullptr_type
+ADDR_208
+<Id to Class Map>
+ADDR_209
+EnumType
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_210
+1
+nullptr_expr
+<ValueDeclData>
+ADDR_210
+EnumConstantDecl
+<TEST_DIR>/ast-dump-expr.c
+279
+10
+<end>
+0
+0
+0
+0
+0
+0
+0
+0
+
+One
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+<Id to Class Map>
+ADDR_210
+EnumConstantDecl
+<Visited Children>
+ADDR_211
+0
+<BuiltinTypeData>
+ADDR_211
+BuiltinType
+unsigned int
+NONE
+0
+0
+0
+nullptr_type
+UInt
+unsigned int
+<Id to Class Map>
+ADDR_211
+BuiltinType
+<Visited Children>
+ADDR_208
+1
+ADDR_210
+<EnumDeclData>
+ADDR_208
+EnumDecl
+<TEST_DIR>/ast-dump-expr.c
+279
+1
+<TEST_DIR>/ast-dump-expr.c
+279
+14
+0
+0
+0
+0
+0
+0
+0
+0
+
+E
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_209
+Enum
+1
+NO_SCOPE
+ADDR_211
+<Id to Class Map>
+ADDR_208
+EnumDecl
+<TEST_DIR>/ast-dump-expr.c:282:3: warning: expression result unused [-Wunused-value]
+  a;
+  ^
+<TEST_DIR>/ast-dump-expr.c:286:3: warning: expression result unused [-Wunused-value]
+  'a';
+  ^~~
+<TEST_DIR>/ast-dump-expr.c:289:3: warning: expression result unused [-Wunused-value]
+  L'a';
+  ^~~~
+<TEST_DIR>/ast-dump-expr.c:292:3: warning: expression result unused [-Wunused-value]
+  "a";
+  ^~~
+<TEST_DIR>/ast-dump-expr.c:296:3: warning: expression result unused [-Wunused-value]
+  L"a";
+  ^~~~
+<TEST_DIR>/ast-dump-expr.c:300:3: warning: expression result unused [-Wunused-value]
+  u8"a";
+  ^~~~~
+<TEST_DIR>/ast-dump-expr.c:304:3: warning: expression result unused [-Wunused-value]
+  U"a";
+  ^~~~
+<TEST_DIR>/ast-dump-expr.c:308:3: warning: expression result unused [-Wunused-value]
+  u"a";
+  ^~~~
+<TEST_DIR>/ast-dump-expr.c:312:3: warning: expression result unused [-Wunused-value]
+  1;
+  ^
+<TEST_DIR>/ast-dump-expr.c:315:3: warning: expression result unused [-Wunused-value]
+  1u;
+  ^~
+<TEST_DIR>/ast-dump-expr.c:318:3: warning: expression result unused [-Wunused-value]
+  1ll;
+  ^~~
+<TEST_DIR>/ast-dump-expr.c:321:3: warning: expression result unused [-Wunused-value]
+  1.0;
+  ^~~
+<TEST_DIR>/ast-dump-expr.c:324:3: warning: expression result unused [-Wunused-value]
+  1.0f;
+  ^~~~
+<TEST_DIR>/ast-dump-expr.c:327:3: warning: expression result unused [-Wunused-value]
+  1.0l;
+  ^~~~
+<TEST_DIR>/ast-dump-expr.c:330:3: warning: expression result unused [-Wunused-value]
+  One;
+  ^~~
+<TEST_DIR>/ast-dump-expr.c:333:4: warning: expression result unused [-Wunused-value]
+  (a);
+   ^
+<Top Level Nodes>
+ADDR_212
+<Top Level Types>
+ADDR_012
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_213
+0
+<ParmVarDeclData>
+ADDR_213
+ParmVarDecl
+<TEST_DIR>/ast-dump-expr.c
+281
+25
+<TEST_DIR>/ast-dump-expr.c
+281
+29
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+NoLinkage
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_213
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_214
+0
+<DeclRefExprData>
+ADDR_214
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+282
+3
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_213
+<Id to Class Map>
+ADDR_214
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_215
+1
+ADDR_214
+<ExprData>
+ADDR_215
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+282
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_215
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_216
+0
+<CharacterLiteralData>
+ADDR_216
+CharacterLiteral
+<TEST_DIR>/ast-dump-expr.c
+286
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+'a'
+%CLAVA_SOURCE_END%
+97
+0
+<Id to Class Map>
+ADDR_216
+CharacterLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_217
+0
+<CharacterLiteralData>
+ADDR_217
+CharacterLiteral
+<TEST_DIR>/ast-dump-expr.c
+289
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+L'a'
+%CLAVA_SOURCE_END%
+97
+1
+<Id to Class Map>
+ADDR_217
+CharacterLiteral
+<Visited Children>
+ADDR_218
+0
+<BuiltinTypeData>
+ADDR_218
+BuiltinType
+char
+NONE
+0
+0
+0
+nullptr_type
+Char_S
+char
+<Id to Class Map>
+ADDR_218
+BuiltinType
+<Visited Children>
+ADDR_219
+0
+<ConstantArrayTypeData>
+ADDR_219
+ConstantArrayType
+char[2]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_218
+2
+<Id to Class Map>
+ADDR_219
+ConstantArrayType
+<Top Level Types>
+ADDR_219
+<Visited Children>
+ADDR_220
+0
+<StringLiteralData>
+ADDR_220
+StringLiteral
+<TEST_DIR>/ast-dump-expr.c
+292
+3
+<end>
+0
+0
+ADDR_219
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+"a"
+%CLAVA_SOURCE_END%
+ORDINARY
+1
+1
+1
+97
+<Id to Class Map>
+ADDR_220
+StringLiteral
+<Visited Children>
+ADDR_221
+0
+<PointerTypeData>
+ADDR_221
+PointerType
+char *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_218
+<Id to Class Map>
+ADDR_221
+PointerType
+<Top Level Types>
+ADDR_221
+<Visited Children>
+ADDR_222
+1
+ADDR_220
+<ExprData>
+ADDR_222
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+292
+3
+<end>
+0
+0
+ADDR_221
+0
+0
+0
+<Id to Class Map>
+ADDR_222
+ImplicitCastExpr
+<Visited Children>
+ADDR_223
+0
+<ConstantArrayTypeData>
+ADDR_223
+ConstantArrayType
+int[2]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_004
+2
+<Id to Class Map>
+ADDR_223
+ConstantArrayType
+<Top Level Types>
+ADDR_223
+<Visited Children>
+ADDR_224
+0
+<StringLiteralData>
+ADDR_224
+StringLiteral
+<TEST_DIR>/ast-dump-expr.c
+296
+3
+<end>
+0
+0
+ADDR_223
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+L"a"
+%CLAVA_SOURCE_END%
+WIDE
+1
+4
+4
+97
+0
+0
+0
+<Id to Class Map>
+ADDR_224
+StringLiteral
+<Top Level Types>
+ADDR_131
+<Visited Children>
+ADDR_225
+1
+ADDR_224
+<ExprData>
+ADDR_225
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+296
+3
+<end>
+0
+0
+ADDR_131
+0
+0
+0
+<Id to Class Map>
+ADDR_225
+ImplicitCastExpr
+<Top Level Types>
+ADDR_219
+<Visited Children>
+ADDR_226
+0
+<StringLiteralData>
+ADDR_226
+StringLiteral
+<TEST_DIR>/ast-dump-expr.c
+300
+3
+<end>
+0
+0
+ADDR_219
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+u8
+%CLAVA_SOURCE_END%
+UTF8
+1
+1
+1
+97
+<Id to Class Map>
+ADDR_226
+StringLiteral
+<Top Level Types>
+ADDR_221
+<Visited Children>
+ADDR_227
+1
+ADDR_226
+<ExprData>
+ADDR_227
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+300
+3
+<end>
+0
+0
+ADDR_221
+0
+0
+0
+<Id to Class Map>
+ADDR_227
+ImplicitCastExpr
+<Visited Children>
+ADDR_228
+0
+<ConstantArrayTypeData>
+ADDR_228
+ConstantArrayType
+unsigned int[2]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_211
+2
+<Id to Class Map>
+ADDR_228
+ConstantArrayType
+<Top Level Types>
+ADDR_228
+<Visited Children>
+ADDR_229
+0
+<StringLiteralData>
+ADDR_229
+StringLiteral
+<TEST_DIR>/ast-dump-expr.c
+304
+3
+<end>
+0
+0
+ADDR_228
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+U
+%CLAVA_SOURCE_END%
+UTF32
+1
+4
+4
+97
+0
+0
+0
+<Id to Class Map>
+ADDR_229
+StringLiteral
+<Visited Children>
+ADDR_230
+0
+<PointerTypeData>
+ADDR_230
+PointerType
+unsigned int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_211
+<Id to Class Map>
+ADDR_230
+PointerType
+<Top Level Types>
+ADDR_230
+<Visited Children>
+ADDR_231
+1
+ADDR_229
+<ExprData>
+ADDR_231
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+304
+3
+<end>
+0
+0
+ADDR_230
+0
+0
+0
+<Id to Class Map>
+ADDR_231
+ImplicitCastExpr
+<Visited Children>
+ADDR_232
+0
+<BuiltinTypeData>
+ADDR_232
+BuiltinType
+unsigned short
+NONE
+0
+0
+0
+nullptr_type
+UShort
+unsigned short
+<Id to Class Map>
+ADDR_232
+BuiltinType
+<Visited Children>
+ADDR_233
+0
+<ConstantArrayTypeData>
+ADDR_233
+ConstantArrayType
+unsigned short[2]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_232
+2
+<Id to Class Map>
+ADDR_233
+ConstantArrayType
+<Top Level Types>
+ADDR_233
+<Visited Children>
+ADDR_234
+0
+<StringLiteralData>
+ADDR_234
+StringLiteral
+<TEST_DIR>/ast-dump-expr.c
+308
+3
+<end>
+0
+0
+ADDR_233
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+u
+%CLAVA_SOURCE_END%
+UTF16
+1
+2
+2
+97
+0
+<Id to Class Map>
+ADDR_234
+StringLiteral
+<Visited Children>
+ADDR_235
+0
+<PointerTypeData>
+ADDR_235
+PointerType
+unsigned short *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_232
+<Id to Class Map>
+ADDR_235
+PointerType
+<Top Level Types>
+ADDR_235
+<Visited Children>
+ADDR_236
+1
+ADDR_234
+<ExprData>
+ADDR_236
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+308
+3
+<end>
+0
+0
+ADDR_235
+0
+0
+0
+<Id to Class Map>
+ADDR_236
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_237
+0
+<IntegerLiteralData>
+ADDR_237
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+312
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_237
+IntegerLiteral
+<Top Level Types>
+ADDR_211
+<Visited Children>
+ADDR_238
+0
+<IntegerLiteralData>
+ADDR_238
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+315
+3
+<end>
+0
+0
+ADDR_211
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1u
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_238
+IntegerLiteral
+<Visited Children>
+ADDR_239
+0
+<BuiltinTypeData>
+ADDR_239
+BuiltinType
+long long
+NONE
+0
+0
+0
+nullptr_type
+LongLong
+long long
+<Id to Class Map>
+ADDR_239
+BuiltinType
+<Top Level Types>
+ADDR_239
+<Visited Children>
+ADDR_240
+0
+<IntegerLiteralData>
+ADDR_240
+IntegerLiteral
+<TEST_DIR>/ast-dump-expr.c
+318
+3
+<end>
+0
+0
+ADDR_239
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1ll
+%CLAVA_SOURCE_END%
+1
+<Id to Class Map>
+ADDR_240
+IntegerLiteral
+<Visited Children>
+ADDR_241
+0
+<BuiltinTypeData>
+ADDR_241
+BuiltinType
+double
+NONE
+0
+0
+0
+nullptr_type
+Double
+double
+<Id to Class Map>
+ADDR_241
+BuiltinType
+<Top Level Types>
+ADDR_241
+<Visited Children>
+ADDR_242
+0
+<FloatingLiteralData>
+ADDR_242
+FloatingLiteral
+<TEST_DIR>/ast-dump-expr.c
+321
+3
+<end>
+0
+0
+ADDR_241
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1.0
+%CLAVA_SOURCE_END%
+1.000000e+00
+<Id to Class Map>
+ADDR_242
+FloatingLiteral
+<Top Level Types>
+ADDR_137
+<Visited Children>
+ADDR_243
+0
+<FloatingLiteralData>
+ADDR_243
+FloatingLiteral
+<TEST_DIR>/ast-dump-expr.c
+324
+3
+<end>
+0
+0
+ADDR_137
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1.0f
+%CLAVA_SOURCE_END%
+1.000000e+00
+<Id to Class Map>
+ADDR_243
+FloatingLiteral
+<Visited Children>
+ADDR_244
+0
+<BuiltinTypeData>
+ADDR_244
+BuiltinType
+long double
+NONE
+0
+0
+0
+nullptr_type
+LongDouble
+long double
+<Id to Class Map>
+ADDR_244
+BuiltinType
+<Top Level Types>
+ADDR_244
+<Visited Children>
+ADDR_245
+0
+<FloatingLiteralData>
+ADDR_245
+FloatingLiteral
+<TEST_DIR>/ast-dump-expr.c
+327
+3
+<end>
+0
+0
+ADDR_244
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1.0l
+%CLAVA_SOURCE_END%
+1.000000e+00
+<Id to Class Map>
+ADDR_245
+FloatingLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_246
+0
+<DeclRefExprData>
+ADDR_246
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+330
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+
+0
+ADDR_210
+<Id to Class Map>
+ADDR_246
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_247
+0
+<DeclRefExprData>
+ADDR_247
+DeclRefExpr
+<TEST_DIR>/ast-dump-expr.c
+333
+4
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_213
+<Id to Class Map>
+ADDR_247
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_248
+1
+ADDR_247
+<ExprData>
+ADDR_248
+ParenExpr
+<TEST_DIR>/ast-dump-expr.c
+333
+3
+<TEST_DIR>/ast-dump-expr.c
+333
+5
+0
+0
+ADDR_004
+1
+0
+0
+<Id to Class Map>
+ADDR_248
+ParenExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_249
+1
+ADDR_248
+<ExprData>
+ADDR_249
+ImplicitCastExpr
+<TEST_DIR>/ast-dump-expr.c
+333
+3
+<TEST_DIR>/ast-dump-expr.c
+333
+5
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_249
+ImplicitCastExpr
+<Visited Children>
+ADDR_250
+16
+ADDR_215
+ADDR_216
+ADDR_217
+ADDR_222
+ADDR_225
+ADDR_227
+ADDR_231
+ADDR_236
+ADDR_237
+ADDR_238
+ADDR_240
+ADDR_242
+ADDR_243
+ADDR_245
+ADDR_246
+ADDR_249
+<StmtData>
+ADDR_250
+CompoundStmt
+<TEST_DIR>/ast-dump-expr.c
+281
+32
+<TEST_DIR>/ast-dump-expr.c
+339
+1
+0
+0
+<Id to Class Map>
+ADDR_250
+CompoundStmt
+<Visited Children>
+ADDR_212
+2
+ADDR_213
+ADDR_250
+<FunctionDeclData>
+ADDR_212
+FunctionDecl
+<TEST_DIR>/ast-dump-expr.c
+281
+1
+<TEST_DIR>/ast-dump-expr.c
+339
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+PrimaryExpressions
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_012
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_212
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_212
+FunctionDecl
+53 warnings generated.
