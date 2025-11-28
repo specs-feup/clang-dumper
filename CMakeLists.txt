@@ -494,11 +494,11 @@ if(Python3_FOUND)
         # Determine the clang path for plugin tests
         # We need the actual clang compiler, not whatever CMAKE_CXX_COMPILER is set to
         if(WIN32)
-            set(CLANG_FOR_PLUGIN "${MINGW_BASEDIR}/bin/clang++.exe")
+            set(CLANG_FOR_PLUGIN "${MINGW_BASEDIR}/bin/clang.exe")
         elseif(APPLE)
-            set(CLANG_FOR_PLUGIN "/usr/local/opt/llvm@${CLANG_VERSION}/bin/clang++")
+            set(CLANG_FOR_PLUGIN "/usr/local/opt/llvm@${CLANG_VERSION}/bin/clang")
         else()
-            set(CLANG_FOR_PLUGIN "clang++-${CLANG_VERSION}")
+            set(CLANG_FOR_PLUGIN "clang-${CLANG_VERSION}")
         endif()
 
         add_custom_target(test-plugin
