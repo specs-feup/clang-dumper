@@ -210,9 +210,6 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "while.cpp": T(),
 }
 
-# Regex pattern to match memory addresses like 0x7fff1234_42 or 0x1234abcd_0
-ADDRESS_PATTERN = re.compile(r"0x[0-9a-fA-F]+_(\d+)")
-
 # Placeholders for normalized paths
 PATH_PLACEHOLDER = "<TEST_DIR>"
 SYSTEM_INCLUDE_PLACEHOLDER = "<SYSTEM_INCLUDE>"
@@ -278,7 +275,8 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
 # Each pattern becomes a named group, and we use a lookup table for replacements
 def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
     """
-    Build a single combined regex from all system path patterns.
+    Build a single combined regex from all system path patterns AND address pattern.
+    This enables single-pass normalization for better performance on large outputs.
     
     Returns:
         tuple: (compiled_pattern, group_to_replacement_map)
@@ -286,16 +284,21 @@ def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
     groups = []
     group_map = {}
     
+    # Add system path patterns first (more specific, should match before generic patterns)
     for i, (pattern, replacement) in enumerate(_SYSTEM_PATH_PATTERNS):
-        group_name = f"g{i}"
+        group_name = f"syspath{i}"
         groups.append(f"(?P<{group_name}>{pattern})")
         group_map[group_name] = replacement
+    
+    # Add address pattern - replacement is dynamic, so we use a sentinel
+    groups.append(r"(?P<addr>0x[0-9a-fA-F]+_\d+)")
+    group_map["addr"] = None  # Sentinel: handled specially in replacement function
     
     combined = "|".join(groups)
     return re.compile(combined), group_map
 
 # Pre-compiled at module load time
-_SYSTEM_PATH_REGEX, _SYSTEM_PATH_REPLACEMENTS = _build_combined_pattern()
+_UNIFIED_REGEX, _UNIFIED_REPLACEMENTS = _build_combined_pattern()
 
 
 def get_test_config(test_name: str) -> TestConfig:
@@ -311,77 +314,6 @@ def get_test_config(test_name: str) -> TestConfig:
             f"Add an entry for it in run_tests.py to register this test."
         )
     return TEST_REGISTRY[test_name]
-
-
-def normalize_paths(output: str, inputs_dir_str: str) -> str:
-    """
-    Normalize file system paths in the output.
-
-    Replaces the test inputs directory path with a placeholder to make
-    expected files portable across different systems. Also normalizes
-    system header paths that may differ between tool and plugin modes,
-    and across different operating systems (Linux, macOS, Windows).
-
-    Args:
-        output: The output string to normalize
-        inputs_dir_str: The resolved path string to the test inputs directory
-
-    Returns:
-        Output with paths replaced by placeholders
-    """
-    # Replace the path with placeholder
-    normalized = output.replace(inputs_dir_str, PATH_PLACEHOLDER)
-    # Also handle Windows-style paths if present
-    normalized = normalized.replace(inputs_dir_str.replace("/", "\\"), PATH_PLACEHOLDER)
-
-    # Use the pre-compiled combined regex for system path normalization
-    # Using lastgroup is O(1) vs iterating through all groups which is O(n)
-    def replace_system_path(match: re.Match[str]) -> str:
-        group_name = match.lastgroup
-        if group_name is not None:
-            return _SYSTEM_PATH_REPLACEMENTS[group_name]
-        return match.group(0)  # Fallback (shouldn't happen)
-
-    normalized = _SYSTEM_PATH_REGEX.sub(replace_system_path, normalized)
-
-    return normalized
-
-
-def normalize_addresses(output: str) -> tuple[str, dict[str, list[str]]]:
-    """
-    Normalize memory addresses in the output.
-
-    Replaces each unique address with a deterministic placeholder (ADDR_001, ADDR_002, etc.)
-    ordered by first appearance.
-
-    Returns:
-        tuple: (normalized_output, address_mapping)
-            - normalized_output: Output with addresses replaced by placeholders
-            - address_mapping: Dict mapping placeholder -> list of raw addresses seen
-    """
-    address_map: dict[str, str] = {}  # raw_address -> placeholder
-    placeholder_to_raw: dict[str, list[str]] = {}  # placeholder -> [raw_addresses]
-    counter = 1
-
-    def replace_address(match: re.Match) -> str:
-        nonlocal counter
-        raw_address = match.group(0)
-
-        if raw_address not in address_map:
-            placeholder = f"ADDR_{counter:03d}"
-            address_map[raw_address] = placeholder
-            placeholder_to_raw[placeholder] = [raw_address]
-            counter += 1
-        else:
-            placeholder = address_map[raw_address]
-            # Track all occurrences (should all be the same raw address)
-            if raw_address not in placeholder_to_raw[placeholder]:
-                placeholder_to_raw[placeholder].append(raw_address)
-
-        return placeholder
-
-    normalized = ADDRESS_PATTERN.sub(replace_address, output)
-    return normalized, placeholder_to_raw
 
 
 def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[str]:
@@ -402,27 +334,33 @@ def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[
     return errors
 
 
-def run_tool(
+def run_tool_and_normalize(
     mode: Mode,
     path: str,
     input_file: str,
     test_id: int,
+    inputs_dir_str: str,
     clang_path: str | None = None,
     extra_flags: list[str] | None = None,
-) -> tuple[int, str, str]:
+) -> tuple[int, str, str, dict[str, list[str]]]:
     """
-    Run the clang-dumper tool or plugin on an input file.
+    Run the clang-dumper tool or plugin and normalize output via streaming.
+
+    This function combines subprocess execution with output normalization,
+    processing stderr line-by-line as it arrives to reduce memory pressure
+    and improve performance on large outputs.
 
     Args:
         mode: Either "tool" or "plugin"
         path: Path to the tool executable or plugin shared library
         input_file: Path to the input source file
         test_id: The test ID for address disambiguation
+        inputs_dir_str: Pre-resolved inputs directory path for normalization
         clang_path: Path to clang executable (required for plugin mode)
         extra_flags: Additional compiler flags to pass
 
     Returns:
-        tuple: (return_code, stdout, stderr)
+        tuple: (return_code, stdout, normalized_stderr, address_mapping)
     """
     flags = extra_flags or []
 
@@ -451,13 +389,62 @@ def run_tool(
             ]
         )
 
-    result = subprocess.run(
+    # State for address normalization
+    address_map: dict[str, str] = {}  # raw_address -> placeholder
+    placeholder_to_raw: dict[str, list[str]] = {}  # placeholder -> [raw_addresses]
+    counter = [1]  # Use list to allow mutation in nested function
+    
+    # Precompute Windows-style path for replacement
+    inputs_dir_str_win = inputs_dir_str.replace("/", "\\")
+
+    def unified_replacer(match: re.Match[str]) -> str:
+        """Single-pass replacement function for both paths and addresses."""
+        group_name = match.lastgroup
+        if group_name is None:
+            return match.group(0)
+        
+        if group_name == "addr":
+            raw_address = match.group(0)
+            if raw_address not in address_map:
+                placeholder = f"ADDR_{counter[0]:03d}"
+                address_map[raw_address] = placeholder
+                placeholder_to_raw[placeholder] = [raw_address]
+                counter[0] += 1
+            else:
+                placeholder = address_map[raw_address]
+                if raw_address not in placeholder_to_raw[placeholder]:
+                    placeholder_to_raw[placeholder].append(raw_address)
+            return placeholder
+        
+        replacement = _UNIFIED_REPLACEMENTS.get(group_name)
+        if replacement is not None:
+            return replacement
+        return match.group(0)
+
+    # Run subprocess with streaming stderr processing
+    proc = subprocess.Popen(
         cmd,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
     )
-
-    return result.returncode, result.stdout, result.stderr
+    
+    # Process stderr line-by-line for memory efficiency on large outputs
+    normalized_lines: list[str] = []
+    assert proc.stderr is not None
+    for line in proc.stderr:
+        # Fast string replacement for inputs_dir (before regex)
+        line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
+        line = line.replace(inputs_dir_str_win, PATH_PLACEHOLDER)
+        # Single-pass regex for system paths and addresses
+        line = _UNIFIED_REGEX.sub(unified_replacer, line)
+        normalized_lines.append(line)
+    
+    # Read stdout and wait for process
+    stdout, _ = proc.communicate()
+    
+    normalized_stderr = "".join(normalized_lines)
+    return proc.returncode, stdout, normalized_stderr, placeholder_to_raw
 
 
 def discover_tests(inputs_dir: Path) -> list[Path]:
@@ -532,19 +519,13 @@ def run_single_test(
             f"Run with --generate to create it, or check if the test is properly registered."
         )
 
-    # Run the tool or plugin
-    return_code, stdout, stderr = run_tool(
-        mode, path, str(input_file), config.id, clang_path, config.flags
+    # Run the tool/plugin with streaming normalization
+    return_code, stdout, normalized_output, placeholder_to_raw = run_tool_and_normalize(
+        mode, path, str(input_file), config.id, inputs_dir_str, clang_path, config.flags
     )
 
     if return_code != 0:
         return TestStatus.FAIL, f"Tool exited with code {return_code}"
-
-    # Normalize paths first (before addresses, as paths may contain hex-like sequences)
-    path_normalized_output = normalize_paths(stderr, inputs_dir_str)
-
-    # Normalize addresses in stderr (that's where the AST dump goes)
-    normalized_output, placeholder_to_raw = normalize_addresses(path_normalized_output)
 
     # Check address consistency
     consistency_errors = check_address_consistency(placeholder_to_raw)
