@@ -16,14 +16,15 @@ Usage:
 """
 
 import argparse
+import os
 import platform
 import re
 import subprocess
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal, get_args
-import os
 
 # Type alias for mode
 Mode = Literal["tool", "plugin"]
@@ -312,7 +313,7 @@ def get_test_config(test_name: str) -> TestConfig:
     return TEST_REGISTRY[test_name]
 
 
-def normalize_paths(output: str, inputs_dir: Path) -> str:
+def normalize_paths(output: str, inputs_dir_str: str) -> str:
     """
     Normalize file system paths in the output.
 
@@ -323,25 +324,22 @@ def normalize_paths(output: str, inputs_dir: Path) -> str:
 
     Args:
         output: The output string to normalize
-        inputs_dir: The path to the test inputs directory
+        inputs_dir_str: The resolved path string to the test inputs directory
 
     Returns:
         Output with paths replaced by placeholders
     """
-    # Normalize the inputs directory path (handle both forward and back slashes)
-    inputs_dir_str = str(inputs_dir.resolve())
     # Replace the path with placeholder
     normalized = output.replace(inputs_dir_str, PATH_PLACEHOLDER)
     # Also handle Windows-style paths if present
     normalized = normalized.replace(inputs_dir_str.replace("/", "\\"), PATH_PLACEHOLDER)
 
     # Use the pre-compiled combined regex for system path normalization
-    # This is much faster than applying 25+ regex substitutions sequentially
+    # Using lastgroup is O(1) vs iterating through all groups which is O(n)
     def replace_system_path(match: re.Match[str]) -> str:
-        # Find which named group matched
-        for group_name, replacement in _SYSTEM_PATH_REPLACEMENTS.items():
-            if match.group(group_name) is not None:
-                return replacement
+        group_name = match.lastgroup
+        if group_name is not None:
+            return _SYSTEM_PATH_REPLACEMENTS[group_name]
         return match.group(0)  # Fallback (shouldn't happen)
 
     normalized = _SYSTEM_PATH_REGEX.sub(replace_system_path, normalized)
@@ -498,7 +496,7 @@ def run_single_test(
     path: str,
     input_file: Path,
     expected_dir: Path,
-    inputs_dir: Path,
+    inputs_dir_str: str,
     generate: bool,
     enabled_features: set[str],
     clang_path: str | None = None,
@@ -543,7 +541,7 @@ def run_single_test(
         return TestStatus.FAIL, f"Tool exited with code {return_code}"
 
     # Normalize paths first (before addresses, as paths may contain hex-like sequences)
-    path_normalized_output = normalize_paths(stderr, inputs_dir)
+    path_normalized_output = normalize_paths(stderr, inputs_dir_str)
 
     # Normalize addresses in stderr (that's where the AST dump goes)
     normalized_output, placeholder_to_raw = normalize_addresses(path_normalized_output)
@@ -716,9 +714,13 @@ def main():
         )
         sys.exit(1)
 
+    # Pre-resolve inputs_dir to string once (avoid repeated Path.resolve() calls)
+    inputs_dir_str = str(inputs_dir.resolve())
+
+    num_workers = os.cpu_count() or 1
     print(
         f"{'Generating' if args.generate else 'Running'} {len(tests)} test(s) "
-        f"in {args.mode} mode..."
+        f"in {args.mode} mode using {num_workers} parallel workers..."
     )
     if enabled_features:
         print(f"Enabled features: {', '.join(sorted(enabled_features))}")
@@ -756,18 +758,41 @@ def main():
     SKIP_LABEL = _color("SKIP", "33")
     FAIL_LABEL = _color("FAIL", "31")
 
+    # Run tests in parallel using ProcessPoolExecutor
+    # Results are collected and printed in original test order for predictable output
+    results: dict[str, tuple[str, str]] = {}
+
+    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+        # Submit all tests
+        future_to_test = {
+            executor.submit(
+                run_single_test,
+                mode=args.mode,
+                path=str(target_path),
+                input_file=test_file,
+                expected_dir=expected_dir,
+                inputs_dir_str=inputs_dir_str,
+                generate=args.generate,
+                enabled_features=enabled_features,
+                clang_path=clang_path,
+            ): test_file
+            for test_file in tests
+        }
+
+        # Collect results as they complete
+        for future in as_completed(future_to_test):
+            test_file = future_to_test[future]
+            test_name = test_file.name
+            try:
+                status, message = future.result()
+                results[test_name] = (status, message)
+            except Exception as e:
+                results[test_name] = (TestStatus.FAIL, f"Exception: {e}")
+
+    # Print results in original test order
     for test_file in tests:
         test_name = test_file.name
-        status, message = run_single_test(
-            mode=args.mode,
-            path=str(target_path),
-            input_file=test_file,
-            expected_dir=expected_dir,
-            inputs_dir=inputs_dir,
-            generate=args.generate,
-            enabled_features=enabled_features,
-            clang_path=clang_path,
-        )
+        status, message = results[test_name]
 
         if status == TestStatus.PASS:
             passed += 1
