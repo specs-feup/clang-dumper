@@ -218,6 +218,84 @@ SYSTEM_INCLUDE_PLACEHOLDER = "<SYSTEM_INCLUDE>"
 CLANG_INCLUDE_PLACEHOLDER = "<CLANG_INCLUDE>"
 GCC_INCLUDE_PLACEHOLDER = "<GCC_INCLUDE>"
 
+# System header path normalization patterns
+# These patterns replace platform-specific paths with portable placeholders
+# Organized as (pattern, replacement) tuples - order matters for specificity
+_SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
+    # ==================== CLANG BUILTIN HEADERS ====================
+    # Linux: Various Clang installation layouts
+    (r"/usr/lib/llvm-\d+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"/usr/include/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"/usr/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+
+    # macOS: Homebrew and Xcode Clang installations
+    (r"/usr/local/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"/opt/homebrew/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"/Applications/Xcode\.app/.+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+
+    # Windows: MSYS2/MinGW and LLVM installations
+    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\]Program Files[/\\]LLVM[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
+
+    # ==================== GCC HEADERS ====================
+    # Linux: Canonicalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/
+    (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
+
+    # macOS: GCC from Homebrew
+    (r"/usr/local/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
+    (r"/opt/homebrew/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
+
+    # Windows: MinGW GCC
+    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]gcc[/\\][^/\\]+[/\\][\d.]+[/\\]include", GCC_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]gcc[/\\][^/\\]+[/\\][\d.]+[/\\]include", GCC_INCLUDE_PLACEHOLDER),
+
+    # ==================== SYSTEM C/C++ HEADERS ====================
+    # Linux: Standard system includes
+    (r"/usr/include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
+
+    # macOS: SDK and system headers
+    (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"/Applications/Xcode\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
+
+    # Windows: MSVC and Windows SDK headers
+    (r"[A-Za-z]:[/\\]Program Files[/\\]Microsoft Visual Studio[/\\][^/\\]+[/\\][^/\\]+[/\\]VC[/\\]Tools[/\\]MSVC[/\\][\d.]+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\]Program Files \(x86\)[/\\]Windows Kits[/\\]\d+[/\\]Include[/\\][\d.]+[/\\]\w+", SYSTEM_INCLUDE_PLACEHOLDER),
+
+    # Windows: MinGW system includes
+    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\][^/\\]+-w64-mingw32[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
+
+    # Generic /usr/include (should be last for Linux paths)
+    (r"/usr/include(?=/[^/])", SYSTEM_INCLUDE_PLACEHOLDER),
+]
+
+# Build a single combined regex pattern at module load time for performance
+# Each pattern becomes a named group, and we use a lookup table for replacements
+def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
+    """
+    Build a single combined regex from all system path patterns.
+    
+    Returns:
+        tuple: (compiled_pattern, group_to_replacement_map)
+    """
+    groups = []
+    group_map = {}
+    
+    for i, (pattern, replacement) in enumerate(_SYSTEM_PATH_PATTERNS):
+        group_name = f"g{i}"
+        groups.append(f"(?P<{group_name}>{pattern})")
+        group_map[group_name] = replacement
+    
+    combined = "|".join(groups)
+    return re.compile(combined), group_map
+
+# Pre-compiled at module load time
+_SYSTEM_PATH_REGEX, _SYSTEM_PATH_REPLACEMENTS = _build_combined_pattern()
+
 
 def get_test_config(test_name: str) -> TestConfig:
     """
@@ -257,92 +335,16 @@ def normalize_paths(output: str, inputs_dir: Path) -> str:
     # Also handle Windows-style paths if present
     normalized = normalized.replace(inputs_dir_str.replace("/", "\\"), PATH_PLACEHOLDER)
 
-    # System header path normalization patterns
-    # These patterns replace platform-specific paths with portable placeholders
-    # Order matters: more specific patterns should come before general ones
+    # Use the pre-compiled combined regex for system path normalization
+    # This is much faster than applying 25+ regex substitutions sequentially
+    def replace_system_path(match: re.Match[str]) -> str:
+        # Find which named group matched
+        for group_name, replacement in _SYSTEM_PATH_REPLACEMENTS.items():
+            if match.group(group_name) is not None:
+                return replacement
+        return match.group(0)  # Fallback (shouldn't happen)
 
-    system_path_patterns = [
-        # ==================== CLANG BUILTIN HEADERS ====================
-        # Linux: Various Clang installation layouts
-        # /usr/lib/llvm-16/lib/clang/16/include/stddef.h
-        # /usr/lib/llvm-16/lib/clang/16.0.6/include/stddef.h
-        # /usr/include/clang/16/include/stddef.h
-        # /usr/include/clang/16.0.6/include/stddef.h
-        (r"/usr/lib/llvm-\d+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-        (r"/usr/include/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-        (r"/usr/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-
-        # macOS: Homebrew and Xcode Clang installations
-        # /usr/local/opt/llvm@16/lib/clang/16/include
-        # /opt/homebrew/opt/llvm@16/lib/clang/16/include (Apple Silicon)
-        # /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include
-        (r"/usr/local/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-        (r"/opt/homebrew/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-        (r"/Applications/Xcode\.app/.+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-
-        # Windows: MSYS2/MinGW and LLVM installations
-        # C:/msys64/mingw64/lib/clang/16/include
-        # C:/Program Files/LLVM/lib/clang/16/include
-        # c:/mingw64-clang-16/lib/clang/16/include
-        (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-        (r"[A-Za-z]:[/\\]Program Files[/\\]LLVM[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-        (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-
-        # ==================== GCC HEADERS ====================
-        # Linux: GCC installation paths (handle /usr/bin/../lib -> /usr/lib canonicalization)
-        # These paths often have complex relative segments like ../../../../include/c++/14
-        # /usr/lib/gcc/x86_64-linux-gnu/12/include
-        # /usr/bin/../lib/gcc/x86_64-linux-gnu/12/include
-        # /usr/lib/gcc/x86_64-linux-gnu/14/../../../../include/c++/14/...
-        # /usr/bin/../lib/gcc/x86_64-linux-gnu/14/../../../../include/c++/14/...
-        # Normalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/ (canonicalize the relative path)
-        (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
-        # Now both will be normalized to the same form
-
-        # macOS: GCC from Homebrew
-        # /usr/local/Cellar/gcc/13.1.0/lib/gcc/13/gcc/x86_64-apple-darwin22/13/include
-        # /opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/...
-        (r"/usr/local/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
-        (r"/opt/homebrew/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
-
-        # Windows: MinGW GCC
-        # C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include
-        (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]gcc[/\\][^/\\]+[/\\][\d.]+[/\\]include", GCC_INCLUDE_PLACEHOLDER),
-        (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]gcc[/\\][^/\\]+[/\\][\d.]+[/\\]include", GCC_INCLUDE_PLACEHOLDER),
-
-        # ==================== SYSTEM C/C++ HEADERS ====================
-        # Linux: Standard system includes
-        # /usr/include/c++/12
-        # /usr/include/x86_64-linux-gnu/c++/12
-        (r"/usr/include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-        (r"/usr/include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-        (r"/usr/include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
-
-        # macOS: SDK and system headers
-        # /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
-        # /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
-        (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
-        (r"/Applications/Xcode\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
-
-        # Windows: MSVC and Windows SDK headers
-        # C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.35.32215/include
-        # C:/Program Files (x86)/Windows Kits/10/Include/10.0.22000.0/ucrt
-        (r"[A-Za-z]:[/\\]Program Files[/\\]Microsoft Visual Studio[/\\][^/\\]+[/\\][^/\\]+[/\\]VC[/\\]Tools[/\\]MSVC[/\\][\d.]+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-        (r"[A-Za-z]:[/\\]Program Files \(x86\)[/\\]Windows Kits[/\\]\d+[/\\]Include[/\\][\d.]+[/\\]\w+", SYSTEM_INCLUDE_PLACEHOLDER),
-
-        # Windows: MinGW system includes
-        # C:/msys64/mingw64/include
-        # C:/msys64/mingw64/x86_64-w64-mingw32/include
-        (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-        (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\][^/\\]+-w64-mingw32[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-        (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-
-        # Generic /usr/include (should be last for Linux paths)
-        (r"/usr/include(?=/[^/])", SYSTEM_INCLUDE_PLACEHOLDER),
-    ]
-
-    for pattern, replacement in system_path_patterns:
-        normalized = re.sub(pattern, replacement, normalized)
+    normalized = _SYSTEM_PATH_REGEX.sub(replace_system_path, normalized)
 
     return normalized
 
