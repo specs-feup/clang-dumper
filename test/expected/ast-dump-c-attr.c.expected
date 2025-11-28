@@ -1,0 +1,943 @@
+<Compiler Instance Data>
+<TEST_DIR>/ast-dump-c-attr.c
+1
+0
+1
+1
+0
+0
+0
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+8
+32
+64
+128
+8
+16
+32
+64
+64
+<Id-File Map>
+0
+<TEST_DIR>/ast-dump-c-attr.c
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<AttributeData>
+ADDR_002
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+3
+13
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_002
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_002
+<Visited Children>
+ADDR_003
+0
+<BuiltinTypeData>
+ADDR_003
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_003
+BuiltinType
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_001
+0
+<VarDeclData>
+ADDR_001
+VarDecl
+<TEST_DIR>/ast-dump-c-attr.c
+3
+1
+<TEST_DIR>/ast-dump-c-attr.c
+3
+5
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_002
+
+Test1
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_003
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_001
+VarDecl
+<Top Level Nodes>
+ADDR_004
+<Visited Children>
+ADDR_005
+0
+<AttributeData>
+ADDR_005
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+7
+8
+<TEST_DIR>/ast-dump-c-attr.c
+7
+28
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_005
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_005
+<Visited Children>
+ADDR_006
+0
+<TagTypeData>
+ADDR_006
+EnumType
+enum Test2
+NONE
+0
+0
+0
+nullptr_type
+ADDR_004
+<Id to Class Map>
+ADDR_006
+EnumType
+<Visited Children>
+ADDR_007
+0
+<AttributeData>
+ADDR_007
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+8
+11
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_007
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_007
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_008
+1
+nullptr_expr
+<ValueDeclData>
+ADDR_008
+EnumConstantDecl
+<TEST_DIR>/ast-dump-c-attr.c
+8
+3
+<end>
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_007
+
+Test3
+0
+0
+0
+NoLinkage
+Default
+ADDR_003
+0
+<Id to Class Map>
+ADDR_008
+EnumConstantDecl
+<Visited Children>
+ADDR_009
+0
+<BuiltinTypeData>
+ADDR_009
+BuiltinType
+unsigned int
+NONE
+0
+0
+0
+nullptr_type
+UInt
+unsigned int
+<Id to Class Map>
+ADDR_009
+BuiltinType
+<Visited Children>
+ADDR_004
+1
+ADDR_008
+<EnumDeclData>
+ADDR_004
+EnumDecl
+<TEST_DIR>/ast-dump-c-attr.c
+7
+1
+<TEST_DIR>/ast-dump-c-attr.c
+9
+1
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_005
+
+Test2
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_006
+Enum
+1
+NO_SCOPE
+ADDR_009
+<Id to Class Map>
+ADDR_004
+EnumDecl
+<Top Level Nodes>
+ADDR_010
+<Visited Children>
+ADDR_011
+0
+<AttributeData>
+ADDR_011
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+15
+10
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_011
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_011
+<Visited Children>
+ADDR_012
+0
+<TagTypeData>
+ADDR_012
+RecordType
+struct Test4
+NONE
+0
+0
+0
+nullptr_type
+ADDR_010
+<Id to Class Map>
+ADDR_012
+RecordType
+<Visited Children>
+ADDR_013
+0
+<AttributeData>
+ADDR_013
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+16
+5
+<TEST_DIR>/ast-dump-c-attr.c
+16
+25
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_013
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_013
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_014
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_014
+FieldDecl
+<TEST_DIR>/ast-dump-c-attr.c
+16
+29
+<TEST_DIR>/ast-dump-c-attr.c
+16
+33
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_013
+Test4
+Test5
+0
+1
+1
+ExternalLinkage
+Default
+ADDR_003
+0
+0
+<Id to Class Map>
+ADDR_014
+FieldDecl
+<Visited Children>
+ADDR_015
+0
+<AttributeData>
+ADDR_015
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+16
+5
+<TEST_DIR>/ast-dump-c-attr.c
+16
+25
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_015
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_015
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_016
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_016
+FieldDecl
+<TEST_DIR>/ast-dump-c-attr.c
+16
+29
+<TEST_DIR>/ast-dump-c-attr.c
+16
+40
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_015
+Test4
+Test6
+0
+1
+1
+ExternalLinkage
+Default
+ADDR_003
+0
+0
+<Id to Class Map>
+ADDR_016
+FieldDecl
+<Visited Children>
+ADDR_017
+0
+<AttributeData>
+ADDR_017
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+17
+15
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_017
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_017
+<Top Level Types>
+ADDR_003
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_018
+0
+<IntegerLiteralData>
+ADDR_018
+IntegerLiteral
+<TEST_DIR>/ast-dump-c-attr.c
+17
+30
+<end>
+0
+0
+ADDR_003
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+12
+%CLAVA_SOURCE_END%
+12
+<Id to Class Map>
+ADDR_018
+IntegerLiteral
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_019
+1
+ADDR_018
+<ExprData>
+ADDR_019
+ConstantExpr
+<TEST_DIR>/ast-dump-c-attr.c
+17
+30
+<end>
+0
+0
+ADDR_003
+0
+0
+0
+<Id to Class Map>
+ADDR_019
+ConstantExpr
+<Visited Children>
+ADDR_020
+2
+ADDR_019
+nullptr_expr
+<FieldDeclData>
+ADDR_020
+FieldDecl
+<TEST_DIR>/ast-dump-c-attr.c
+17
+3
+<TEST_DIR>/ast-dump-c-attr.c
+17
+30
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_017
+Test4
+Test7
+0
+1
+1
+ExternalLinkage
+Default
+ADDR_003
+0
+0
+<Id to Class Map>
+ADDR_020
+FieldDecl
+<Visited Children>
+ADDR_010
+3
+ADDR_014
+ADDR_016
+ADDR_020
+<RecordDeclData>
+ADDR_010
+RecordDecl
+<TEST_DIR>/ast-dump-c-attr.c
+15
+1
+<TEST_DIR>/ast-dump-c-attr.c
+18
+1
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_011
+
+Test4
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_012
+Struct
+1
+0
+<Id to Class Map>
+ADDR_010
+RecordDecl
+<Top Level Nodes>
+ADDR_021
+<Visited Children>
+ADDR_022
+0
+<AttributeData>
+ADDR_022
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+30
+10
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_022
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_022
+<Visited Children>
+ADDR_023
+0
+<TagTypeData>
+ADDR_023
+RecordType
+struct Test8
+NONE
+0
+0
+0
+nullptr_type
+ADDR_021
+<Id to Class Map>
+ADDR_023
+RecordType
+<Visited Children>
+ADDR_021
+0
+<RecordDeclData>
+ADDR_021
+RecordDecl
+<TEST_DIR>/ast-dump-c-attr.c
+30
+1
+<TEST_DIR>/ast-dump-c-attr.c
+30
+23
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_022
+
+Test8
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_023
+Struct
+0
+0
+<Id to Class Map>
+ADDR_021
+RecordDecl
+<Top Level Nodes>
+ADDR_024
+<Visited Children>
+ADDR_025
+0
+<AttributeData>
+ADDR_025
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+34
+3
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_025
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_025
+<Visited Children>
+ADDR_026
+0
+<BuiltinTypeData>
+ADDR_026
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_026
+BuiltinType
+<Visited Children>
+ADDR_027
+0
+<FunctionProtoTypeData>
+ADDR_027
+FunctionProtoType
+void (int)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_026
+1
+1
+ADDR_003
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_027
+FunctionProtoType
+<Top Level Types>
+ADDR_027
+<Visited Children>
+ADDR_028
+0
+<AttributeData>
+ADDR_028
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+34
+40
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_028
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_028
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_029
+0
+<ParmVarDeclData>
+ADDR_029
+ParmVarDecl
+<TEST_DIR>/ast-dump-c-attr.c
+34
+27
+<TEST_DIR>/ast-dump-c-attr.c
+34
+31
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_028
+
+Test10
+0
+0
+0
+NoLinkage
+Default
+ADDR_003
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_029
+ParmVarDecl
+<Visited Children>
+ADDR_024
+1
+ADDR_029
+<FunctionDeclData>
+ADDR_024
+FunctionDecl
+<TEST_DIR>/ast-dump-c-attr.c
+34
+16
+<TEST_DIR>/ast-dump-c-attr.c
+34
+52
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_025
+
+Test9
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_027
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_024
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_024
+FunctionDecl
+<Top Level Nodes>
+ADDR_030
+<Visited Children>
+ADDR_031
+0
+<AttributeData>
+ADDR_031
+DeprecatedAttr
+<TEST_DIR>/ast-dump-c-attr.c
+40
+15
+<end>
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_031
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_031
+<Visited Children>
+ADDR_032
+0
+<FunctionProtoTypeData>
+ADDR_032
+FunctionProtoType
+void (void)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_026
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_032
+FunctionProtoType
+<Top Level Types>
+ADDR_032
+<Visited Children>
+ADDR_030
+0
+<FunctionDeclData>
+ADDR_030
+FunctionDecl
+<TEST_DIR>/ast-dump-c-attr.c
+40
+1
+<TEST_DIR>/ast-dump-c-attr.c
+40
+32
+0
+0
+0
+0
+0
+0
+0
+1
+ADDR_031
+
+Test11
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_032
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_030
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_030
+FunctionDecl

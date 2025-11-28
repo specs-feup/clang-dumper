@@ -1,0 +1,840 @@
+<Compiler Instance Data>
+<TEST_DIR>/variadic-promotion.c
+1
+0
+1
+1
+0
+0
+0
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+8
+32
+64
+128
+8
+16
+32
+64
+64
+<Id-File Map>
+0
+<TEST_DIR>/variadic-promotion.c
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<BuiltinTypeData>
+ADDR_003
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_003
+BuiltinType
+<Visited Children>
+ADDR_004
+0
+<FunctionProtoTypeData>
+ADDR_004
+FunctionProtoType
+void (int, ...)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+1
+1
+ADDR_003
+0
+1
+None
+None
+0
+<Id to Class Map>
+ADDR_004
+FunctionProtoType
+<Top Level Types>
+ADDR_004
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_005
+0
+<ParmVarDeclData>
+ADDR_005
+ParmVarDecl
+<TEST_DIR>/variadic-promotion.c
+3
+15
+<end>
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+NoLinkage
+Default
+ADDR_003
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_005
+ParmVarDecl
+<Visited Children>
+ADDR_001
+1
+ADDR_005
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/variadic-promotion.c
+3
+1
+<TEST_DIR>/variadic-promotion.c
+3
+23
+0
+0
+0
+0
+0
+0
+0
+0
+
+variadic
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_004
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Top Level Nodes>
+ADDR_006
+<Visited Children>
+ADDR_007
+0
+<BuiltinTypeData>
+ADDR_007
+BuiltinType
+__fp16
+NONE
+0
+0
+0
+nullptr_type
+Half
+__fp16
+<Id to Class Map>
+ADDR_007
+BuiltinType
+<Visited Children>
+ADDR_008
+0
+<PointerTypeData>
+ADDR_008
+PointerType
+__fp16 *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_007
+<Id to Class Map>
+ADDR_008
+PointerType
+<Visited Children>
+ADDR_009
+0
+<BuiltinTypeData>
+ADDR_009
+BuiltinType
+float
+NONE
+0
+0
+0
+nullptr_type
+Float
+float
+<Id to Class Map>
+ADDR_009
+BuiltinType
+<Visited Children>
+ADDR_010
+0
+<BuiltinTypeData>
+ADDR_010
+BuiltinType
+double
+NONE
+0
+0
+0
+nullptr_type
+Double
+double
+<Id to Class Map>
+ADDR_010
+BuiltinType
+<Visited Children>
+ADDR_011
+0
+<FunctionProtoTypeData>
+ADDR_011
+FunctionProtoType
+void (__fp16 *, float, double)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+3
+3
+ADDR_008
+ADDR_009
+ADDR_010
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_011
+FunctionProtoType
+<Top Level Types>
+ADDR_011
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_012
+0
+<ParmVarDeclData>
+ADDR_012
+ParmVarDecl
+<TEST_DIR>/variadic-promotion.c
+5
+30
+<TEST_DIR>/variadic-promotion.c
+5
+38
+0
+0
+0
+1
+1
+0
+0
+0
+
+f16
+0
+0
+0
+NoLinkage
+Default
+ADDR_008
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_012
+ParmVarDecl
+<Top Level Types>
+ADDR_009
+<Visited Children>
+ADDR_013
+0
+<ParmVarDeclData>
+ADDR_013
+ParmVarDecl
+<TEST_DIR>/variadic-promotion.c
+5
+43
+<TEST_DIR>/variadic-promotion.c
+5
+49
+0
+0
+0
+1
+1
+0
+0
+0
+
+f32
+0
+0
+0
+NoLinkage
+Default
+ADDR_009
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_013
+ParmVarDecl
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_014
+0
+<ParmVarDeclData>
+ADDR_014
+ParmVarDecl
+<TEST_DIR>/variadic-promotion.c
+5
+54
+<TEST_DIR>/variadic-promotion.c
+5
+61
+0
+0
+0
+1
+1
+0
+0
+0
+
+f64
+0
+0
+0
+NoLinkage
+Default
+ADDR_010
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_014
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_015
+0
+<DeclRefExprData>
+ADDR_015
+DeclRefExpr
+<TEST_DIR>/variadic-promotion.c
+6
+3
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+
+0
+ADDR_001
+<Id to Class Map>
+ADDR_015
+DeclRefExpr
+<Visited Children>
+ADDR_016
+0
+<PointerTypeData>
+ADDR_016
+PointerType
+void (*)(int, ...)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_004
+<Id to Class Map>
+ADDR_016
+PointerType
+<Top Level Types>
+ADDR_016
+<Visited Children>
+ADDR_017
+1
+ADDR_015
+<ExprData>
+ADDR_017
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+3
+<end>
+0
+0
+ADDR_016
+0
+0
+0
+<Id to Class Map>
+ADDR_017
+ImplicitCastExpr
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_018
+0
+<IntegerLiteralData>
+ADDR_018
+IntegerLiteral
+<TEST_DIR>/variadic-promotion.c
+6
+12
+<end>
+0
+0
+ADDR_003
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+3
+%CLAVA_SOURCE_END%
+3
+<Id to Class Map>
+ADDR_018
+IntegerLiteral
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_019
+0
+<DeclRefExprData>
+ADDR_019
+DeclRefExpr
+<TEST_DIR>/variadic-promotion.c
+6
+16
+<end>
+0
+0
+ADDR_008
+1
+0
+0
+
+0
+ADDR_012
+<Id to Class Map>
+ADDR_019
+DeclRefExpr
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_020
+1
+ADDR_019
+<ExprData>
+ADDR_020
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+16
+<end>
+0
+0
+ADDR_008
+0
+0
+0
+<Id to Class Map>
+ADDR_020
+ImplicitCastExpr
+<Top Level Types>
+ADDR_007
+<Visited Children>
+ADDR_021
+1
+ADDR_020
+<UnaryOperatorData>
+ADDR_021
+UnaryOperator
+<TEST_DIR>/variadic-promotion.c
+6
+15
+<TEST_DIR>/variadic-promotion.c
+6
+16
+0
+0
+ADDR_007
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_021
+UnaryOperator
+<Top Level Types>
+ADDR_007
+<Visited Children>
+ADDR_022
+1
+ADDR_021
+<ExprData>
+ADDR_022
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+15
+<TEST_DIR>/variadic-promotion.c
+6
+16
+0
+0
+ADDR_007
+0
+0
+0
+<Id to Class Map>
+ADDR_022
+ImplicitCastExpr
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_023
+1
+ADDR_022
+<ExprData>
+ADDR_023
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+15
+<TEST_DIR>/variadic-promotion.c
+6
+16
+0
+0
+ADDR_010
+0
+0
+0
+<Id to Class Map>
+ADDR_023
+ImplicitCastExpr
+<Top Level Types>
+ADDR_009
+<Visited Children>
+ADDR_024
+0
+<DeclRefExprData>
+ADDR_024
+DeclRefExpr
+<TEST_DIR>/variadic-promotion.c
+6
+21
+<end>
+0
+0
+ADDR_009
+1
+0
+0
+
+0
+ADDR_013
+<Id to Class Map>
+ADDR_024
+DeclRefExpr
+<Top Level Types>
+ADDR_009
+<Visited Children>
+ADDR_025
+1
+ADDR_024
+<ExprData>
+ADDR_025
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+21
+<end>
+0
+0
+ADDR_009
+0
+0
+0
+<Id to Class Map>
+ADDR_025
+ImplicitCastExpr
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_026
+1
+ADDR_025
+<ExprData>
+ADDR_026
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+21
+<end>
+0
+0
+ADDR_010
+0
+0
+0
+<Id to Class Map>
+ADDR_026
+ImplicitCastExpr
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_027
+0
+<DeclRefExprData>
+ADDR_027
+DeclRefExpr
+<TEST_DIR>/variadic-promotion.c
+6
+26
+<end>
+0
+0
+ADDR_010
+1
+0
+0
+
+0
+ADDR_014
+<Id to Class Map>
+ADDR_027
+DeclRefExpr
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_028
+1
+ADDR_027
+<ExprData>
+ADDR_028
+ImplicitCastExpr
+<TEST_DIR>/variadic-promotion.c
+6
+26
+<end>
+0
+0
+ADDR_010
+0
+0
+0
+<Id to Class Map>
+ADDR_028
+ImplicitCastExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_029
+5
+ADDR_017
+ADDR_018
+ADDR_023
+ADDR_026
+ADDR_028
+<CallExprData>
+ADDR_029
+CallExpr
+<TEST_DIR>/variadic-promotion.c
+6
+3
+<TEST_DIR>/variadic-promotion.c
+6
+29
+0
+0
+ADDR_002
+0
+0
+0
+ADDR_001
+<Id to Class Map>
+ADDR_029
+CallExpr
+<Visited Children>
+ADDR_030
+1
+ADDR_029
+<StmtData>
+ADDR_030
+CompoundStmt
+<TEST_DIR>/variadic-promotion.c
+5
+66
+<TEST_DIR>/variadic-promotion.c
+13
+1
+0
+0
+<Id to Class Map>
+ADDR_030
+CompoundStmt
+<Visited Children>
+ADDR_006
+4
+ADDR_012
+ADDR_013
+ADDR_014
+ADDR_030
+<FunctionDeclData>
+ADDR_006
+FunctionDecl
+<TEST_DIR>/variadic-promotion.c
+5
+1
+<TEST_DIR>/variadic-promotion.c
+13
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+test_floating_promotion
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_011
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_006
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_006
+FunctionDecl

@@ -1,0 +1,435 @@
+<Compiler Instance Data>
+<TEST_DIR>/array_filler.c
+1
+0
+1
+1
+0
+0
+0
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+8
+32
+64
+128
+8
+16
+32
+64
+64
+<Id-File Map>
+0
+<TEST_DIR>/array_filler.c
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<FunctionTypeData>
+ADDR_003
+FunctionNoProtoType
+int ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+<Id to Class Map>
+ADDR_003
+FunctionNoProtoType
+<Top Level Types>
+ADDR_003
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_004
+0
+<VarDeclData>
+ADDR_004
+VarDecl
+<TEST_DIR>/array_filler.c
+2
+2
+<TEST_DIR>/array_filler.c
+2
+6
+0
+0
+0
+0
+0
+0
+0
+0
+
+i
+0
+0
+0
+NoLinkage
+Default
+ADDR_002
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_004
+VarDecl
+<Visited Children>
+ADDR_005
+0
+<ConstantArrayTypeData>
+ADDR_005
+ConstantArrayType
+int[4]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_002
+4
+<Id to Class Map>
+ADDR_005
+ConstantArrayType
+<Top Level Types>
+ADDR_005
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_006
+0
+<IntegerLiteralData>
+ADDR_006
+IntegerLiteral
+<TEST_DIR>/array_filler.c
+2
+23
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_006
+IntegerLiteral
+<Top Level Types>
+ADDR_005
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_007
+0
+<ExprData>
+ADDR_007
+ImplicitValueInitExpr
+<invalid>
+0
+0
+ADDR_002
+0
+0
+0
+<Id to Class Map>
+ADDR_007
+ImplicitValueInitExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_008
+1
+ADDR_006
+<InitListExprData>
+ADDR_008
+InitListExpr
+<TEST_DIR>/array_filler.c
+2
+22
+<TEST_DIR>/array_filler.c
+2
+25
+0
+0
+ADDR_005
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_009
+<Id to Class Map>
+ADDR_008
+InitListExpr
+<Visited Children>
+ADDR_009
+1
+ADDR_006
+<InitListExprData>
+ADDR_009
+InitListExpr
+<TEST_DIR>/array_filler.c
+2
+22
+<TEST_DIR>/array_filler.c
+2
+25
+0
+0
+ADDR_005
+0
+0
+0
+ADDR_007
+1
+0
+ADDR_008
+nullptr_expr
+<Id to Class Map>
+ADDR_009
+InitListExpr
+<Visited Children>
+ADDR_010
+1
+ADDR_009
+<VarDeclData>
+ADDR_010
+VarDecl
+<TEST_DIR>/array_filler.c
+2
+2
+<TEST_DIR>/array_filler.c
+2
+25
+0
+0
+0
+0
+0
+0
+0
+0
+
+mor_s_v
+0
+0
+0
+NoLinkage
+Default
+ADDR_005
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_010
+VarDecl
+<Visited Children>
+ADDR_011
+2
+ADDR_004
+ADDR_010
+<StmtData>
+ADDR_011
+DeclStmt
+<TEST_DIR>/array_filler.c
+2
+2
+<TEST_DIR>/array_filler.c
+2
+26
+0
+0
+<Id to Class Map>
+ADDR_011
+DeclStmt
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_012
+0
+<IntegerLiteralData>
+ADDR_012
+IntegerLiteral
+<TEST_DIR>/array_filler.c
+4
+9
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_012
+IntegerLiteral
+<Visited Children>
+ADDR_013
+1
+ADDR_012
+<StmtData>
+ADDR_013
+ReturnStmt
+<TEST_DIR>/array_filler.c
+4
+2
+<TEST_DIR>/array_filler.c
+4
+9
+0
+0
+<Id to Class Map>
+ADDR_013
+ReturnStmt
+<Visited Children>
+ADDR_014
+2
+ADDR_011
+ADDR_013
+<StmtData>
+ADDR_014
+CompoundStmt
+<TEST_DIR>/array_filler.c
+1
+12
+<TEST_DIR>/array_filler.c
+5
+1
+0
+0
+<Id to Class Map>
+ADDR_014
+CompoundStmt
+<Visited Children>
+ADDR_001
+1
+ADDR_014
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/array_filler.c
+1
+1
+<TEST_DIR>/array_filler.c
+5
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+main
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_003
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_015
+0
+<IntegerLiteralData>
+ADDR_015
+IntegerLiteral
+<TEST_DIR>/array_filler.c
+2
+17
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+4
+%CLAVA_SOURCE_END%
+4
+<Id to Class Map>
+ADDR_015
+IntegerLiteral

@@ -1,0 +1,733 @@
+<Compiler Instance Data>
+<TEST_DIR>/pseudo_destructor.cpp
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+1
+1
+1
+0
+0
+0
+0
+1
+0
+1
+8
+32
+64
+128
+8
+16
+32
+64
+64
+<Id-File Map>
+0
+<TEST_DIR>/pseudo_destructor.cpp
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_001
+0
+<TypedefNameDeclData>
+ADDR_001
+TypedefDecl
+<TEST_DIR>/pseudo_destructor.cpp
+1
+1
+<TEST_DIR>/pseudo_destructor.cpp
+1
+13
+0
+0
+0
+0
+0
+0
+0
+0
+
+T
+0
+0
+0
+NoLinkage
+Default
+nullptr_type
+ADDR_002
+<Id to Class Map>
+ADDR_001
+TypedefDecl
+<Top Level Nodes>
+ADDR_003
+<Visited Children>
+ADDR_004
+0
+<BuiltinTypeData>
+ADDR_004
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_004
+BuiltinType
+<Visited Children>
+ADDR_005
+0
+<PointerTypeData>
+ADDR_005
+PointerType
+int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_002
+<Id to Class Map>
+ADDR_005
+PointerType
+<Visited Children>
+ADDR_006
+0
+<FunctionProtoTypeData>
+ADDR_006
+FunctionProtoType
+void (int *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+1
+1
+ADDR_005
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_006
+FunctionProtoType
+<Top Level Types>
+ADDR_006
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_007
+0
+<ParmVarDeclData>
+ADDR_007
+ParmVarDecl
+<TEST_DIR>/pseudo_destructor.cpp
+2
+8
+<TEST_DIR>/pseudo_destructor.cpp
+2
+13
+0
+0
+0
+1
+1
+0
+0
+0
+
+p
+0
+0
+0
+NoLinkage
+Default
+ADDR_005
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_007
+ParmVarDecl
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_008
+0
+<DeclRefExprData>
+ADDR_008
+DeclRefExpr
+<TEST_DIR>/pseudo_destructor.cpp
+3
+3
+<end>
+0
+0
+ADDR_005
+1
+0
+0
+
+0
+ADDR_007
+<Id to Class Map>
+ADDR_008
+DeclRefExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_009
+1
+ADDR_008
+<ExprData>
+ADDR_009
+ImplicitCastExpr
+<TEST_DIR>/pseudo_destructor.cpp
+3
+3
+<end>
+0
+0
+ADDR_005
+0
+0
+0
+<Id to Class Map>
+ADDR_009
+ImplicitCastExpr
+<Visited Children>
+ADDR_010
+0
+<BuiltinTypeData>
+ADDR_010
+BuiltinType
+<bound member function type>
+NONE
+0
+0
+0
+nullptr_type
+BoundMember
+<bound member function type>
+<Id to Class Map>
+ADDR_010
+BuiltinType
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_011
+0
+<TypedefTypeData>
+ADDR_011
+TypedefType
+T
+NONE
+0
+0
+0
+ADDR_002
+ADDR_001
+<Id to Class Map>
+ADDR_011
+TypedefType
+<Visited Children>
+ADDR_012
+0
+<ElaboratedTypeData>
+ADDR_012
+ElaboratedType
+T
+NONE
+0
+0
+0
+ADDR_011
+None
+
+ADDR_011
+<Id to Class Map>
+ADDR_012
+ElaboratedType
+<Visited Children>
+ADDR_013
+1
+ADDR_009
+<CXXPseudoDestructorExprData>
+ADDR_013
+CXXPseudoDestructorExpr
+<TEST_DIR>/pseudo_destructor.cpp
+3
+3
+<TEST_DIR>/pseudo_destructor.cpp
+3
+10
+0
+0
+ADDR_010
+0
+0
+0
+
+1
+ADDR_012
+<Id to Class Map>
+ADDR_013
+CXXPseudoDestructorExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_014
+1
+ADDR_013
+<CallExprData>
+ADDR_014
+CallExpr
+<TEST_DIR>/pseudo_destructor.cpp
+3
+3
+<TEST_DIR>/pseudo_destructor.cpp
+3
+12
+0
+0
+ADDR_004
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_014
+CallExpr
+<Visited Children>
+ADDR_015
+1
+ADDR_014
+<StmtData>
+ADDR_015
+CompoundStmt
+<TEST_DIR>/pseudo_destructor.cpp
+2
+16
+<TEST_DIR>/pseudo_destructor.cpp
+4
+1
+0
+0
+<Id to Class Map>
+ADDR_015
+CompoundStmt
+<Visited Children>
+ADDR_003
+2
+ADDR_007
+ADDR_015
+<FunctionDeclData>
+ADDR_003
+FunctionDecl
+<TEST_DIR>/pseudo_destructor.cpp
+2
+1
+<TEST_DIR>/pseudo_destructor.cpp
+4
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+f
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_006
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_003
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_003
+FunctionDecl
+<Top Level Nodes>
+ADDR_016
+<Visited Children>
+ADDR_017
+0
+<TemplateTypeParmTypeData>
+ADDR_017
+TemplateTypeParmType
+T
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_018
+<Id to Class Map>
+ADDR_017
+TemplateTypeParmType
+<Visited Children>
+ADDR_018
+0
+<TemplateTypeParmDeclData>
+ADDR_018
+TemplateTypeParmDecl
+<TEST_DIR>/pseudo_destructor.cpp
+6
+10
+<TEST_DIR>/pseudo_destructor.cpp
+6
+19
+0
+0
+0
+0
+1
+0
+0
+0
+
+T
+0
+0
+0
+NoLinkage
+Default
+ADDR_017
+TYPENAME
+0
+nullptr_type
+<Id to Class Map>
+ADDR_018
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_019
+0
+<PointerTypeData>
+ADDR_019
+PointerType
+T *
+DEPENDENT
+0
+0
+0
+nullptr_type
+ADDR_017
+<Id to Class Map>
+ADDR_019
+PointerType
+<Visited Children>
+ADDR_020
+0
+<FunctionProtoTypeData>
+ADDR_020
+FunctionProtoType
+void (T *)
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+1
+1
+ADDR_019
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_020
+FunctionProtoType
+<Top Level Types>
+ADDR_020
+<Top Level Types>
+ADDR_019
+<Visited Children>
+ADDR_021
+0
+<ParmVarDeclData>
+ADDR_021
+ParmVarDecl
+<TEST_DIR>/pseudo_destructor.cpp
+7
+14
+<TEST_DIR>/pseudo_destructor.cpp
+7
+17
+0
+0
+0
+0
+1
+0
+0
+0
+
+ptr
+0
+0
+0
+NoLinkage
+Default
+ADDR_019
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_021
+ParmVarDecl
+<Top Level Types>
+ADDR_019
+<Visited Children>
+ADDR_022
+0
+<DeclRefExprData>
+ADDR_022
+DeclRefExpr
+<TEST_DIR>/pseudo_destructor.cpp
+8
+3
+<end>
+0
+0
+ADDR_019
+1
+0
+0
+
+0
+ADDR_021
+<Id to Class Map>
+ADDR_022
+DeclRefExpr
+<Top Level Types>
+ADDR_010
+<Visited Children>
+ADDR_023
+1
+ADDR_022
+<CXXPseudoDestructorExprData>
+ADDR_023
+CXXPseudoDestructorExpr
+<TEST_DIR>/pseudo_destructor.cpp
+8
+3
+<TEST_DIR>/pseudo_destructor.cpp
+8
+12
+0
+0
+ADDR_010
+0
+0
+0
+
+1
+ADDR_017
+<Id to Class Map>
+ADDR_023
+CXXPseudoDestructorExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_024
+1
+ADDR_023
+<CallExprData>
+ADDR_024
+CallExpr
+<TEST_DIR>/pseudo_destructor.cpp
+8
+3
+<TEST_DIR>/pseudo_destructor.cpp
+8
+14
+0
+0
+ADDR_004
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_024
+CallExpr
+<Visited Children>
+ADDR_025
+1
+ADDR_024
+<StmtData>
+ADDR_025
+CompoundStmt
+<TEST_DIR>/pseudo_destructor.cpp
+7
+22
+<TEST_DIR>/pseudo_destructor.cpp
+9
+1
+0
+0
+<Id to Class Map>
+ADDR_025
+CompoundStmt
+<Visited Children>
+ADDR_026
+2
+ADDR_021
+ADDR_025
+<FunctionDeclData>
+ADDR_026
+FunctionDecl
+<TEST_DIR>/pseudo_destructor.cpp
+7
+1
+<TEST_DIR>/pseudo_destructor.cpp
+9
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+destroy
+0
+0
+0
+ExternalLinkage
+Default
+ADDR_020
+0
+0
+1
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_026
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_026
+FunctionDecl
+<Visited Children>
+ADDR_016
+2
+ADDR_018
+ADDR_026
+<TemplateDeclData>
+ADDR_016
+FunctionTemplateDecl
+<TEST_DIR>/pseudo_destructor.cpp
+6
+1
+<TEST_DIR>/pseudo_destructor.cpp
+9
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+destroy
+0
+0
+0
+ExternalLinkage
+Default
+1
+ADDR_018
+ADDR_026
+<Id to Class Map>
+ADDR_016
+FunctionTemplateDecl
