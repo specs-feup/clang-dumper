@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -33,14 +34,14 @@
 0
 <TEST_DIR>/ast-dump-expr.c
 <TEST_DIR>/ast-dump-expr.c:4:3: warning: left operand of comma operator has no effect [-Wunused-value]
-  1, 2, 3;
-  ^
+    4 |   1, 2, 3;
+      |   ^
 <TEST_DIR>/ast-dump-expr.c:4:6: warning: left operand of comma operator has no effect [-Wunused-value]
-  1, 2, 3;
-     ^
+    4 |   1, 2, 3;
+      |      ^
 <TEST_DIR>/ast-dump-expr.c:4:9: warning: expression result unused [-Wunused-value]
-  1, 2, 3;
-        ^
+    4 |   1, 2, 3;
+      |         ^
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
@@ -281,7 +282,7 @@ Comma
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -363,7 +364,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -596,7 +597,7 @@ Assignment
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_012
 0
@@ -616,11 +617,11 @@ nullptr_decl
 ADDR_011
 FunctionDecl
 <TEST_DIR>/ast-dump-expr.c:26:11: warning: expression result unused [-Wunused-value]
-  a ? 0 : 1;
-          ^
+   26 |   a ? 0 : 1;
+      |           ^
 <TEST_DIR>/ast-dump-expr.c:33:8: warning: expression result unused [-Wunused-value]
-  a ?: 0;
-       ^
+   33 |   a ?: 0;
+      |        ^
 <Top Level Nodes>
 ADDR_022
 <Top Level Types>
@@ -652,7 +653,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -956,7 +957,7 @@ Conditionals
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_012
 0
@@ -976,67 +977,67 @@ nullptr_decl
 ADDR_022
 FunctionDecl
 <TEST_DIR>/ast-dump-expr.c:85:5: warning: equality comparison result unused [-Wunused-comparison]
-  a == b;
-  ~~^~~~
+   85 |   a == b;
+      |   ~~^~~~
 <TEST_DIR>/ast-dump-expr.c:85:5: note: use '=' to turn this equality comparison into an assignment
-  a == b;
-    ^~
-    =
+   85 |   a == b;
+      |     ^~
+      |     =
 <TEST_DIR>/ast-dump-expr.c:92:5: warning: inequality comparison result unused [-Wunused-comparison]
-  a != b;
-  ~~^~~~
+   92 |   a != b;
+      |   ~~^~~~
 <TEST_DIR>/ast-dump-expr.c:92:5: note: use '|=' to turn this inequality comparison into an or-assignment
-  a != b;
-    ^~
-    |=
+   92 |   a != b;
+      |     ^~
+      |     |=
 <TEST_DIR>/ast-dump-expr.c:100:5: warning: relational comparison result unused [-Wunused-comparison]
-  a < b;
-  ~~^~~
+  100 |   a < b;
+      |   ~~^~~
 <TEST_DIR>/ast-dump-expr.c:107:5: warning: relational comparison result unused [-Wunused-comparison]
-  a > b;
-  ~~^~~
+  107 |   a > b;
+      |   ~~^~~
 <TEST_DIR>/ast-dump-expr.c:114:5: warning: relational comparison result unused [-Wunused-comparison]
-  a <= b;
-  ~~^~~~
+  114 |   a <= b;
+      |   ~~^~~~
 <TEST_DIR>/ast-dump-expr.c:121:5: warning: relational comparison result unused [-Wunused-comparison]
-  a >= b;
-  ~~^~~~
+  121 |   a >= b;
+      |   ~~^~~~
 <TEST_DIR>/ast-dump-expr.c:48:5: warning: expression result unused [-Wunused-value]
-  a || b;
-  ~ ^  ~
+   48 |   a || b;
+      |   ~ ^  ~
 <TEST_DIR>/ast-dump-expr.c:55:5: warning: expression result unused [-Wunused-value]
-  a && b;
-  ~ ^  ~
+   55 |   a && b;
+      |   ~ ^  ~
 <TEST_DIR>/ast-dump-expr.c:63:5: warning: expression result unused [-Wunused-value]
-  a | b;
-  ~ ^ ~
+   63 |   a | b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:70:5: warning: expression result unused [-Wunused-value]
-  a ^ b;
-  ~ ^ ~
+   70 |   a ^ b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:77:5: warning: expression result unused [-Wunused-value]
-  a & b;
-  ~ ^ ~
+   77 |   a & b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:129:5: warning: expression result unused [-Wunused-value]
-  a << b;
-  ~ ^  ~
+  129 |   a << b;
+      |   ~ ^  ~
 <TEST_DIR>/ast-dump-expr.c:136:5: warning: expression result unused [-Wunused-value]
-  a >> b;
-  ~ ^  ~
+  136 |   a >> b;
+      |   ~ ^  ~
 <TEST_DIR>/ast-dump-expr.c:144:5: warning: expression result unused [-Wunused-value]
-  a + b;
-  ~ ^ ~
+  144 |   a + b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:151:5: warning: expression result unused [-Wunused-value]
-  a - b;
-  ~ ^ ~
+  151 |   a - b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:159:5: warning: expression result unused [-Wunused-value]
-  a * b;
-  ~ ^ ~
+  159 |   a * b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:166:5: warning: expression result unused [-Wunused-value]
-  a / b;
-  ~ ^ ~
+  166 |   a / b;
+      |   ~ ^ ~
 <TEST_DIR>/ast-dump-expr.c:173:5: warning: expression result unused [-Wunused-value]
-  a % b;
-  ~ ^ ~
+  173 |   a % b;
+      |   ~ ^ ~
 <Top Level Nodes>
 ADDR_035
 <Visited Children>
@@ -1101,7 +1102,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -1144,7 +1145,7 @@ b
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -3347,7 +3348,7 @@ BinaryOperators
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_036
 0
@@ -3367,32 +3368,32 @@ nullptr_decl
 ADDR_035
 FunctionDecl
 <TEST_DIR>/ast-dump-expr.c:183:3: warning: expression result unused [-Wunused-value]
-  (float)a;
-  ^      ~
+  183 |   (float)a;
+      |   ^      ~
 <TEST_DIR>/ast-dump-expr.c:190:3: warning: expression result unused [-Wunused-value]
-  -a;
-  ^~
+  190 |   -a;
+      |   ^~
 <TEST_DIR>/ast-dump-expr.c:195:3: warning: expression result unused [-Wunused-value]
-  +a;
-  ^~
+  195 |   +a;
+      |   ^~
 <TEST_DIR>/ast-dump-expr.c:200:3: warning: expression result unused [-Wunused-value]
-  &a;
-  ^~
+  200 |   &a;
+      |   ^~
 <TEST_DIR>/ast-dump-expr.c:204:3: warning: expression result unused [-Wunused-value]
-  *b;
-  ^~
+  204 |   *b;
+      |   ^~
 <TEST_DIR>/ast-dump-expr.c:210:3: warning: expression result unused [-Wunused-value]
-  !a;
-  ^~
+  210 |   !a;
+      |   ^~
 <TEST_DIR>/ast-dump-expr.c:215:3: warning: expression result unused [-Wunused-value]
-  sizeof a;
-  ^~~~~~~~
+  215 |   sizeof a;
+      |   ^~~~~~~~
 <TEST_DIR>/ast-dump-expr.c:219:3: warning: expression result unused [-Wunused-value]
-  sizeof(int);
-  ^~~~~~~~~~~
+  219 |   sizeof(int);
+      |   ^~~~~~~~~~~
 <TEST_DIR>/ast-dump-expr.c:222:3: warning: expression result unused [-Wunused-value]
-  _Alignof(int);
-  ^~~~~~~~~~~~~
+  222 |   _Alignof(int);
+      |   ^~~~~~~~~~~~~
 <Top Level Nodes>
 ADDR_130
 <Visited Children>
@@ -3473,7 +3474,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -3516,7 +3517,7 @@ b
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_131
 0
@@ -4166,7 +4167,7 @@ UnaryOperators
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_132
 0
@@ -4232,7 +4233,7 @@ a
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_004
 0
@@ -4266,7 +4267,7 @@ S
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_161
 Struct
@@ -4276,20 +4277,20 @@ Struct
 ADDR_160
 RecordDecl
 <TEST_DIR>/ast-dump-expr.c:232:6: warning: expression result unused [-Wunused-value]
-  a[0];
-  ~ ~^
+  232 |   a[0];
+      |   ~ ~^
 <TEST_DIR>/ast-dump-expr.c:250:5: warning: expression result unused [-Wunused-value]
-  b.a;
-  ~ ^
+  250 |   b.a;
+      |   ~ ^
 <TEST_DIR>/ast-dump-expr.c:255:6: warning: expression result unused [-Wunused-value]
-  c->a;
-  ~  ^
+  255 |   c->a;
+      |   ~  ^
 <TEST_DIR>/ast-dump-expr.c:263:3: warning: expression result unused [-Wunused-value]
-  (int [4]){1, 2, 3, 4, };
-  ^~~~~~~~~~~~~~~~~~~~~~~
+  263 |   (int [4]){1, 2, 3, 4, };
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
 <TEST_DIR>/ast-dump-expr.c:272:3: warning: expression result unused [-Wunused-value]
-  (struct S){1};
-  ^~~~~~~~~~~~~
+  272 |   (struct S){1};
+      |   ^~~~~~~~~~~~~
 <Top Level Nodes>
 ADDR_163
 <Visited Children>
@@ -4389,7 +4390,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_131
 0
@@ -4432,7 +4433,7 @@ b
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_164
 0
@@ -4475,7 +4476,7 @@ c
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_165
 0
@@ -5440,7 +5441,7 @@ PostfixOperators
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_166
 0
@@ -5528,7 +5529,7 @@ One
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -5578,7 +5579,7 @@ E
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_209
 Enum
@@ -5589,53 +5590,53 @@ ADDR_211
 ADDR_208
 EnumDecl
 <TEST_DIR>/ast-dump-expr.c:282:3: warning: expression result unused [-Wunused-value]
-  a;
-  ^
+  282 |   a;
+      |   ^
 <TEST_DIR>/ast-dump-expr.c:286:3: warning: expression result unused [-Wunused-value]
-  'a';
-  ^~~
+  286 |   'a';
+      |   ^~~
 <TEST_DIR>/ast-dump-expr.c:289:3: warning: expression result unused [-Wunused-value]
-  L'a';
-  ^~~~
+  289 |   L'a';
+      |   ^~~~
 <TEST_DIR>/ast-dump-expr.c:292:3: warning: expression result unused [-Wunused-value]
-  "a";
-  ^~~
+  292 |   "a";
+      |   ^~~
 <TEST_DIR>/ast-dump-expr.c:296:3: warning: expression result unused [-Wunused-value]
-  L"a";
-  ^~~~
+  296 |   L"a";
+      |   ^~~~
 <TEST_DIR>/ast-dump-expr.c:300:3: warning: expression result unused [-Wunused-value]
-  u8"a";
-  ^~~~~
+  300 |   u8"a";
+      |   ^~~~~
 <TEST_DIR>/ast-dump-expr.c:304:3: warning: expression result unused [-Wunused-value]
-  U"a";
-  ^~~~
+  304 |   U"a";
+      |   ^~~~
 <TEST_DIR>/ast-dump-expr.c:308:3: warning: expression result unused [-Wunused-value]
-  u"a";
-  ^~~~
+  308 |   u"a";
+      |   ^~~~
 <TEST_DIR>/ast-dump-expr.c:312:3: warning: expression result unused [-Wunused-value]
-  1;
-  ^
+  312 |   1;
+      |   ^
 <TEST_DIR>/ast-dump-expr.c:315:3: warning: expression result unused [-Wunused-value]
-  1u;
-  ^~
+  315 |   1u;
+      |   ^~
 <TEST_DIR>/ast-dump-expr.c:318:3: warning: expression result unused [-Wunused-value]
-  1ll;
-  ^~~
+  318 |   1ll;
+      |   ^~~
 <TEST_DIR>/ast-dump-expr.c:321:3: warning: expression result unused [-Wunused-value]
-  1.0;
-  ^~~
+  321 |   1.0;
+      |   ^~~
 <TEST_DIR>/ast-dump-expr.c:324:3: warning: expression result unused [-Wunused-value]
-  1.0f;
-  ^~~~
+  324 |   1.0f;
+      |   ^~~~
 <TEST_DIR>/ast-dump-expr.c:327:3: warning: expression result unused [-Wunused-value]
-  1.0l;
-  ^~~~
+  327 |   1.0l;
+      |   ^~~~
 <TEST_DIR>/ast-dump-expr.c:330:3: warning: expression result unused [-Wunused-value]
-  One;
-  ^~~
+  330 |   One;
+      |   ^~~
 <TEST_DIR>/ast-dump-expr.c:333:4: warning: expression result unused [-Wunused-value]
-  (a);
-   ^
+  333 |   (a);
+      |    ^
 <Top Level Nodes>
 ADDR_212
 <Top Level Types>
@@ -5667,7 +5668,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -5751,7 +5752,7 @@ ADDR_004
 'a'
 %CLAVA_SOURCE_END%
 97
-0
+ORDINARY
 <Id to Class Map>
 ADDR_216
 CharacterLiteral
@@ -5777,7 +5778,7 @@ ADDR_004
 L'a'
 %CLAVA_SOURCE_END%
 97
-1
+WIDE
 <Id to Class Map>
 ADDR_217
 CharacterLiteral
@@ -6558,7 +6559,7 @@ PrimaryExpressions
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_012
 0

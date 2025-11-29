@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -96,7 +97,7 @@ s1a
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -130,7 +131,7 @@ struct1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_002
 Struct
@@ -186,7 +187,7 @@ struct1_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_006
 0
@@ -250,7 +251,7 @@ b
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -284,7 +285,7 @@ struct2
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_009
 Struct
@@ -338,7 +339,7 @@ struct2_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_011
 0
@@ -404,7 +405,7 @@ c
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -438,7 +439,7 @@ struct3
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_015
 Struct
@@ -492,7 +493,7 @@ struct3_var1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_017
 0
@@ -534,7 +535,7 @@ struct3_var2
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_017
 0
@@ -598,7 +599,7 @@ c2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -632,7 +633,7 @@ struct4
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_020
 Struct
@@ -686,7 +687,7 @@ struct4_var1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_022
 0
@@ -730,7 +731,7 @@ anInt
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -792,7 +793,7 @@ struct4_var2
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0
@@ -856,7 +857,7 @@ d
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -890,7 +891,7 @@ union1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_028
 Union
@@ -944,7 +945,7 @@ d_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_030
 0
@@ -1005,7 +1006,7 @@ A
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_003
 0
@@ -1038,7 +1039,7 @@ B
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_003
 0
@@ -1089,7 +1090,7 @@ enum1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_033
 Enum
@@ -1144,7 +1145,7 @@ enum_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_037
 0
@@ -1222,7 +1223,7 @@ x
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -1256,7 +1257,7 @@ RecordDecl
 0
 1
 0
-ExternalLinkage
+External
 Default
 ADDR_040
 Struct
@@ -1312,7 +1313,7 @@ a
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_043
 0
@@ -1347,7 +1348,7 @@ foo
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_039
 Struct
@@ -1422,7 +1423,7 @@ real1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_048
 0
@@ -1459,7 +1460,7 @@ imag1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_048
 0
@@ -1494,7 +1495,7 @@ RecordDecl
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_047
 Struct
@@ -1546,7 +1547,7 @@ struct_with_typedef_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 nullptr_type
 ADDR_051
@@ -1554,8 +1555,8 @@ ADDR_051
 ADDR_046
 TypedefDecl
 <TEST_DIR>/struct2.c:45:1: warning: typedef requires a name [-Wmissing-declarations]
-typedef struct
-^~~~~~~
+   45 | typedef struct
+      | ^~~~~~~
 <Top Level Nodes>
 ADDR_052
 <Visited Children>
@@ -1603,7 +1604,7 @@ real2
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_048
 0
@@ -1640,7 +1641,7 @@ imag2
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_048
 0
@@ -1675,7 +1676,7 @@ RecordDecl
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_053
 Struct
@@ -1730,7 +1731,7 @@ C
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_003
 0
@@ -1763,7 +1764,7 @@ D
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_003
 0
@@ -1797,7 +1798,7 @@ enum_with_typedef
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_058
 Enum
@@ -1850,7 +1851,7 @@ enum_with_typedef_var
 0
 0
 0
-NoLinkage
+None
 Default
 nullptr_type
 ADDR_061
