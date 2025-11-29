@@ -68,7 +68,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "TemplateTemplateParmDecl.cpp": T(),
     "VectorType.cpp": T(),
     "array_filler.c": T(),
-    "ast-dump-c-attr.c": T(flags=["-fdouble-square-bracket-attributes"]),
+    "ast-dump-c-attr.c": T(),
     "ast-dump-expr.c": T(),
     "ast-dump-records.c": T(),
     "ast-dump-stmt.c": T(),
