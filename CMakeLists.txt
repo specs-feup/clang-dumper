@@ -182,7 +182,12 @@ add_definitions(${CLANG_DEFINITIONS})
 #  - No hardcoding of the generated enum file names.
 #  - Generation happens strictly at build time (not configuration).
 #  - Adding/removing enum files requires no CMake reconfigure.
+#
+# When SKIP_ENUM_GENERATION is ON (e.g., in CI where enums are pre-generated),
+# the Node.js script is skipped and only the aggregator runs.
 # -----------------------------------------------------------------------------
+
+option(SKIP_ENUM_GENERATION "Skip Node.js enum generation (use pre-existing files)" OFF)
 
 # Directory for build-time helper + aggregated source
 set(ENUMS_GEN_DIR "${CMAKE_BINARY_DIR}/generated")
@@ -205,16 +210,30 @@ file(GLOB NODE_ENUM_SCRIPTS CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/clang_enums/*.mjs"
     "${CMAKE_SOURCE_DIR}/clang_enums/*.js")
 
-add_custom_command(
-    OUTPUT "${ENUMS_AGGREGATED_SRC}"
-    COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Node) into src/ClangEnums ..."
-    COMMAND node "${CMAKE_SOURCE_DIR}/clang_enums/Main.mjs" ${LLVM_DIR} src/
-    COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    DEPENDS ${NODE_ENUM_SCRIPTS}
-    COMMENT "Run enum generator and aggregate sources"
-    VERBATIM
-)
+if(SKIP_ENUM_GENERATION)
+    # Skip Node.js generation, only run aggregator on pre-existing enum files
+    message(STATUS "SKIP_ENUM_GENERATION is ON: using pre-existing enum files in src/enums_cpp/")
+    add_custom_command(
+        OUTPUT "${ENUMS_AGGREGATED_SRC}"
+        COMMAND ${CMAKE_COMMAND} -E echo "Aggregating pre-existing enum sources..."
+        COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Aggregate pre-existing enum sources"
+        VERBATIM
+    )
+else()
+    # Full generation: run Node.js script then aggregator
+    add_custom_command(
+        OUTPUT "${ENUMS_AGGREGATED_SRC}"
+        COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Node) into src/ClangEnums ..."
+        COMMAND node "${CMAKE_SOURCE_DIR}/clang_enums/Main.mjs" ${LLVM_DIR} src/
+        COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        DEPENDS ${NODE_ENUM_SCRIPTS}
+        COMMENT "Run enum generator and aggregate sources"
+        VERBATIM
+    )
+endif()
 
 add_custom_target(clang_enums DEPENDS "${ENUMS_AGGREGATED_SRC}")
 

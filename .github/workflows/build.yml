@@ -1,0 +1,157 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CMAKE_BUILD_TYPE: Release
+  LLVM_VERSION: 18
+  NODE_VERSION: 22
+
+jobs:
+  generate-enums:
+    name: Generate Enums
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LLVM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            llvm-${{ env.LLVM_VERSION }}-dev \
+            libclang-${{ env.LLVM_VERSION }}-dev
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Generate enum files
+        run: |
+          node clang_enums/Main.mjs /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
+
+      - name: Upload enum artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-enums
+          path: |
+            src/enums_cpp/
+            src/enums_java/
+          retention-days: 1
+
+  build-linux:
+    name: Build Linux
+    needs: generate-enums
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download enum artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-enums
+          path: src/
+
+      - name: Set compilers
+        run: |
+          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+
+      - name: Install LLVM and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang-${{ env.LLVM_VERSION }} \
+            llvm-${{ env.LLVM_VERSION }}-dev \
+            libclang-${{ env.LLVM_VERSION }}-dev \
+            libpolly-${{ env.LLVM_VERSION }}-dev \
+            zlib1g-dev \
+            libedit-dev \
+            libzstd-dev
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DSKIP_ENUM_GENERATION=ON
+
+      - name: Build plugin & tool
+        run: cmake --build build --target plugin tool --parallel
+
+      - name: Run tests
+        run: cmake --build build --target test
+
+  build-windows:
+    name: Build Windows
+    needs: generate-enums
+    runs-on: windows-latest
+    env:
+      LLVM_INSTALL_DIR: C:/llvm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download enum artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-enums
+          path: src/
+
+      - name: Download and extract LLVM prebuilt binaries
+        shell: pwsh
+        run: |
+          $llvmUrl = "https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-pc-windows-msvc.tar.xz"
+          $archivePath = "$env:TEMP\llvm.tar.xz"
+          $extractPath = "$env:TEMP\llvm-extract"
+          
+          Write-Host "Downloading LLVM from $llvmUrl..."
+          Invoke-WebRequest -Uri $llvmUrl -OutFile $archivePath -UseBasicParsing
+          
+          Write-Host "Extracting LLVM..."
+          New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
+          
+          # Extract .tar.xz using tar (available on Windows)
+          tar -xf $archivePath -C $extractPath
+          
+          # Find the extracted folder and move to final location
+          $extractedFolder = Get-ChildItem -Path $extractPath -Directory | Select-Object -First 1
+          Write-Host "Extracted folder: $($extractedFolder.FullName)"
+          
+          # Move to final install location
+          if (Test-Path "${{ env.LLVM_INSTALL_DIR }}") {
+            Remove-Item -Recurse -Force "${{ env.LLVM_INSTALL_DIR }}"
+          }
+          Move-Item -Path $extractedFolder.FullName -Destination "${{ env.LLVM_INSTALL_DIR }}"
+          
+          Write-Host "LLVM installed to ${{ env.LLVM_INSTALL_DIR }}"
+          Get-ChildItem "${{ env.LLVM_INSTALL_DIR }}" | Select-Object Name
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
+            -DLLVM_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/llvm" `
+            -DClang_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/clang" `
+            -DLLVM_INSTALL_DIR="${{ env.LLVM_INSTALL_DIR }}" `
+            -DUSE_MSVC_STATIC=ON `
+            -DSKIP_ENUM_GENERATION=ON
+
+      - name: Build tool
+        shell: pwsh
+        run: |
+          cmake --build build --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          cmake --build build --target test --config ${{ env.CMAKE_BUILD_TYPE }}
