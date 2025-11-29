@@ -158,23 +158,23 @@ const _INIT_STYLE_ENUMS = {
 
 const _EXPR_CXX_H = new HeaderEnums("../../../include/clang/AST/ExprCXX.h", [
   new ClangEnum(
-    "InitializationStyle",
+    "CXXNewInitializationStyle",
     "NEW_INIT_STYLE",
     (value) => _NEW_INIT_STYLE_ENUMS[value],
     undefined
-  ).setOccurence(2),
+  ),
   new ClangEnum(
-    "ConstructionKind",
+    "CXXConstructionKind",
     "CONSTRUCTION_KIND",
-    (value) => _removePrefix(value, "CK_"),
+    undefined,
     undefined
   ),
 ]);
 
 const _NEW_INIT_STYLE_ENUMS = {
-  NoInit: "NO_INIT",
-  CallInit: "CALL_INIT",
-  ListInit: "LIST_INIT",
+  None: "NO_INIT",
+  Parens: "CALL_INIT",
+  Braces: "LIST_INIT",
 };
 
 const _TYPE_TRAITS_H = new HeaderEnums(
@@ -203,9 +203,9 @@ const _NESTED_NAME_SPECIFIER_H = new HeaderEnums(
 
 const _DECL_CXX_H = new HeaderEnums("../../../include/clang/AST/DeclCXX.h", [
   new ClangEnum(
-    "LanguageIDs",
+    "LinkageSpecLanguageIDs",
     "LINKAGE_LANGUAGE",
-    (value) => _removePrefix(value, "lang_").toUpperCase(),
+    undefined,
     undefined
   ),
 ]);
@@ -243,14 +243,14 @@ const _EXPR_H = new HeaderEnums("../../../include/clang/AST/Expr.h", [
     "OffsetOfNode"
   ).setOccurence(10),
   new ClangEnum(
-    "IdentKind",
+    "PredefinedIdentKind",
     "PREDEFINED_ID_TYPE",
     undefined,
     undefined,
     "PredefinedExpr"
   ),
   new ClangEnum(
-    "StringKind",
+    "StringLiteralKind",
     "STRING_KIND",
     (value) => value.toUpperCase(),
     undefined

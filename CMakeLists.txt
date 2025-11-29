@@ -3,7 +3,7 @@ project(ClangAstDumper)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CLANG_VERSION 16)
+set(CLANG_VERSION 18)
 
 # --- MSVC static linking option ---------------------------------------------------
 # When USE_MSVC_STATIC is ON, we use MSVC with prebuilt LLVM binaries and static linking.

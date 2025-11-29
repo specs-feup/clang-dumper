@@ -337,7 +337,7 @@ void clava::ClavaDataDumper::DumpTagTypeData(const TagType *T) {
 void clava::ClavaDataDumper::DumpArrayTypeData(const ArrayType *T) {
   DumpTypeData(T);
 
-  clava::dump(clava::ARRAY_SIZE_MODIFIER[T->getSizeModifier()]);
+  clava::dump(clava::ARRAY_SIZE_MODIFIER[static_cast<int>(T->getSizeModifier())]);
 
   // Dump C99 qualifiers of element type
   clava::dump(T->getIndexTypeQualifiers(), Context);
@@ -374,7 +374,7 @@ void clava::ClavaDataDumper::DumpTypeWithKeywordData(const TypeWithKeyword *T) {
   // Hierarchy
   DumpTypeData(T);
 
-  clava::dump(clava::ELABORATED_TYPE_KEYWORD[T->getKeyword()]);
+  clava::dump(clava::ELABORATED_TYPE_KEYWORD[static_cast<int>(T->getKeyword())]);
 }
 
 void clava::ClavaDataDumper::DumpElaboratedTypeData(const ElaboratedType *T) {

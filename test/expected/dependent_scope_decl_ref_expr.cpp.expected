@@ -10,6 +10,7 @@
 1
 0
 0
+0
 1
 1
 1
@@ -83,7 +84,7 @@ FloatType
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 TYPENAME
@@ -170,7 +171,7 @@ value
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -230,69 +231,13 @@ std::numeric_limits<FloatType>::
 <Id to Class Map>
 ADDR_008
 DependentScopeDeclRefExpr
-<Visited Children>
-ADDR_009
-0
-<BuiltinTypeData>
-ADDR_009
-BuiltinType
-char
-NONE
-0
-0
-0
-nullptr_type
-Char_S
-char
-<Id to Class Map>
-ADDR_009
-BuiltinType
-<Visited Children>
-ADDR_010
-0
-<QualTypeData>
-ADDR_010
-QualType
-const char
-NONE
-0
-0
-0
-nullptr_type
-1
-CONST
-NONE
-0
-ADDR_009
-<Id to Class Map>
-ADDR_010
-QualType
-<Visited Children>
-ADDR_011
-0
-<ConstantArrayTypeData>
-ADDR_011
-ConstantArrayType
-const char[78]
-NONE
-0
-0
-0
-nullptr_type
-Normal
-0
-ADDR_010
-78
-<Id to Class Map>
-ADDR_011
-ConstantArrayType
 <Top Level Types>
-ADDR_011
+nullptr_type
 <Visited Children>
-ADDR_012
+ADDR_009
 0
 <StringLiteralData>
-ADDR_012
+ADDR_009
 StringLiteral
 <TEST_DIR>/dependent_scope_decl_ref_expr.cpp
 13
@@ -302,7 +247,7 @@ StringLiteral
 17
 0
 0
-ADDR_011
+nullptr_type
 1
 0
 0
@@ -310,7 +255,7 @@ ADDR_011
 "internal error: dtoa_short requires an IEEE-754 "
                 "floating-point implementation"
 %CLAVA_SOURCE_END%
-ORDINARY
+UNEVALUATED
 77
 1
 77
@@ -392,15 +337,15 @@ ORDINARY
 111
 110
 <Id to Class Map>
-ADDR_012
+ADDR_009
 StringLiteral
 <Visited Children>
-ADDR_013
+ADDR_010
 2
 ADDR_008
-ADDR_012
+ADDR_009
 <StaticAssertDeclData>
-ADDR_013
+ADDR_010
 StaticAssertDecl
 <TEST_DIR>/dependent_scope_decl_ref_expr.cpp
 12
@@ -418,14 +363,14 @@ StaticAssertDecl
 0
 0
 <Id to Class Map>
-ADDR_013
+ADDR_010
 StaticAssertDecl
 <Visited Children>
-ADDR_014
+ADDR_011
 1
-ADDR_013
+ADDR_010
 <StmtData>
-ADDR_014
+ADDR_011
 DeclStmt
 <TEST_DIR>/dependent_scope_decl_ref_expr.cpp
 12
@@ -436,14 +381,14 @@ DeclStmt
 0
 0
 <Id to Class Map>
-ADDR_014
+ADDR_011
 DeclStmt
 <Visited Children>
-ADDR_015
+ADDR_012
 1
-ADDR_014
+ADDR_011
 <StmtData>
-ADDR_015
+ADDR_012
 CompoundStmt
 <TEST_DIR>/dependent_scope_decl_ref_expr.cpp
 3
@@ -454,15 +399,15 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_015
+ADDR_012
 CompoundStmt
 <Visited Children>
-ADDR_016
+ADDR_013
 2
 ADDR_006
-ADDR_015
+ADDR_012
 <FunctionDeclData>
-ADDR_016
+ADDR_013
 FunctionDecl
 <TEST_DIR>/dependent_scope_decl_ref_expr.cpp
 3
@@ -483,7 +428,7 @@ compute_boundaries
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -496,17 +441,17 @@ None
 0
 0
 nullptr_decl
-ADDR_016
+ADDR_013
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_016
+ADDR_013
 FunctionDecl
 <Visited Children>
 ADDR_001
 2
 ADDR_003
-ADDR_016
+ADDR_013
 <TemplateDeclData>
 ADDR_001
 FunctionTemplateDecl
@@ -529,11 +474,11 @@ compute_boundaries
 0
 0
 0
-ExternalLinkage
+External
 Default
 1
 ADDR_003
-ADDR_016
+ADDR_013
 <Id to Class Map>
 ADDR_001
 FunctionTemplateDecl

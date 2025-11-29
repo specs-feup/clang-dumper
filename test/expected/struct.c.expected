@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -96,7 +97,7 @@ struct_field_1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -150,7 +151,7 @@ struct_field_2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -185,7 +186,7 @@ struct_test
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_002
 Struct
@@ -243,7 +244,7 @@ struct_field_1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -280,7 +281,7 @@ struct_field_2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -315,7 +316,7 @@ struct_test_with_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_009
 Struct
@@ -369,7 +370,7 @@ struct_test_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_012
 0
@@ -433,7 +434,7 @@ struct_field_1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -470,7 +471,7 @@ struct_field_2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -505,7 +506,7 @@ struct_test_with_typedef
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_015
 Struct
@@ -557,7 +558,7 @@ custom_struct
 0
 0
 0
-NoLinkage
+None
 Default
 nullptr_type
 ADDR_018
@@ -615,7 +616,7 @@ struct_field_1
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_003
 0
@@ -652,7 +653,7 @@ struct_field_2
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_005
 0
@@ -687,7 +688,7 @@ RecordDecl
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 Struct
@@ -741,7 +742,7 @@ struct_anon_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0
@@ -783,7 +784,7 @@ struct_anon_var_2
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0
@@ -845,7 +846,7 @@ union_field_1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -882,7 +883,7 @@ union_field_2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -917,7 +918,7 @@ union_test
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_027
 Union
@@ -969,7 +970,7 @@ struct_without_definition
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_031
 Struct
@@ -1009,7 +1010,7 @@ struct_field_1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -1046,7 +1047,7 @@ struct_field_2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -1081,7 +1082,7 @@ struct_without_definition
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_031
 Struct
@@ -1139,7 +1140,7 @@ union_field_1
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_003
 0
@@ -1176,7 +1177,7 @@ union_field_2
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_005
 0
@@ -1211,7 +1212,7 @@ RecordDecl
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_037
 Union
@@ -1265,7 +1266,7 @@ union_anon_var
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_040
 0
@@ -1329,7 +1330,7 @@ ch1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -1383,7 +1384,7 @@ ch2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_045
 0
@@ -1418,7 +1419,7 @@ RecordDecl
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_043
 Struct
@@ -1470,7 +1471,7 @@ loic_struct
 0
 0
 0
-ExternalLinkage
+External
 Default
 nullptr_type
 ADDR_047
@@ -1635,7 +1636,7 @@ f
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_054
 0
@@ -1670,7 +1671,7 @@ aligned_struct
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_052
 Struct
@@ -1768,7 +1769,7 @@ x
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_059
 0
@@ -1805,7 +1806,7 @@ y
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_059
 0
@@ -1840,7 +1841,7 @@ point
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_058
 Struct
@@ -2700,7 +2701,7 @@ ptarray
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_064
 0
@@ -3293,7 +3294,7 @@ int_array
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_099
 0
@@ -3359,9 +3360,9 @@ ADDR_003
 ADDR_120
 IntegerLiteral
 <TEST_DIR>/struct.c:52:20: warning: use of GNU old-style field designator extension [-Wgnu-designator]
-struct point pt = {x: 1.0, .y = 2.0};
-                   ^~
-                   .x = 
+   52 | struct point pt = {x: 1.0, .y = 2.0};
+      |                    ^~
+      |                    .x = 
 <Top Level Nodes>
 ADDR_121
 <Top Level Types>
@@ -3558,7 +3559,7 @@ pt
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_063
 0
@@ -3654,7 +3655,7 @@ next
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_131
 0
@@ -3691,7 +3692,7 @@ idx
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -3809,7 +3810,7 @@ dummy
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_137
 0
@@ -3845,7 +3846,7 @@ node
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_129
 Struct
@@ -3950,7 +3951,7 @@ main
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_141
 0

@@ -79,7 +79,14 @@ export default class HeaderEnums {
       const clangEnum = this.enumMap[enumName];
 
       // Extract enums
-      clangEnum.setEnumValues(headerLines);
+      try {
+        clangEnum.setEnumValues(headerLines);
+      }
+      catch (error) {
+        throw new Error(
+          `Error processing enum '${enumName}' in header '${headerFile}': ${error.message}`
+        );
+      }
     }
   }
 

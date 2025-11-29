@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -155,7 +156,7 @@ fmt
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -231,7 +232,7 @@ gp_offset
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_008
 0
@@ -263,7 +264,7 @@ fp_offset
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_008
 0
@@ -311,7 +312,7 @@ overflow_arg_area
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_011
 0
@@ -343,7 +344,7 @@ reg_save_area
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_011
 0
@@ -376,7 +377,7 @@ __va_list_tag
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_015
 Struct
@@ -440,7 +441,7 @@ __builtin_va_list
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_018
 ADDR_016
@@ -487,11 +488,11 @@ ADDR_020
 <TypedefNameDeclData>
 ADDR_020
 TypedefDecl
-<CLANG_INCLUDE>/stdarg.h
-22
+<CLANG_INCLUDE>/__stdarg_va_list.h
+12
 1
-<CLANG_INCLUDE>/stdarg.h
-22
+<CLANG_INCLUDE>/__stdarg_va_list.h
+12
 27
 0
 1
@@ -506,7 +507,7 @@ va_list
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_021
 ADDR_019
@@ -574,7 +575,7 @@ argptr
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -739,7 +740,7 @@ ParmVarDecl
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_028
 0
@@ -781,7 +782,7 @@ __builtin_va_start
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_029
 0
@@ -1056,7 +1057,7 @@ ParmVarDecl
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_028
 0
@@ -1098,7 +1099,7 @@ __builtin_va_end
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_041
 0
@@ -1450,7 +1451,7 @@ ParmVarDecl
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_052
 0
@@ -1492,7 +1493,7 @@ printf
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_053
 0
@@ -1558,7 +1559,7 @@ __format
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_060
 0
@@ -1602,7 +1603,7 @@ printf
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_053
 0
@@ -1874,7 +1875,7 @@ argp
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -1977,12 +1978,12 @@ VAArgExpr
 13
 <end>
 1
-<CLANG_INCLUDE>/stdarg.h
-36
-29
-<CLANG_INCLUDE>/stdarg.h
-36
-54
+<CLANG_INCLUDE>/__stdarg_va_arg.h
+20
+26
+<CLANG_INCLUDE>/__stdarg_va_arg.h
+20
+51
 0
 ADDR_050
 0
@@ -2008,9 +2009,9 @@ VarDecl
 <TEST_DIR>/variadic.c
 11
 2
-<CLANG_INCLUDE>/stdarg.h
-36
-54
+<CLANG_INCLUDE>/__stdarg_va_arg.h
+20
+51
 0
 0
 0
@@ -2023,7 +2024,7 @@ gain
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_050
 0
@@ -2106,7 +2107,7 @@ test_print
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -2206,7 +2207,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_050
 0
@@ -2712,7 +2713,7 @@ main
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_082
 0

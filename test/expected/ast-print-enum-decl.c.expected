@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -33,17 +34,17 @@
 0
 <TEST_DIR>/ast-print-enum-decl.c
 <TEST_DIR>/ast-print-enum-decl.c:27:69: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
-                                                                    ^
+   27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
+      |                                                                     ^
 <TEST_DIR>/ast-print-enum-decl.c:27:52: note: 'T' has been explicitly marked deprecated here
-  enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
-                                                   ^
+   27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
+      |                                                    ^
 <TEST_DIR>/ast-print-enum-decl.c:32:8: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  enum T *p1; // expected-warning {{'T' is deprecated}}
-       ^
+   32 |   enum T *p1; // expected-warning {{'T' is deprecated}}
+      |        ^
 <TEST_DIR>/ast-print-enum-decl.c:27:52: note: 'T' has been explicitly marked deprecated here
-  enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
-                                                   ^
+   27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
+      |                                                    ^
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
@@ -247,7 +248,7 @@ E0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -280,7 +281,7 @@ E1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -333,7 +334,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_009
 Enum
@@ -404,7 +405,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_015
 0
@@ -499,7 +500,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_019
 0
@@ -577,7 +578,7 @@ defFirst
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -597,11 +598,11 @@ nullptr_decl
 ADDR_001
 FunctionDecl
 <TEST_DIR>/ast-print-enum-decl.c:46:40: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
-                                       ^
+   46 |   enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
+      |                                        ^
 <TEST_DIR>/ast-print-enum-decl.c:46:23: note: 'T' has been explicitly marked deprecated here
-  enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
-                      ^
+   46 |   enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
+      |                       ^
 <Top Level Nodes>
 ADDR_023
 <Top Level Types>
@@ -759,7 +760,7 @@ E0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -792,7 +793,7 @@ E1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -828,7 +829,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_032
 Enum
@@ -880,7 +881,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_032
 Enum
@@ -951,7 +952,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_035
 0
@@ -1046,7 +1047,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_039
 0
@@ -1125,7 +1126,7 @@ defLast
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -1145,23 +1146,23 @@ nullptr_decl
 ADDR_023
 FunctionDecl
 <TEST_DIR>/ast-print-enum-decl.c:54:40: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  enum __attribute__((deprecated(""))) T *p0;
-                                       ^
+   54 |   enum __attribute__((deprecated(""))) T *p0;
+      |                                        ^
 <TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
-  enum __attribute__((deprecated(""))) T *p0;
-                      ^
+   54 |   enum __attribute__((deprecated(""))) T *p0;
+      |                       ^
 <TEST_DIR>/ast-print-enum-decl.c:60:37: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  enum __attribute__((aligned(16))) T { E0, E1 } *p1; // expected-warning {{'T' is deprecated}}
-                                    ^
+   60 |   enum __attribute__((aligned(16))) T { E0, E1 } *p1; // expected-warning {{'T' is deprecated}}
+      |                                     ^
 <TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
-  enum __attribute__((deprecated(""))) T *p0;
-                      ^
+   54 |   enum __attribute__((deprecated(""))) T *p0;
+      |                       ^
 <TEST_DIR>/ast-print-enum-decl.c:63:8: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  enum T *p2; // expected-warning {{'T' is deprecated}}
-       ^
+   63 |   enum T *p2; // expected-warning {{'T' is deprecated}}
+      |        ^
 <TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
-  enum __attribute__((deprecated(""))) T *p0;
-                      ^
+   54 |   enum __attribute__((deprecated(""))) T *p0;
+      |                       ^
 <Top Level Nodes>
 ADDR_043
 <Top Level Types>
@@ -1315,7 +1316,7 @@ E0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -1348,7 +1349,7 @@ E1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -1384,7 +1385,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_052
 Enum
@@ -1436,7 +1437,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_052
 Enum
@@ -1507,7 +1508,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_055
 0
@@ -1602,7 +1603,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_059
 0
@@ -1697,7 +1698,7 @@ p2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_063
 0
@@ -1776,7 +1777,7 @@ defMiddle
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -1867,7 +1868,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_069
 Enum
@@ -1938,7 +1939,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_072
 0
@@ -2033,7 +2034,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_076
 0
@@ -2093,7 +2094,7 @@ p2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_076
 0
@@ -2153,7 +2154,7 @@ p3
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_076
 0
@@ -2213,7 +2214,7 @@ p4
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_076
 0
@@ -2294,7 +2295,7 @@ declsOnly
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_003
 0
@@ -2359,7 +2360,7 @@ DeclGroupAtFileScope0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -2392,7 +2393,7 @@ DeclGroupAtFileScope
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_088
 Enum
@@ -2463,7 +2464,7 @@ DeclGroupAtFileScopePtr
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_091
 0
@@ -2538,7 +2539,7 @@ T10
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -2571,7 +2572,7 @@ T1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_094
 Enum
@@ -2644,7 +2645,7 @@ p0
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_098
 0
@@ -2694,7 +2695,7 @@ T20
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_004
 0
@@ -2727,7 +2728,7 @@ T2
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_100
 Enum
@@ -2800,7 +2801,7 @@ p1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_104
 0
@@ -2837,7 +2838,7 @@ p2
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_104
 0
@@ -2875,7 +2876,7 @@ DeclGroupInMemberList
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_093
 Struct

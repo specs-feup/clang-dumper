@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -104,7 +105,7 @@ TestLocation
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_002
 0
@@ -249,7 +250,7 @@ TestIndent
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_002
 0
@@ -362,7 +363,7 @@ x
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -422,7 +423,7 @@ y
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -464,7 +465,7 @@ z
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -543,7 +544,7 @@ TestDeclStmt
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_011
 0
@@ -691,7 +692,7 @@ TestOpaqueValueExpr
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_002
 0
@@ -707,17 +708,17 @@ CINIT
 ADDR_019
 VarDecl
 <TEST_DIR>/ast-dump-stmt.c:48:3: warning: expression result unused [-Wunused-value]
-  -T1;
-  ^~~
+   48 |   -T1;
+      |   ^~~
 <TEST_DIR>/ast-dump-stmt.c:49:3: warning: expression result unused [-Wunused-value]
-  -T2;
-  ^~~
+   49 |   -T2;
+      |   ^~~
 <TEST_DIR>/ast-dump-stmt.c:58:3: warning: expression result unused [-Wunused-value]
-  ~T1;
-  ^~~
+   58 |   ~T1;
+      |   ^~~
 <TEST_DIR>/ast-dump-stmt.c:59:3: warning: expression result unused [-Wunused-value]
-  ~T2;
-  ^~~
+   59 |   ~T2;
+      |   ^~~
 <Top Level Nodes>
 ADDR_024
 <Visited Children>
@@ -845,7 +846,7 @@ T1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_026
 0
@@ -931,7 +932,7 @@ T2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -1447,7 +1448,7 @@ TestUnaryOperatorExpr
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0
@@ -1467,17 +1468,17 @@ nullptr_decl
 ADDR_024
 FunctionDecl
 <TEST_DIR>/ast-dump-stmt.c:70:21: warning: expression result unused [-Wunused-value]
-  _Generic(i, int : 12);
-                    ^~
+   70 |   _Generic(i, int : 12);
+      |                     ^~
 <TEST_DIR>/ast-dump-stmt.c:79:21: warning: expression result unused [-Wunused-value]
-  _Generic(i, int : 12, default : 0);
-                    ^~
+   79 |   _Generic(i, int : 12, default : 0);
+      |                     ^~
 <TEST_DIR>/ast-dump-stmt.c:90:34: warning: expression result unused [-Wunused-value]
-  _Generic(i, default : 0, int : 12);
-                                 ^~
+   90 |   _Generic(i, default : 0, int : 12);
+      |                                  ^~
 <TEST_DIR>/ast-dump-stmt.c:101:21: warning: expression result unused [-Wunused-value]
-  _Generic(i, int : 12, float : 10, default : 100);
-                    ^~
+  101 |   _Generic(i, int : 12, float : 10, default : 100);
+      |                     ^~
 <Top Level Nodes>
 ADDR_053
 <Visited Children>
@@ -1541,7 +1542,7 @@ i
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -2169,7 +2170,7 @@ j
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -2251,7 +2252,7 @@ TestGenericSelectionExpressions
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_054
 0
@@ -2271,8 +2272,8 @@ nullptr_decl
 ADDR_053
 FunctionDecl
 <TEST_DIR>/ast-dump-stmt.c:142:3: warning: expression result unused [-Wunused-value]
-  0;
-  ^
+  142 |   0;
+      |   ^
 <Top Level Nodes>
 ADDR_083
 <Top Level Types>
@@ -2315,7 +2316,7 @@ label1
 0
 0
 0
-NoLinkage
+None
 Default
 <Id to Class Map>
 ADDR_085
@@ -2362,7 +2363,7 @@ label2
 0
 0
 0
-NoLinkage
+None
 Default
 <Id to Class Map>
 ADDR_087
@@ -2496,7 +2497,7 @@ ptr
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_091
 0
@@ -2699,7 +2700,7 @@ TestLabelsAndGoto
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0
@@ -2749,7 +2750,7 @@ i
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -3289,7 +3290,7 @@ TestSwitch
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_054
 0
@@ -3388,7 +3389,7 @@ b
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_129
 0
@@ -4161,7 +4162,7 @@ TestIf
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_130
 0
@@ -4181,11 +4182,11 @@ nullptr_decl
 ADDR_128
 FunctionDecl
 <TEST_DIR>/ast-dump-stmt.c:288:8: warning: expression result unused [-Wunused-value]
-  for (b; b; b)
-       ^
+  288 |   for (b; b; b)
+      |        ^
 <TEST_DIR>/ast-dump-stmt.c:288:14: warning: expression result unused [-Wunused-value]
-  for (b; b; b)
-             ^
+  288 |   for (b; b; b)
+      |              ^
 <Top Level Nodes>
 ADDR_168
 <Top Level Types>
@@ -4217,7 +4218,7 @@ b
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_129
 0
@@ -4447,7 +4448,7 @@ i
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -5423,7 +5424,7 @@ TestIteration
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_130
 0
@@ -5732,7 +5733,7 @@ TestJumps
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0
@@ -5752,8 +5753,8 @@ nullptr_decl
 ADDR_222
 FunctionDecl
 <TEST_DIR>/ast-dump-stmt.c:367:17: warning: expression result unused [-Wunused-value]
-  ({int a = 10; a;});
-                ^
+  367 |   ({int a = 10; a;});
+      |                 ^
 <Top Level Nodes>
 ADDR_236
 <Top Level Types>
@@ -5811,7 +5812,7 @@ a
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_002
 0
@@ -5977,7 +5978,7 @@ TestMiscStmts
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_025
 0

@@ -10,6 +10,7 @@
 0
 0
 0
+0
 1
 1
 1
@@ -75,7 +76,7 @@ B
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_002
 Struct
@@ -85,17 +86,17 @@ Struct
 ADDR_001
 RecordDecl
 <TEST_DIR>/ast-print-record-decl.c:113:67: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-                                                                  ^
+  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
+      |                                                                   ^
 <TEST_DIR>/ast-print-record-decl.c:113:50: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-                                                 ^
+  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
+      |                                                  ^
 <TEST_DIR>/ast-print-record-decl.c:118:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW T *p1; // expected-warning {{'T' is deprecated}}
-     ^
+  118 |   KW T *p1; // expected-warning {{'T' is deprecated}}
+      |      ^
 <TEST_DIR>/ast-print-record-decl.c:113:50: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-                                                 ^
+  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
+      |                                                  ^
 <Top Level Nodes>
 ADDR_003
 <Visited Children>
@@ -302,7 +303,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -325,7 +326,7 @@ RecordDecl
 3
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 115
@@ -344,7 +345,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_011
 Struct
@@ -403,7 +404,7 @@ VarDecl
 6
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 115
@@ -420,7 +421,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_015
 0
@@ -451,7 +452,7 @@ DeclStmt
 8
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 115
@@ -510,7 +511,7 @@ VarDecl
 9
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 118
@@ -527,7 +528,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_019
 0
@@ -557,7 +558,7 @@ DeclStmt
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 118
@@ -754,7 +755,7 @@ s0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -941,7 +942,7 @@ s1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -1021,7 +1022,7 @@ defFirst
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -1041,11 +1042,11 @@ nullptr_decl
 ADDR_003
 FunctionDecl
 <TEST_DIR>/ast-print-record-decl.c:136:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
-                                     ^
+  136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
+      |                                      ^
 <TEST_DIR>/ast-print-record-decl.c:136:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
-                    ^
+  136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
+      |                     ^
 <Top Level Nodes>
 ADDR_039
 <Top Level Types>
@@ -1206,7 +1207,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -1229,7 +1230,7 @@ RecordDecl
 55
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 136
@@ -1248,7 +1249,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_047
 Struct
@@ -1287,7 +1288,7 @@ RecordDecl
 35
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 129
@@ -1305,7 +1306,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_047
 Struct
@@ -1364,7 +1365,7 @@ VarDecl
 38
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 129
@@ -1381,7 +1382,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_050
 0
@@ -1412,7 +1413,7 @@ DeclStmt
 40
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 129
@@ -1471,7 +1472,7 @@ VarDecl
 58
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 136
@@ -1488,7 +1489,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_054
 0
@@ -1519,7 +1520,7 @@ DeclStmt
 60
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 136
@@ -1682,7 +1683,7 @@ s0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -1869,7 +1870,7 @@ s1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -1949,7 +1950,7 @@ defLast
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -1969,23 +1970,23 @@ nullptr_decl
 ADDR_039
 FunctionDecl
 <TEST_DIR>/ast-print-record-decl.c:149:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((deprecated(""))) T *p0;
-                                     ^
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                                      ^
 <TEST_DIR>/ast-print-record-decl.c:149:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p0;
-                    ^
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
 <TEST_DIR>/ast-print-record-decl.c:154:35: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((aligned(16))) T BASES { int i; } *p1; // expected-warning {{'T' is deprecated}}
-                                  ^
+  154 |   KW __attribute__((aligned(16))) T BASES { int i; } *p1; // expected-warning {{'T' is deprecated}}
+      |                                   ^
 <TEST_DIR>/ast-print-record-decl.c:149:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p0;
-                    ^
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
 <TEST_DIR>/ast-print-record-decl.c:157:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW T *p2; // expected-warning {{'T' is deprecated}}
-     ^
+  157 |   KW T *p2; // expected-warning {{'T' is deprecated}}
+      |      ^
 <TEST_DIR>/ast-print-record-decl.c:149:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p0;
-                    ^
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
 <Top Level Nodes>
 ADDR_072
 <Top Level Types>
@@ -2142,7 +2143,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -2165,7 +2166,7 @@ RecordDecl
 52
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 154
@@ -2184,7 +2185,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_080
 Struct
@@ -2223,7 +2224,7 @@ RecordDecl
 38
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 149
@@ -2241,7 +2242,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_080
 Struct
@@ -2300,7 +2301,7 @@ VarDecl
 41
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 149
@@ -2317,7 +2318,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_083
 0
@@ -2348,7 +2349,7 @@ DeclStmt
 43
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 149
@@ -2407,7 +2408,7 @@ VarDecl
 55
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 154
@@ -2424,7 +2425,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_087
 0
@@ -2455,7 +2456,7 @@ DeclStmt
 57
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 154
@@ -2514,7 +2515,7 @@ VarDecl
 9
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 157
@@ -2531,7 +2532,7 @@ p2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_091
 0
@@ -2561,7 +2562,7 @@ DeclStmt
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 157
@@ -2724,7 +2725,7 @@ s0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -2911,7 +2912,7 @@ s1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -3098,7 +3099,7 @@ s2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -3180,7 +3181,7 @@ defMiddle
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -3200,17 +3201,17 @@ nullptr_decl
 ADDR_072
 FunctionDecl
 <TEST_DIR>/ast-print-record-decl.c:172:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((deprecated(""))) T *p0;
-                                     ^
+  172 |   KW __attribute__((deprecated(""))) T *p0;
+      |                                      ^
 <TEST_DIR>/ast-print-record-decl.c:172:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p0;
-                    ^
+  172 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
 <TEST_DIR>/ast-print-record-decl.c:180:35: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((aligned(64))) T BASES { // expected-warning {{'T' is deprecated}}
-                                  ^
+  180 |   KW __attribute__((aligned(64))) T BASES { // expected-warning {{'T' is deprecated}}
+      |                                   ^
 <TEST_DIR>/ast-print-record-decl.c:172:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p0;
-                    ^
+  172 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
 <Top Level Nodes>
 ADDR_116
 <Top Level Types>
@@ -3367,7 +3368,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -3427,7 +3428,7 @@ FieldDecl
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 182
@@ -3444,7 +3445,7 @@ p2
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_125
 0
@@ -3540,7 +3541,7 @@ RecordDecl
 35
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 187
@@ -3560,7 +3561,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_124
 Struct
@@ -3621,7 +3622,7 @@ FieldDecl
 38
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 187
@@ -3638,7 +3639,7 @@ p3
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_132
 0
@@ -3664,7 +3665,7 @@ FieldDecl
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 188
@@ -3681,7 +3682,7 @@ p4
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_125
 0
@@ -3708,7 +3709,7 @@ RecordDecl
 3
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 189
@@ -3727,7 +3728,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_124
 Struct
@@ -3766,7 +3767,7 @@ RecordDecl
 38
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 172
@@ -3784,7 +3785,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_124
 Struct
@@ -3843,7 +3844,7 @@ VarDecl
 41
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 172
@@ -3860,7 +3861,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_138
 0
@@ -3891,7 +3892,7 @@ DeclStmt
 43
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 172
@@ -3950,7 +3951,7 @@ VarDecl
 6
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 189
@@ -3967,7 +3968,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_142
 0
@@ -3998,7 +3999,7 @@ DeclStmt
 8
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 189
@@ -4161,7 +4162,7 @@ s0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -4348,7 +4349,7 @@ s1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -4588,7 +4589,7 @@ s2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -4828,7 +4829,7 @@ s3
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -5121,7 +5122,7 @@ s4
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -5204,7 +5205,7 @@ defSelfRef
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -5224,17 +5225,17 @@ nullptr_decl
 ADDR_116
 FunctionDecl
 <TEST_DIR>/ast-print-record-decl.c:217:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW __attribute__((deprecated(""))) T *p3;
-                                     ^
+  217 |   KW __attribute__((deprecated(""))) T *p3;
+      |                                      ^
 <TEST_DIR>/ast-print-record-decl.c:217:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p3;
-                    ^
+  217 |   KW __attribute__((deprecated(""))) T *p3;
+      |                     ^
 <TEST_DIR>/ast-print-record-decl.c:220:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  KW T *p4; // expected-warning {{'T' is deprecated}}
-     ^
+  220 |   KW T *p4; // expected-warning {{'T' is deprecated}}
+      |      ^
 <TEST_DIR>/ast-print-record-decl.c:217:21: note: 'T' has been explicitly marked deprecated here
-  KW __attribute__((deprecated(""))) T *p3;
-                    ^
+  217 |   KW __attribute__((deprecated(""))) T *p3;
+      |                     ^
 <Top Level Nodes>
 ADDR_189
 <Top Level Types>
@@ -5269,7 +5270,7 @@ RecordDecl
 6
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 206
@@ -5286,7 +5287,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_190
 Struct
@@ -5345,7 +5346,7 @@ VarDecl
 9
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 206
@@ -5362,7 +5363,7 @@ p0
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_193
 0
@@ -5393,7 +5394,7 @@ DeclStmt
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 206
@@ -5438,7 +5439,7 @@ RecordDecl
 33
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 209
@@ -5456,7 +5457,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_190
 Struct
@@ -5515,7 +5516,7 @@ VarDecl
 36
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 209
@@ -5532,7 +5533,7 @@ p1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_199
 0
@@ -5563,7 +5564,7 @@ DeclStmt
 38
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 209
@@ -5622,7 +5623,7 @@ VarDecl
 9
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 212
@@ -5639,7 +5640,7 @@ p2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_203
 0
@@ -5669,7 +5670,7 @@ DeclStmt
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 212
@@ -5738,7 +5739,7 @@ RecordDecl
 38
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 217
@@ -5757,7 +5758,7 @@ T
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_190
 Struct
@@ -5816,7 +5817,7 @@ VarDecl
 41
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 217
@@ -5833,7 +5834,7 @@ p3
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_210
 0
@@ -5864,7 +5865,7 @@ DeclStmt
 43
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 217
@@ -5889,7 +5890,7 @@ VarDecl
 9
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 220
@@ -5906,7 +5907,7 @@ p4
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_203
 0
@@ -5936,7 +5937,7 @@ DeclStmt
 11
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 220
@@ -5993,7 +5994,7 @@ declsOnly
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -6061,7 +6062,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -6084,7 +6085,7 @@ RecordDecl
 18
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 231
@@ -6101,7 +6102,7 @@ T1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_217
 Struct
@@ -6125,7 +6126,7 @@ DeclStmt
 19
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 231
@@ -6186,7 +6187,7 @@ FieldDecl
 17
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 235
@@ -6203,7 +6204,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_223
 0
@@ -6226,7 +6227,7 @@ RecordDecl
 20
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 235
@@ -6243,7 +6244,7 @@ T2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_221
 Struct
@@ -6267,7 +6268,7 @@ DeclStmt
 21
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 235
@@ -6321,7 +6322,7 @@ inMembers
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -6389,7 +6390,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -6412,7 +6413,7 @@ RecordDecl
 18
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 243
@@ -6429,7 +6430,7 @@ T1
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_228
 Struct
@@ -6453,7 +6454,7 @@ DeclStmt
 19
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 243
@@ -6507,7 +6508,7 @@ i
 0
 1
 1
-NoLinkage
+None
 Default
 ADDR_022
 0
@@ -6530,7 +6531,7 @@ RecordDecl
 19
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 247
@@ -6547,7 +6548,7 @@ T2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_232
 Struct
@@ -6720,7 +6721,7 @@ VarDecl
 40
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 247
@@ -6737,7 +6738,7 @@ t2
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_235
 0
@@ -6768,7 +6769,7 @@ DeclStmt
 41
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 247
@@ -6822,7 +6823,7 @@ inInit
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_005
 0
@@ -6890,7 +6891,7 @@ i
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_006
 0
@@ -6913,7 +6914,7 @@ RecordDecl
 34
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 271
@@ -6930,7 +6931,7 @@ DeclGroupAtFileScope
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_246
 Struct
@@ -6989,7 +6990,7 @@ VarDecl
 37
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 271
@@ -7006,7 +7007,7 @@ DeclGroupAtFileScopePtr
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_249
 0
@@ -7084,7 +7085,7 @@ i
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_006
 0
@@ -7118,7 +7119,7 @@ T1
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_252
 Struct
@@ -7174,7 +7175,7 @@ t1
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_255
 0
@@ -7227,7 +7228,7 @@ i
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_006
 0
@@ -7261,7 +7262,7 @@ T2
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_257
 Union
@@ -7333,7 +7334,7 @@ t20
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_261
 0
@@ -7389,7 +7390,7 @@ t21
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_263
 0
@@ -7439,7 +7440,7 @@ T30
 0
 0
 0
-NoLinkage
+None
 Default
 ADDR_006
 0
@@ -7489,7 +7490,7 @@ T3
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_265
 Enum
@@ -7546,7 +7547,7 @@ t30
 0
 1
 1
-ExternalLinkage
+External
 Default
 ADDR_269
 0
@@ -7575,7 +7576,7 @@ RecordDecl
 1
 1
 
-376
+391
 12
 <TEST_DIR>/ast-print-record-decl.c
 288
@@ -7592,7 +7593,7 @@ DeclGroupInMemberList
 0
 0
 0
-ExternalLinkage
+External
 Default
 ADDR_251
 Struct
