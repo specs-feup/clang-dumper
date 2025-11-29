@@ -104,7 +104,7 @@ message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
 
 # Compiler warning flags (MSVC uses different flags)
 if(MSVC)
-    # MSVC equivalent warnings - /W4 is a good baseline
+    # Use /W3 for our code. LLVM/Clang includes are marked as SYSTEM below.
     add_compile_options(/W3)
 else()
     add_compile_options(-Wsuggest-override)
@@ -148,9 +148,9 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 
 
 
-# Set the LLVM and Clang include directories
-include_directories(${LLVM_INCLUDE_DIRS})
-include_directories(${CLANG_INCLUDE_DIRS})
+# Set the LLVM and Clang include directories as SYSTEM to suppress warnings
+include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
+include_directories(SYSTEM ${CLANG_INCLUDE_DIRS})
 
 #include_directories("/usr/lib/llvm-${CLANG_VERSION}/include/")
 #include_directories("/usr/lib/clang/${CLANG_VERSION}/include/")
@@ -364,6 +364,7 @@ if(USE_MSVC_STATIC)
         shell32
         psapi
         ntdll
+        Ws2_32
     )
     
     # Link everything together
