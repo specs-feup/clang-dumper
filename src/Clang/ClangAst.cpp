@@ -33,8 +33,13 @@ static constexpr const char *const PREFIX = "COUNTER";
 /* DumpAstVisitor implementation */
 
 bool DumpAstVisitor::TraverseDecl(Decl *D) {
+    if (!D) {
+        return false;
+    }
+
     FullSourceLoc fullLocation = Context->getFullLoc(D->getBeginLoc());
-    if (fullLocation.isValid() && !fullLocation.isInSystemHeader()) {
+    if (fullLocation.isValid() && fullLocation.hasManager() &&
+        !fullLocation.isInSystemHeader()) {
 
         // Top-level Node
         llvm::errs() << TOP_LEVEL_NODES << "\n";
