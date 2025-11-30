@@ -302,6 +302,46 @@ def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
 # Pre-compiled at module load time
 _UNIFIED_REGEX, _UNIFIED_REPLACEMENTS = _build_combined_pattern()
 
+# Line offsets (0-indexed from <Compiler Instance Data>) for platform-specific type widths
+# These widths can differ between platforms and need normalization
+_TYPE_WIDTH_LINE_OFFSETS = {
+    26: "<LONG_DOUBLE_WIDTH>",  # LongDoubleWidth: 128 (Linux x86_64) vs 64 (Windows MSVC)
+    30: "<LONG_WIDTH>",         # LongWidth: 64 (Linux LP64) vs 32 (Windows LLP64)
+}
+
+
+def normalize_type_widths(output: str) -> str:
+    """
+    Normalize platform-specific type width values in the output.
+    
+    Different platforms have different type sizes:
+    - LongDoubleWidth (line 27): 128 bits on Linux x86_64, 64 bits on Windows MSVC
+    - LongWidth (line 31): 64 bits on Linux (LP64), 32 bits on Windows (LLP64)
+    
+    The output format has these values as bare numbers at specific line offsets
+    from the <Compiler Instance Data> marker. This function replaces those
+    values with placeholders to ensure cross-platform test compatibility.
+    """
+    lines = output.split('\n')
+    
+    # Find the <Compiler Instance Data> marker
+    compiler_data_idx = None
+    for i, line in enumerate(lines):
+        if line.strip() == "<Compiler Instance Data>":
+            compiler_data_idx = i
+            break
+    
+    if compiler_data_idx is None:
+        return output
+    
+    # Replace platform-specific lines with placeholders
+    for offset, placeholder in _TYPE_WIDTH_LINE_OFFSETS.items():
+        target_idx = compiler_data_idx + offset
+        if target_idx < len(lines) and lines[target_idx].strip().isdigit():
+            lines[target_idx] = placeholder
+    
+    return '\n'.join(lines)
+
 
 def get_test_config(test_name: str) -> TestConfig:
     """
@@ -448,6 +488,8 @@ def run_tool_and_normalize(
     stdout, _ = proc.communicate()
     
     normalized_stderr = "".join(normalized_lines)
+    # Normalize platform-specific type widths
+    normalized_stderr = normalize_type_widths(normalized_stderr)
     return proc.returncode, stdout, normalized_stderr, placeholder_to_raw
 
 
@@ -529,7 +571,13 @@ def run_single_test(
     )
 
     if return_code != 0:
-        return TestStatus.FAIL, f"Tool exited with code {return_code}"
+        # Include stderr excerpt for debugging
+        stderr_lines = normalized_output.splitlines()
+        stderr_excerpt = "\n".join(stderr_lines[:50]) if stderr_lines else "(empty)"
+        return TestStatus.FAIL, (
+            f"Tool exited with code {return_code}\n"
+            f"Stderr (first 50 lines):\n{stderr_excerpt}"
+        )
 
     # Check address consistency
     consistency_errors = check_address_consistency(placeholder_to_raw)
