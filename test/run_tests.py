@@ -235,6 +235,8 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
     (r"[A-Za-z]:[/\\]Program Files[/\\]LLVM[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
     (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
+    # Windows: Custom LLVM installation paths (e.g., CI environments)
+    (r"[A-Za-z]:[/\\]llvm[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
 
     # ==================== GCC HEADERS ====================
     # Linux: Canonicalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/
@@ -394,8 +396,12 @@ def run_tool_and_normalize(
     placeholder_to_raw: dict[str, list[str]] = {}  # placeholder -> [raw_addresses]
     counter = [1]  # Use list to allow mutation in nested function
     
-    # Precompute Windows-style path for replacement
-    inputs_dir_str_win = inputs_dir_str.replace("/", "\\")
+    # Precompute path variants for replacement on Windows
+    # On Windows, Path.resolve() returns backslashes (e.g., D:\path\to\inputs)
+    # but LLVM/Clang typically outputs forward slashes (e.g., D:/path/to/inputs)
+    # We need both variants for proper normalization
+    inputs_dir_str_fwd = inputs_dir_str.replace("\\", "/")  # Forward slash version
+    inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")  # Backslash version
 
     def unified_replacer(match: re.Match[str]) -> str:
         """Single-pass replacement function for both paths and addresses."""
@@ -434,8 +440,9 @@ def run_tool_and_normalize(
     assert proc.stderr is not None
     for line in proc.stderr:
         # Fast string replacement for inputs_dir (before regex)
-        line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
-        line = line.replace(inputs_dir_str_win, PATH_PLACEHOLDER)
+        # Replace both forward and backslash variants to handle platform differences
+        line = line.replace(inputs_dir_str_fwd, PATH_PLACEHOLDER)
+        line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
         # Single-pass regex for system paths and addresses
         line = _UNIFIED_REGEX.sub(unified_replacer, line)
         normalized_lines.append(line)
