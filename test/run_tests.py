@@ -395,13 +395,6 @@ def run_tool_and_normalize(
     address_map: dict[str, str] = {}  # raw_address -> placeholder
     placeholder_to_raw: dict[str, list[str]] = {}  # placeholder -> [raw_addresses]
     counter = [1]  # Use list to allow mutation in nested function
-    
-    # Precompute path variants for replacement on Windows
-    # On Windows, Path.resolve() returns backslashes (e.g., D:\path\to\inputs)
-    # but LLVM/Clang typically outputs forward slashes (e.g., D:/path/to/inputs)
-    # We need both variants for proper normalization
-    inputs_dir_str_fwd = inputs_dir_str.replace("\\", "/")  # Forward slash version
-    inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")  # Backslash version
 
     def unified_replacer(match: re.Match[str]) -> str:
         """Single-pass replacement function for both paths and addresses."""
@@ -438,11 +431,15 @@ def run_tool_and_normalize(
     # Process stderr line-by-line for memory efficiency on large outputs
     normalized_lines: list[str] = []
     assert proc.stderr is not None
+    # Precompute the backslash version of inputs_dir for Windows path matching
+    inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")
     for line in proc.stderr:
         # Fast string replacement for inputs_dir (before regex)
-        # Replace both forward and backslash variants to handle platform differences
-        line = line.replace(inputs_dir_str_fwd, PATH_PLACEHOLDER)
+        # Handle both forward slash (Unix/Clang output) and backslash (Windows native) paths
+        line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
         line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
+        # Normalize path separator after placeholder to forward slash
+        line = line.replace(PATH_PLACEHOLDER + "\\", PATH_PLACEHOLDER + "/")
         # Single-pass regex for system paths and addresses
         line = _UNIFIED_REGEX.sub(unified_replacer, line)
         normalized_lines.append(line)
@@ -703,7 +700,8 @@ def main():
         sys.exit(1)
 
     # Pre-resolve inputs_dir to string once (avoid repeated Path.resolve() calls)
-    inputs_dir_str = str(inputs_dir.resolve())
+    # Use forward slashes for cross-platform consistency (matches normalization in run_tool_and_normalize)
+    inputs_dir_str = str(inputs_dir.resolve()).replace("\\", "/")
 
     num_workers = os.cpu_count() or 1
     print(
