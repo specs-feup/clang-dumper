@@ -58,7 +58,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "simple_function.cpp": T(42),
     "class_decl.cpp": T(17),
     "expressions.cpp": T(73),
-    "2mm.c": T(),
+    "2mm.c": T(requires={"posix"}),
     "2mm.h": T(),
     "ArrayInitLoopExpr.cpp": T(),
     "ComplexType.cpp": T(),
@@ -85,13 +85,13 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "boolean.c": T(),
     "boolean.cpp": T(),
     "boolean2.c": T(),
-    "builtin_types.cl": T(),
+    "builtin_types.cl": T(requires={"opencl"}),
     "builtin_types.cpp": T(),
     "c-casts.c": T(),
     "c89.c": T(),
     "c99.c": T(),
     "character.cpp": T(),
-    "cl_attribute.cl": T(),
+    "cl_attribute.cl": T(requires={"opencl"}),
     "class_template.cpp": T(),
     "class_template.h": T(flags=["-x", "c++"]),
     "classes.cpp": T(),
@@ -163,10 +163,10 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "namespace.cpp": T(),
     "namespace.h": T(flags=["-x", "c++"]),
     "namespacealias.cpp": T(),
-    "nas_bt.c": T(),
-    "nas_ft.c": T(),
-    "nas_lu.c": T(),
-    "nas_ua.c": T(),
+    "nas_bt.c": T(requires={"posix"}),
+    "nas_ft.c": T(requires={"posix"}),
+    "nas_lu.c": T(requires={"posix"}),
+    "nas_ua.c": T(requires={"posix"}),
     "new.cpp": T(),
     "noexcept.cpp": T(),
     "offset.c": T(),
@@ -293,7 +293,10 @@ def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
         group_map[group_name] = replacement
     
     # Add address pattern - replacement is dynamic, so we use a sentinel
-    groups.append(r"(?P<addr>0x[0-9a-fA-F]+_\d+)")
+    # Matches both formats:
+    #   - Linux/macOS: 0x7f1234abcd_0 (with 0x prefix)
+    #   - Windows: 0000022070407AD0_0 (no prefix, often zero-padded)
+    groups.append(r"(?P<addr>(?:0x)?[0-9a-fA-F]+_\d+)")
     group_map["addr"] = None  # Sentinel: handled specially in replacement function
     
     combined = "|".join(groups)
@@ -719,7 +722,11 @@ def main():
             clang_path = str(clang_path_obj)
 
     # Build set of enabled features
+    # Auto-enable platform-specific features
     enabled_features: set[str] = set()
+    if platform.system() != "Windows":
+        enabled_features.add("posix")  # POSIX headers like unistd.h
+        enabled_features.add("opencl")  # OpenCL headers (typically available on Linux/macOS)
     if args.enable_cuda:
         enabled_features.add("cuda")
 
