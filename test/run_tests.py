@@ -294,9 +294,10 @@ def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
     
     # Add address pattern - replacement is dynamic, so we use a sentinel
     # Matches both formats:
-    #   - Linux/macOS: 0x7f1234abcd_0 (with 0x prefix)
-    #   - Windows: 0000022070407AD0_0 (no prefix, often zero-padded)
-    groups.append(r"(?P<addr>(?:0x)?[0-9a-fA-F]+_\d+)")
+    #   - Linux/macOS: 0x7f1234abcd_0 (with 0x prefix, variable length)
+    #   - Windows: 0000022070407AD0_0 (no prefix, exactly 16 hex digits for 64-bit pointers)
+    # The Windows pattern requires exactly 16 hex digits to avoid false positives like "x86_64"
+    groups.append(r"(?P<addr>(?:0x[0-9a-fA-F]+|[0-9A-F]{16})_\d+)")
     group_map["addr"] = None  # Sentinel: handled specially in replacement function
     
     combined = "|".join(groups)
