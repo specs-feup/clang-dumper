@@ -13,7 +13,7 @@ The target `tool` has been successfully built in Ubuntu and Windows (MinGW), mak
 
 ## Dependencies
 
-**Node.js is required to build this project**
+**Python3 is required to build this project**
 
 ```sh
 # Required for all targets

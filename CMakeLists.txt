@@ -167,7 +167,7 @@ add_definitions(${CLANG_DEFINITIONS})
 # during configuration and caused repeated re-configurations / stale lists.
 #
 # New approach:
-# 1. A custom command (build step) runs the Node script that (re)generates the
+# 1. A custom command (build step) runs the Python script that (re)generates the
 #    enum sources under src/ClangEnums/.
 # 2. Immediately after, a small CMake script (executed with -P at build time)
 #    scans the directory and writes a single aggregator translation unit
@@ -184,10 +184,13 @@ add_definitions(${CLANG_DEFINITIONS})
 #  - Adding/removing enum files requires no CMake reconfigure.
 #
 # When SKIP_ENUM_GENERATION is ON (e.g., in CI where enums are pre-generated),
-# the Node.js script is skipped and only the aggregator runs.
+# the Python script is skipped and only the aggregator runs.
 # -----------------------------------------------------------------------------
 
-option(SKIP_ENUM_GENERATION "Skip Node.js enum generation (use pre-existing files)" OFF)
+# Find Python3 for enum generation
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
+option(SKIP_ENUM_GENERATION "Skip Python enum generation (use pre-existing files)" OFF)
 
 # Directory for build-time helper + aggregated source
 set(ENUMS_GEN_DIR "${CMAKE_BINARY_DIR}/generated")
@@ -197,7 +200,7 @@ set(ENUMS_AGGREGATED_SRC "${ENUMS_GEN_DIR}/clang_enums_aggregated.cpp")
 # Build-time script which creates the aggregator translation unit.
 set(GENERATE_ENUMS_AGG_SCRIPT "${ENUMS_GEN_DIR}/generate_enum_aggregator.cmake")
 file(WRITE "${GENERATE_ENUMS_AGG_SCRIPT}" "# Auto-generated helper (do not edit)\n")
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "# Scans src/enums_cpp for cpp files produced by the Node script\n")
+file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "# Scans src/enums_cpp for cpp files produced by the Python script\n")
 file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "file(GLOB ENUM_CPP_FILES \"src/enums_cpp/*.cpp\")\n")
 file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "file(WRITE \"${ENUMS_AGGREGATED_SRC}\" \"// Aggregated enum sources - generated at build time\\n\\n\")\n")
 file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "foreach(f IN LISTS ENUM_CPP_FILES)\n")
@@ -205,13 +208,12 @@ file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "foreach(f IN LISTS ENUM_CPP_FILES)\n
 file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "  file(APPEND \"${ENUMS_AGGREGATED_SRC}\" \"#include \\\"\${f}\\\"\\n\")\n")
 file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "endforeach()\n")
 
-# Collect Node generation script files as (re)build dependencies (best-effort).
-file(GLOB NODE_ENUM_SCRIPTS CONFIGURE_DEPENDS
-    "${CMAKE_SOURCE_DIR}/clang_enums/*.mjs"
-    "${CMAKE_SOURCE_DIR}/clang_enums/*.js")
+# Collect Python generation script files as (re)build dependencies (best-effort).
+file(GLOB PYTHON_ENUM_SCRIPTS CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/clang_enums/*.py")
 
 if(SKIP_ENUM_GENERATION)
-    # Skip Node.js generation, only run aggregator on pre-existing enum files
+    # Skip Python generation, only run aggregator on pre-existing enum files
     message(STATUS "SKIP_ENUM_GENERATION is ON: using pre-existing enum files in src/enums_cpp/")
     add_custom_command(
         OUTPUT "${ENUMS_AGGREGATED_SRC}"
@@ -222,14 +224,14 @@ if(SKIP_ENUM_GENERATION)
         VERBATIM
     )
 else()
-    # Full generation: run Node.js script then aggregator
+    # Full generation: run Python script then aggregator
     add_custom_command(
         OUTPUT "${ENUMS_AGGREGATED_SRC}"
-        COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Node) into src/ClangEnums ..."
-        COMMAND node "${CMAKE_SOURCE_DIR}/clang_enums/Main.mjs" ${LLVM_DIR} src/
+        COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Python) into src/ ..."
+        COMMAND ${Python3_EXECUTABLE} -m clang_enums ${LLVM_DIR} src/
         COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS ${NODE_ENUM_SCRIPTS}
+        DEPENDS ${PYTHON_ENUM_SCRIPTS}
         COMMENT "Run enum generator and aggregate sources"
         VERBATIM
     )
@@ -490,56 +492,51 @@ if(APPLE)
     )
 endif()
 
-# Test target - runs Python test script
-find_package(Python3 COMPONENTS Interpreter)
-if(Python3_FOUND)
-    # Tool tests
-    add_custom_target(test-tool
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool>
-        DEPENDS tool
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Running clang-dumper tool tests..."
-    )
+# Test target - runs Python test script (Python3 already found above for enum generation)
+# Tool tests
+add_custom_target(test-tool
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool>
+    DEPENDS tool
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running clang-dumper tool tests..."
+)
 
-    # Test generation target - generates expected output files (uses tool mode)
-    add_custom_target(test-generate
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool> --generate
-        DEPENDS tool
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Generating expected test outputs..."
-    )
+# Test generation target - generates expected output files (uses tool mode)
+add_custom_target(test-generate
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool> --generate
+    DEPENDS tool
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Generating expected test outputs..."
+)
 
-    # Plugin tests - only available when plugin is built (not MSVC static)
-    if(NOT USE_MSVC_STATIC)
-        # Determine the clang path for plugin tests
-        # We need the actual clang compiler, not whatever CMAKE_CXX_COMPILER is set to
-        if(WIN32)
-            set(CLANG_FOR_PLUGIN "${MINGW_BASEDIR}/bin/clang.exe")
-        elseif(APPLE)
-            set(CLANG_FOR_PLUGIN "/usr/local/opt/llvm@${CLANG_VERSION}/bin/clang")
-        else()
-            set(CLANG_FOR_PLUGIN "clang-${CLANG_VERSION}")
-        endif()
-
-        add_custom_target(test-plugin
-            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode plugin --path $<TARGET_FILE:plugin> --clang-path ${CLANG_FOR_PLUGIN}
-            DEPENDS plugin
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Running clang-dumper plugin tests..."
-        )
-
-        # Combined test target that runs both tool and plugin tests
-        add_custom_target(test
-            DEPENDS test-tool test-plugin
-            COMMENT "Running all clang-dumper tests..."
-        )
+# Plugin tests - only available when plugin is built (not MSVC static)
+if(NOT USE_MSVC_STATIC)
+    # Determine the clang path for plugin tests
+    # We need the actual clang compiler, not whatever CMAKE_CXX_COMPILER is set to
+    if(WIN32)
+        set(CLANG_FOR_PLUGIN "${MINGW_BASEDIR}/bin/clang.exe")
+    elseif(APPLE)
+        set(CLANG_FOR_PLUGIN "/usr/local/opt/llvm@${CLANG_VERSION}/bin/clang")
     else()
-        # On MSVC, test target only runs tool tests
-        add_custom_target(test
-            DEPENDS test-tool
-            COMMENT "Running clang-dumper tests..."
-        )
+        set(CLANG_FOR_PLUGIN "clang-${CLANG_VERSION}")
     endif()
+
+    add_custom_target(test-plugin
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode plugin --path $<TARGET_FILE:plugin> --clang-path ${CLANG_FOR_PLUGIN}
+        DEPENDS plugin
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running clang-dumper plugin tests..."
+    )
+
+    # Combined test target that runs both tool and plugin tests
+    add_custom_target(test
+        DEPENDS test-tool test-plugin
+        COMMENT "Running all clang-dumper tests..."
+    )
 else()
-    message(WARNING "Python3 not found. Test targets will not be available. Please install Python 3 to enable testing.")
+    # On MSVC, test target only runs tool tests
+    add_custom_target(test
+        DEPENDS test-tool
+        COMMENT "Running clang-dumper tests..."
+    )
 endif()
