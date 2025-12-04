@@ -49,7 +49,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          sparse-checkout-cone-mode: false
           sparse-checkout: |
+            /*
             !test/
 
       - name: Download enum artifacts
@@ -158,7 +160,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          sparse-checkout-cone-mode: false
           sparse-checkout: |
+            /*
             !test/
 
       - name: Download enum artifacts
