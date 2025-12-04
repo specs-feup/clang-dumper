@@ -85,6 +85,7 @@ jobs:
           name: linux-plugin
           path: build/libplugin.so
           retention-days: 1
+          if-no-files-found: error
 
       - name: Upload tool artifact
         uses: actions/upload-artifact@v4
@@ -92,6 +93,7 @@ jobs:
           name: linux-tool
           path: build/tool
           retention-days: 1
+          if-no-files-found: error
 
   test-linux-plugin:
     name: Test Linux - Plugin
@@ -125,7 +127,7 @@ jobs:
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Run tests
-        run: cmake --build build --target test-plugin
+        run: python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path ${CC}
 
   test-linux-tool:
     name: Test Linux - Tool
@@ -141,14 +143,8 @@ jobs:
           name: linux-tool
           path: build/
 
-      - name: Configure
-        run: |
-          cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-            -DSKIP_ENUM_GENERATION=ON
-
       - name: Run tests
-        run: cmake --build build --target test-tool
+        run: python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
 
   build-windows:
     name: Build Windows
@@ -217,9 +213,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-tool
-          path: |
-            build/tool.exe
+          path: build/Release/tool.exe
           retention-days: 1
+          if-no-files-found: error
 
   test-windows-tool:
     name: Test Windows - Tool
@@ -233,15 +229,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: windows-tool
-          path: build/
-
-      - name: Configure
-        run: |
-          cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-            -DSKIP_ENUM_GENERATION=ON
+          path: build/Release/
 
       - name: Run tests
         shell: pwsh
         run: |
-          cmake --build build --target test --config ${{ env.CMAKE_BUILD_TYPE }}
+          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/Release/tool.exe
