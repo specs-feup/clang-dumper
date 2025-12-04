@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           filter: |
-            !test
+            !test/
 
       - name: Download enum artifacts
         uses: actions/download-artifact@v4
@@ -159,7 +159,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           filter: |
-            !test
+            !test/
 
       - name: Download enum artifacts
         uses: actions/download-artifact@v4
