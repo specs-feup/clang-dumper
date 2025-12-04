@@ -10,7 +10,6 @@ on:
 env:
   CMAKE_BUILD_TYPE: Release
   LLVM_VERSION: 18
-  NODE_VERSION: 22
 
 jobs:
   generate-enums:
@@ -27,14 +26,9 @@ jobs:
             llvm-${{ env.LLVM_VERSION }}-dev \
             libclang-${{ env.LLVM_VERSION }}-dev
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
       - name: Generate enum files
         run: |
-          node clang_enums/Main.mjs /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
+          python3 -m clang_enums /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
 
       - name: Upload enum artifacts
         uses: actions/upload-artifact@v4
