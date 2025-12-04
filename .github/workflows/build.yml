@@ -120,14 +120,9 @@ jobs:
           sudo apt-get install -y \
             clang-${{ env.LLVM_VERSION }}
 
-      - name: Configure
-        run: |
-          cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-            -DSKIP_ENUM_GENERATION=ON
-
       - name: Run tests
-        run: python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path ${CC}
+        run: |
+          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path ${CC}
 
   test-linux-tool:
     name: Test Linux - Tool
@@ -144,7 +139,9 @@ jobs:
           path: build/
 
       - name: Run tests
-        run: python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
+        run: |
+          chmod +x ${{ github.workspace }}/build/tool
+          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
 
   build-windows:
     name: Build Windows
