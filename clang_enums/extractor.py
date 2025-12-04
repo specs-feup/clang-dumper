@@ -4,6 +4,7 @@ Enum extraction logic using regex parsing.
 
 import re
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -155,7 +156,7 @@ class EnumExtractor:
         return re.sub(r'^#\s*\d+\s+"[^"]*".*$', '', text, flags=re.MULTILINE)
     
     @classmethod
-    def _extract_value_name(cls, part: str) -> str | None:
+    def _extract_value_name(cls, part: str) -> Optional[str]:
         """
         Extract the enum value name from a part of the enum body.
         
