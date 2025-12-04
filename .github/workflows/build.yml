@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: clang_enums/**
 
       - name: Install LLVM
         run: |
@@ -46,6 +48,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: |
+            !test/**
 
       - name: Download enum artifacts
         uses: actions/download-artifact@v4
@@ -152,6 +157,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: |
+            !test/**
 
       - name: Download enum artifacts
         uses: actions/download-artifact@v4
@@ -231,4 +239,6 @@ jobs:
       - name: Run tests
         shell: pwsh
         run: |
-          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/Release/tool.exe
+          $testScript = Join-Path $env:GITHUB_WORKSPACE "test/run_tests.py"
+          $toolPath   = Join-Path $env:GITHUB_WORKSPACE "build/Release/tool.exe"
+          python3 "$testScript" --mode tool --path "$toolPath"
