@@ -49,8 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          filter: |
-            *
+          sparse-checkout: |
             !test/
 
       - name: Download enum artifacts
@@ -159,8 +158,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          filter: |
-            *
+          sparse-checkout: |
             !test/
 
       - name: Download enum artifacts
