@@ -85,8 +85,76 @@ jobs:
       - name: Build plugin & tool
         run: cmake --build build --target plugin tool --parallel
 
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-plugin
+          path: build/libplugin.so
+          retention-days: 1
+
+      - name: Upload tool artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-tool
+          path: build/tool
+          retention-days: 1
+
+  test-linux-plugin:
+    name: Test Linux - Plugin
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-plugin
+          path: build/
+
+      - name: Set compilers
+        run: |
+          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+
+      - name: Install LLVM and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang-${{ env.LLVM_VERSION }}
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DSKIP_ENUM_GENERATION=ON
+
       - name: Run tests
-        run: cmake --build build --target test
+        run: cmake --build build --target test-plugin
+
+  test-linux-tool:
+    name: Test Linux - Tool
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-tool
+          path: build/
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DSKIP_ENUM_GENERATION=ON
+
+      - name: Run tests
+        run: cmake --build build --target test-tool
 
   build-windows:
     name: Build Windows
@@ -150,6 +218,34 @@ jobs:
         shell: pwsh
         run: |
           cmake --build build --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Upload tool artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-tool
+          path: |
+            build/tool.exe
+          retention-days: 1
+
+  test-windows-tool:
+    name: Test Windows - Tool
+    needs: build-windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-tool
+          path: build/
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DSKIP_ENUM_GENERATION=ON
 
       - name: Run tests
         shell: pwsh
