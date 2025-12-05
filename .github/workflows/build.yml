@@ -10,7 +10,6 @@ on:
 env:
   CMAKE_BUILD_TYPE: Release
   LLVM_VERSION: 18
-  NODE_VERSION: 22
 
 jobs:
   generate-enums:
@@ -18,7 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: clang_enums
 
       - name: Install LLVM
         run: |
@@ -27,14 +28,9 @@ jobs:
             llvm-${{ env.LLVM_VERSION }}-dev \
             libclang-${{ env.LLVM_VERSION }}-dev
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
       - name: Generate enum files
         run: |
-          node clang_enums/Main.mjs /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
+          python3 -m clang_enums /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
 
       - name: Upload enum artifacts
         uses: actions/upload-artifact@v4
@@ -51,7 +47,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !test/
 
       - name: Download enum artifacts
         uses: actions/download-artifact@v4
@@ -85,8 +86,69 @@ jobs:
       - name: Build plugin & tool
         run: cmake --build build --target plugin tool --parallel
 
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-plugin
+          path: build/libplugin.so
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload tool artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-tool
+          path: build/tool
+          retention-days: 1
+          if-no-files-found: error
+
+  test-linux-plugin:
+    name: Test Linux - Plugin
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-plugin
+          path: build/
+
+      - name: Set compilers
+        run: |
+          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
+
+      - name: Install LLVM and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang-${{ env.LLVM_VERSION }}
+
       - name: Run tests
-        run: cmake --build build --target test
+        run: |
+          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path ${CC}
+
+  test-linux-tool:
+    name: Test Linux - Tool
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-tool
+          path: build/
+
+      - name: Run tests
+        run: |
+          chmod +x ${{ github.workspace }}/build/tool
+          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
 
   build-windows:
     name: Build Windows
@@ -96,7 +158,12 @@ jobs:
       LLVM_INSTALL_DIR: C:/llvm
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !test/
 
       - name: Download enum artifacts
         uses: actions/download-artifact@v4
@@ -151,7 +218,31 @@ jobs:
         run: |
           cmake --build build --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
 
+      - name: Upload tool artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-tool
+          path: build/Release/tool.exe
+          retention-days: 1
+          if-no-files-found: error
+
+  test-windows-tool:
+    name: Test Windows - Tool
+    needs: build-windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-tool
+          path: build/Release/
+
       - name: Run tests
         shell: pwsh
         run: |
-          cmake --build build --target test --config ${{ env.CMAKE_BUILD_TYPE }}
+          $testScript = Join-Path $env:GITHUB_WORKSPACE "test/run_tests.py"
+          $toolPath   = Join-Path $env:GITHUB_WORKSPACE "build/Release/tool.exe"
+          python3 "$testScript" --mode tool --path "$toolPath"

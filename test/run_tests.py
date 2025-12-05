@@ -24,7 +24,7 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal, get_args
+from typing import Literal, Optional, get_args
 
 # Type alias for mode
 Mode = Literal["tool", "plugin"]
@@ -41,7 +41,9 @@ class TestConfig:
 
 # Helper to create simple test configs
 def T(
-    id: int = 0, flags: list[str] | None = None, requires: set[str] | None = None
+    id: int = 0,
+    flags: Optional[list[str]] = None,
+    requires: Optional[set[str]] = None,
 ) -> TestConfig:
     """Shorthand for creating TestConfig instances."""
     return TestConfig(
@@ -386,8 +388,8 @@ def run_tool_and_normalize(
     input_file: str,
     test_id: int,
     inputs_dir_str: str,
-    clang_path: str | None = None,
-    extra_flags: list[str] | None = None,
+    clang_path: Optional[str] = None,
+    extra_flags: Optional[list[str]] = None,
 ) -> tuple[int, str, str, dict[str, list[str]]]:
     """
     Run the clang-dumper tool or plugin and normalize output via streaming.
@@ -536,7 +538,7 @@ def run_single_test(
     inputs_dir_str: str,
     generate: bool,
     enabled_features: set[str],
-    clang_path: str | None = None,
+    clang_path: Optional[str] = None,
 ) -> tuple[str, str]:
     """
     Run a single test case.
@@ -703,7 +705,7 @@ def main():
         sys.exit(1)
 
     # Verify clang path for plugin mode
-    clang_path: str | None = None
+    clang_path: Optional[str] = None
     if args.mode == "plugin":
         clang_path_obj = Path(args.clang_path)
         # On Windows, also check with .exe extension

@@ -19,6 +19,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 from .codegen import write_cpp_file, write_java_files
 from .config import HEADERS
@@ -87,7 +88,7 @@ def process_header(
     return ProcessedHeader(header_name, extracted_enums, errors)
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(
         description="Extract enum definitions from Clang/LLVM headers.",
