@@ -269,10 +269,12 @@ jobs:
       - name: Install LLVM and dependencies
         run: |
           brew install llvm@${{ env.LLVM_VERSION }} zstd
+          LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
+          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> $GITHUB_ENV
+          echo "${LLVM_PREFIX}/bin" >> $GITHUB_PATH
 
       - name: Configure
         run: |
-          LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
             -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
@@ -317,11 +319,13 @@ jobs:
       - name: Install LLVM
         run: |
           brew install llvm@${{ env.LLVM_VERSION }}
+          LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
+          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> $GITHUB_ENV
+          echo "${LLVM_PREFIX}/bin" >> $GITHUB_PATH
 
       - name: Run tests
         run: |
-          CLANG_PATH="$(brew --prefix llvm@${{ env.LLVM_VERSION }})/bin/clang"
-          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.dylib --clang-path "${CLANG_PATH}"
+          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.dylib --clang-path "${LLVM_PREFIX}/bin/clang"
 
   test-macos-tool:
     name: Test macOS - Tool
