@@ -246,3 +246,98 @@ jobs:
           $testScript = Join-Path $env:GITHUB_WORKSPACE "test/run_tests.py"
           $toolPath   = Join-Path $env:GITHUB_WORKSPACE "build/Release/tool.exe"
           python3 "$testScript" --mode tool --path "$toolPath"
+
+  build-macos:
+    name: Build macOS
+    needs: generate-enums
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !test/
+
+      - name: Download enum artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-enums
+          path: src/
+
+      - name: Install LLVM and dependencies
+        run: |
+          brew install llvm@${{ env.LLVM_VERSION }} zstd
+
+      - name: Configure
+        run: |
+          LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
+            -DCMAKE_CXX_COMPILER="${LLVM_PREFIX}/bin/clang++" \
+            -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
+            -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
+            -DSKIP_ENUM_GENERATION=ON
+
+      - name: Build plugin & tool
+        run: cmake --build build --target plugin tool --parallel
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-plugin
+          path: build/libplugin.dylib
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload tool artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-tool
+          path: build/tool
+          retention-days: 1
+          if-no-files-found: error
+
+  test-macos-plugin:
+    name: Test macOS - Plugin
+    needs: build-macos
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-plugin
+          path: build/
+
+      - name: Install LLVM
+        run: |
+          brew install llvm@${{ env.LLVM_VERSION }}
+
+      - name: Run tests
+        run: |
+          CLANG_PATH="$(brew --prefix llvm@${{ env.LLVM_VERSION }})/bin/clang"
+          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.dylib --clang-path "${CLANG_PATH}"
+
+  test-macos-tool:
+    name: Test macOS - Tool
+    needs: build-macos
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-tool
+          path: build/
+
+      - name: Run tests
+        run: |
+          chmod +x ${{ github.workspace }}/build/tool
+          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
