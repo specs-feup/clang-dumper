@@ -292,7 +292,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-plugin
-          path: build/libplugin.dylib
+          path: build/libplugin.so
           retention-days: 1
           if-no-files-found: error
 
@@ -327,7 +327,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.dylib --clang-path "${LLVM_PREFIX}/bin/clang"
+          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang"
 
   test-macos-tool:
     name: Test macOS - Tool
