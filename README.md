@@ -22,3 +22,23 @@ sudo apt install clang-18 libclang-18-dev llvm-18-dev zlib1g-dev
 # Required for building the stand-alone tool
 sudo apt install libpolly-18-dev libedit-dev libzstd-dev
 ```
+
+# Creating 'include' packages
+
+Clava ships with pre-assembled stdlibc/c++ for several OS (Windows, Linux and MacOS).
+
+To build those include packages, chose a reference system, install Clang in the same version as the dumper, and check which include folders Clang uses for C++:
+
+```
+clang++ -E -x c++ - -v </dev/null
+```
+
+Then, starting with a new, empty folder, copy each include folder to this folder, following the order by which it is listed, and creating folders that also follow this order:
+
+```
+01-libcxx
+02-libc
+...
+```
+
+Finally, zip this folder. The copied include folders should appear in the root of the zip
