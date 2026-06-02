@@ -475,7 +475,14 @@ elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
         elseif(name STREQUAL "xml2")
             message(STATUS "Skipping llvm-config system library -lxml2 for static tool link")
         else()
-            list(APPEND LLVM_LIBS_CLEAN "${flag}")
+            find_library("${name}_SYSTEM_LIB"
+                NAMES "${name}"
+            )
+            if(${name}_SYSTEM_LIB)
+                list(APPEND LLVM_LIBS_CLEAN "${${name}_SYSTEM_LIB}")
+            else()
+                list(APPEND LLVM_LIBS_CLEAN "${flag}")
+            endif()
         endif()
     endforeach()
 
