@@ -1,14 +1,39 @@
-cmake_minimum_required(VERSION 3.14)
-project(ClangAstDumper)
+cmake_minimum_required(VERSION 3.20)
+
+set(CLANG_VERSION 18 CACHE STRING "LLVM/Clang major version to use")
+
+# CMake chooses compilers during project(), so default compiler discovery must
+# happen before that call. Users and CI can still override this with CC/CXX or
+# -DCMAKE_*_COMPILER.
+if(NOT DEFINED CMAKE_C_COMPILER AND NOT DEFINED ENV{CC} AND UNIX AND NOT APPLE)
+    find_program(_CLANG_DUMPER_DEFAULT_CC NAMES clang-${CLANG_VERSION} clang)
+    if(_CLANG_DUMPER_DEFAULT_CC)
+        set(CMAKE_C_COMPILER "${_CLANG_DUMPER_DEFAULT_CC}" CACHE FILEPATH "" FORCE)
+    endif()
+endif()
+if(NOT DEFINED CMAKE_CXX_COMPILER AND NOT DEFINED ENV{CXX} AND UNIX AND NOT APPLE)
+    find_program(_CLANG_DUMPER_DEFAULT_CXX NAMES clang++-${CLANG_VERSION} clang++)
+    if(_CLANG_DUMPER_DEFAULT_CXX)
+        set(CMAKE_CXX_COMPILER "${_CLANG_DUMPER_DEFAULT_CXX}" CACHE FILEPATH "" FORCE)
+    endif()
+endif()
+
+project(ClangAstDumper LANGUAGES C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(CLANG_VERSION 18)
 
 # --- MSVC static linking option ---------------------------------------------------
 # When USE_MSVC_STATIC is ON, we use MSVC with prebuilt LLVM binaries and static linking.
 # This path uses CMake config files and file globbing instead of llvm-config.
 option(USE_MSVC_STATIC "Use MSVC with prebuilt LLVM static libraries" OFF)
+option(CLANG_DUMPER_BUILD_TOOL "Build the standalone clang-dumper executable" ON)
+option(CLANG_DUMPER_BUILD_PLUGIN "Build the clang plugin module" ON)
+option(CLANG_DUMPER_STATIC_TOOL "Link the standalone tool against static LLVM/Clang libraries where available" ON)
+
+if(USE_MSVC_STATIC)
+    set(CLANG_DUMPER_STATIC_TOOL ON CACHE BOOL "" FORCE)
+    set(CLANG_DUMPER_BUILD_PLUGIN OFF CACHE BOOL "MSVC prebuilt LLVM packages do not ship a loadable clang-cpp plugin ABI" FORCE)
+endif()
 
 # LLVM_INSTALL_DIR can be set to point to the prebuilt LLVM installation
 if(NOT DEFINED LLVM_INSTALL_DIR AND DEFINED ENV{LLVM_INSTALL_DIR})
@@ -40,32 +65,9 @@ if(WIN32 AND NOT USE_MSVC_STATIC)
     endif()
 endif()
 
-# Set compiler
-# Often these do not work... replace with direct invocation in command line
-# Skip compiler override for MSVC builds (let CMake use the Visual Studio generator)
-if(WIN32 AND NOT USE_MSVC_STATIC)
-    # E.g., cmake -DCMAKE_C_COMPILER="c:/mingw64-clang-16/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/mingw64-clang-16/bin/clang++.exe" -DCMAKE_LINKER="C:/mingw64-clang-16/bin/lld-link.exe" ..
-    if(NOT DEFINED CMAKE_C_COMPILER)
-        SET(CMAKE_C_COMPILER "${MINGW_BASEDIR}/bin/clang.exe")
-    endif()
-    if(NOT DEFINED CMAKE_CXX_COMPILER)
-        SET(CMAKE_CXX_COMPILER "${MINGW_BASEDIR}/bin/clang++.exe")
-    endif()
-    if(NOT DEFINED CMAKE_LINKER)
-        SET(CMAKE_LINKER "${MINGW_BASEDIR}/bin/lld-link.exe")
-    endif()
-elseif(NOT WIN32)
-    if(NOT DEFINED CMAKE_C_COMPILER)
-        SET(CMAKE_C_COMPILER "clang-${CLANG_VERSION}")
-    endif()
-    if(NOT DEFINED CMAKE_CXX_COMPILER)
-        SET(CMAKE_CXX_COMPILER "clang++-${CLANG_VERSION}")
-    endif()
-endif()
-
 if(NOT USE_MSVC_STATIC)
-    message(STATUS "Tried to set C compiler to: ${CMAKE_C_COMPILER}")
-    message(STATUS "Tried to set C++ compiler to: ${CMAKE_CXX_COMPILER}")
+    message(STATUS "Using C compiler: ${CMAKE_C_COMPILER}")
+    message(STATUS "Using C++ compiler: ${CMAKE_CXX_COMPILER}")
 endif()
 
 # Set libraries
@@ -91,9 +93,24 @@ elseif(WIN32 AND NOT USE_MSVC_STATIC)
         set(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
     endif()
 elseif(APPLE)
-    # Point CMake to Homebrew's LLVM and Clang config packages
-    set(Clang_DIR  "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/clang"  CACHE PATH "Path to ClangConfig.cmake")
-    set(LLVM_DIR   "/usr/local/opt/llvm@${CLANG_VERSION}/lib/cmake/llvm"   CACHE PATH "Path to LLVMConfig.cmake")
+    if(NOT DEFINED LLVM_PREFIX AND DEFINED ENV{LLVM_PREFIX})
+        set(LLVM_PREFIX "$ENV{LLVM_PREFIX}")
+    endif()
+    if(NOT DEFINED LLVM_PREFIX)
+        find_program(BREW_EXE brew)
+        if(BREW_EXE)
+            execute_process(
+                COMMAND "${BREW_EXE}" --prefix "llvm@${CLANG_VERSION}"
+                OUTPUT_VARIABLE LLVM_PREFIX
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_QUIET
+            )
+        endif()
+    endif()
+    if(LLVM_PREFIX)
+        set(Clang_DIR "${LLVM_PREFIX}/lib/cmake/clang" CACHE PATH "Path to ClangConfig.cmake")
+        set(LLVM_DIR "${LLVM_PREFIX}/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
+    endif()
 else()
     SET(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
     SET(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
@@ -266,24 +283,30 @@ set(SOURCE_FILES
     "${ENUMS_AGGREGATED_SRC}"
     )
 
-# Plugin target - skip for MSVC static builds (requires shared clang-cpp which isn't available)
-if(NOT USE_MSVC_STATIC)
+# Plugin target - dynamic by design. The user must have a compatible clang/LLVM
+# installation, and clang loads this module in-process.
+if(CLANG_DUMPER_BUILD_PLUGIN)
     add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
     target_compile_features(plugin PRIVATE cxx_std_20)
     add_dependencies(plugin clang_enums)
 endif()
 
-
-add_executable(tool ${SOURCE_FILES} src/tool.cpp)
-target_compile_features(tool PRIVATE cxx_std_20)
-add_dependencies(tool clang_enums)
+if(CLANG_DUMPER_BUILD_TOOL)
+    add_executable(tool ${SOURCE_FILES} src/tool.cpp)
+    target_compile_features(tool PRIVATE cxx_std_20)
+    add_dependencies(tool clang_enums)
+endif()
 
 # Size optimization flags (Option 3): place each function/data in its own section
 # MSVC uses different flags for this
 if(MSVC)
-    target_compile_options(tool PRIVATE /Gy)  # Function-level linking
+    if(CLANG_DUMPER_BUILD_TOOL)
+        target_compile_options(tool PRIVATE /Gy)  # Function-level linking
+    endif()
 else()
-    target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
+    if(CLANG_DUMPER_BUILD_TOOL)
+        target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
+    endif()
 endif()
 
 # Locate binutils tools early for post-build debug splitting
@@ -306,12 +329,12 @@ endif()
 #set_property(TARGET tool PROPERTY INTERPROCEDURAL_OPTIMIZATION OFF)
 
 
-# --- MSVC Static Linking Path -----------------------------------------------------
+# --- Tool Linking ---------------------------------------------------------------
 # When using MSVC with prebuilt LLVM binaries, we use a different approach:
 # - No llvm-config available, so we use CMake's find_package results and file globbing
 # - Static libraries are .lib files instead of .a
 # - Different linker flags
-if(USE_MSVC_STATIC)
+if(CLANG_DUMPER_BUILD_TOOL AND USE_MSVC_STATIC)
     message(STATUS "Configuring 'tool' for MSVC static linking")
     
     # Get LLVM library directory from the found package
@@ -336,8 +359,11 @@ if(USE_MSVC_STATIC)
     file(GLOB LLVM_LIBS_ALL "${LLVM_LIBDIR}/LLVM*.lib")
     set(LLVM_LIBS ${LLVM_LIBS_ALL})
     
-    # Filter to keep only host target backend (X86 for Windows x64)
-    set(HOST_BACKEND_REGEX "X86")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(ARM64|AArch64|arm64|aarch64)$")
+        set(HOST_BACKEND_REGEX "AArch64")
+    else()
+        set(HOST_BACKEND_REGEX "X86")
+    endif()
     set(FILTERED_LLVM_LIBS "")
     foreach(lib IN LISTS LLVM_LIBS)
         get_filename_component(libname "${lib}" NAME_WE)
@@ -385,7 +411,7 @@ if(USE_MSVC_STATIC)
     # Linker optimizations
     target_link_options(tool PRIVATE /OPT:REF /OPT:ICF)
 
-else()
+elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
     # --- Original non-MSVC static linking path ---
     message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
     find_program(LLVM_CONFIG_EXE NAMES llvm-config-${CLANG_VERSION} llvm-config)
@@ -397,26 +423,60 @@ else()
     if(WIN32)
         target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
     endif()
-    # Automatic discovery of Clang static archives, minus known bulky/irrelevant ones.
-    # We exclude clangd* (language server), clangTidy* (analysis modules), *Proto/Monitoring*
-    # which pull protobuf or service code we do not use. This keeps maintenance low
-    # while avoiding the massive over-linking that led to unresolved driver/sarif references.
-    file(GLOB CLANG_ARCHIVES_ALL "${LLVM_LIBDIR}/libclang*.a")
-    list(FILTER CLANG_ARCHIVES_ALL EXCLUDE REGEX "libclang-cpp[.]a$")
-    set(CLANG_ARCHIVES ${CLANG_ARCHIVES_ALL})
-    # Drop clangd and tidy related archives
-    list(FILTER CLANG_ARCHIVES EXCLUDE REGEX "libclangd.*[.]a$")
-    list(FILTER CLANG_ARCHIVES EXCLUDE REGEX "libclangTidy.*[.]a$")
-    # Drop ancillary tooling pieces we do not rely on (may be added back if needed)
-    list(FILTER CLANG_ARCHIVES EXCLUDE REGEX "libclang(ChangeNamespace|Doc|ExtractAPI|Format|Move|ApplyReplacements|DirectoryWatcher|DependencyScanning|Daemon.*|IncludeFixer.*|Pseudo.*|DynamicASTMatchers|dMonitoringServiceProto|dRemoteIndex.*|dSupport|dRemoteMarshalling)[.]a$")
-    message(STATUS "Filtered Clang archives (auto): ${CLANG_ARCHIVES}")
+    set(CLANG_STATIC_COMPONENTS
+        clangTooling
+        clangToolingCore
+        clangFrontend
+        clangFrontendTool
+        clangSerialization
+        clangDriver
+        clangParse
+        clangSema
+        clangAnalysis
+        clangASTMatchers
+        clangAST
+        clangLex
+        clangBasic
+        clangEdit
+        clangRewrite
+        clangRewriteFrontend
+        clangAPINotes
+        clangSupport
+    )
+    set(CLANG_ARCHIVES "")
+    foreach(component IN LISTS CLANG_STATIC_COMPONENTS)
+        find_library("${component}_ARCHIVE"
+            NAMES "${component}"
+            PATHS "${LLVM_LIBDIR}"
+            NO_DEFAULT_PATH
+        )
+        if(NOT ${component}_ARCHIVE)
+            message(FATAL_ERROR "Required static Clang archive ${component} was not found in ${LLVM_LIBDIR}")
+        endif()
+        list(APPEND CLANG_ARCHIVES "${${component}_ARCHIVE}")
+    endforeach()
+    message(STATUS "Static Clang archives: ${CLANG_ARCHIVES}")
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --libs --system-libs --link-static OUTPUT_VARIABLE LLVM_LIBS_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REGEX REPLACE "\n" " " LLVM_LIBS_RAW "${LLVM_LIBS_RAW}")
     string(REGEX MATCHALL "-l[^ ]+" LLVM_LIBS_WITH_PREFIX "${LLVM_LIBS_RAW}")
     set(LLVM_LIBS_CLEAN "")
     foreach(flag IN LISTS LLVM_LIBS_WITH_PREFIX)
         string(REGEX REPLACE "^-l" "" name "${flag}")
-        list(APPEND LLVM_LIBS_CLEAN ${name})
+        if(name MATCHES "^(LLVM|Polly)")
+            find_library("${name}_ARCHIVE"
+                NAMES "${name}"
+                PATHS "${LLVM_LIBDIR}"
+                NO_DEFAULT_PATH
+            )
+            if(NOT ${name}_ARCHIVE)
+                message(FATAL_ERROR "Required static LLVM archive ${name} was not found in ${LLVM_LIBDIR}")
+            endif()
+            list(APPEND LLVM_LIBS_CLEAN "${${name}_ARCHIVE}")
+        elseif(name STREQUAL "xml2")
+            message(STATUS "Skipping llvm-config system library -lxml2 for static tool link")
+        else()
+            list(APPEND LLVM_LIBS_CLEAN "${flag}")
+        endif()
     endforeach()
 
     # Filter (Option 4): retain only host target backends to reduce size.
@@ -438,8 +498,9 @@ else()
         set(FILTERED_LLVM_LIBS "")
         foreach(lib IN LISTS LLVM_LIBS_CLEAN)
             # If it looks like a target-specific codegen/asm/disassembler lib and does not match host, skip.
-            if(lib MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
-                if(NOT lib MATCHES "${HOST_BACKEND_REGEX}")
+            get_filename_component(libname "${lib}" NAME_WE)
+            if(libname MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
+                if(NOT libname MATCHES "${HOST_BACKEND_REGEX}")
                     continue()
                 endif()
             endif()
@@ -456,11 +517,14 @@ else()
         message(STATUS "Using Clang archives: ${CLANG_ARCHIVES}")
         message(STATUS "LLVM libs: ${LLVM_LIBS_CLEAN}")
         if(APPLE)
-            # On Apple we need -force_load semantics so that object files inside the archives
-            # that are only referenced via plugin-like registration get pulled in.
-            target_link_options(tool PRIVATE -Wl,-force_load)
-            target_link_directories(tool PRIVATE /opt/homebrew/lib)
-            target_link_libraries(tool PRIVATE ${CLANG_ARCHIVES} ${LLVM_LIBS_CLEAN})
+            # On Apple, -force_load takes the archive path as an argument. Passing
+            # a bare -force_load fails with ld64 and was one of the macOS breakages.
+            set(APPLE_FORCE_LOAD_CLANG_FLAGS "")
+            foreach(archive IN LISTS CLANG_ARCHIVES)
+                list(APPEND APPLE_FORCE_LOAD_CLANG_FLAGS "-Wl,-force_load,${archive}")
+            endforeach()
+            target_link_options(tool PRIVATE ${APPLE_FORCE_LOAD_CLANG_FLAGS} -Wl,-dead_strip)
+            target_link_libraries(tool PRIVATE ${LLVM_LIBS_CLEAN})
         else()
             # We must enclose the static archives inside a single start/end group so the linker
             # can resolve circular dependencies between Clang and LLVM components. Previously we
@@ -469,54 +533,58 @@ else()
             # Inject them directly in the library list to guarantee ordering after objects.
             set(GROUPED_CLANG_LLVM_LIBS -Wl,--start-group ${CLANG_ARCHIVES} ${LLVM_LIBS_CLEAN} -Wl,--end-group)
             target_link_libraries(tool PRIVATE ${GROUPED_CLANG_LLVM_LIBS})
-            # Keep static libstdc++/libgcc flags.
-            target_link_options(tool PRIVATE -static-libstdc++ -static-libgcc -Wl,--gc-sections)
+            if(WIN32)
+                target_link_options(tool PRIVATE -static -Wl,--gc-sections)
+            else()
+                # Keep static libstdc++/libgcc flags. Full static system
+                # linking is not generally available on glibc-based distros.
+                target_link_options(tool PRIVATE -static-libstdc++ -static-libgcc -Wl,--gc-sections)
+            endif()
         endif()
     endif()
     endif()  # end of if(NOT LLVM_CONFIG_EXE) else block
-endif()  # end of if(USE_MSVC_STATIC) else block
+elseif(CLANG_DUMPER_BUILD_TOOL)
+    message(STATUS "Configuring 'tool' for dynamic LLVM/Clang linking")
+    target_link_libraries(tool PRIVATE clang-cpp LLVM)
+endif()  # end tool linking
 
-# Plugin always dynamic (portable; small) - skip for MSVC static builds
-if(NOT USE_MSVC_STATIC)
+# Plugin always dynamic (portable; small)
+if(CLANG_DUMPER_BUILD_PLUGIN)
     target_link_libraries(plugin PRIVATE clang-cpp LLVM)
 endif()
 
 
 # If on MacOS, change the expected location of libLLVM.dylib and libzstd.1.dylib
 # To check changes, use 'otool -L tool'
-if(APPLE)
-    add_custom_command (
-        TARGET tool POST_BUILD
-        COMMAND install_name_tool -change /usr/local/opt/llvm@${CLANG_VERSION}/lib/libLLVM.dylib @executable_path/libLLVM.dylib "$<TARGET_FILE:tool>"
-        COMMAND install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib @executable_path/libzstd.1.dylib  "$<TARGET_FILE:tool>"
+# Test target - runs Python test script (Python3 already found above for enum generation)
+# Tool tests
+if(CLANG_DUMPER_BUILD_TOOL)
+    add_custom_target(test-tool
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool>
+        DEPENDS tool
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running clang-dumper tool tests..."
     )
 endif()
 
-# Test target - runs Python test script (Python3 already found above for enum generation)
-# Tool tests
-add_custom_target(test-tool
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool>
-    DEPENDS tool
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running clang-dumper tool tests..."
-)
-
 # Test generation target - generates expected output files (uses tool mode)
-add_custom_target(test-generate
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool> --generate
-    DEPENDS tool
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Generating expected test outputs..."
-)
+if(CLANG_DUMPER_BUILD_TOOL)
+    add_custom_target(test-generate
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool> --generate
+        DEPENDS tool
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating expected test outputs..."
+    )
+endif()
 
 # Plugin tests - only available when plugin is built (not MSVC static)
-if(NOT USE_MSVC_STATIC)
+if(CLANG_DUMPER_BUILD_PLUGIN)
     # Determine the clang path for plugin tests
     # We need the actual clang compiler, not whatever CMAKE_CXX_COMPILER is set to
     if(WIN32)
         set(CLANG_FOR_PLUGIN "${MINGW_BASEDIR}/bin/clang.exe")
     elseif(APPLE)
-        set(CLANG_FOR_PLUGIN "/usr/local/opt/llvm@${CLANG_VERSION}/bin/clang")
+        set(CLANG_FOR_PLUGIN "${LLVM_TOOLS_BINARY_DIR}/clang")
     else()
         set(CLANG_FOR_PLUGIN "clang-${CLANG_VERSION}")
     endif()
@@ -529,14 +597,22 @@ if(NOT USE_MSVC_STATIC)
     )
 
     # Combined test target that runs both tool and plugin tests
-    add_custom_target(test
-        DEPENDS test-tool test-plugin
-        COMMENT "Running all clang-dumper tests..."
-    )
+    if(CLANG_DUMPER_BUILD_TOOL)
+        add_custom_target(test
+            DEPENDS test-tool test-plugin
+            COMMENT "Running all clang-dumper tests..."
+        )
+    else()
+        add_custom_target(test
+            DEPENDS test-plugin
+            COMMENT "Running clang-dumper plugin tests..."
+        )
+    endif()
 else()
-    # On MSVC, test target only runs tool tests
-    add_custom_target(test
-        DEPENDS test-tool
-        COMMENT "Running clang-dumper tests..."
-    )
+    if(CLANG_DUMPER_BUILD_TOOL)
+        add_custom_target(test
+            DEPENDS test-tool
+            COMMENT "Running clang-dumper tool tests..."
+        )
+    endif()
 endif()

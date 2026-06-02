@@ -10,6 +10,7 @@ on:
 env:
   CMAKE_BUILD_TYPE: Release
   LLVM_VERSION: 18
+  LLVM_RELEASE: 18.1.8
 
 jobs:
   generate-enums:
@@ -18,8 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          sparse-checkout: clang_enums
 
       - name: Install LLVM
         run: |
@@ -30,40 +29,40 @@ jobs:
 
       - name: Generate enum files
         run: |
+          rm -rf src/enums_cpp src/enums_java
           python3 -m clang_enums /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
 
       - name: Upload enum artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: generated-enums
           path: |
             src/enums_cpp/
             src/enums_java/
           retention-days: 1
+          if-no-files-found: error
 
-  build-linux:
-    name: Build Linux
+  linux:
+    name: Linux ${{ matrix.arch }}
     needs: generate-enums
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !test/
 
       - name: Download enum artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: generated-enums
           path: src/
-
-      - name: Set compilers
-        run: |
-          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
 
       - name: Install LLVM and dependencies
         run: |
@@ -75,204 +74,82 @@ jobs:
             libpolly-${{ env.LLVM_VERSION }}-dev \
             zlib1g-dev \
             libedit-dev \
-            libzstd-dev
+            libzstd-dev \
+            libxml2-dev
 
       - name: Configure
         run: |
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-            -DSKIP_ENUM_GENERATION=ON
+            -DCMAKE_C_COMPILER=clang-${{ env.LLVM_VERSION }} \
+            -DCMAKE_CXX_COMPILER=clang++-${{ env.LLVM_VERSION }} \
+            -DSKIP_ENUM_GENERATION=ON \
+            -DCLANG_DUMPER_BUILD_TOOL=ON \
+            -DCLANG_DUMPER_BUILD_PLUGIN=ON \
+            -DCLANG_DUMPER_STATIC_TOOL=ON
 
-      - name: Build plugin & tool
-        run: cmake --build build --target plugin tool --parallel
+      - name: Build
+        run: cmake --build build --target tool plugin --parallel
 
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
+      - name: Test tool
+        run: python3 test/run_tests.py --mode tool --path build/tool
+
+      - name: Test plugin
+        run: python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }}
+
+      - name: Check tool runtime dependencies
+        run: |
+          ldd build/tool
+          if ldd build/tool | grep -E 'lib(clang|LLVM)'; then
+            echo "tool still depends on LLVM/Clang dynamic libraries"
+            exit 1
+          fi
+
+      - name: Upload tool
+        uses: actions/upload-artifact@v7
         with:
-          name: linux-plugin
-          path: build/libplugin.so
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Upload tool artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-tool
+          name: linux-${{ matrix.arch }}-tool
           path: build/tool
           retention-days: 1
           if-no-files-found: error
 
-  test-linux-plugin:
-    name: Test Linux - Plugin
-    needs: build-linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Upload plugin
+        uses: actions/upload-artifact@v7
         with:
-          name: linux-plugin
-          path: build/
-
-      - name: Set compilers
-        run: |
-          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-
-      - name: Install LLVM and dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang-${{ env.LLVM_VERSION }}
-
-      - name: Run tests
-        run: |
-          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path ${CC}
-
-  test-linux-tool:
-    name: Test Linux - Tool
-    needs: build-linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-tool
-          path: build/
-
-      - name: Run tests
-        run: |
-          chmod +x ${{ github.workspace }}/build/tool
-          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
-
-  build-windows:
-    name: Build Windows
-    needs: generate-enums
-    runs-on: windows-latest
-    env:
-      LLVM_INSTALL_DIR: C:/llvm
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !test/
-
-      - name: Download enum artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: generated-enums
-          path: src/
-
-      - name: Download and extract LLVM prebuilt binaries
-        shell: pwsh
-        run: |
-          $llvmUrl = "https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-pc-windows-msvc.tar.xz"
-          $archivePath = "$env:TEMP\llvm.tar.xz"
-          $extractPath = "$env:TEMP\llvm-extract"
-          
-          Write-Host "Downloading LLVM from $llvmUrl..."
-          Invoke-WebRequest -Uri $llvmUrl -OutFile $archivePath -UseBasicParsing
-          
-          Write-Host "Extracting LLVM..."
-          New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
-          
-          # Extract .tar.xz using tar (available on Windows)
-          tar -xf $archivePath -C $extractPath
-          
-          # Find the extracted folder and move to final location
-          $extractedFolder = Get-ChildItem -Path $extractPath -Directory | Select-Object -First 1
-          Write-Host "Extracted folder: $($extractedFolder.FullName)"
-          
-          # Move to final install location
-          if (Test-Path "${{ env.LLVM_INSTALL_DIR }}") {
-            Remove-Item -Recurse -Force "${{ env.LLVM_INSTALL_DIR }}"
-          }
-          Move-Item -Path $extractedFolder.FullName -Destination "${{ env.LLVM_INSTALL_DIR }}"
-          
-          Write-Host "LLVM installed to ${{ env.LLVM_INSTALL_DIR }}"
-          Get-ChildItem "${{ env.LLVM_INSTALL_DIR }}" | Select-Object Name
-
-      - name: Configure CMake
-        shell: pwsh
-        run: |
-          cmake -S . -B build `
-            -G "Visual Studio 17 2022" `
-            -A x64 `
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
-            -DLLVM_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/llvm" `
-            -DClang_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/clang" `
-            -DLLVM_INSTALL_DIR="${{ env.LLVM_INSTALL_DIR }}" `
-            -DUSE_MSVC_STATIC=ON `
-            -DSKIP_ENUM_GENERATION=ON
-
-      - name: Build tool
-        shell: pwsh
-        run: |
-          cmake --build build --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
-
-      - name: Upload tool artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-tool
-          path: build/Release/tool.exe
+          name: linux-${{ matrix.arch }}-plugin
+          path: build/libplugin.so
           retention-days: 1
           if-no-files-found: error
 
-  test-windows-tool:
-    name: Test Windows - Tool
-    needs: build-windows
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-tool
-          path: build/Release/
-
-      - name: Run tests
-        shell: pwsh
-        run: |
-          $testScript = Join-Path $env:GITHUB_WORKSPACE "test/run_tests.py"
-          $toolPath   = Join-Path $env:GITHUB_WORKSPACE "build/Release/tool.exe"
-          python3 "$testScript" --mode tool --path "$toolPath"
-
-  build-macos:
-    name: Build macOS
+  macos:
+    name: macOS ${{ matrix.arch }}
     needs: generate-enums
-    runs-on: macos-latest
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: macos-15-intel
+          - arch: arm64
+            runner: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !test/
 
       - name: Download enum artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: generated-enums
           path: src/
 
-      - name: Install LLVM and dependencies
+      - name: Install LLVM
         run: |
           brew install llvm@${{ env.LLVM_VERSION }} zstd
           LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
-          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> $GITHUB_ENV
-          echo "${LLVM_PREFIX}/bin" >> $GITHUB_PATH
-          echo "SDKROOT=$(xcrun --show-sdk-path)" >> $GITHUB_ENV
+          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
+          echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
+          echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
 
       - name: Configure
         run: |
@@ -281,69 +158,162 @@ jobs:
             -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
             -DCMAKE_CXX_COMPILER="${LLVM_PREFIX}/bin/clang++" \
             -DCMAKE_OSX_SYSROOT="${SDKROOT}" \
+            -DLLVM_PREFIX="${LLVM_PREFIX}" \
             -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
-            -DSKIP_ENUM_GENERATION=ON
+            -DSKIP_ENUM_GENERATION=ON \
+            -DCLANG_DUMPER_BUILD_TOOL=ON \
+            -DCLANG_DUMPER_BUILD_PLUGIN=ON \
+            -DCLANG_DUMPER_STATIC_TOOL=ON
 
-      - name: Build plugin & tool
-        run: cmake --build build --target plugin tool --parallel
+      - name: Build
+        run: cmake --build build --target tool plugin --parallel
 
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
+      - name: Test tool
+        run: python3 test/run_tests.py --mode tool --path build/tool
+
+      - name: Test plugin
+        run: python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang"
+
+      - name: Check tool runtime dependencies
+        run: |
+          otool -L build/tool
+          if otool -L build/tool | grep -E 'lib(clang|LLVM)'; then
+            echo "tool still depends on LLVM/Clang dynamic libraries"
+            exit 1
+          fi
+
+      - name: Upload tool
+        uses: actions/upload-artifact@v7
         with:
-          name: macos-plugin
-          path: build/libplugin.so
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Upload tool artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-tool
+          name: macos-${{ matrix.arch }}-tool
           path: build/tool
           retention-days: 1
           if-no-files-found: error
 
-  test-macos-plugin:
-    name: Test macOS - Plugin
-    needs: build-macos
-    runs-on: macos-latest
+      - name: Upload plugin
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-${{ matrix.arch }}-plugin
+          path: build/libplugin.so
+          retention-days: 1
+          if-no-files-found: error
+
+  windows-tool:
+    name: Windows ${{ matrix.arch }} tool
+    needs: generate-enums
+    runs-on: ${{ matrix.runner }}
+    env:
+      LLVM_INSTALL_DIR: C:/llvm
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: windows-2025
+            cmake_arch: x64
+            llvm_source_build: false
+          - arch: arm64
+            runner: windows-11-arm
+            cmake_arch: ARM64
+            llvm_source_build: true
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Download enum artifacts
+        uses: actions/download-artifact@v8
         with:
-          name: macos-plugin
-          path: build/
+          name: generated-enums
+          path: src/
 
-      - name: Install LLVM
+      - name: Download LLVM
+        if: ${{ !matrix.llvm_source_build }}
+        shell: pwsh
         run: |
-          brew install llvm@${{ env.LLVM_VERSION }}
-          LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
-          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> $GITHUB_ENV
-          echo "${LLVM_PREFIX}/bin" >> $GITHUB_PATH
+          $llvmUrl = "https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ env.LLVM_RELEASE }}/clang+llvm-${{ env.LLVM_RELEASE }}-x86_64-pc-windows-msvc.tar.xz"
+          $archivePath = "$env:TEMP\llvm.tar.xz"
+          $extractPath = "$env:TEMP\llvm-extract"
+          Invoke-WebRequest -Uri $llvmUrl -OutFile $archivePath -UseBasicParsing
+          New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
+          tar -xf $archivePath -C $extractPath
+          $extractedFolder = Get-ChildItem -Path $extractPath -Directory | Select-Object -First 1
+          if (Test-Path "${{ env.LLVM_INSTALL_DIR }}") {
+            Remove-Item -Recurse -Force "${{ env.LLVM_INSTALL_DIR }}"
+          }
+          Move-Item -Path $extractedFolder.FullName -Destination "${{ env.LLVM_INSTALL_DIR }}"
 
-      - name: Run tests
-        run: |
-          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang"
-
-  test-macos-tool:
-    name: Test macOS - Tool
-    needs: build-macos
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Cache LLVM ARM64 build
+        if: ${{ matrix.llvm_source_build }}
+        uses: actions/cache@v5
         with:
-          name: macos-tool
-          path: build/
+          path: ${{ env.LLVM_INSTALL_DIR }}
+          key: llvm-${{ env.LLVM_RELEASE }}-windows-arm64-static-v1
 
-      - name: Run tests
+      - name: Build LLVM for Windows ARM64
+        if: ${{ matrix.llvm_source_build }}
+        shell: pwsh
         run: |
-          chmod +x ${{ github.workspace }}/build/tool
-          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
+          if (Test-Path "${{ env.LLVM_INSTALL_DIR }}/lib/cmake/llvm/LLVMConfig.cmake") {
+            Write-Host "Using cached LLVM from ${{ env.LLVM_INSTALL_DIR }}"
+            exit 0
+          }
+
+          $srcArchive = "$env:TEMP\llvm-project.tar.gz"
+          $srcDir = "$env:TEMP\llvm-project"
+          $buildDir = "$env:TEMP\llvm-build"
+          $srcUrl = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${{ env.LLVM_RELEASE }}.tar.gz"
+
+          Invoke-WebRequest -Uri $srcUrl -OutFile $srcArchive -UseBasicParsing
+          New-Item -ItemType Directory -Force -Path $srcDir | Out-Null
+          tar -xf $srcArchive -C $srcDir --strip-components=1
+
+          cmake -S "$srcDir/llvm" -B "$buildDir" `
+            -G "Visual Studio 17 2022" `
+            -A ARM64 `
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
+            -DCMAKE_INSTALL_PREFIX="${{ env.LLVM_INSTALL_DIR }}" `
+            -DLLVM_ENABLE_PROJECTS=clang `
+            -DLLVM_TARGETS_TO_BUILD=AArch64 `
+            -DLLVM_INCLUDE_TESTS=OFF `
+            -DLLVM_INCLUDE_EXAMPLES=OFF `
+            -DLLVM_INCLUDE_BENCHMARKS=OFF `
+            -DLLVM_ENABLE_ZLIB=OFF `
+            -DLLVM_ENABLE_ZSTD=OFF `
+            -DLLVM_ENABLE_LIBXML2=OFF `
+            -DLLVM_ENABLE_TERMINFO=OFF `
+            -DCLANG_INCLUDE_TESTS=OFF `
+            -DCLANG_BUILD_TOOLS=OFF
+
+          cmake --build "$buildDir" --target INSTALL --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" `
+            -A ${{ matrix.cmake_arch }} `
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
+            -DLLVM_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/llvm" `
+            -DClang_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/clang" `
+            -DLLVM_INSTALL_DIR="${{ env.LLVM_INSTALL_DIR }}" `
+            -DUSE_MSVC_STATIC=ON `
+            -DSKIP_ENUM_GENERATION=ON `
+            -DCLANG_DUMPER_BUILD_TOOL=ON `
+            -DCLANG_DUMPER_BUILD_PLUGIN=OFF
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Test tool
+        shell: pwsh
+        run: python3 test/run_tests.py --mode tool --path build/Release/tool.exe
+
+      - name: Upload tool
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-tool
+          path: build/Release/tool.exe
+          retention-days: 1
+          if-no-files-found: error
