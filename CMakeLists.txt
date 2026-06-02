@@ -405,8 +405,10 @@ if(CLANG_DUMPER_BUILD_TOOL AND USE_MSVC_STATIC)
         ${WINDOWS_SYSTEM_LIBS}
     )
     
-    # Use static runtime (/MT for Release, /MTd for Debug)
-    set_property(TARGET tool PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    # The official LLVM Windows MSVC archives are built against the DLL CRT.
+    # Match that runtime here; forcing /MT makes LLVM import UCRT symbols while
+    # the link line supplies the static UCRT, causing unresolved __imp_* symbols.
+    set_property(TARGET tool PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     
     # Linker optimizations
     target_link_options(tool PRIVATE /OPT:REF /OPT:ICF)
