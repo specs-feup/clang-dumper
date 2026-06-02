@@ -243,6 +243,12 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     # ==================== GCC HEADERS ====================
     # Linux: Canonicalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/
     (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
+    # Linux: GCC's libstdc++ headers are often reported through a target-triple
+    # relative path rooted under /usr/lib/gcc.
+    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # macOS: GCC from Homebrew
     (r"/usr/local/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
@@ -315,6 +321,17 @@ _TYPE_WIDTH_LINE_OFFSETS = {
     30: "<LONG_WIDTH>",         # LongWidth: 64 (Linux LP64) vs 32 (Windows LLP64)
 }
 
+_ADDR_PLACEHOLDER_RE = re.compile(r"^ADDR_\d+$")
+
+_TARGET_ATTR_WARNING_RE = re.compile(
+    r"warning: (?:unknown CPU 'hiss'|duplicate 'arch=') in the 'target' "
+    r"attribute string; 'target' attribute ignored \[-Wignored-attributes\]"
+)
+
+# AArch64 treats plain char as unsigned by default, while x86_64 treats it as
+# signed. The tests exercise AST shape, not the host default-char ABI.
+_PLAIN_CHAR_KIND_RE = re.compile(r"^Char_[SU]$", re.MULTILINE)
+
 
 def normalize_type_widths(output: str) -> str:
     """
@@ -347,6 +364,45 @@ def normalize_type_widths(output: str) -> str:
             lines[target_idx] = placeholder
     
     return '\n'.join(lines)
+
+
+def normalize_static_output(output: str) -> str:
+    """
+    Normalize architecture- and installation-dependent text that can appear in
+    both freshly generated output and checked-in baselines.
+    """
+    output = _UNIFIED_REGEX.sub(
+        lambda match: _UNIFIED_REPLACEMENTS.get(match.lastgroup, match.group(0))
+        if match.lastgroup != "addr"
+        else match.group(0),
+        output,
+    )
+    output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
+    output = _TARGET_ATTR_WARNING_RE.sub(
+        "warning: target attribute diagnostic normalized; "
+        "target attribute ignored [-Wignored-attributes]",
+        output,
+    )
+    output = normalize_type_widths(output)
+    return output
+
+
+def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bool:
+    """Return True when two normalized lines are equivalent across hosts."""
+    expected = expected_line.rstrip("\r\n")
+    actual = actual_line.rstrip("\r\n")
+
+    if expected == actual:
+        return True
+
+    # Address placeholder numbers are assigned by first-seen order. Host-specific
+    # headers can change that order even after raw addresses are normalized.
+    if _ADDR_PLACEHOLDER_RE.fullmatch(expected) and _ADDR_PLACEHOLDER_RE.fullmatch(
+        actual
+    ):
+        return True
+
+    return False
 
 
 def get_test_config(test_name: str) -> TestConfig:
@@ -494,8 +550,7 @@ def run_tool_and_normalize(
     stdout, _ = proc.communicate()
     
     normalized_stderr = "".join(normalized_lines)
-    # Normalize platform-specific type widths
-    normalized_stderr = normalize_type_widths(normalized_stderr)
+    normalized_stderr = normalize_static_output(normalized_stderr)
     return proc.returncode, stdout, normalized_stderr, placeholder_to_raw
 
 
@@ -598,7 +653,7 @@ def run_single_test(
         expected_file.write_text(normalized_output, encoding="utf-8")
         return TestStatus.GENERATED, f"Generated {expected_file}"
 
-    expected_output = expected_file.read_text(encoding="utf-8")
+    expected_output = normalize_static_output(expected_file.read_text(encoding="utf-8"))
 
     if normalized_output == expected_output:
         return TestStatus.PASS, "PASSED"
@@ -608,7 +663,7 @@ def run_single_test(
     expected_lines = expected_output.splitlines(keepends=True)
 
     for i, (norm_line, exp_line) in enumerate(zip(normalized_lines, expected_lines), 1):
-        if norm_line != exp_line:
+        if not lines_equivalent(test_name, exp_line, norm_line):
             return TestStatus.FAIL, (
                 f"Mismatch at line {i}:\n"
                 f"  Expected: {exp_line.rstrip()!r}\n"
