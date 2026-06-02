@@ -248,7 +248,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.LLVM_INSTALL_DIR }}
-          key: llvm-${{ env.LLVM_RELEASE }}-windows-arm64-static-v1
+          key: llvm-${{ env.LLVM_RELEASE }}-windows-arm64-static-v2
 
       - name: Build LLVM for Windows ARM64
         if: ${{ matrix.llvm_source_build }}
@@ -272,6 +272,7 @@ jobs:
             -G "Visual Studio 17 2022" `
             -A ARM64 `
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
+            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL `
             -DCMAKE_INSTALL_PREFIX="${{ env.LLVM_INSTALL_DIR }}" `
             -DLLVM_ENABLE_PROJECTS=clang `
             -DLLVM_TARGETS_TO_BUILD=AArch64 `
@@ -298,6 +299,7 @@ jobs:
             -DClang_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/clang" `
             -DLLVM_INSTALL_DIR="${{ env.LLVM_INSTALL_DIR }}" `
             -DUSE_MSVC_STATIC=ON `
+            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL `
             -DSKIP_ENUM_GENERATION=ON `
             -DCLANG_DUMPER_BUILD_TOOL=ON `
             -DCLANG_DUMPER_BUILD_PLUGIN=OFF

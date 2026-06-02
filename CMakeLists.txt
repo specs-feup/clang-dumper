@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(CLANG_VERSION 18 CACHE STRING "LLVM/Clang major version to use")
+option(USE_MSVC_STATIC "Use MSVC with prebuilt LLVM static libraries" OFF)
+option(CLANG_DUMPER_BUILD_TOOL "Build the standalone clang-dumper executable" ON)
+option(CLANG_DUMPER_BUILD_PLUGIN "Build the clang plugin module" ON)
+option(CLANG_DUMPER_STATIC_TOOL "Link the standalone tool against static LLVM/Clang libraries where available" ON)
+
+if(USE_MSVC_STATIC)
+    # LLVM's Windows MSVC static archives are built against the DLL CRT. This
+    # must be set before project() so Visual Studio targets initialize with /MD.
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "" FORCE)
+endif()
 
 # CMake chooses compilers during project(), so default compiler discovery must
 # happen before that call. Users and CI can still override this with CC/CXX or
@@ -25,11 +35,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # --- MSVC static linking option ---------------------------------------------------
 # When USE_MSVC_STATIC is ON, we use MSVC with prebuilt LLVM binaries and static linking.
 # This path uses CMake config files and file globbing instead of llvm-config.
-option(USE_MSVC_STATIC "Use MSVC with prebuilt LLVM static libraries" OFF)
-option(CLANG_DUMPER_BUILD_TOOL "Build the standalone clang-dumper executable" ON)
-option(CLANG_DUMPER_BUILD_PLUGIN "Build the clang plugin module" ON)
-option(CLANG_DUMPER_STATIC_TOOL "Link the standalone tool against static LLVM/Clang libraries where available" ON)
-
 if(USE_MSVC_STATIC)
     set(CLANG_DUMPER_STATIC_TOOL ON CACHE BOOL "" FORCE)
     set(CLANG_DUMPER_BUILD_PLUGIN OFF CACHE BOOL "MSVC prebuilt LLVM packages do not ship a loadable clang-cpp plugin ABI" FORCE)
