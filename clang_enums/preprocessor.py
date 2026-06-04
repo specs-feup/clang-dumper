@@ -18,6 +18,7 @@ def preprocess_header(
     header_path: Path,
     include_dir: Path,
     clang_executable: Path,
+    clang_args: list[str] | None = None,
 ) -> str:
     """
     Preprocess a C++ header file using clang++ -E.
@@ -40,6 +41,7 @@ def preprocess_header(
         str(clang_executable),
         "-Wno-deprecated",
         "-E",  # Preprocess only
+        *(clang_args or []),
         str(header_path),
         "-isystem", str(include_dir),
     ]

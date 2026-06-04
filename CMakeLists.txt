@@ -5,6 +5,7 @@ option(USE_MSVC_STATIC "Use MSVC with prebuilt LLVM static libraries" OFF)
 option(CLANG_DUMPER_BUILD_TOOL "Build the standalone clang-dumper executable" ON)
 option(CLANG_DUMPER_BUILD_PLUGIN "Build the clang plugin module" ON)
 option(CLANG_DUMPER_STATIC_TOOL "Link the standalone tool against static LLVM/Clang libraries where available" ON)
+set(LLVM_WINDOWS_ROOT "" CACHE PATH "Windows-target LLVM/Clang SDK root for cross-compilation")
 
 if(USE_MSVC_STATIC)
     # LLVM's Windows MSVC static archives are built against the DLL CRT. This
@@ -15,13 +16,13 @@ endif()
 # CMake chooses compilers during project(), so default compiler discovery must
 # happen before that call. Users and CI can still override this with CC/CXX or
 # -DCMAKE_*_COMPILER.
-if(NOT DEFINED CMAKE_C_COMPILER AND NOT DEFINED ENV{CC} AND UNIX AND NOT APPLE)
+if(NOT DEFINED CMAKE_C_COMPILER AND NOT DEFINED ENV{CC} AND UNIX AND NOT APPLE AND NOT CMAKE_TOOLCHAIN_FILE)
     find_program(_CLANG_DUMPER_DEFAULT_CC NAMES clang-${CLANG_VERSION} clang)
     if(_CLANG_DUMPER_DEFAULT_CC)
         set(CMAKE_C_COMPILER "${_CLANG_DUMPER_DEFAULT_CC}" CACHE FILEPATH "" FORCE)
     endif()
 endif()
-if(NOT DEFINED CMAKE_CXX_COMPILER AND NOT DEFINED ENV{CXX} AND UNIX AND NOT APPLE)
+if(NOT DEFINED CMAKE_CXX_COMPILER AND NOT DEFINED ENV{CXX} AND UNIX AND NOT APPLE AND NOT CMAKE_TOOLCHAIN_FILE)
     find_program(_CLANG_DUMPER_DEFAULT_CXX NAMES clang++-${CLANG_VERSION} clang++)
     if(_CLANG_DUMPER_DEFAULT_CXX)
         set(CMAKE_CXX_COMPILER "${_CLANG_DUMPER_DEFAULT_CXX}" CACHE FILEPATH "" FORCE)
@@ -38,6 +39,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if(USE_MSVC_STATIC)
     set(CLANG_DUMPER_STATIC_TOOL ON CACHE BOOL "" FORCE)
     set(CLANG_DUMPER_BUILD_PLUGIN OFF CACHE BOOL "MSVC prebuilt LLVM packages do not ship a loadable clang-cpp plugin ABI" FORCE)
+endif()
+
+if(WIN32 AND CMAKE_CROSSCOMPILING)
+    if(NOT LLVM_WINDOWS_ROOT)
+        message(FATAL_ERROR "LLVM_WINDOWS_ROOT is required for Windows cross-compilation")
+    endif()
+    set(CLANG_DUMPER_BUILD_TOOL ON CACHE BOOL "" FORCE)
+    set(CLANG_DUMPER_BUILD_PLUGIN OFF CACHE BOOL "Windows cross builds produce the standalone tool only" FORCE)
+    set(CLANG_DUMPER_STATIC_TOOL ON CACHE BOOL "" FORCE)
 endif()
 
 # LLVM_INSTALL_DIR can be set to point to the prebuilt LLVM installation
@@ -76,7 +86,10 @@ if(NOT USE_MSVC_STATIC)
 endif()
 
 # Set libraries
-if(USE_MSVC_STATIC AND DEFINED LLVM_INSTALL_DIR)
+if(WIN32 AND CMAKE_CROSSCOMPILING)
+    set(LLVM_DIR "${LLVM_WINDOWS_ROOT}/lib/cmake/llvm")
+    set(Clang_DIR "${LLVM_WINDOWS_ROOT}/lib/cmake/clang")
+elseif(USE_MSVC_STATIC AND DEFINED LLVM_INSTALL_DIR)
     # MSVC with prebuilt LLVM: use provided install directory
     message(STATUS "Using MSVC static build with LLVM from: ${LLVM_INSTALL_DIR}")
     # LLVM_DIR and Clang_DIR should be passed via command line or set here
@@ -133,7 +146,12 @@ else()
 endif()
 
 # ZLIB handling - on Windows with MSVC and prebuilt LLVM, we may need to skip or stub ZLIB
-if(USE_MSVC_STATIC)
+if(WIN32 AND CMAKE_CROSSCOMPILING)
+    if(NOT TARGET ZLIB::ZLIB)
+        add_library(ZLIB::ZLIB INTERFACE IMPORTED)
+        message(STATUS "Windows cross build: skipping host ZLIB discovery")
+    endif()
+elseif(USE_MSVC_STATIC)
     # The prebuilt LLVM binaries include zlib statically, so we don't need to find it separately
     # Create a stub target if ZLIB::ZLIB is referenced
     if(NOT TARGET ZLIB::ZLIB)
@@ -213,6 +231,29 @@ add_definitions(${CLANG_DEFINITIONS})
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 option(SKIP_ENUM_GENERATION "Skip Python enum generation (use pre-existing files)" OFF)
+set(CLANG_ENUMS_HOST_CLANG "" CACHE FILEPATH "Host clang++ executable for enum preprocessing")
+if(NOT CLANG_ENUMS_HOST_CLANG)
+    find_program(CLANG_ENUMS_HOST_CLANG_AUTO NAMES clang++-${CLANG_VERSION} clang++)
+    if(CLANG_ENUMS_HOST_CLANG_AUTO)
+        set(CLANG_ENUMS_HOST_CLANG "${CLANG_ENUMS_HOST_CLANG_AUTO}" CACHE FILEPATH "Host clang++ executable for enum preprocessing" FORCE)
+    endif()
+endif()
+set(CLANG_ENUMS_HOST_CLANG_ARG "")
+if(CLANG_ENUMS_HOST_CLANG)
+    set(CLANG_ENUMS_HOST_CLANG_ARG --clang-executable "${CLANG_ENUMS_HOST_CLANG}")
+endif()
+set(CLANG_ENUMS_EXTRA_CLANG_ARGS "")
+if(WIN32 AND CMAKE_CROSSCOMPILING)
+    list(APPEND CLANG_ENUMS_EXTRA_CLANG_ARGS
+        "--clang-arg=--target=${CROSS_PREFIX}"
+        "--clang-arg=--sysroot=${LLVM_WINDOWS_ROOT}"
+        "--clang-arg=-resource-dir=${LLVM_WINDOWS_ROOT}/lib/clang/18"
+        "--clang-arg=-stdlib=libc++"
+        "--clang-arg=-nostdinc++"
+        "--clang-arg=-isystem"
+        "--clang-arg=${LLVM_WINDOWS_ROOT}/include/c++/v1"
+    )
+endif()
 
 # Directory for build-time helper + aggregated source
 set(ENUMS_GEN_DIR "${CMAKE_BINARY_DIR}/generated")
@@ -250,7 +291,7 @@ else()
     add_custom_command(
         OUTPUT "${ENUMS_AGGREGATED_SRC}"
         COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Python) into src/ ..."
-        COMMAND ${Python3_EXECUTABLE} -m clang_enums ${LLVM_DIR} src/
+        COMMAND ${Python3_EXECUTABLE} -m clang_enums ${LLVM_DIR} src/ ${CLANG_ENUMS_HOST_CLANG_ARG} ${CLANG_ENUMS_EXTRA_CLANG_ARGS}
         COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS ${PYTHON_ENUM_SCRIPTS}
@@ -417,6 +458,92 @@ if(CLANG_DUMPER_BUILD_TOOL AND USE_MSVC_STATIC)
     
     # Linker optimizations
     target_link_options(tool PRIVATE /OPT:REF /OPT:ICF)
+
+elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL AND WIN32 AND CMAKE_CROSSCOMPILING)
+    message(STATUS "Configuring 'tool' for Windows cross static linking")
+
+    get_filename_component(LLVM_LIBDIR "${LLVM_DIR}/../.." ABSOLUTE)
+    target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
+
+    set(CLANG_STATIC_COMPONENTS
+        clangTooling
+        clangToolingCore
+        clangFrontend
+        clangFrontendTool
+        clangSerialization
+        clangDriver
+        clangParse
+        clangSema
+        clangAnalysis
+        clangASTMatchers
+        clangAST
+        clangLex
+        clangBasic
+        clangEdit
+        clangRewrite
+        clangRewriteFrontend
+        clangAPINotes
+        clangSupport
+    )
+    set(CLANG_ARCHIVES "")
+    foreach(component IN LISTS CLANG_STATIC_COMPONENTS)
+        find_library("${component}_ARCHIVE"
+            NAMES "${component}"
+            PATHS "${LLVM_LIBDIR}"
+            NO_DEFAULT_PATH
+        )
+        if(NOT ${component}_ARCHIVE)
+            message(FATAL_ERROR "Required static Clang archive ${component} was not found in ${LLVM_LIBDIR}")
+        endif()
+        list(APPEND CLANG_ARCHIVES "${${component}_ARCHIVE}")
+    endforeach()
+
+    file(GLOB LLVM_ARCHIVES "${LLVM_LIBDIR}/libLLVM*.a")
+    list(FILTER LLVM_ARCHIVES EXCLUDE REGEX "[.]dll[.]a$")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(ARM64|AArch64|arm64|aarch64)$")
+        set(HOST_BACKEND_REGEX "AArch64")
+    else()
+        set(HOST_BACKEND_REGEX "X86")
+    endif()
+    set(FILTERED_LLVM_ARCHIVES "")
+    foreach(lib IN LISTS LLVM_ARCHIVES)
+        get_filename_component(libname "${lib}" NAME_WE)
+        if(libname MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
+            if(NOT libname MATCHES "${HOST_BACKEND_REGEX}")
+                continue()
+            endif()
+        endif()
+        list(APPEND FILTERED_LLVM_ARCHIVES "${lib}")
+    endforeach()
+
+    set(CLANG_DUMPER_WINDOWS_RUNTIME_LIBS
+        c++
+        c++abi
+        unwind
+        pthread
+        m
+        z
+        zstd
+        version
+        ole32
+        oleaut32
+        uuid
+        advapi32
+        shell32
+        psapi
+        ntdll
+        ws2_32
+        bcrypt
+    )
+
+    target_link_libraries(tool PRIVATE
+        -Wl,--start-group
+        ${CLANG_ARCHIVES}
+        ${FILTERED_LLVM_ARCHIVES}
+        ${CLANG_DUMPER_WINDOWS_RUNTIME_LIBS}
+        -Wl,--end-group
+    )
+    target_link_options(tool PRIVATE -static -Wl,--gc-sections)
 
 elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
     # --- Original non-MSVC static linking path ---
