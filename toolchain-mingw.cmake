@@ -16,11 +16,7 @@ endif()
 # Location of the MinGW/LLVM sysroot (bin/lib/include). Defaults to /usr/<triplet>
 set(MINGW_SYSROOT "" CACHE PATH "Root directory of the MinGW toolchain")
 if(NOT MINGW_SYSROOT)
-	if(DEFINED ENV{MINGW_BASEDIR} AND EXISTS "$ENV{MINGW_BASEDIR}")
-		set(MINGW_SYSROOT "$ENV{MINGW_BASEDIR}")
-	else()
-		set(MINGW_SYSROOT "/usr/${CROSS_PREFIX}")
-	endif()
+	set(MINGW_SYSROOT "/usr/${CROSS_PREFIX}")
 endif()
 
 set(_MINGW_BIN "${MINGW_SYSROOT}/bin")
