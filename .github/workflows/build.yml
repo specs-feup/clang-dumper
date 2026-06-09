@@ -373,12 +373,12 @@ jobs:
           INCLUDE_ROOT="$(pwd -W)/windows-includes"
 
           python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" \
-            --extra-clang-arg "--target=${{ matrix.triple }}" \
-            --extra-clang-arg "-nostdinc" \
-            --extra-clang-arg "-nostdinc++" \
-            --extra-clang-arg "-isystem" \
+            --extra-clang-arg="--target=${{ matrix.triple }}" \
+            --extra-clang-arg="-nostdinc" \
+            --extra-clang-arg="-nostdinc++" \
+            --extra-clang-arg="-isystem" \
             --extra-clang-arg "${INCLUDE_ROOT}/01-libcxx" \
-            --extra-clang-arg "-isystem" \
+            --extra-clang-arg="-isystem" \
             --extra-clang-arg "${INCLUDE_ROOT}/02-clang" \
-            --extra-clang-arg "-isystem" \
+            --extra-clang-arg="-isystem" \
             --extra-clang-arg "${INCLUDE_ROOT}/03-mingw"
