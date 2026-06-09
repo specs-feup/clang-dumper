@@ -742,6 +742,12 @@ def main():
         default=[],
         help="Extra compiler argument to pass to every test. May be repeated.",
     )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=None,
+        help="Number of parallel test workers (default: CPU count).",
+    )
 
     args = parser.parse_args()
 
@@ -835,7 +841,9 @@ def main():
     # Use forward slashes for cross-platform consistency (matches normalization in run_tool_and_normalize)
     inputs_dir_str = str(inputs_dir.resolve()).replace("\\", "/")
 
-    num_workers = os.cpu_count() or 1
+    num_workers = args.jobs if args.jobs is not None else os.cpu_count() or 1
+    if num_workers < 1:
+        parser.error("--jobs must be at least 1")
     print(
         f"{'Generating' if args.generate else 'Running'} {len(tests)} test(s) "
         f"in {args.mode} mode using {num_workers} parallel workers..."

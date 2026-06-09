@@ -372,8 +372,9 @@ jobs:
           python -m zipfile -e "dist/${{ matrix.include-package }}" windows-includes
           INCLUDE_ROOT="$(pwd -W)/windows-includes"
 
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" \
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
             --extra-clang-arg="--target=${{ matrix.triple }}" \
+            --extra-clang-arg="-Wno-unused-command-line-argument" \
             --extra-clang-arg="-nostdinc" \
             --extra-clang-arg="-nostdinc++" \
             --extra-clang-arg="-isystem" \
