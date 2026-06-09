@@ -350,6 +350,7 @@ if(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL AND WIN32 AND CMAKE_CROS
         c++abi
         unwind
         pthread
+        ucrtbase
         m
         z
         zstd

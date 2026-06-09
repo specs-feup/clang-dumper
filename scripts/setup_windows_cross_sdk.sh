@@ -24,6 +24,11 @@ setup_lld() {
     return
   fi
 
+  if command -v ld.lld-18 >/dev/null 2>&1; then
+    ln -sf "$(command -v ld.lld-18)" "${HOST_TOOLS_DIR}/bin/ld.lld"
+    return
+  fi
+
   local apt_dir="${ROOT_DIR}/.deps/apt-downloads"
   mkdir -p "${apt_dir}" "${HOST_TOOLS_DIR}/lld-18"
   (
@@ -47,9 +52,9 @@ setup_clangarm64() {
     mingw-w64-clang-aarch64-libc%2B%2B-18.1.8-2-any.pkg.tar.zst
     mingw-w64-clang-aarch64-libunwind-18.1.8-2-any.pkg.tar.zst
     mingw-w64-clang-aarch64-lld-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-headers-git-12.0.0.r264.g5c63f0a96-1-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-crt-git-12.0.0.r264.g5c63f0a96-1-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-winpthreads-git-12.0.0.r264.g5c63f0a96-1-any.pkg.tar.zst
+    mingw-w64-clang-aarch64-headers-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
+    mingw-w64-clang-aarch64-crt-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
+    mingw-w64-clang-aarch64-winpthreads-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
     mingw-w64-clang-aarch64-zlib-ng-compat-2.3.3-2-any.pkg.tar.zst
     mingw-w64-clang-aarch64-zstd-1.5.7-2-any.pkg.tar.zst
   )
@@ -71,9 +76,9 @@ setup_clang64() {
     mingw-w64-clang-x86_64-libc%2B%2B-18.1.8-2-any.pkg.tar.zst
     mingw-w64-clang-x86_64-libunwind-18.1.8-2-any.pkg.tar.zst
     mingw-w64-clang-x86_64-lld-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-headers-git-12.0.0.r264.g5c63f0a96-1-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-crt-git-12.0.0.r264.g5c63f0a96-1-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-winpthreads-git-12.0.0.r264.g5c63f0a96-1-any.pkg.tar.zst
+    mingw-w64-clang-x86_64-headers-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
+    mingw-w64-clang-x86_64-crt-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
+    mingw-w64-clang-x86_64-winpthreads-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
     mingw-w64-clang-x86_64-zlib-ng-compat-2.3.3-2-any.pkg.tar.zst
     mingw-w64-clang-x86_64-zstd-1.5.7-2-any.pkg.tar.zst
   )
@@ -82,6 +87,23 @@ setup_clang64() {
   done
 }
 
+if [[ $# -eq 0 ]]; then
+  set -- arm64 x86_64
+fi
+
 setup_lld
-setup_clangarm64
-setup_clang64
+
+for target in "$@"; do
+  case "${target}" in
+    arm64)
+      setup_clangarm64
+      ;;
+    x86_64)
+      setup_clang64
+      ;;
+    *)
+      echo "Unknown Windows SDK target: ${target}" >&2
+      exit 1
+      ;;
+  esac
+done

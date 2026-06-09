@@ -200,69 +200,108 @@ jobs:
           if-no-files-found: error
 
   windows-cross:
-    name: Windows cross tool
+    name: Windows ${{ matrix.arch }}
+    needs: generate-enums
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            build-dir: build-win-arm64
+            output: clang-dumper-windows-arm64.exe
+          - arch: x86_64
+            build-dir: build-win-x86_64
+            output: clang-dumper-windows-x86_64.exe
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Download enum artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-enums
+          path: src/
 
       - name: Install host tools
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             clang-${{ env.LLVM_VERSION }} \
+            lld-${{ env.LLVM_VERSION }} \
             llvm-${{ env.LLVM_VERSION }} \
             llvm-${{ env.LLVM_VERSION }}-tools \
             curl \
             dpkg \
             tar \
-            zstd \
-            zip
+            zstd
 
       - name: Cache Windows cross SDKs
         uses: actions/cache@v5
         with:
           path: .deps
-          key: windows-cross-sdk-${{ env.LLVM_RELEASE }}-v1
+          key: windows-cross-sdk-${{ env.LLVM_RELEASE }}-${{ matrix.arch }}-v2
 
       - name: Setup Windows cross SDKs
-        run: scripts/setup_windows_cross_sdk.sh
+        run: scripts/setup_windows_cross_sdk.sh ${{ matrix.arch }}
 
-      - name: Build Windows tools
+      - name: Build Windows tool
         run: |
           CLANG_ENUMS_HOST_CLANG=clang++-${{ env.LLVM_VERSION }} \
-            scripts/build_windows_cross.sh
+          SKIP_ENUM_GENERATION=ON \
+            scripts/build_windows_cross.sh ${{ matrix.arch }}
 
-      - name: Check Windows tool binaries
+      - name: Check Windows tool binary
         run: |
-          file build-win-arm64/tool.exe build-win-x86_64/tool.exe
+          file ${{ matrix.build-dir }}/tool.exe
 
-          llvm-objdump-${{ env.LLVM_VERSION }} -p build-win-arm64/tool.exe | tee arm64-imports.txt
-          llvm-objdump-${{ env.LLVM_VERSION }} -p build-win-x86_64/tool.exe | tee x86_64-imports.txt
+          llvm-objdump-${{ env.LLVM_VERSION }} -p ${{ matrix.build-dir }}/tool.exe | tee imports.txt
 
-          if grep -E 'DLL Name: .*(clang|LLVM|libc\\+\\+|libunwind|zstd|zlib|pthread).*\\.dll' arm64-imports.txt x86_64-imports.txt; then
+          if grep -E 'DLL Name: .*(clang|LLVM|libc\\+\\+|libunwind|zstd|zlib|pthread).*\\.dll' imports.txt; then
             echo "Windows tool imports non-system runtime DLLs"
             exit 1
           fi
 
-      - name: Stage Windows tools
+      - name: Stage Windows tool
         run: |
           mkdir -p dist
-          cp build-win-arm64/tool.exe dist/clang-dumper-windows-arm64.exe
-          cp build-win-x86_64/tool.exe dist/clang-dumper-windows-x86_64.exe
+          cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
 
-      - name: Upload Windows ARM64 tool
+      - name: Upload Windows tool
         uses: actions/upload-artifact@v7
         with:
-          name: windows-arm64-tool
-          path: dist/clang-dumper-windows-arm64.exe
+          name: windows-${{ matrix.arch }}-tool
+          path: dist/${{ matrix.output }}
           retention-days: 1
           if-no-files-found: error
 
-      - name: Upload Windows x86_64 tool
-        uses: actions/upload-artifact@v7
+  windows-test:
+    name: Windows test ${{ matrix.arch }}
+    needs: windows-cross
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: windows-11-arm
+            artifact: windows-arm64-tool
+            executable: clang-dumper-windows-arm64.exe
+          - arch: x86_64
+            runner: windows-2025
+            artifact: windows-x86_64-tool
+            executable: clang-dumper-windows-x86_64.exe
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download Windows tool
+        uses: actions/download-artifact@v8
         with:
-          name: windows-x86_64-tool
-          path: dist/clang-dumper-windows-x86_64.exe
-          retention-days: 1
-          if-no-files-found: error
+          name: ${{ matrix.artifact }}
+          path: dist/
+
+      - name: Test Windows tool
+        shell: bash
+        run: |
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}"
