@@ -9,6 +9,9 @@ fi
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="$1"
 OUTPUT_ZIP="$2"
+if [[ "${OUTPUT_ZIP}" != /* ]]; then
+  OUTPUT_ZIP="${ROOT_DIR}/${OUTPUT_ZIP}"
+fi
 
 case "${TARGET}" in
   arm64)
