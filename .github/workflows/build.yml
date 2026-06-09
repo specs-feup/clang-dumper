@@ -374,10 +374,11 @@ jobs:
 
           python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" \
             --extra-clang-arg "--target=${{ matrix.triple }}" \
-            --extra-clang-arg "--sysroot=${INCLUDE_ROOT}/03-mingw" \
-            --extra-clang-arg "-resource-dir=${INCLUDE_ROOT}/02-clang" \
+            --extra-clang-arg "-nostdinc" \
             --extra-clang-arg "-nostdinc++" \
             --extra-clang-arg "-isystem" \
             --extra-clang-arg "${INCLUDE_ROOT}/01-libcxx" \
             --extra-clang-arg "-isystem" \
-            --extra-clang-arg "${INCLUDE_ROOT}/03-mingw/include"
+            --extra-clang-arg "${INCLUDE_ROOT}/02-clang" \
+            --extra-clang-arg "-isystem" \
+            --extra-clang-arg "${INCLUDE_ROOT}/03-mingw"

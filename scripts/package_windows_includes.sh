@@ -32,11 +32,11 @@ STAGING_DIR="${ROOT_DIR}/.deps/windows-includes-${TARGET}"
 rm -rf "${STAGING_DIR}"
 mkdir -p \
   "${STAGING_DIR}/01-libcxx" \
-  "${STAGING_DIR}/02-clang/include" \
-  "${STAGING_DIR}/03-mingw/include"
+  "${STAGING_DIR}/02-clang" \
+  "${STAGING_DIR}/03-mingw"
 
 cp -a "${SDK_ROOT}/include/c++/v1/." "${STAGING_DIR}/01-libcxx/"
-cp -a "${SDK_ROOT}/lib/clang/18/include/." "${STAGING_DIR}/02-clang/include/"
+cp -a "${SDK_ROOT}/lib/clang/18/include/." "${STAGING_DIR}/02-clang/"
 
 rsync -a \
   --exclude 'c++' \
@@ -45,7 +45,7 @@ rsync -a \
   --exclude 'llvm' \
   --exclude 'llvm-c' \
   "${SDK_ROOT}/include/." \
-  "${STAGING_DIR}/03-mingw/include/"
+  "${STAGING_DIR}/03-mingw/"
 
 mkdir -p "$(dirname "${OUTPUT_ZIP}")"
 rm -f "${OUTPUT_ZIP}"

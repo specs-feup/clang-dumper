@@ -243,8 +243,8 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
 
     # Windows packaged include bundles used by CI and releases.
     (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]01-libcxx", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]02-clang[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]03-mingw[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]02-clang", CLANG_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]03-mingw", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # ==================== GCC HEADERS ====================
     # Linux: Canonicalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/
