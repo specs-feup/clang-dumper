@@ -42,6 +42,53 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  windows-includes:
+    name: Windows includes ${{ matrix.arch }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            package: clang-dumper-windows-arm64-includes.zip
+          - arch: x86_64
+            package: clang-dumper-windows-x86_64-includes.zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install host tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            curl \
+            dpkg \
+            lld-${{ env.LLVM_VERSION }} \
+            python3 \
+            rsync \
+            tar \
+            zstd
+
+      - name: Cache Windows cross SDKs
+        uses: actions/cache@v5
+        with:
+          path: .deps
+          key: windows-cross-sdk-${{ env.LLVM_RELEASE }}-${{ matrix.arch }}-v2
+
+      - name: Setup Windows cross SDK
+        run: scripts/setup_windows_cross_sdk.sh ${{ matrix.arch }}
+
+      - name: Package Windows includes
+        run: scripts/package_windows_includes.sh ${{ matrix.arch }} dist/${{ matrix.package }}
+
+      - name: Upload Windows includes
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.package }}
+          retention-days: 1
+          if-no-files-found: error
+
   linux:
     name: Linux ${{ matrix.arch }}
     needs: generate-enums
@@ -201,7 +248,9 @@ jobs:
 
   windows-cross:
     name: Windows ${{ matrix.arch }}
-    needs: generate-enums
+    needs:
+      - generate-enums
+      - windows-includes
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -210,9 +259,11 @@ jobs:
           - arch: arm64
             build-dir: build-win-arm64
             output: clang-dumper-windows-arm64.exe
+            include-package: clang-dumper-windows-arm64-includes.zip
           - arch: x86_64
             build-dir: build-win-x86_64
             output: clang-dumper-windows-x86_64.exe
+            include-package: clang-dumper-windows-x86_64-includes.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -262,6 +313,12 @@ jobs:
             exit 1
           fi
 
+      - name: Download Windows includes
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-${{ matrix.arch }}-includes
+          path: dist/
+
       - name: Stage Windows tool
         run: |
           mkdir -p dist
@@ -271,13 +328,17 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: windows-${{ matrix.arch }}-tool
-          path: dist/${{ matrix.output }}
+          path: |
+            dist/${{ matrix.output }}
+            dist/${{ matrix.include-package }}
           retention-days: 1
           if-no-files-found: error
 
   windows-test:
     name: Windows test ${{ matrix.arch }}
-    needs: windows-cross
+    needs:
+      - windows-cross
+      - windows-includes
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -287,10 +348,14 @@ jobs:
             runner: windows-11-arm
             artifact: windows-arm64-tool
             executable: clang-dumper-windows-arm64.exe
+            include-package: clang-dumper-windows-arm64-includes.zip
+            triple: aarch64-w64-mingw32
           - arch: x86_64
             runner: windows-2025
             artifact: windows-x86_64-tool
             executable: clang-dumper-windows-x86_64.exe
+            include-package: clang-dumper-windows-x86_64-includes.zip
+            triple: x86_64-w64-mingw32
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -304,4 +369,15 @@ jobs:
       - name: Test Windows tool
         shell: bash
         run: |
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}"
+          python -m zipfile -e "dist/${{ matrix.include-package }}" windows-includes
+          INCLUDE_ROOT="$(pwd -W)/windows-includes"
+
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" \
+            --extra-clang-arg "--target=${{ matrix.triple }}" \
+            --extra-clang-arg "--sysroot=${INCLUDE_ROOT}/03-mingw" \
+            --extra-clang-arg "-resource-dir=${INCLUDE_ROOT}/02-clang" \
+            --extra-clang-arg "-nostdinc++" \
+            --extra-clang-arg "-isystem" \
+            --extra-clang-arg "${INCLUDE_ROOT}/01-libcxx" \
+            --extra-clang-arg "-isystem" \
+            --extra-clang-arg "${INCLUDE_ROOT}/03-mingw/include"

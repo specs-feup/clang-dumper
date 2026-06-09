@@ -19,6 +19,7 @@ import argparse
 import os
 import platform
 import re
+import shlex
 import subprocess
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -240,6 +241,11 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     # Windows: Custom LLVM installation paths (e.g., CI environments)
     (r"[A-Za-z]:[/\\]llvm[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
 
+    # Windows packaged include bundles used by CI and releases.
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]01-libcxx", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]02-clang[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]03-mingw[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
+
     # ==================== GCC HEADERS ====================
     # Linux: Canonicalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/
     (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
@@ -331,6 +337,7 @@ _TARGET_ATTR_WARNING_RE = re.compile(
 # AArch64 treats plain char as unsigned by default, while x86_64 treats it as
 # signed. The tests exercise AST shape, not the host default-char ABI.
 _PLAIN_CHAR_KIND_RE = re.compile(r"^Char_[SU]$", re.MULTILINE)
+_WIDE_CHAR_KIND_RE = re.compile(r"^WChar_[SU]$", re.MULTILINE)
 
 
 def normalize_type_widths(output: str) -> str:
@@ -378,6 +385,7 @@ def normalize_static_output(output: str) -> str:
         output,
     )
     output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
+    output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
     output = _TARGET_ATTR_WARNING_RE.sub(
         "warning: target attribute diagnostic normalized; "
         "target attribute ignored [-Wignored-attributes]",
@@ -594,6 +602,7 @@ def run_single_test(
     generate: bool,
     enabled_features: set[str],
     clang_path: Optional[str] = None,
+    global_flags: Optional[list[str]] = None,
 ) -> tuple[str, str]:
     """
     Run a single test case.
@@ -627,8 +636,9 @@ def run_single_test(
         )
 
     # Run the tool/plugin with streaming normalization
+    flags = list(global_flags or []) + config.flags
     return_code, stdout, normalized_output, placeholder_to_raw = run_tool_and_normalize(
-        mode, path, str(input_file), config.id, inputs_dir_str, clang_path, config.flags
+        mode, path, str(input_file), config.id, inputs_dir_str, clang_path, flags
     )
 
     if return_code != 0:
@@ -726,6 +736,12 @@ def main():
         action="store_true",
         help="Enable CUDA tests (requires CUDA support in clang)",
     )
+    parser.add_argument(
+        "--extra-clang-arg",
+        action="append",
+        default=[],
+        help="Extra compiler argument to pass to every test. May be repeated.",
+    )
 
     args = parser.parse_args()
 
@@ -788,6 +804,9 @@ def main():
     if args.enable_cuda:
         enabled_features.add("cuda")
 
+    global_flags = shlex.split(os.environ.get("CLANG_DUMPER_TEST_CLANG_ARGS", ""))
+    global_flags.extend(args.extra_clang_arg)
+
     # Discover and run tests
     tests = discover_tests(inputs_dir)
 
@@ -823,6 +842,8 @@ def main():
     )
     if enabled_features:
         print(f"Enabled features: {', '.join(sorted(enabled_features))}")
+    if global_flags:
+        print(f"Extra compiler args: {shlex.join(global_flags)}")
     print()
 
     passed = 0
@@ -874,6 +895,7 @@ def main():
                 generate=args.generate,
                 enabled_features=enabled_features,
                 clang_path=clang_path,
+                global_flags=global_flags,
             ): test_file
             for test_file in tests
         }
