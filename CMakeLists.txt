@@ -373,7 +373,7 @@ if(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL AND WIN32 AND CMAKE_CROS
         ${CLANG_DUMPER_WINDOWS_RUNTIME_LIBS}
         -Wl,--end-group
     )
-    target_link_options(tool PRIVATE -static -Wl,--gc-sections)
+    target_link_options(tool PRIVATE -static -Wl,--gc-sections -Wl,--stack,16777216)
 
 elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
     message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
