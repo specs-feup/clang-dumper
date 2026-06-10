@@ -633,6 +633,8 @@ def run_single_test(
     path: str,
     input_file: Path,
     expected_dir: Path,
+    expected_profile_dir: Optional[Path],
+    failure_output_dir: Optional[Path],
     inputs_dir_str: str,
     generate: bool,
     enabled_features: set[str],
@@ -662,7 +664,12 @@ def run_single_test(
             f"Missing features: {', '.join(sorted(missing_features))}",
         )
 
-    expected_file = expected_dir / f"{test_name}.expected"
+    expected_file_name = f"{test_name}.expected"
+    expected_file = expected_dir / expected_file_name
+    if expected_profile_dir is not None:
+        profile_expected_file = expected_profile_dir / expected_file_name
+        if profile_expected_file.exists() or generate:
+            expected_file = profile_expected_file
 
     # Verify expected file exists (unless generating)
     if not generate and not expected_file.exists():
@@ -710,6 +717,11 @@ def run_single_test(
 
     if normalized_output == expected_output:
         return TestStatus.PASS, "PASSED"
+
+    if failure_output_dir is not None:
+        failure_output_dir.mkdir(parents=True, exist_ok=True)
+        failure_output_file = failure_output_dir / expected_file_name
+        failure_output_file.write_text(normalized_output, encoding="utf-8")
 
     # Find first difference for error message
     normalized_lines = normalized_output.splitlines(keepends=True)
@@ -805,6 +817,22 @@ def main():
             "Use -1 for the tool/plugin default of unlimited traversal."
         ),
     )
+    parser.add_argument(
+        "--expected-profile",
+        default=None,
+        help=(
+            "Optional target profile under test/expected-profiles/. "
+            "Only files present in the profile override the default expected output."
+        ),
+    )
+    parser.add_argument(
+        "--failure-output-dir",
+        default=None,
+        help=(
+            "Write normalized outputs for failed comparisons to this directory. "
+            "Useful for reviewing target-profile expected overrides from CI."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -820,6 +848,9 @@ def main():
 
     inputs_dir = test_dir / "inputs"
     expected_dir = test_dir / "expected"
+    expected_profile_dir: Optional[Path] = None
+    if args.expected_profile:
+        expected_profile_dir = test_dir / "expected-profiles" / args.expected_profile
 
     if not inputs_dir.exists():
         print(f"ERROR: Inputs directory not found: {inputs_dir}", file=sys.stderr)
@@ -828,6 +859,13 @@ def main():
     if not args.generate and not expected_dir.exists():
         print(f"ERROR: Expected directory not found: {expected_dir}", file=sys.stderr)
         sys.exit(1)
+
+    if args.generate and expected_profile_dir is not None:
+        expected_profile_dir.mkdir(parents=True, exist_ok=True)
+
+    failure_output_dir: Optional[Path] = None
+    if args.failure_output_dir:
+        failure_output_dir = Path(args.failure_output_dir)
 
     # Verify target path exists (tool executable or plugin library)
     target_path = Path(args.path)
@@ -912,6 +950,8 @@ def main():
         print(f"Enabled features: {', '.join(sorted(enabled_features))}")
     if global_flags:
         print(f"Extra compiler args: {shlex.join(global_flags)}")
+    if expected_profile_dir is not None:
+        print(f"Expected profile: {args.expected_profile}")
     print()
 
     passed = 0
@@ -959,6 +999,8 @@ def main():
                 path=str(target_path),
                 input_file=test_file,
                 expected_dir=expected_dir,
+                expected_profile_dir=expected_profile_dir,
+                failure_output_dir=failure_output_dir,
                 inputs_dir_str=inputs_dir_str,
                 generate=args.generate,
                 enabled_features=enabled_features,
