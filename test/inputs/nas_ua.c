@@ -39,6 +39,13 @@
 #include <sys/time.h>
 #include <math.h>
 
+// macOS SDK headers expose time() through sys/time.h, which collides with the
+// benchmark's global variable name below. Keep the benchmark source intact on
+// other hosts and rename only on macOS.
+#if defined(__APPLE__)
+#define time ua_time
+#endif
+
 /*
 //----------
 //  Class S:
@@ -8877,6 +8884,5 @@ void print_results(char *name, char class, int n1, int n2, int n3, int niter,
           "--------------------------------------\n\n");
   */
 }
-
 
 
