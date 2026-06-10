@@ -198,8 +198,10 @@ jobs:
         run: |
           brew install llvm@${{ env.LLVM_VERSION }} zstd
           LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
+          CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
+          echo "CLANG_RESOURCE_DIR=${CLANG_RESOURCE_DIR}" >> "$GITHUB_ENV"
           echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
 
       - name: Configure
@@ -225,16 +227,14 @@ jobs:
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
-            --extra-clang-arg="-resource-dir" \
-            --extra-clang-arg="${LLVM_PREFIX}/lib/clang/${{ env.LLVM_RELEASE }}"
+            --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
-            --extra-clang-arg="-resource-dir" \
-            --extra-clang-arg="${LLVM_PREFIX}/lib/clang/${{ env.LLVM_RELEASE }}"
+            --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Check tool runtime dependencies
         run: |
