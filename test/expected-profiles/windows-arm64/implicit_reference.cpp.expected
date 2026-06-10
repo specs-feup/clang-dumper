@@ -1,0 +1,851 @@
+<Compiler Instance Data>
+<TEST_DIR>/implicit_reference.cpp
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+1
+0
+1
+8
+32
+64
+<LONG_DOUBLE_WIDTH>
+8
+16
+32
+<LONG_WIDTH>
+64
+<Id-File Map>
+0
+<TEST_DIR>/implicit_reference.cpp
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<FunctionProtoTypeData>
+ADDR_003
+FunctionProtoType
+int ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_003
+FunctionProtoType
+<Top Level Types>
+ADDR_003
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_004
+0
+<VarDeclData>
+ADDR_004
+VarDecl
+<TEST_DIR>/implicit_reference.cpp
+2
+5
+<TEST_DIR>/implicit_reference.cpp
+2
+9
+0
+0
+0
+1
+1
+0
+0
+0
+
+x
+0
+0
+0
+None
+Default
+ADDR_002
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_004
+VarDecl
+<Visited Children>
+ADDR_005
+1
+ADDR_004
+<StmtData>
+ADDR_005
+DeclStmt
+<TEST_DIR>/implicit_reference.cpp
+2
+5
+<TEST_DIR>/implicit_reference.cpp
+2
+10
+0
+0
+<Id to Class Map>
+ADDR_005
+DeclStmt
+<Visited Children>
+ADDR_006
+0
+<BuiltinTypeData>
+ADDR_006
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_006
+BuiltinType
+<Visited Children>
+ADDR_007
+0
+<AutoTypeData>
+ADDR_007
+AutoType
+void
+NONE
+0
+0
+0
+ADDR_006
+ADDR_006
+<Id to Class Map>
+ADDR_007
+AutoType
+<Visited Children>
+ADDR_008
+0
+<FunctionProtoTypeData>
+ADDR_008
+FunctionProtoType
+void () const
+NONE
+0
+0
+0
+nullptr_type
+1
+0
+0
+0
+0
+0
+0
+C
+ADDR_007
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_008
+FunctionProtoType
+<Top Level Types>
+ADDR_008
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_009
+0
+<DeclRefExprData>
+ADDR_009
+DeclRefExpr
+<TEST_DIR>/implicit_reference.cpp
+4
+26
+<end>
+0
+0
+ADDR_002
+1
+0
+0
+
+0
+ADDR_004
+<Id to Class Map>
+ADDR_009
+DeclRefExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_010
+0
+<IntegerLiteralData>
+ADDR_010
+IntegerLiteral
+<TEST_DIR>/implicit_reference.cpp
+4
+30
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_010
+IntegerLiteral
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_011
+2
+ADDR_009
+ADDR_010
+<BinaryOperatorData>
+ADDR_011
+BinaryOperator
+<TEST_DIR>/implicit_reference.cpp
+4
+26
+<TEST_DIR>/implicit_reference.cpp
+4
+30
+0
+0
+ADDR_002
+1
+0
+0
+Assign
+<Id to Class Map>
+ADDR_011
+BinaryOperator
+<Visited Children>
+ADDR_012
+1
+ADDR_011
+<StmtData>
+ADDR_012
+CompoundStmt
+<TEST_DIR>/implicit_reference.cpp
+4
+24
+<TEST_DIR>/implicit_reference.cpp
+4
+33
+0
+0
+<Id to Class Map>
+ADDR_012
+CompoundStmt
+<Visited Children>
+ADDR_013
+0
+<QualTypeData>
+ADDR_013
+QualType
+const (lambda at <TEST_DIR>/implicit_reference.cpp:4:17)
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_014
+<Id to Class Map>
+ADDR_013
+QualType
+<Visited Children>
+ADDR_015
+0
+<PointerTypeData>
+ADDR_015
+PointerType
+const (lambda at <TEST_DIR>/implicit_reference.cpp:4:17) *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_013
+<Id to Class Map>
+ADDR_015
+PointerType
+<Visited Children>
+ADDR_016
+1
+ADDR_012
+<CXXMethodDeclData>
+ADDR_016
+CXXMethodDecl
+<TEST_DIR>/implicit_reference.cpp
+4
+22
+<TEST_DIR>/implicit_reference.cpp
+4
+33
+0
+0
+0
+1
+1
+0
+0
+0
+main()::(anonymous class)
+operator()
+6
+1
+1
+Internal
+Default
+ADDR_008
+0
+1
+0
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_016
+nullptr_decl
+0
+ADDR_017
+0
+0
+1
+1
+0
+0
+0
+0
+ADDR_015
+ADDR_013
+1
+0
+<Id to Class Map>
+ADDR_016
+CXXMethodDecl
+<Visited Children>
+ADDR_017
+1
+ADDR_016
+<CXXRecordDeclData>
+ADDR_017
+CXXRecordDecl
+<TEST_DIR>/implicit_reference.cpp
+4
+17
+<end>
+0
+0
+1
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+Internal
+Default
+ADDR_014
+Class
+1
+0
+0
+ADDR_017
+<Id to Class Map>
+ADDR_017
+CXXRecordDecl
+<Visited Children>
+ADDR_014
+0
+<TagTypeData>
+ADDR_014
+RecordType
+(lambda at <TEST_DIR>/implicit_reference.cpp:4:17)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_017
+<Id to Class Map>
+ADDR_014
+RecordType
+<Visited Children>
+ADDR_018
+0
+<AutoTypeData>
+ADDR_018
+AutoType
+(lambda at <TEST_DIR>/implicit_reference.cpp:4:17)
+NONE
+0
+0
+0
+ADDR_014
+ADDR_014
+<Id to Class Map>
+ADDR_018
+AutoType
+<Top Level Types>
+ADDR_018
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_019
+0
+<DeclRefExprData>
+ADDR_019
+DeclRefExpr
+<TEST_DIR>/implicit_reference.cpp
+4
+19
+<end>
+0
+0
+ADDR_002
+1
+0
+0
+
+0
+ADDR_004
+<Id to Class Map>
+ADDR_019
+DeclRefExpr
+<Top Level Types>
+ADDR_014
+<Visited Children>
+ADDR_020
+2
+ADDR_019
+ADDR_012
+<LambdaExprData>
+ADDR_020
+LambdaExpr
+<TEST_DIR>/implicit_reference.cpp
+4
+17
+<TEST_DIR>/implicit_reference.cpp
+4
+33
+0
+0
+ADDR_014
+0
+0
+0
+0
+0
+1
+0
+None
+ADDR_017
+1
+ByRef
+<Id to Class Map>
+ADDR_020
+LambdaExpr
+<Visited Children>
+ADDR_021
+1
+ADDR_020
+<VarDeclData>
+ADDR_021
+VarDecl
+<TEST_DIR>/implicit_reference.cpp
+4
+5
+<TEST_DIR>/implicit_reference.cpp
+4
+33
+0
+0
+0
+1
+1
+0
+0
+0
+
+func
+0
+0
+0
+None
+Default
+ADDR_018
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_021
+VarDecl
+<Visited Children>
+ADDR_022
+1
+ADDR_021
+<StmtData>
+ADDR_022
+DeclStmt
+<TEST_DIR>/implicit_reference.cpp
+4
+5
+<TEST_DIR>/implicit_reference.cpp
+4
+34
+0
+0
+<Id to Class Map>
+ADDR_022
+DeclStmt
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_023
+0
+<DeclRefExprData>
+ADDR_023
+DeclRefExpr
+<TEST_DIR>/implicit_reference.cpp
+5
+9
+<TEST_DIR>/implicit_reference.cpp
+5
+10
+0
+0
+ADDR_008
+1
+0
+0
+
+0
+ADDR_016
+<Id to Class Map>
+ADDR_023
+DeclRefExpr
+<Visited Children>
+ADDR_024
+0
+<PointerTypeData>
+ADDR_024
+PointerType
+void (*)() const
+NONE
+0
+0
+0
+nullptr_type
+ADDR_008
+<Id to Class Map>
+ADDR_024
+PointerType
+<Top Level Types>
+ADDR_024
+<Visited Children>
+ADDR_025
+1
+ADDR_023
+<ExprData>
+ADDR_025
+ImplicitCastExpr
+<TEST_DIR>/implicit_reference.cpp
+5
+9
+<TEST_DIR>/implicit_reference.cpp
+5
+10
+0
+0
+ADDR_024
+0
+0
+0
+<Id to Class Map>
+ADDR_025
+ImplicitCastExpr
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_026
+0
+<DeclRefExprData>
+ADDR_026
+DeclRefExpr
+<TEST_DIR>/implicit_reference.cpp
+5
+5
+<end>
+0
+0
+ADDR_018
+1
+0
+0
+
+0
+ADDR_021
+<Id to Class Map>
+ADDR_026
+DeclRefExpr
+<Top Level Types>
+ADDR_013
+<Visited Children>
+ADDR_027
+1
+ADDR_026
+<ExprData>
+ADDR_027
+ImplicitCastExpr
+<TEST_DIR>/implicit_reference.cpp
+5
+5
+<end>
+0
+0
+ADDR_013
+1
+0
+0
+<Id to Class Map>
+ADDR_027
+ImplicitCastExpr
+<Top Level Types>
+ADDR_007
+<Visited Children>
+ADDR_028
+2
+ADDR_025
+ADDR_027
+<CallExprData>
+ADDR_028
+CXXOperatorCallExpr
+<TEST_DIR>/implicit_reference.cpp
+5
+5
+<TEST_DIR>/implicit_reference.cpp
+5
+10
+0
+0
+ADDR_007
+0
+0
+0
+ADDR_016
+<Id to Class Map>
+ADDR_028
+CXXOperatorCallExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_029
+0
+<DeclRefExprData>
+ADDR_029
+DeclRefExpr
+<TEST_DIR>/implicit_reference.cpp
+7
+12
+<end>
+0
+0
+ADDR_002
+1
+0
+0
+
+0
+ADDR_004
+<Id to Class Map>
+ADDR_029
+DeclRefExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_030
+1
+ADDR_029
+<ExprData>
+ADDR_030
+ImplicitCastExpr
+<TEST_DIR>/implicit_reference.cpp
+7
+12
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+<Id to Class Map>
+ADDR_030
+ImplicitCastExpr
+<Visited Children>
+ADDR_031
+1
+ADDR_030
+<StmtData>
+ADDR_031
+ReturnStmt
+<TEST_DIR>/implicit_reference.cpp
+7
+5
+<TEST_DIR>/implicit_reference.cpp
+7
+12
+0
+0
+<Id to Class Map>
+ADDR_031
+ReturnStmt
+<Visited Children>
+ADDR_032
+4
+ADDR_005
+ADDR_022
+ADDR_028
+ADDR_031
+<StmtData>
+ADDR_032
+CompoundStmt
+<TEST_DIR>/implicit_reference.cpp
+1
+12
+<TEST_DIR>/implicit_reference.cpp
+8
+1
+0
+0
+<Id to Class Map>
+ADDR_032
+CompoundStmt
+<Visited Children>
+ADDR_033
+1
+ADDR_032
+<FunctionDeclData>
+ADDR_033
+FunctionDecl
+<TEST_DIR>/implicit_reference.cpp
+1
+1
+<TEST_DIR>/implicit_reference.cpp
+8
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+main
+0
+0
+0
+External
+Default
+ADDR_003
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_033
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_033
+FunctionDecl

@@ -1,0 +1,7891 @@
+<Compiler Instance Data>
+<TEST_DIR>/ast-print-record-decl.cpp
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+1
+0
+1
+8
+32
+64
+<LONG_DOUBLE_WIDTH>
+8
+16
+32
+<LONG_WIDTH>
+64
+<Id-File Map>
+0
+<TEST_DIR>/ast-print-record-decl.cpp
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<TagTypeData>
+ADDR_002
+RecordType
+B
+NONE
+0
+0
+0
+nullptr_type
+ADDR_001
+<Id to Class Map>
+ADDR_002
+RecordType
+<Visited Children>
+ADDR_001
+0
+<CXXRecordDeclData>
+ADDR_001
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+100
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+100
+11
+0
+0
+0
+0
+0
+0
+0
+0
+
+B
+0
+0
+0
+External
+Default
+ADDR_002
+Struct
+1
+0
+0
+ADDR_001
+<Id to Class Map>
+ADDR_001
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp:113:50: note: 'T' has been explicitly marked deprecated here
+  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
+      |                                                  ^
+<TEST_DIR>/ast-print-record-decl.cpp:113:50: note: 'T' has been explicitly marked deprecated here
+  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
+      |                                                  ^
+<Top Level Nodes>
+ADDR_003
+<Visited Children>
+ADDR_004
+0
+<BuiltinTypeData>
+ADDR_004
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_004
+BuiltinType
+<Visited Children>
+ADDR_005
+0
+<FunctionProtoTypeData>
+ADDR_005
+FunctionProtoType
+void ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_005
+FunctionProtoType
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_006
+0
+<BuiltinTypeData>
+ADDR_006
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_006
+BuiltinType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_007
+0
+<IntegerLiteralData>
+ADDR_007
+IntegerLiteral
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+16
+<Id to Class Map>
+ADDR_007
+IntegerLiteral
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_008
+1
+ADDR_007
+<ExprData>
+ADDR_008
+ConstantExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+<Id to Class Map>
+ADDR_008
+ConstantExpr
+<Visited Children>
+ADDR_009
+1
+ADDR_008
+<AlignedAttrData>
+ADDR_009
+AlignedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+31
+0
+0
+Aligned
+0
+0
+0
+0
+aligned
+1
+ADDR_008
+<Id to Class Map>
+ADDR_009
+AlignedAttr
+<Top Level Attributes>
+ADDR_009
+<Visited Children>
+ADDR_010
+0
+<AttributeData>
+ADDR_010
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+50
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+63
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_010
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_010
+<Visited Children>
+ADDR_011
+0
+<TagTypeData>
+ADDR_011
+RecordType
+T
+NONE
+0
+0
+0
+nullptr_type
+ADDR_012
+<Id to Class Map>
+ADDR_011
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_013
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_013
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+114
+5
+<TEST_DIR>/ast-print-record-decl.cpp
+114
+9
+0
+0
+0
+0
+0
+0
+0
+0
+defFirst()::T
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_013
+FieldDecl
+<Visited Children>
+ADDR_012
+1
+ADDR_013
+<CXXRecordDeclData>
+ADDR_012
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+115
+3
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+115
+3
+0
+0
+0
+0
+0
+0
+2
+ADDR_009
+ADDR_010
+
+T
+0
+0
+0
+None
+Default
+ADDR_011
+Struct
+1
+0
+0
+ADDR_012
+<Id to Class Map>
+ADDR_012
+CXXRecordDecl
+<Visited Children>
+ADDR_014
+0
+<ElaboratedTypeData>
+ADDR_014
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_011
+Struct
+
+ADDR_011
+<Id to Class Map>
+ADDR_014
+ElaboratedType
+<Visited Children>
+ADDR_015
+0
+<PointerTypeData>
+ADDR_015
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_014
+<Id to Class Map>
+ADDR_015
+PointerType
+<Top Level Types>
+ADDR_015
+<Visited Children>
+ADDR_016
+0
+<VarDeclData>
+ADDR_016
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+115
+6
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+115
+6
+0
+0
+0
+1
+0
+0
+0
+
+p0
+0
+0
+0
+None
+Default
+ADDR_015
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_016
+VarDecl
+<Visited Children>
+ADDR_017
+2
+ADDR_012
+ADDR_016
+<StmtData>
+ADDR_017
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+113
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+115
+8
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+115
+8
+0
+<Id to Class Map>
+ADDR_017
+DeclStmt
+<Visited Children>
+ADDR_018
+0
+<ElaboratedTypeData>
+ADDR_018
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_011
+Struct
+
+ADDR_011
+<Id to Class Map>
+ADDR_018
+ElaboratedType
+<Visited Children>
+ADDR_019
+0
+<PointerTypeData>
+ADDR_019
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_018
+<Id to Class Map>
+ADDR_019
+PointerType
+<Top Level Types>
+ADDR_019
+<Visited Children>
+ADDR_020
+0
+<VarDeclData>
+ADDR_020
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+118
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+118
+9
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+118
+9
+0
+0
+0
+1
+0
+0
+0
+
+p1
+0
+0
+0
+None
+Default
+ADDR_019
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_020
+VarDecl
+<Visited Children>
+ADDR_021
+1
+ADDR_020
+<StmtData>
+ADDR_021
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+118
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+118
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+118
+11
+0
+<Id to Class Map>
+ADDR_021
+DeclStmt
+<Visited Children>
+ADDR_022
+0
+<BuiltinTypeData>
+ADDR_022
+BuiltinType
+long
+NONE
+0
+0
+0
+nullptr_type
+Long
+long
+<Id to Class Map>
+ADDR_022
+BuiltinType
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_015
+<Visited Children>
+ADDR_023
+0
+<DeclRefExprData>
+ADDR_023
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+21
+<end>
+0
+0
+ADDR_015
+1
+0
+0
+
+0
+ADDR_016
+<Id to Class Map>
+ADDR_023
+DeclRefExpr
+<Top Level Types>
+ADDR_015
+<Visited Children>
+ADDR_024
+1
+ADDR_023
+<ExprData>
+ADDR_024
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+21
+<end>
+0
+0
+ADDR_015
+0
+0
+0
+<Id to Class Map>
+ADDR_024
+ImplicitCastExpr
+<Top Level Types>
+ADDR_014
+<Visited Children>
+ADDR_025
+1
+ADDR_024
+<UnaryOperatorData>
+ADDR_025
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+21
+0
+0
+ADDR_014
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_025
+UnaryOperator
+<Visited Children>
+ADDR_026
+0
+<BuiltinTypeData>
+ADDR_026
+BuiltinType
+unsigned long
+NONE
+0
+0
+0
+nullptr_type
+ULong
+unsigned long
+<Id to Class Map>
+ADDR_026
+BuiltinType
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_027
+1
+ADDR_025
+<UnaryExprOrTypeTraitExprData>
+ADDR_027
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_027
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_028
+1
+ADDR_027
+<ExprData>
+ADDR_028
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_028
+ImplicitCastExpr
+<Visited Children>
+ADDR_029
+1
+ADDR_028
+<VarDeclData>
+ADDR_029
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s0
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_029
+VarDecl
+<Visited Children>
+ADDR_030
+1
+ADDR_029
+<StmtData>
+ADDR_030
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+121
+23
+0
+0
+<Id to Class Map>
+ADDR_030
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_019
+<Visited Children>
+ADDR_031
+0
+<DeclRefExprData>
+ADDR_031
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+21
+<end>
+0
+0
+ADDR_019
+1
+0
+0
+
+0
+ADDR_020
+<Id to Class Map>
+ADDR_031
+DeclRefExpr
+<Top Level Types>
+ADDR_019
+<Visited Children>
+ADDR_032
+1
+ADDR_031
+<ExprData>
+ADDR_032
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+21
+<end>
+0
+0
+ADDR_019
+0
+0
+0
+<Id to Class Map>
+ADDR_032
+ImplicitCastExpr
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_033
+1
+ADDR_032
+<UnaryOperatorData>
+ADDR_033
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+21
+0
+0
+ADDR_018
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_033
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_034
+1
+ADDR_033
+<UnaryExprOrTypeTraitExprData>
+ADDR_034
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_034
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_035
+1
+ADDR_034
+<ExprData>
+ADDR_035
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_035
+ImplicitCastExpr
+<Visited Children>
+ADDR_036
+1
+ADDR_035
+<VarDeclData>
+ADDR_036
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s1
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_036
+VarDecl
+<Visited Children>
+ADDR_037
+1
+ADDR_036
+<StmtData>
+ADDR_037
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+123
+23
+0
+0
+<Id to Class Map>
+ADDR_037
+DeclStmt
+<Visited Children>
+ADDR_038
+4
+ADDR_017
+ADDR_021
+ADDR_030
+ADDR_037
+<StmtData>
+ADDR_038
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+103
+17
+<TEST_DIR>/ast-print-record-decl.cpp
+124
+1
+0
+0
+<Id to Class Map>
+ADDR_038
+CompoundStmt
+<Visited Children>
+ADDR_003
+1
+ADDR_038
+<FunctionDeclData>
+ADDR_003
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+103
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+124
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+defFirst
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_003
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_003
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp:136:21: note: 'T' has been explicitly marked deprecated here
+  136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
+      |                     ^
+<Top Level Nodes>
+ADDR_039
+<Top Level Types>
+ADDR_005
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_040
+0
+<IntegerLiteralData>
+ADDR_040
+IntegerLiteral
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+16
+<Id to Class Map>
+ADDR_040
+IntegerLiteral
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_041
+1
+ADDR_040
+<ExprData>
+ADDR_041
+ConstantExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+<Id to Class Map>
+ADDR_041
+ConstantExpr
+<Visited Children>
+ADDR_042
+1
+ADDR_041
+<AlignedAttrData>
+ADDR_042
+AlignedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+31
+0
+0
+Aligned
+0
+0
+0
+0
+aligned
+1
+ADDR_041
+<Id to Class Map>
+ADDR_042
+AlignedAttr
+<Top Level Attributes>
+ADDR_042
+<Visited Children>
+ADDR_043
+1
+ADDR_041
+<AlignedAttrData>
+ADDR_043
+AlignedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+31
+0
+0
+Aligned
+0
+1
+0
+0
+aligned
+1
+ADDR_041
+<Id to Class Map>
+ADDR_043
+AlignedAttr
+<Top Level Attributes>
+ADDR_043
+<Visited Children>
+ADDR_044
+0
+<AttributeData>
+ADDR_044
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+34
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_044
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_044
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_045
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_045
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+48
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+52
+0
+0
+0
+0
+0
+0
+0
+0
+defLast()::T
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_045
+FieldDecl
+<Visited Children>
+ADDR_046
+1
+ADDR_045
+<CXXRecordDeclData>
+ADDR_046
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+55
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+55
+0
+0
+0
+0
+0
+0
+2
+ADDR_043
+ADDR_044
+
+T
+0
+0
+0
+None
+Default
+ADDR_047
+Struct
+1
+0
+0
+ADDR_046
+<Id to Class Map>
+ADDR_046
+CXXRecordDecl
+<Visited Children>
+ADDR_047
+0
+<TagTypeData>
+ADDR_047
+RecordType
+T
+NONE
+0
+0
+0
+nullptr_type
+ADDR_046
+<Id to Class Map>
+ADDR_047
+RecordType
+<Visited Children>
+ADDR_048
+0
+<CXXRecordDeclData>
+ADDR_048
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+35
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+35
+0
+0
+0
+0
+0
+0
+1
+ADDR_042
+
+T
+0
+0
+0
+None
+Default
+ADDR_047
+Struct
+0
+0
+0
+ADDR_046
+<Id to Class Map>
+ADDR_048
+CXXRecordDecl
+<Visited Children>
+ADDR_049
+0
+<ElaboratedTypeData>
+ADDR_049
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_047
+Struct
+
+ADDR_047
+<Id to Class Map>
+ADDR_049
+ElaboratedType
+<Visited Children>
+ADDR_050
+0
+<PointerTypeData>
+ADDR_050
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_049
+<Id to Class Map>
+ADDR_050
+PointerType
+<Top Level Types>
+ADDR_050
+<Visited Children>
+ADDR_051
+0
+<VarDeclData>
+ADDR_051
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+38
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+38
+0
+0
+0
+1
+0
+0
+0
+
+p0
+0
+0
+0
+None
+Default
+ADDR_050
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_051
+VarDecl
+<Visited Children>
+ADDR_052
+2
+ADDR_048
+ADDR_051
+<StmtData>
+ADDR_052
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+40
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+129
+40
+0
+<Id to Class Map>
+ADDR_052
+DeclStmt
+<Visited Children>
+ADDR_053
+0
+<ElaboratedTypeData>
+ADDR_053
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_047
+Struct
+
+ADDR_047
+<Id to Class Map>
+ADDR_053
+ElaboratedType
+<Visited Children>
+ADDR_054
+0
+<PointerTypeData>
+ADDR_054
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_053
+<Id to Class Map>
+ADDR_054
+PointerType
+<Top Level Types>
+ADDR_054
+<Visited Children>
+ADDR_055
+0
+<VarDeclData>
+ADDR_055
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+58
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+58
+0
+0
+0
+1
+0
+0
+0
+
+p1
+0
+0
+0
+None
+Default
+ADDR_054
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_055
+VarDecl
+<Visited Children>
+ADDR_056
+2
+ADDR_046
+ADDR_055
+<StmtData>
+ADDR_056
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+60
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+136
+60
+0
+<Id to Class Map>
+ADDR_056
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_050
+<Visited Children>
+ADDR_057
+0
+<DeclRefExprData>
+ADDR_057
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+21
+<end>
+0
+0
+ADDR_050
+1
+0
+0
+
+0
+ADDR_051
+<Id to Class Map>
+ADDR_057
+DeclRefExpr
+<Top Level Types>
+ADDR_050
+<Visited Children>
+ADDR_058
+1
+ADDR_057
+<ExprData>
+ADDR_058
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+21
+<end>
+0
+0
+ADDR_050
+0
+0
+0
+<Id to Class Map>
+ADDR_058
+ImplicitCastExpr
+<Top Level Types>
+ADDR_049
+<Visited Children>
+ADDR_059
+1
+ADDR_058
+<UnaryOperatorData>
+ADDR_059
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+21
+0
+0
+ADDR_049
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_059
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_060
+1
+ADDR_059
+<UnaryExprOrTypeTraitExprData>
+ADDR_060
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_060
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_061
+1
+ADDR_060
+<ExprData>
+ADDR_061
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_061
+ImplicitCastExpr
+<Visited Children>
+ADDR_062
+1
+ADDR_061
+<VarDeclData>
+ADDR_062
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s0
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_062
+VarDecl
+<Visited Children>
+ADDR_063
+1
+ADDR_062
+<StmtData>
+ADDR_063
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+139
+23
+0
+0
+<Id to Class Map>
+ADDR_063
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_054
+<Visited Children>
+ADDR_064
+0
+<DeclRefExprData>
+ADDR_064
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+21
+<end>
+0
+0
+ADDR_054
+1
+0
+0
+
+0
+ADDR_055
+<Id to Class Map>
+ADDR_064
+DeclRefExpr
+<Top Level Types>
+ADDR_054
+<Visited Children>
+ADDR_065
+1
+ADDR_064
+<ExprData>
+ADDR_065
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+21
+<end>
+0
+0
+ADDR_054
+0
+0
+0
+<Id to Class Map>
+ADDR_065
+ImplicitCastExpr
+<Top Level Types>
+ADDR_053
+<Visited Children>
+ADDR_066
+1
+ADDR_065
+<UnaryOperatorData>
+ADDR_066
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+21
+0
+0
+ADDR_053
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_066
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_067
+1
+ADDR_066
+<UnaryExprOrTypeTraitExprData>
+ADDR_067
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_067
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_068
+1
+ADDR_067
+<ExprData>
+ADDR_068
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_068
+ImplicitCastExpr
+<Visited Children>
+ADDR_069
+1
+ADDR_068
+<VarDeclData>
+ADDR_069
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s1
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_069
+VarDecl
+<Visited Children>
+ADDR_070
+1
+ADDR_069
+<StmtData>
+ADDR_070
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+141
+23
+0
+0
+<Id to Class Map>
+ADDR_070
+DeclStmt
+<Visited Children>
+ADDR_071
+4
+ADDR_052
+ADDR_056
+ADDR_063
+ADDR_070
+<StmtData>
+ADDR_071
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+127
+16
+<TEST_DIR>/ast-print-record-decl.cpp
+142
+1
+0
+0
+<Id to Class Map>
+ADDR_071
+CompoundStmt
+<Visited Children>
+ADDR_039
+1
+ADDR_071
+<FunctionDeclData>
+ADDR_039
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+127
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+142
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+defLast
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_039
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_039
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
+<TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
+<TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
+  149 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
+<Top Level Nodes>
+ADDR_072
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_073
+0
+<AttributeData>
+ADDR_073
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+34
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_073
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_073
+<Visited Children>
+ADDR_074
+0
+<AttributeData>
+ADDR_074
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+34
+0
+0
+Deprecated
+0
+1
+0
+0
+<Id to Class Map>
+ADDR_074
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_074
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_075
+0
+<IntegerLiteralData>
+ADDR_075
+IntegerLiteral
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+16
+<Id to Class Map>
+ADDR_075
+IntegerLiteral
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_076
+1
+ADDR_075
+<ExprData>
+ADDR_076
+ConstantExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+<Id to Class Map>
+ADDR_076
+ConstantExpr
+<Visited Children>
+ADDR_077
+1
+ADDR_076
+<AlignedAttrData>
+ADDR_077
+AlignedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+31
+0
+0
+Aligned
+0
+0
+0
+0
+aligned
+1
+ADDR_076
+<Id to Class Map>
+ADDR_077
+AlignedAttr
+<Top Level Attributes>
+ADDR_077
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_078
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_078
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+45
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+49
+0
+0
+0
+0
+0
+0
+0
+0
+defMiddle()::T
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_078
+FieldDecl
+<Visited Children>
+ADDR_079
+1
+ADDR_078
+<CXXRecordDeclData>
+ADDR_079
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+52
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+52
+0
+0
+0
+0
+0
+0
+2
+ADDR_074
+ADDR_077
+
+T
+0
+0
+0
+None
+Default
+ADDR_080
+Struct
+1
+0
+0
+ADDR_079
+<Id to Class Map>
+ADDR_079
+CXXRecordDecl
+<Visited Children>
+ADDR_080
+0
+<TagTypeData>
+ADDR_080
+RecordType
+T
+NONE
+0
+0
+0
+nullptr_type
+ADDR_079
+<Id to Class Map>
+ADDR_080
+RecordType
+<Visited Children>
+ADDR_081
+0
+<CXXRecordDeclData>
+ADDR_081
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+38
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+38
+0
+0
+0
+0
+0
+0
+1
+ADDR_073
+
+T
+0
+0
+0
+None
+Default
+ADDR_080
+Struct
+0
+0
+0
+ADDR_079
+<Id to Class Map>
+ADDR_081
+CXXRecordDecl
+<Visited Children>
+ADDR_082
+0
+<ElaboratedTypeData>
+ADDR_082
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_080
+Struct
+
+ADDR_080
+<Id to Class Map>
+ADDR_082
+ElaboratedType
+<Visited Children>
+ADDR_083
+0
+<PointerTypeData>
+ADDR_083
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_082
+<Id to Class Map>
+ADDR_083
+PointerType
+<Top Level Types>
+ADDR_083
+<Visited Children>
+ADDR_084
+0
+<VarDeclData>
+ADDR_084
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+41
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+41
+0
+0
+0
+1
+0
+0
+0
+
+p0
+0
+0
+0
+None
+Default
+ADDR_083
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_084
+VarDecl
+<Visited Children>
+ADDR_085
+2
+ADDR_081
+ADDR_084
+<StmtData>
+ADDR_085
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+43
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+149
+43
+0
+<Id to Class Map>
+ADDR_085
+DeclStmt
+<Visited Children>
+ADDR_086
+0
+<ElaboratedTypeData>
+ADDR_086
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_080
+Struct
+
+ADDR_080
+<Id to Class Map>
+ADDR_086
+ElaboratedType
+<Visited Children>
+ADDR_087
+0
+<PointerTypeData>
+ADDR_087
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_086
+<Id to Class Map>
+ADDR_087
+PointerType
+<Top Level Types>
+ADDR_087
+<Visited Children>
+ADDR_088
+0
+<VarDeclData>
+ADDR_088
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+55
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+55
+0
+0
+0
+1
+0
+0
+0
+
+p1
+0
+0
+0
+None
+Default
+ADDR_087
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_088
+VarDecl
+<Visited Children>
+ADDR_089
+2
+ADDR_079
+ADDR_088
+<StmtData>
+ADDR_089
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+57
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+154
+57
+0
+<Id to Class Map>
+ADDR_089
+DeclStmt
+<Visited Children>
+ADDR_090
+0
+<ElaboratedTypeData>
+ADDR_090
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_080
+Struct
+
+ADDR_080
+<Id to Class Map>
+ADDR_090
+ElaboratedType
+<Visited Children>
+ADDR_091
+0
+<PointerTypeData>
+ADDR_091
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_090
+<Id to Class Map>
+ADDR_091
+PointerType
+<Top Level Types>
+ADDR_091
+<Visited Children>
+ADDR_092
+0
+<VarDeclData>
+ADDR_092
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+157
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+157
+9
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+157
+9
+0
+0
+0
+1
+0
+0
+0
+
+p2
+0
+0
+0
+None
+Default
+ADDR_091
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_092
+VarDecl
+<Visited Children>
+ADDR_093
+1
+ADDR_092
+<StmtData>
+ADDR_093
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+157
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+157
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+157
+11
+0
+<Id to Class Map>
+ADDR_093
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_083
+<Visited Children>
+ADDR_094
+0
+<DeclRefExprData>
+ADDR_094
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+21
+<end>
+0
+0
+ADDR_083
+1
+0
+0
+
+0
+ADDR_084
+<Id to Class Map>
+ADDR_094
+DeclRefExpr
+<Top Level Types>
+ADDR_083
+<Visited Children>
+ADDR_095
+1
+ADDR_094
+<ExprData>
+ADDR_095
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+21
+<end>
+0
+0
+ADDR_083
+0
+0
+0
+<Id to Class Map>
+ADDR_095
+ImplicitCastExpr
+<Top Level Types>
+ADDR_082
+<Visited Children>
+ADDR_096
+1
+ADDR_095
+<UnaryOperatorData>
+ADDR_096
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+21
+0
+0
+ADDR_082
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_096
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_097
+1
+ADDR_096
+<UnaryExprOrTypeTraitExprData>
+ADDR_097
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_097
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_098
+1
+ADDR_097
+<ExprData>
+ADDR_098
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_098
+ImplicitCastExpr
+<Visited Children>
+ADDR_099
+1
+ADDR_098
+<VarDeclData>
+ADDR_099
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s0
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_099
+VarDecl
+<Visited Children>
+ADDR_100
+1
+ADDR_099
+<StmtData>
+ADDR_100
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+160
+23
+0
+0
+<Id to Class Map>
+ADDR_100
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_087
+<Visited Children>
+ADDR_101
+0
+<DeclRefExprData>
+ADDR_101
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+21
+<end>
+0
+0
+ADDR_087
+1
+0
+0
+
+0
+ADDR_088
+<Id to Class Map>
+ADDR_101
+DeclRefExpr
+<Top Level Types>
+ADDR_087
+<Visited Children>
+ADDR_102
+1
+ADDR_101
+<ExprData>
+ADDR_102
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+21
+<end>
+0
+0
+ADDR_087
+0
+0
+0
+<Id to Class Map>
+ADDR_102
+ImplicitCastExpr
+<Top Level Types>
+ADDR_086
+<Visited Children>
+ADDR_103
+1
+ADDR_102
+<UnaryOperatorData>
+ADDR_103
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+21
+0
+0
+ADDR_086
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_103
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_104
+1
+ADDR_103
+<UnaryExprOrTypeTraitExprData>
+ADDR_104
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_104
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_105
+1
+ADDR_104
+<ExprData>
+ADDR_105
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_105
+ImplicitCastExpr
+<Visited Children>
+ADDR_106
+1
+ADDR_105
+<VarDeclData>
+ADDR_106
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s1
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_106
+VarDecl
+<Visited Children>
+ADDR_107
+1
+ADDR_106
+<StmtData>
+ADDR_107
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+162
+23
+0
+0
+<Id to Class Map>
+ADDR_107
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_091
+<Visited Children>
+ADDR_108
+0
+<DeclRefExprData>
+ADDR_108
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+21
+<end>
+0
+0
+ADDR_091
+1
+0
+0
+
+0
+ADDR_092
+<Id to Class Map>
+ADDR_108
+DeclRefExpr
+<Top Level Types>
+ADDR_091
+<Visited Children>
+ADDR_109
+1
+ADDR_108
+<ExprData>
+ADDR_109
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+21
+<end>
+0
+0
+ADDR_091
+0
+0
+0
+<Id to Class Map>
+ADDR_109
+ImplicitCastExpr
+<Top Level Types>
+ADDR_090
+<Visited Children>
+ADDR_110
+1
+ADDR_109
+<UnaryOperatorData>
+ADDR_110
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+21
+0
+0
+ADDR_090
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_110
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_111
+1
+ADDR_110
+<UnaryExprOrTypeTraitExprData>
+ADDR_111
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_111
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_112
+1
+ADDR_111
+<ExprData>
+ADDR_112
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_112
+ImplicitCastExpr
+<Visited Children>
+ADDR_113
+1
+ADDR_112
+<VarDeclData>
+ADDR_113
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s2
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_113
+VarDecl
+<Visited Children>
+ADDR_114
+1
+ADDR_113
+<StmtData>
+ADDR_114
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+164
+23
+0
+0
+<Id to Class Map>
+ADDR_114
+DeclStmt
+<Visited Children>
+ADDR_115
+6
+ADDR_085
+ADDR_089
+ADDR_093
+ADDR_100
+ADDR_107
+ADDR_114
+<StmtData>
+ADDR_115
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+145
+18
+<TEST_DIR>/ast-print-record-decl.cpp
+165
+1
+0
+0
+<Id to Class Map>
+ADDR_115
+CompoundStmt
+<Visited Children>
+ADDR_072
+1
+ADDR_115
+<FunctionDeclData>
+ADDR_072
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+145
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+165
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+defMiddle
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_072
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_072
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp:172:21: note: 'T' has been explicitly marked deprecated here
+  172 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
+<TEST_DIR>/ast-print-record-decl.cpp:172:21: note: 'T' has been explicitly marked deprecated here
+  172 |   KW __attribute__((deprecated(""))) T *p0;
+      |                     ^
+<Top Level Nodes>
+ADDR_116
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_117
+0
+<AttributeData>
+ADDR_117
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+34
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_117
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_117
+<Visited Children>
+ADDR_118
+0
+<AttributeData>
+ADDR_118
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+34
+0
+0
+Deprecated
+0
+1
+0
+0
+<Id to Class Map>
+ADDR_118
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_118
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_119
+0
+<IntegerLiteralData>
+ADDR_119
+IntegerLiteral
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+64
+<Id to Class Map>
+ADDR_119
+IntegerLiteral
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_120
+1
+ADDR_119
+<ExprData>
+ADDR_120
+ConstantExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+29
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+<Id to Class Map>
+ADDR_120
+ConstantExpr
+<Visited Children>
+ADDR_121
+1
+ADDR_120
+<AlignedAttrData>
+ADDR_121
+AlignedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+31
+0
+0
+Aligned
+0
+0
+0
+0
+aligned
+1
+ADDR_120
+<Id to Class Map>
+ADDR_121
+AlignedAttr
+<Top Level Attributes>
+ADDR_121
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_122
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_122
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+181
+5
+<TEST_DIR>/ast-print-record-decl.cpp
+181
+9
+0
+0
+0
+0
+0
+0
+0
+0
+defSelfRef()::T
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_122
+FieldDecl
+<Visited Children>
+ADDR_123
+0
+<ElaboratedTypeData>
+ADDR_123
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_124
+Struct
+
+ADDR_124
+<Id to Class Map>
+ADDR_123
+ElaboratedType
+<Visited Children>
+ADDR_125
+0
+<PointerTypeData>
+ADDR_125
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_123
+<Id to Class Map>
+ADDR_125
+PointerType
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_126
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_126
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+182
+5
+<TEST_DIR>/ast-print-record-decl.cpp
+182
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+182
+11
+0
+0
+0
+1
+0
+0
+0
+defSelfRef()::T
+p2
+0
+1
+1
+None
+Default
+ADDR_125
+0
+0
+<Id to Class Map>
+ADDR_126
+FieldDecl
+<Visited Children>
+ADDR_127
+0
+<AttributeData>
+ADDR_127
+MayAliasAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+23
+<end>
+0
+0
+MayAlias
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_127
+MayAliasAttr
+<Top Level Attributes>
+ADDR_127
+<Visited Children>
+ADDR_128
+0
+<CXXRecordDeclData>
+ADDR_128
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+5
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+35
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+35
+0
+0
+0
+0
+0
+0
+1
+ADDR_127
+defSelfRef()::T
+T
+0
+1
+0
+None
+Default
+ADDR_124
+Struct
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_128
+CXXRecordDecl
+<Visited Children>
+ADDR_129
+0
+<ElaboratedTypeData>
+ADDR_129
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_124
+Struct
+
+ADDR_124
+<Id to Class Map>
+ADDR_129
+ElaboratedType
+<Visited Children>
+ADDR_130
+0
+<PointerTypeData>
+ADDR_130
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_129
+<Id to Class Map>
+ADDR_130
+PointerType
+<Top Level Types>
+ADDR_130
+<Visited Children>
+ADDR_131
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_131
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+5
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+38
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+187
+38
+0
+0
+0
+1
+0
+0
+0
+defSelfRef()::T
+p3
+0
+1
+1
+None
+Default
+ADDR_130
+0
+0
+<Id to Class Map>
+ADDR_131
+FieldDecl
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_132
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_132
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+188
+5
+<TEST_DIR>/ast-print-record-decl.cpp
+188
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+188
+11
+0
+0
+0
+1
+0
+0
+0
+defSelfRef()::T
+p4
+0
+1
+1
+None
+Default
+ADDR_125
+0
+0
+<Id to Class Map>
+ADDR_132
+FieldDecl
+<Visited Children>
+ADDR_133
+5
+ADDR_122
+ADDR_126
+ADDR_128
+ADDR_131
+ADDR_132
+<CXXRecordDeclData>
+ADDR_133
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+189
+3
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+189
+3
+0
+0
+0
+0
+0
+0
+2
+ADDR_118
+ADDR_121
+
+T
+0
+0
+0
+None
+Default
+ADDR_124
+Struct
+1
+0
+0
+ADDR_133
+<Id to Class Map>
+ADDR_133
+CXXRecordDecl
+<Visited Children>
+ADDR_124
+0
+<TagTypeData>
+ADDR_124
+RecordType
+T
+NONE
+0
+0
+0
+nullptr_type
+ADDR_133
+<Id to Class Map>
+ADDR_124
+RecordType
+<Visited Children>
+ADDR_134
+0
+<CXXRecordDeclData>
+ADDR_134
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+38
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+38
+0
+0
+0
+0
+0
+0
+1
+ADDR_117
+
+T
+0
+0
+0
+None
+Default
+ADDR_124
+Struct
+0
+0
+0
+ADDR_133
+<Id to Class Map>
+ADDR_134
+CXXRecordDecl
+<Visited Children>
+ADDR_135
+0
+<ElaboratedTypeData>
+ADDR_135
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_124
+Struct
+
+ADDR_124
+<Id to Class Map>
+ADDR_135
+ElaboratedType
+<Visited Children>
+ADDR_136
+0
+<PointerTypeData>
+ADDR_136
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_135
+<Id to Class Map>
+ADDR_136
+PointerType
+<Top Level Types>
+ADDR_136
+<Visited Children>
+ADDR_137
+0
+<VarDeclData>
+ADDR_137
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+41
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+41
+0
+0
+0
+1
+0
+0
+0
+
+p0
+0
+0
+0
+None
+Default
+ADDR_136
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_137
+VarDecl
+<Visited Children>
+ADDR_138
+2
+ADDR_134
+ADDR_137
+<StmtData>
+ADDR_138
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+43
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+172
+43
+0
+<Id to Class Map>
+ADDR_138
+DeclStmt
+<Visited Children>
+ADDR_139
+0
+<ElaboratedTypeData>
+ADDR_139
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_124
+Struct
+
+ADDR_124
+<Id to Class Map>
+ADDR_139
+ElaboratedType
+<Visited Children>
+ADDR_140
+0
+<PointerTypeData>
+ADDR_140
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_139
+<Id to Class Map>
+ADDR_140
+PointerType
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_141
+0
+<VarDeclData>
+ADDR_141
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+189
+6
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+189
+6
+0
+0
+0
+1
+0
+0
+0
+
+p1
+0
+0
+0
+None
+Default
+ADDR_140
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_141
+VarDecl
+<Visited Children>
+ADDR_142
+2
+ADDR_133
+ADDR_141
+<StmtData>
+ADDR_142
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+180
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+189
+8
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+189
+8
+0
+<Id to Class Map>
+ADDR_142
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_136
+<Visited Children>
+ADDR_143
+0
+<DeclRefExprData>
+ADDR_143
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+21
+<end>
+0
+0
+ADDR_136
+1
+0
+0
+
+0
+ADDR_137
+<Id to Class Map>
+ADDR_143
+DeclRefExpr
+<Top Level Types>
+ADDR_136
+<Visited Children>
+ADDR_144
+1
+ADDR_143
+<ExprData>
+ADDR_144
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+21
+<end>
+0
+0
+ADDR_136
+0
+0
+0
+<Id to Class Map>
+ADDR_144
+ImplicitCastExpr
+<Top Level Types>
+ADDR_135
+<Visited Children>
+ADDR_145
+1
+ADDR_144
+<UnaryOperatorData>
+ADDR_145
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+21
+0
+0
+ADDR_135
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_145
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_146
+1
+ADDR_145
+<UnaryExprOrTypeTraitExprData>
+ADDR_146
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_146
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_147
+1
+ADDR_146
+<ExprData>
+ADDR_147
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_147
+ImplicitCastExpr
+<Visited Children>
+ADDR_148
+1
+ADDR_147
+<VarDeclData>
+ADDR_148
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s0
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_148
+VarDecl
+<Visited Children>
+ADDR_149
+1
+ADDR_148
+<StmtData>
+ADDR_149
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+192
+23
+0
+0
+<Id to Class Map>
+ADDR_149
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_150
+0
+<DeclRefExprData>
+ADDR_150
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+21
+<end>
+0
+0
+ADDR_140
+1
+0
+0
+
+0
+ADDR_141
+<Id to Class Map>
+ADDR_150
+DeclRefExpr
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_151
+1
+ADDR_150
+<ExprData>
+ADDR_151
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+21
+<end>
+0
+0
+ADDR_140
+0
+0
+0
+<Id to Class Map>
+ADDR_151
+ImplicitCastExpr
+<Top Level Types>
+ADDR_139
+<Visited Children>
+ADDR_152
+1
+ADDR_151
+<UnaryOperatorData>
+ADDR_152
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+21
+0
+0
+ADDR_139
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_152
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_153
+1
+ADDR_152
+<UnaryExprOrTypeTraitExprData>
+ADDR_153
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+21
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_153
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_154
+1
+ADDR_153
+<ExprData>
+ADDR_154
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+21
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_154
+ImplicitCastExpr
+<Visited Children>
+ADDR_155
+1
+ADDR_154
+<VarDeclData>
+ADDR_155
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+s1
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_155
+VarDecl
+<Visited Children>
+ADDR_156
+1
+ADDR_155
+<StmtData>
+ADDR_156
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+194
+23
+0
+0
+<Id to Class Map>
+ADDR_156
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_136
+<Visited Children>
+ADDR_157
+0
+<DeclRefExprData>
+ADDR_157
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+21
+<end>
+0
+0
+ADDR_136
+1
+0
+0
+
+0
+ADDR_137
+<Id to Class Map>
+ADDR_157
+DeclRefExpr
+<Top Level Types>
+ADDR_136
+<Visited Children>
+ADDR_158
+1
+ADDR_157
+<ExprData>
+ADDR_158
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+21
+<end>
+0
+0
+ADDR_136
+0
+0
+0
+<Id to Class Map>
+ADDR_158
+ImplicitCastExpr
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_159
+1
+ADDR_158
+<MemberExprData>
+ADDR_159
+MemberExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+25
+0
+0
+ADDR_125
+1
+0
+0
+1
+p2
+ADDR_126
+ADDR_126
+PUBLIC
+<Id to Class Map>
+ADDR_159
+MemberExpr
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_160
+1
+ADDR_159
+<ExprData>
+ADDR_160
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+25
+0
+0
+ADDR_125
+0
+0
+0
+<Id to Class Map>
+ADDR_160
+ImplicitCastExpr
+<Top Level Types>
+ADDR_123
+<Visited Children>
+ADDR_161
+1
+ADDR_160
+<UnaryOperatorData>
+ADDR_161
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+25
+0
+0
+ADDR_123
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_161
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_162
+1
+ADDR_161
+<UnaryExprOrTypeTraitExprData>
+ADDR_162
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+25
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_162
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_163
+1
+ADDR_162
+<ExprData>
+ADDR_163
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+25
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_163
+ImplicitCastExpr
+<Visited Children>
+ADDR_164
+1
+ADDR_163
+<VarDeclData>
+ADDR_164
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+25
+0
+0
+0
+0
+0
+0
+0
+0
+
+s2
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_164
+VarDecl
+<Visited Children>
+ADDR_165
+1
+ADDR_164
+<StmtData>
+ADDR_165
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+196
+27
+0
+0
+<Id to Class Map>
+ADDR_165
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_166
+0
+<DeclRefExprData>
+ADDR_166
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+21
+<end>
+0
+0
+ADDR_140
+1
+0
+0
+
+0
+ADDR_141
+<Id to Class Map>
+ADDR_166
+DeclRefExpr
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_167
+1
+ADDR_166
+<ExprData>
+ADDR_167
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+21
+<end>
+0
+0
+ADDR_140
+0
+0
+0
+<Id to Class Map>
+ADDR_167
+ImplicitCastExpr
+<Top Level Types>
+ADDR_130
+<Visited Children>
+ADDR_168
+1
+ADDR_167
+<MemberExprData>
+ADDR_168
+MemberExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+25
+0
+0
+ADDR_130
+1
+0
+0
+1
+p3
+ADDR_131
+ADDR_131
+PUBLIC
+<Id to Class Map>
+ADDR_168
+MemberExpr
+<Top Level Types>
+ADDR_130
+<Visited Children>
+ADDR_169
+1
+ADDR_168
+<ExprData>
+ADDR_169
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+25
+0
+0
+ADDR_130
+0
+0
+0
+<Id to Class Map>
+ADDR_169
+ImplicitCastExpr
+<Top Level Types>
+ADDR_129
+<Visited Children>
+ADDR_170
+1
+ADDR_169
+<UnaryOperatorData>
+ADDR_170
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+25
+0
+0
+ADDR_129
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_170
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_171
+1
+ADDR_170
+<UnaryExprOrTypeTraitExprData>
+ADDR_171
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+25
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_171
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_172
+1
+ADDR_171
+<ExprData>
+ADDR_172
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+25
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_172
+ImplicitCastExpr
+<Visited Children>
+ADDR_173
+1
+ADDR_172
+<VarDeclData>
+ADDR_173
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+25
+0
+0
+0
+0
+0
+0
+0
+0
+
+s3
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_173
+VarDecl
+<Visited Children>
+ADDR_174
+1
+ADDR_173
+<StmtData>
+ADDR_174
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+198
+27
+0
+0
+<Id to Class Map>
+ADDR_174
+DeclStmt
+<Top Level Types>
+ADDR_022
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_175
+0
+<DeclRefExprData>
+ADDR_175
+DeclRefExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+21
+<end>
+0
+0
+ADDR_140
+1
+0
+0
+
+0
+ADDR_141
+<Id to Class Map>
+ADDR_175
+DeclRefExpr
+<Top Level Types>
+ADDR_140
+<Visited Children>
+ADDR_176
+1
+ADDR_175
+<ExprData>
+ADDR_176
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+21
+<end>
+0
+0
+ADDR_140
+0
+0
+0
+<Id to Class Map>
+ADDR_176
+ImplicitCastExpr
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_177
+1
+ADDR_176
+<MemberExprData>
+ADDR_177
+MemberExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+25
+0
+0
+ADDR_125
+1
+0
+0
+1
+p4
+ADDR_132
+ADDR_132
+PUBLIC
+<Id to Class Map>
+ADDR_177
+MemberExpr
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_178
+1
+ADDR_177
+<ExprData>
+ADDR_178
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+25
+0
+0
+ADDR_125
+0
+0
+0
+<Id to Class Map>
+ADDR_178
+ImplicitCastExpr
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_179
+1
+ADDR_178
+<MemberExprData>
+ADDR_179
+MemberExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+29
+0
+0
+ADDR_125
+1
+0
+0
+1
+p2
+ADDR_126
+ADDR_126
+PUBLIC
+<Id to Class Map>
+ADDR_179
+MemberExpr
+<Top Level Types>
+ADDR_125
+<Visited Children>
+ADDR_180
+1
+ADDR_179
+<ExprData>
+ADDR_180
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+29
+0
+0
+ADDR_125
+0
+0
+0
+<Id to Class Map>
+ADDR_180
+ImplicitCastExpr
+<Top Level Types>
+ADDR_123
+<Visited Children>
+ADDR_181
+1
+ADDR_180
+<UnaryOperatorData>
+ADDR_181
+UnaryOperator
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+29
+0
+0
+ADDR_123
+1
+0
+0
+Deref
+PREFIX
+<Id to Class Map>
+ADDR_181
+UnaryOperator
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_182
+1
+ADDR_181
+<UnaryExprOrTypeTraitExprData>
+ADDR_182
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+29
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+0
+nullptr_type
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_182
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_183
+1
+ADDR_182
+<ExprData>
+ADDR_183
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+13
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+29
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_183
+ImplicitCastExpr
+<Visited Children>
+ADDR_184
+1
+ADDR_183
+<VarDeclData>
+ADDR_184
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+29
+0
+0
+0
+0
+0
+0
+0
+0
+
+s4
+0
+0
+0
+None
+Default
+ADDR_022
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_184
+VarDecl
+<Visited Children>
+ADDR_185
+1
+ADDR_184
+<StmtData>
+ADDR_185
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+200
+31
+0
+0
+<Id to Class Map>
+ADDR_185
+DeclStmt
+<Visited Children>
+ADDR_186
+7
+ADDR_138
+ADDR_142
+ADDR_149
+ADDR_156
+ADDR_165
+ADDR_174
+ADDR_185
+<StmtData>
+ADDR_186
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+168
+19
+<TEST_DIR>/ast-print-record-decl.cpp
+201
+1
+0
+0
+<Id to Class Map>
+ADDR_186
+CompoundStmt
+<Visited Children>
+ADDR_116
+1
+ADDR_186
+<FunctionDeclData>
+ADDR_116
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+168
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+201
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+defSelfRef
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_116
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_116
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp:217:21: note: 'T' has been explicitly marked deprecated here
+  217 |   KW __attribute__((deprecated(""))) T *p3;
+      |                     ^
+<TEST_DIR>/ast-print-record-decl.cpp:217:21: note: 'T' has been explicitly marked deprecated here
+  217 |   KW __attribute__((deprecated(""))) T *p3;
+      |                     ^
+<Top Level Nodes>
+ADDR_187
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_188
+0
+<TagTypeData>
+ADDR_188
+RecordType
+T
+NONE
+0
+0
+0
+nullptr_type
+ADDR_189
+<Id to Class Map>
+ADDR_188
+RecordType
+<Visited Children>
+ADDR_189
+0
+<CXXRecordDeclData>
+ADDR_189
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+6
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+6
+0
+0
+0
+0
+0
+0
+0
+
+T
+0
+0
+0
+None
+Default
+ADDR_188
+Struct
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_189
+CXXRecordDecl
+<Visited Children>
+ADDR_190
+0
+<ElaboratedTypeData>
+ADDR_190
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_188
+Struct
+
+ADDR_188
+<Id to Class Map>
+ADDR_190
+ElaboratedType
+<Visited Children>
+ADDR_191
+0
+<PointerTypeData>
+ADDR_191
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_190
+<Id to Class Map>
+ADDR_191
+PointerType
+<Top Level Types>
+ADDR_191
+<Visited Children>
+ADDR_192
+0
+<VarDeclData>
+ADDR_192
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+9
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+9
+0
+0
+0
+0
+0
+0
+0
+
+p0
+0
+0
+0
+None
+Default
+ADDR_191
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_192
+VarDecl
+<Visited Children>
+ADDR_193
+2
+ADDR_189
+ADDR_192
+<StmtData>
+ADDR_193
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+206
+11
+0
+<Id to Class Map>
+ADDR_193
+DeclStmt
+<Visited Children>
+ADDR_194
+0
+<AttributeData>
+ADDR_194
+MayAliasAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+21
+<end>
+0
+0
+MayAlias
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_194
+MayAliasAttr
+<Top Level Attributes>
+ADDR_194
+<Visited Children>
+ADDR_195
+0
+<CXXRecordDeclData>
+ADDR_195
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+33
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+33
+0
+0
+0
+0
+0
+0
+1
+ADDR_194
+
+T
+0
+0
+0
+None
+Default
+ADDR_188
+Struct
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_195
+CXXRecordDecl
+<Visited Children>
+ADDR_196
+0
+<ElaboratedTypeData>
+ADDR_196
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_188
+Struct
+
+ADDR_188
+<Id to Class Map>
+ADDR_196
+ElaboratedType
+<Visited Children>
+ADDR_197
+0
+<PointerTypeData>
+ADDR_197
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_196
+<Id to Class Map>
+ADDR_197
+PointerType
+<Top Level Types>
+ADDR_197
+<Visited Children>
+ADDR_198
+0
+<VarDeclData>
+ADDR_198
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+36
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+36
+0
+0
+0
+0
+0
+0
+0
+
+p1
+0
+0
+0
+None
+Default
+ADDR_197
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_198
+VarDecl
+<Visited Children>
+ADDR_199
+2
+ADDR_195
+ADDR_198
+<StmtData>
+ADDR_199
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+38
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+38
+0
+<Id to Class Map>
+ADDR_199
+DeclStmt
+<Visited Children>
+ADDR_200
+0
+<ElaboratedTypeData>
+ADDR_200
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_188
+Struct
+
+ADDR_188
+<Id to Class Map>
+ADDR_200
+ElaboratedType
+<Visited Children>
+ADDR_201
+0
+<PointerTypeData>
+ADDR_201
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_200
+<Id to Class Map>
+ADDR_201
+PointerType
+<Top Level Types>
+ADDR_201
+<Visited Children>
+ADDR_202
+0
+<VarDeclData>
+ADDR_202
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+212
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+212
+9
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+212
+9
+0
+0
+0
+0
+0
+0
+0
+
+p2
+0
+0
+0
+None
+Default
+ADDR_201
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_202
+VarDecl
+<Visited Children>
+ADDR_203
+1
+ADDR_202
+<StmtData>
+ADDR_203
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+212
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+212
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+212
+11
+0
+<Id to Class Map>
+ADDR_203
+DeclStmt
+<Visited Children>
+ADDR_204
+0
+<AttributeData>
+ADDR_204
+MayAliasAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+209
+21
+<end>
+0
+0
+MayAlias
+0
+1
+0
+0
+<Id to Class Map>
+ADDR_204
+MayAliasAttr
+<Top Level Attributes>
+ADDR_204
+<Visited Children>
+ADDR_205
+0
+<AttributeData>
+ADDR_205
+DeprecatedAttr
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+21
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+34
+0
+0
+Deprecated
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_205
+DeprecatedAttr
+<Top Level Attributes>
+ADDR_205
+<Visited Children>
+ADDR_206
+0
+<CXXRecordDeclData>
+ADDR_206
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+38
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+38
+0
+0
+0
+0
+0
+0
+2
+ADDR_204
+ADDR_205
+
+T
+0
+0
+0
+None
+Default
+ADDR_188
+Struct
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_206
+CXXRecordDecl
+<Visited Children>
+ADDR_207
+0
+<ElaboratedTypeData>
+ADDR_207
+ElaboratedType
+struct T
+NONE
+0
+0
+0
+ADDR_188
+Struct
+
+ADDR_188
+<Id to Class Map>
+ADDR_207
+ElaboratedType
+<Visited Children>
+ADDR_208
+0
+<PointerTypeData>
+ADDR_208
+PointerType
+struct T *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_207
+<Id to Class Map>
+ADDR_208
+PointerType
+<Top Level Types>
+ADDR_208
+<Visited Children>
+ADDR_209
+0
+<VarDeclData>
+ADDR_209
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+41
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+41
+0
+0
+0
+0
+0
+0
+0
+
+p3
+0
+0
+0
+None
+Default
+ADDR_208
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_209
+VarDecl
+<Visited Children>
+ADDR_210
+2
+ADDR_206
+ADDR_209
+<StmtData>
+ADDR_210
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+43
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+217
+43
+0
+<Id to Class Map>
+ADDR_210
+DeclStmt
+<Top Level Types>
+ADDR_201
+<Visited Children>
+ADDR_211
+0
+<VarDeclData>
+ADDR_211
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+220
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+220
+9
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+220
+9
+0
+0
+0
+0
+0
+0
+0
+
+p4
+0
+0
+0
+None
+Default
+ADDR_201
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_211
+VarDecl
+<Visited Children>
+ADDR_212
+1
+ADDR_211
+<StmtData>
+ADDR_212
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+220
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+220
+11
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+220
+11
+0
+<Id to Class Map>
+ADDR_212
+DeclStmt
+<Visited Children>
+ADDR_213
+5
+ADDR_193
+ADDR_199
+ADDR_203
+ADDR_210
+ADDR_212
+<StmtData>
+ADDR_213
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+204
+18
+<TEST_DIR>/ast-print-record-decl.cpp
+221
+1
+0
+0
+<Id to Class Map>
+ADDR_213
+CompoundStmt
+<Visited Children>
+ADDR_187
+1
+ADDR_213
+<FunctionDeclData>
+ADDR_187
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+204
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+221
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+declsOnly
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_187
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_187
+FunctionDecl
+<Top Level Nodes>
+ADDR_214
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_215
+0
+<TagTypeData>
+ADDR_215
+RecordType
+T1
+NONE
+0
+0
+0
+nullptr_type
+ADDR_216
+<Id to Class Map>
+ADDR_215
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_217
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_217
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+11
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+15
+0
+0
+0
+0
+0
+0
+0
+0
+inMembers()::T1
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_217
+FieldDecl
+<Visited Children>
+ADDR_216
+1
+ADDR_217
+<CXXRecordDeclData>
+ADDR_216
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+18
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+18
+0
+0
+0
+0
+0
+0
+0
+
+T1
+0
+0
+0
+None
+Default
+ADDR_215
+Struct
+1
+0
+0
+ADDR_216
+<Id to Class Map>
+ADDR_216
+CXXRecordDecl
+<Visited Children>
+ADDR_218
+1
+ADDR_216
+<StmtData>
+ADDR_218
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+19
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+231
+19
+0
+<Id to Class Map>
+ADDR_218
+DeclStmt
+<Visited Children>
+ADDR_219
+0
+<TagTypeData>
+ADDR_219
+RecordType
+T2
+NONE
+0
+0
+0
+nullptr_type
+ADDR_220
+<Id to Class Map>
+ADDR_219
+RecordType
+<Visited Children>
+ADDR_221
+0
+<ElaboratedTypeData>
+ADDR_221
+ElaboratedType
+struct T1
+NONE
+0
+0
+0
+ADDR_215
+Struct
+
+ADDR_215
+<Id to Class Map>
+ADDR_221
+ElaboratedType
+<Top Level Types>
+ADDR_221
+<Visited Children>
+ADDR_222
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_222
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+11
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+17
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+17
+0
+0
+0
+0
+0
+0
+0
+inMembers()::T2
+i
+0
+1
+1
+None
+Default
+ADDR_221
+0
+0
+<Id to Class Map>
+ADDR_222
+FieldDecl
+<Visited Children>
+ADDR_220
+1
+ADDR_222
+<CXXRecordDeclData>
+ADDR_220
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+20
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+20
+0
+0
+0
+0
+0
+0
+0
+
+T2
+0
+0
+0
+None
+Default
+ADDR_219
+Struct
+1
+0
+0
+ADDR_220
+<Id to Class Map>
+ADDR_220
+CXXRecordDecl
+<Visited Children>
+ADDR_223
+1
+ADDR_220
+<StmtData>
+ADDR_223
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+21
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+235
+21
+0
+<Id to Class Map>
+ADDR_223
+DeclStmt
+<Visited Children>
+ADDR_224
+2
+ADDR_218
+ADDR_223
+<StmtData>
+ADDR_224
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+227
+18
+<TEST_DIR>/ast-print-record-decl.cpp
+236
+1
+0
+0
+<Id to Class Map>
+ADDR_224
+CompoundStmt
+<Visited Children>
+ADDR_214
+1
+ADDR_224
+<FunctionDeclData>
+ADDR_214
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+227
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+236
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+inMembers
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_214
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_214
+FunctionDecl
+<Top Level Nodes>
+ADDR_225
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_226
+0
+<TagTypeData>
+ADDR_226
+RecordType
+T1
+NONE
+0
+0
+0
+nullptr_type
+ADDR_227
+<Id to Class Map>
+ADDR_226
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_228
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_228
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+11
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+15
+0
+0
+0
+0
+0
+0
+0
+0
+inInit()::T1
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_228
+FieldDecl
+<Visited Children>
+ADDR_227
+1
+ADDR_228
+<CXXRecordDeclData>
+ADDR_227
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+18
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+18
+0
+0
+0
+0
+0
+0
+0
+
+T1
+0
+0
+0
+None
+Default
+ADDR_226
+Struct
+1
+0
+0
+ADDR_227
+<Id to Class Map>
+ADDR_227
+CXXRecordDecl
+<Visited Children>
+ADDR_229
+1
+ADDR_227
+<StmtData>
+ADDR_229
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+19
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+243
+19
+0
+<Id to Class Map>
+ADDR_229
+DeclStmt
+<Visited Children>
+ADDR_230
+0
+<TagTypeData>
+ADDR_230
+RecordType
+T2
+NONE
+0
+0
+0
+nullptr_type
+ADDR_231
+<Id to Class Map>
+ADDR_230
+RecordType
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_232
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_232
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+11
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+16
+0
+0
+0
+0
+0
+0
+0
+0
+inInit()::T2
+i
+0
+1
+1
+None
+Default
+ADDR_022
+0
+0
+<Id to Class Map>
+ADDR_232
+FieldDecl
+<Visited Children>
+ADDR_231
+1
+ADDR_232
+<CXXRecordDeclData>
+ADDR_231
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+19
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+19
+0
+0
+0
+0
+0
+0
+0
+
+T2
+0
+0
+0
+None
+Default
+ADDR_230
+Struct
+1
+0
+0
+ADDR_231
+<Id to Class Map>
+ADDR_231
+CXXRecordDecl
+<Visited Children>
+ADDR_233
+0
+<ElaboratedTypeData>
+ADDR_233
+ElaboratedType
+struct T2
+NONE
+0
+0
+0
+ADDR_230
+Struct
+
+ADDR_230
+<Id to Class Map>
+ADDR_233
+ElaboratedType
+<Top Level Types>
+ADDR_233
+<Top Level Types>
+ADDR_026
+<Visited Children>
+ADDR_234
+0
+<ElaboratedTypeData>
+ADDR_234
+ElaboratedType
+struct T1
+NONE
+0
+0
+0
+ADDR_226
+Struct
+
+ADDR_226
+<Id to Class Map>
+ADDR_234
+ElaboratedType
+<Visited Children>
+ADDR_235
+0
+<UnaryExprOrTypeTraitExprData>
+ADDR_235
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+27
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+39
+0
+0
+ADDR_026
+0
+0
+0
+SizeOf
+1
+ADDR_234
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_235
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_236
+1
+ADDR_235
+<ExprData>
+ADDR_236
+ImplicitCastExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+27
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+39
+0
+0
+ADDR_022
+0
+0
+0
+<Id to Class Map>
+ADDR_236
+ImplicitCastExpr
+<Top Level Types>
+ADDR_233
+<Top Level Types>
+ADDR_233
+<Visited Children>
+ADDR_237
+1
+ADDR_235
+<InitListExprData>
+ADDR_237
+InitListExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+26
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+40
+0
+0
+ADDR_233
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_238
+<Id to Class Map>
+ADDR_237
+InitListExpr
+<Visited Children>
+ADDR_238
+1
+ADDR_236
+<InitListExprData>
+ADDR_238
+InitListExpr
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+26
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+40
+0
+0
+ADDR_233
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_237
+nullptr_expr
+<Id to Class Map>
+ADDR_238
+InitListExpr
+<Visited Children>
+ADDR_239
+1
+ADDR_238
+<VarDeclData>
+ADDR_239
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+40
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+40
+0
+0
+0
+0
+0
+0
+0
+
+t2
+0
+0
+0
+None
+Default
+ADDR_233
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_239
+VarDecl
+<Visited Children>
+ADDR_240
+2
+ADDR_231
+ADDR_239
+<StmtData>
+ADDR_240
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+41
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+247
+41
+0
+<Id to Class Map>
+ADDR_240
+DeclStmt
+<Visited Children>
+ADDR_241
+2
+ADDR_229
+ADDR_240
+<StmtData>
+ADDR_241
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+239
+15
+<TEST_DIR>/ast-print-record-decl.cpp
+248
+1
+0
+0
+<Id to Class Map>
+ADDR_241
+CompoundStmt
+<Visited Children>
+ADDR_225
+1
+ADDR_241
+<FunctionDeclData>
+ADDR_225
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+239
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+248
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+inInit
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_225
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_225
+FunctionDecl
+<Top Level Nodes>
+ADDR_242
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_243
+0
+<TagTypeData>
+ADDR_243
+RecordType
+T1
+NONE
+0
+0
+0
+nullptr_type
+ADDR_244
+<Id to Class Map>
+ADDR_243
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_245
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_245
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+11
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+15
+0
+0
+0
+0
+0
+0
+0
+0
+inMemberPtr()::T1
+i
+0
+1
+1
+None
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_245
+FieldDecl
+<Visited Children>
+ADDR_244
+1
+ADDR_245
+<CXXRecordDeclData>
+ADDR_244
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+18
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+18
+0
+0
+0
+0
+0
+0
+0
+
+T1
+0
+0
+0
+None
+Default
+ADDR_243
+Struct
+1
+0
+0
+ADDR_244
+<Id to Class Map>
+ADDR_244
+CXXRecordDecl
+<Visited Children>
+ADDR_246
+1
+ADDR_244
+<StmtData>
+ADDR_246
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+19
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+259
+19
+0
+<Id to Class Map>
+ADDR_246
+DeclStmt
+<Visited Children>
+ADDR_247
+0
+<TagTypeData>
+ADDR_247
+RecordType
+T2
+NONE
+0
+0
+0
+nullptr_type
+ADDR_248
+<Id to Class Map>
+ADDR_247
+RecordType
+<Visited Children>
+ADDR_248
+0
+<CXXRecordDeclData>
+ADDR_248
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+10
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+10
+0
+0
+0
+0
+0
+0
+0
+
+T2
+0
+0
+0
+None
+Default
+ADDR_247
+Struct
+1
+0
+0
+ADDR_248
+<Id to Class Map>
+ADDR_248
+CXXRecordDecl
+<Visited Children>
+ADDR_249
+0
+<TypeData>
+ADDR_249
+MemberPointerType
+struct T2 T1::*
+NONE
+0
+0
+0
+nullptr_type
+<Id to Class Map>
+ADDR_249
+MemberPointerType
+<Top Level Types>
+ADDR_249
+<Visited Children>
+ADDR_250
+0
+<VarDeclData>
+ADDR_250
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+17
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+17
+0
+0
+0
+0
+0
+0
+0
+
+p
+0
+0
+0
+None
+Default
+ADDR_249
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_250
+VarDecl
+<Visited Children>
+ADDR_251
+2
+ADDR_248
+ADDR_250
+<StmtData>
+ADDR_251
+DeclStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+18
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+262
+18
+0
+<Id to Class Map>
+ADDR_251
+DeclStmt
+<Visited Children>
+ADDR_252
+2
+ADDR_246
+ADDR_251
+<StmtData>
+ADDR_252
+CompoundStmt
+<TEST_DIR>/ast-print-record-decl.cpp
+252
+20
+<TEST_DIR>/ast-print-record-decl.cpp
+263
+1
+0
+0
+<Id to Class Map>
+ADDR_252
+CompoundStmt
+<Visited Children>
+ADDR_242
+1
+ADDR_252
+<FunctionDeclData>
+ADDR_242
+FunctionDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+252
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+263
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+inMemberPtr
+0
+0
+0
+External
+Default
+ADDR_005
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_242
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_242
+FunctionDecl
+<Top Level Nodes>
+ADDR_253
+<Top Level Nodes>
+ADDR_254
+<Visited Children>
+ADDR_255
+0
+<TagTypeData>
+ADDR_255
+RecordType
+DeclGroupAtFileScope
+NONE
+0
+0
+0
+nullptr_type
+ADDR_253
+<Id to Class Map>
+ADDR_255
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_256
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_256
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+27
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+31
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupAtFileScope
+i
+0
+1
+1
+External
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_256
+FieldDecl
+<Visited Children>
+ADDR_253
+1
+ADDR_256
+<CXXRecordDeclData>
+ADDR_253
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+34
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+34
+0
+0
+0
+0
+0
+0
+0
+
+DeclGroupAtFileScope
+0
+0
+0
+External
+Default
+ADDR_255
+Struct
+1
+0
+0
+ADDR_253
+<Id to Class Map>
+ADDR_253
+CXXRecordDecl
+<Visited Children>
+ADDR_257
+0
+<ElaboratedTypeData>
+ADDR_257
+ElaboratedType
+struct DeclGroupAtFileScope
+NONE
+0
+0
+0
+ADDR_255
+Struct
+
+ADDR_255
+<Id to Class Map>
+ADDR_257
+ElaboratedType
+<Visited Children>
+ADDR_258
+0
+<PointerTypeData>
+ADDR_258
+PointerType
+struct DeclGroupAtFileScope *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_257
+<Id to Class Map>
+ADDR_258
+PointerType
+<Top Level Types>
+ADDR_258
+<Visited Children>
+ADDR_254
+0
+<VarDeclData>
+ADDR_254
+VarDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+37
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+271
+37
+0
+0
+0
+0
+0
+0
+0
+
+DeclGroupAtFileScopePtr
+0
+0
+0
+External
+Default
+ADDR_258
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_254
+VarDecl
+<Top Level Nodes>
+ADDR_259
+<Visited Children>
+ADDR_260
+0
+<TagTypeData>
+ADDR_260
+RecordType
+DeclGroupInMemberList
+NONE
+0
+0
+0
+nullptr_type
+ADDR_259
+<Id to Class Map>
+ADDR_260
+RecordType
+<Visited Children>
+ADDR_261
+0
+<TagTypeData>
+ADDR_261
+RecordType
+DeclGroupInMemberList::T1
+NONE
+0
+0
+0
+nullptr_type
+ADDR_262
+<Id to Class Map>
+ADDR_261
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_263
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_263
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+278
+15
+<TEST_DIR>/ast-print-record-decl.cpp
+278
+19
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList::T1
+i
+0
+1
+1
+External
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_263
+FieldDecl
+<Visited Children>
+ADDR_262
+1
+ADDR_263
+<CXXRecordDeclData>
+ADDR_262
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+278
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+278
+22
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+T1
+0
+1
+0
+External
+Default
+ADDR_261
+Struct
+1
+0
+0
+ADDR_262
+<Id to Class Map>
+ADDR_262
+CXXRecordDecl
+<Visited Children>
+ADDR_264
+0
+<ElaboratedTypeData>
+ADDR_264
+ElaboratedType
+struct T1
+NONE
+0
+0
+0
+ADDR_261
+Struct
+
+ADDR_261
+<Id to Class Map>
+ADDR_264
+ElaboratedType
+<Top Level Types>
+ADDR_264
+<Visited Children>
+ADDR_265
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_265
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+278
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+278
+24
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+t1
+0
+1
+1
+External
+Default
+ADDR_264
+0
+0
+<Id to Class Map>
+ADDR_265
+FieldDecl
+<Visited Children>
+ADDR_266
+0
+<TagTypeData>
+ADDR_266
+RecordType
+DeclGroupInMemberList::T2
+NONE
+0
+0
+0
+nullptr_type
+ADDR_267
+<Id to Class Map>
+ADDR_266
+RecordType
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_268
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_268
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+14
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+18
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList::T2
+i
+0
+1
+1
+External
+Default
+ADDR_006
+0
+0
+<Id to Class Map>
+ADDR_268
+FieldDecl
+<Visited Children>
+ADDR_267
+1
+ADDR_268
+<CXXRecordDeclData>
+ADDR_267
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+21
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+T2
+0
+1
+0
+External
+Default
+ADDR_266
+Union
+1
+0
+0
+ADDR_267
+<Id to Class Map>
+ADDR_267
+CXXRecordDecl
+<Visited Children>
+ADDR_269
+0
+<ElaboratedTypeData>
+ADDR_269
+ElaboratedType
+union T2
+NONE
+0
+0
+0
+ADDR_266
+Union
+
+ADDR_266
+<Id to Class Map>
+ADDR_269
+ElaboratedType
+<Visited Children>
+ADDR_270
+0
+<PointerTypeData>
+ADDR_270
+PointerType
+union T2 *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_269
+<Id to Class Map>
+ADDR_270
+PointerType
+<Top Level Types>
+ADDR_270
+<Visited Children>
+ADDR_271
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_271
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+24
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+t20
+0
+1
+1
+External
+Default
+ADDR_270
+0
+0
+<Id to Class Map>
+ADDR_271
+FieldDecl
+<Visited Children>
+ADDR_272
+0
+<ConstantArrayTypeData>
+ADDR_272
+ConstantArrayType
+union T2[2]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_269
+2
+<Id to Class Map>
+ADDR_272
+ConstantArrayType
+<Top Level Types>
+ADDR_272
+<Visited Children>
+ADDR_273
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_273
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+34
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+t21
+0
+1
+1
+External
+Default
+ADDR_272
+0
+0
+<Id to Class Map>
+ADDR_273
+FieldDecl
+<Visited Children>
+ADDR_274
+0
+<TagTypeData>
+ADDR_274
+EnumType
+DeclGroupInMemberList::T3
+NONE
+0
+0
+0
+nullptr_type
+ADDR_275
+<Id to Class Map>
+ADDR_274
+EnumType
+<Top Level Types>
+ADDR_274
+<Visited Children>
+ADDR_276
+1
+nullptr_expr
+<ValueDeclData>
+ADDR_276
+EnumConstantDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+286
+13
+<end>
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+T30
+0
+1
+0
+External
+Default
+ADDR_274
+0
+<Id to Class Map>
+ADDR_276
+EnumConstantDecl
+<Visited Children>
+ADDR_277
+0
+<BuiltinTypeData>
+ADDR_277
+BuiltinType
+unsigned int
+NONE
+0
+0
+0
+nullptr_type
+UInt
+unsigned int
+<Id to Class Map>
+ADDR_277
+BuiltinType
+<Visited Children>
+ADDR_275
+1
+ADDR_276
+<EnumDeclData>
+ADDR_275
+EnumDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+286
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+286
+17
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+T3
+0
+1
+0
+External
+Default
+ADDR_274
+Enum
+1
+NO_SCOPE
+ADDR_277
+<Id to Class Map>
+ADDR_275
+EnumDecl
+<Visited Children>
+ADDR_278
+0
+<ElaboratedTypeData>
+ADDR_278
+ElaboratedType
+enum T3
+NONE
+0
+0
+0
+ADDR_274
+Enum
+
+ADDR_274
+<Id to Class Map>
+ADDR_278
+ElaboratedType
+<Top Level Types>
+ADDR_278
+<Visited Children>
+ADDR_279
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_279
+FieldDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+286
+3
+<TEST_DIR>/ast-print-record-decl.cpp
+286
+19
+0
+0
+0
+0
+0
+0
+0
+0
+DeclGroupInMemberList
+t30
+0
+1
+1
+External
+Default
+ADDR_278
+0
+0
+<Id to Class Map>
+ADDR_279
+FieldDecl
+<Visited Children>
+ADDR_259
+7
+ADDR_262
+ADDR_265
+ADDR_267
+ADDR_271
+ADDR_273
+ADDR_275
+ADDR_279
+<CXXRecordDeclData>
+ADDR_259
+CXXRecordDecl
+<TEST_DIR>/ast-print-record-decl.cpp
+274
+1
+<TEST_DIR>/ast-print-record-decl.cpp
+288
+1
+1
+
+510
+12
+<TEST_DIR>/ast-print-record-decl.cpp
+288
+1
+0
+0
+0
+0
+0
+0
+0
+
+DeclGroupInMemberList
+0
+0
+0
+External
+Default
+ADDR_260
+Struct
+1
+0
+0
+ADDR_259
+<Id to Class Map>
+ADDR_259
+CXXRecordDecl
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_280
+0
+<IntegerLiteralData>
+ADDR_280
+IntegerLiteral
+<TEST_DIR>/ast-print-record-decl.cpp
+282
+33
+<end>
+0
+0
+ADDR_006
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_280
+IntegerLiteral
+10 warnings generated.

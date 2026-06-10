@@ -1,0 +1,6223 @@
+<Compiler Instance Data>
+<TEST_DIR>/qualifiers.cpp
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+1
+0
+1
+8
+32
+64
+<LONG_DOUBLE_WIDTH>
+8
+16
+32
+<LONG_WIDTH>
+64
+<Id-File Map>
+0
+<TEST_DIR>/qualifiers.cpp
+<Includes>
+<TEST_DIR>/qualifiers.cpp
+array
+1
+1
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+char
+NONE
+0
+0
+0
+nullptr_type
+Char_S
+char
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<QualTypeData>
+ADDR_003
+QualType
+const char
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_002
+<Id to Class Map>
+ADDR_003
+QualType
+<Visited Children>
+ADDR_004
+0
+<PointerTypeData>
+ADDR_004
+PointerType
+const char *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_003
+<Id to Class Map>
+ADDR_004
+PointerType
+<Visited Children>
+ADDR_005
+0
+<BuiltinTypeData>
+ADDR_005
+BuiltinType
+double
+NONE
+0
+0
+0
+nullptr_type
+Double
+double
+<Id to Class Map>
+ADDR_005
+BuiltinType
+<Visited Children>
+ADDR_006
+0
+<QualTypeData>
+ADDR_006
+QualType
+const double
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_005
+<Id to Class Map>
+ADDR_006
+QualType
+<Visited Children>
+ADDR_007
+0
+<PointerTypeData>
+ADDR_007
+PointerType
+const double *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_006
+<Id to Class Map>
+ADDR_007
+PointerType
+<Visited Children>
+ADDR_008
+0
+<ConstantArrayTypeData>
+ADDR_008
+ConstantArrayType
+const double[3]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_006
+3
+<Id to Class Map>
+ADDR_008
+ConstantArrayType
+<Visited Children>
+ADDR_009
+0
+<DecayedTypeData>
+ADDR_009
+DecayedType
+const double *
+NONE
+0
+0
+0
+ADDR_007
+ADDR_008
+ADDR_007
+ADDR_007
+ADDR_006
+<Id to Class Map>
+ADDR_009
+DecayedType
+<Visited Children>
+ADDR_010
+0
+<FunctionProtoTypeData>
+ADDR_010
+FunctionProtoType
+const char *(const double *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+1
+1
+ADDR_009
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_010
+FunctionProtoType
+<Top Level Types>
+ADDR_010
+<Top Level Types>
+ADDR_009
+<Visited Children>
+ADDR_011
+0
+<ParmVarDeclData>
+ADDR_011
+ParmVarDecl
+<TEST_DIR>/qualifiers.cpp
+3
+18
+<TEST_DIR>/qualifiers.cpp
+3
+37
+0
+0
+0
+0
+0
+0
+0
+0
+
+arg1
+0
+0
+0
+None
+Default
+ADDR_009
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_011
+ParmVarDecl
+<Visited Children>
+ADDR_001
+1
+ADDR_011
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/qualifiers.cpp
+3
+1
+<TEST_DIR>/qualifiers.cpp
+3
+38
+0
+0
+0
+0
+0
+0
+0
+0
+
+foo1
+0
+0
+0
+External
+Default
+ADDR_010
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Visited Children>
+ADDR_012
+0
+<BuiltinTypeData>
+ADDR_012
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_012
+BuiltinType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_013
+0
+<IntegerLiteralData>
+ADDR_013
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+3
+36
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+3
+<Id to Class Map>
+ADDR_013
+IntegerLiteral
+<Top Level Nodes>
+ADDR_014
+<Visited Children>
+ADDR_015
+0
+<ConstantArrayTypeData>
+ADDR_015
+ConstantArrayType
+const char[4]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_003
+4
+<Id to Class Map>
+ADDR_015
+ConstantArrayType
+<Top Level Types>
+ADDR_015
+<Top Level Types>
+ADDR_015
+<Visited Children>
+ADDR_016
+0
+<StringLiteralData>
+ADDR_016
+StringLiteral
+<TEST_DIR>/qualifiers.cpp
+4
+31
+<end>
+0
+0
+ADDR_015
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+ORDINARY
+3
+1
+3
+49
+46
+48
+<Id to Class Map>
+ADDR_016
+StringLiteral
+<Visited Children>
+ADDR_014
+1
+ADDR_016
+<VarDeclData>
+ADDR_014
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+4
+1
+<TEST_DIR>/qualifiers.cpp
+4
+31
+0
+0
+0
+0
+0
+0
+0
+0
+
+mypass_version
+0
+0
+0
+Internal
+Default
+ADDR_015
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_014
+VarDecl
+<Top Level Nodes>
+ADDR_017
+<Visited Children>
+ADDR_018
+0
+<QualTypeData>
+ADDR_018
+QualType
+const volatile int
+NONE
+0
+0
+0
+nullptr_type
+2
+CONST
+VOLATILE
+NONE
+0
+ADDR_012
+<Id to Class Map>
+ADDR_018
+QualType
+<Top Level Types>
+ADDR_018
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_019
+0
+<IntegerLiteralData>
+ADDR_019
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+5
+24
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_019
+IntegerLiteral
+<Visited Children>
+ADDR_017
+1
+ADDR_019
+<VarDeclData>
+ADDR_017
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+5
+1
+<TEST_DIR>/qualifiers.cpp
+5
+24
+0
+0
+0
+0
+0
+0
+0
+0
+
+x
+0
+0
+0
+External
+Default
+ADDR_018
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_017
+VarDecl
+<Top Level Nodes>
+ADDR_020
+<Visited Children>
+ADDR_021
+0
+<TagTypeData>
+ADDR_021
+RecordType
+A
+NONE
+0
+0
+0
+nullptr_type
+ADDR_020
+<Id to Class Map>
+ADDR_021
+RecordType
+<Visited Children>
+ADDR_022
+0
+<AccessSpecDeclData>
+ADDR_022
+AccessSpecDecl
+<TEST_DIR>/qualifiers.cpp
+9
+2
+<TEST_DIR>/qualifiers.cpp
+9
+8
+0
+0
+0
+0
+0
+0
+0
+0
+PUBLIC
+<Id to Class Map>
+ADDR_022
+AccessSpecDecl
+<Visited Children>
+ADDR_023
+0
+<BuiltinTypeData>
+ADDR_023
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_023
+BuiltinType
+<Visited Children>
+ADDR_024
+0
+<FunctionProtoTypeData>
+ADDR_024
+FunctionProtoType
+void () const
+NONE
+0
+0
+0
+nullptr_type
+1
+0
+0
+0
+0
+0
+0
+C
+ADDR_023
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_024
+FunctionProtoType
+<Top Level Types>
+ADDR_024
+<Visited Children>
+ADDR_025
+0
+<QualTypeData>
+ADDR_025
+QualType
+const A
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_021
+<Id to Class Map>
+ADDR_025
+QualType
+<Visited Children>
+ADDR_026
+0
+<PointerTypeData>
+ADDR_026
+PointerType
+const A *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_025
+<Id to Class Map>
+ADDR_026
+PointerType
+<Visited Children>
+ADDR_027
+0
+<CXXMethodDeclData>
+ADDR_027
+CXXMethodDecl
+<TEST_DIR>/qualifiers.cpp
+10
+2
+<TEST_DIR>/qualifiers.cpp
+10
+18
+0
+0
+0
+0
+0
+0
+0
+0
+A
+constFoo
+0
+1
+1
+External
+Default
+ADDR_024
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_027
+nullptr_decl
+0
+ADDR_020
+0
+0
+1
+1
+0
+0
+0
+0
+ADDR_026
+ADDR_025
+0
+0
+<Id to Class Map>
+ADDR_027
+CXXMethodDecl
+<Visited Children>
+ADDR_028
+0
+<QualTypeData>
+ADDR_028
+QualType
+const int
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_012
+<Id to Class Map>
+ADDR_028
+QualType
+<Top Level Types>
+ADDR_028
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_029
+0
+<IntegerLiteralData>
+ADDR_029
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+11
+41
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+3
+<Id to Class Map>
+ADDR_029
+IntegerLiteral
+<Visited Children>
+ADDR_030
+1
+ADDR_029
+<VarDeclData>
+ADDR_030
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+11
+2
+<TEST_DIR>/qualifiers.cpp
+11
+41
+0
+0
+0
+0
+1
+0
+0
+0
+A
+number_of_sizes
+0
+1
+0
+External
+Default
+ADDR_028
+0
+Static
+NONE
+0
+CINIT
+1
+1
+0
+1
+<Id to Class Map>
+ADDR_030
+VarDecl
+<Visited Children>
+ADDR_031
+0
+<TagTypeData>
+ADDR_031
+RecordType
+std::array<int, 3>
+NONE
+0
+0
+0
+nullptr_type
+ADDR_032
+<Id to Class Map>
+ADDR_031
+RecordType
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_033
+0
+<DeclRefExprData>
+ADDR_033
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+12
+35
+<end>
+0
+0
+ADDR_028
+1
+0
+0
+
+0
+ADDR_030
+<Id to Class Map>
+ADDR_033
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_034
+1
+ADDR_033
+<ExprData>
+ADDR_034
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+12
+35
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+<Id to Class Map>
+ADDR_034
+ImplicitCastExpr
+<Visited Children>
+ADDR_035
+0
+<BuiltinTypeData>
+ADDR_035
+BuiltinType
+unsigned long
+NONE
+0
+0
+0
+nullptr_type
+ULong
+unsigned long
+<Id to Class Map>
+ADDR_035
+BuiltinType
+<Visited Children>
+ADDR_036
+0
+<TypedefTypeData>
+ADDR_036
+TypedefType
+size_t
+NONE
+0
+0
+0
+ADDR_035
+ADDR_037
+<Id to Class Map>
+ADDR_036
+TypedefType
+<Visited Children>
+ADDR_038
+0
+<TypeData>
+ADDR_038
+UsingType
+size_t
+NONE
+0
+0
+0
+ADDR_036
+<Id to Class Map>
+ADDR_038
+UsingType
+<Visited Children>
+ADDR_039
+0
+<ElaboratedTypeData>
+ADDR_039
+ElaboratedType
+size_t
+NONE
+0
+0
+0
+ADDR_038
+None
+
+ADDR_038
+<Id to Class Map>
+ADDR_039
+ElaboratedType
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_040
+1
+ADDR_034
+<ExprData>
+ADDR_040
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+12
+35
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_040
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_041
+1
+ADDR_040
+<ExprData>
+ADDR_041
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+12
+35
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_041
+ConstantExpr
+<Visited Children>
+ADDR_042
+0
+<TemplateSpecializationTypeData>
+ADDR_042
+TemplateSpecializationType
+array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_041
+<Id to Class Map>
+ADDR_042
+TemplateSpecializationType
+<Visited Children>
+ADDR_044
+0
+<ElaboratedTypeData>
+ADDR_044
+ElaboratedType
+std::array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_042
+None
+std::
+ADDR_042
+<Id to Class Map>
+ADDR_044
+ElaboratedType
+<Visited Children>
+ADDR_045
+0
+<QualTypeData>
+ADDR_045
+QualType
+const std::array<int, 3>
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_031
+<Id to Class Map>
+ADDR_045
+QualType
+<Visited Children>
+ADDR_046
+0
+<QualTypeData>
+ADDR_046
+QualType
+const array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+1
+CONST
+NONE
+0
+ADDR_042
+<Id to Class Map>
+ADDR_046
+QualType
+<Visited Children>
+ADDR_047
+0
+<QualTypeData>
+ADDR_047
+QualType
+const std::array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_042
+1
+CONST
+NONE
+0
+ADDR_044
+<Id to Class Map>
+ADDR_047
+QualType
+<Top Level Types>
+ADDR_047
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_048
+0
+<IntegerLiteralData>
+ADDR_048
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+12
+59
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+512
+<Id to Class Map>
+ADDR_048
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_049
+0
+<IntegerLiteralData>
+ADDR_049
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+12
+64
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+256
+<Id to Class Map>
+ADDR_049
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_050
+0
+<IntegerLiteralData>
+ADDR_050
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+12
+69
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+128
+<Id to Class Map>
+ADDR_050
+IntegerLiteral
+<Visited Children>
+ADDR_051
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_051
+SubstTemplateTypeParmType
+int
+NONE
+0
+0
+0
+ADDR_012
+ADDR_052
+ADDR_012
+<Id to Class Map>
+ADDR_051
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_053
+0
+<ConstantArrayTypeData>
+ADDR_053
+ConstantArrayType
+int[3]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_051
+3
+<Id to Class Map>
+ADDR_053
+ConstantArrayType
+<Top Level Types>
+ADDR_053
+<Top Level Types>
+ADDR_053
+<Visited Children>
+ADDR_054
+3
+ADDR_048
+ADDR_049
+ADDR_050
+<InitListExprData>
+ADDR_054
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+12
+58
+<TEST_DIR>/qualifiers.cpp
+12
+72
+0
+0
+ADDR_053
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_055
+<Id to Class Map>
+ADDR_054
+InitListExpr
+<Visited Children>
+ADDR_055
+3
+ADDR_048
+ADDR_049
+ADDR_050
+<InitListExprData>
+ADDR_055
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+12
+58
+<TEST_DIR>/qualifiers.cpp
+12
+72
+0
+0
+ADDR_053
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_054
+nullptr_expr
+<Id to Class Map>
+ADDR_055
+InitListExpr
+<Top Level Types>
+ADDR_047
+<Top Level Types>
+ADDR_047
+<Visited Children>
+ADDR_056
+1
+ADDR_054
+<InitListExprData>
+ADDR_056
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+12
+57
+<TEST_DIR>/qualifiers.cpp
+12
+73
+0
+0
+ADDR_047
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_057
+<Id to Class Map>
+ADDR_056
+InitListExpr
+<Visited Children>
+ADDR_057
+1
+ADDR_055
+<InitListExprData>
+ADDR_057
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+12
+57
+<TEST_DIR>/qualifiers.cpp
+12
+73
+0
+0
+ADDR_047
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_056
+nullptr_expr
+<Id to Class Map>
+ADDR_057
+InitListExpr
+<Visited Children>
+ADDR_058
+1
+ADDR_057
+<VarDeclData>
+ADDR_058
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+12
+2
+<TEST_DIR>/qualifiers.cpp
+12
+73
+0
+0
+0
+0
+0
+0
+0
+0
+A
+SPACE
+0
+1
+0
+External
+Default
+ADDR_047
+0
+Static
+NONE
+0
+LIST_INIT
+1
+1
+0
+1
+<Id to Class Map>
+ADDR_058
+VarDecl
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_059
+0
+<DeclRefExprData>
+ADDR_059
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+13
+35
+<end>
+0
+0
+ADDR_028
+1
+0
+0
+
+0
+ADDR_030
+<Id to Class Map>
+ADDR_059
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_060
+1
+ADDR_059
+<ExprData>
+ADDR_060
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+13
+35
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+<Id to Class Map>
+ADDR_060
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_061
+1
+ADDR_060
+<ExprData>
+ADDR_061
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+13
+35
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_061
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_062
+1
+ADDR_061
+<ExprData>
+ADDR_062
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+13
+35
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_062
+ConstantExpr
+<Visited Children>
+ADDR_063
+0
+<TemplateSpecializationTypeData>
+ADDR_063
+TemplateSpecializationType
+array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_062
+<Id to Class Map>
+ADDR_063
+TemplateSpecializationType
+<Visited Children>
+ADDR_064
+0
+<ElaboratedTypeData>
+ADDR_064
+ElaboratedType
+std::array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_063
+None
+std::
+ADDR_063
+<Id to Class Map>
+ADDR_064
+ElaboratedType
+<Visited Children>
+ADDR_065
+0
+<QualTypeData>
+ADDR_065
+QualType
+const array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+1
+CONST
+NONE
+0
+ADDR_063
+<Id to Class Map>
+ADDR_065
+QualType
+<Visited Children>
+ADDR_066
+0
+<QualTypeData>
+ADDR_066
+QualType
+const std::array<int, number_of_sizes>
+NONE
+0
+0
+0
+ADDR_063
+1
+CONST
+NONE
+0
+ADDR_064
+<Id to Class Map>
+ADDR_066
+QualType
+<Top Level Types>
+ADDR_066
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_067
+0
+<IntegerLiteralData>
+ADDR_067
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+13
+62
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+512
+<Id to Class Map>
+ADDR_067
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_068
+0
+<IntegerLiteralData>
+ADDR_068
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+13
+67
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+256
+<Id to Class Map>
+ADDR_068
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_069
+0
+<IntegerLiteralData>
+ADDR_069
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+13
+72
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+128
+<Id to Class Map>
+ADDR_069
+IntegerLiteral
+<Top Level Types>
+ADDR_053
+<Visited Children>
+ADDR_070
+3
+ADDR_067
+ADDR_068
+ADDR_069
+<InitListExprData>
+ADDR_070
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+13
+62
+<TEST_DIR>/qualifiers.cpp
+13
+72
+0
+0
+ADDR_053
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+nullptr_expr
+<Id to Class Map>
+ADDR_070
+InitListExpr
+<Top Level Types>
+ADDR_066
+<Top Level Types>
+ADDR_066
+<Visited Children>
+ADDR_071
+3
+ADDR_067
+ADDR_068
+ADDR_069
+<InitListExprData>
+ADDR_071
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+13
+61
+<TEST_DIR>/qualifiers.cpp
+13
+75
+0
+0
+ADDR_066
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_072
+<Id to Class Map>
+ADDR_071
+InitListExpr
+<Visited Children>
+ADDR_072
+1
+ADDR_070
+<InitListExprData>
+ADDR_072
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+13
+61
+<TEST_DIR>/qualifiers.cpp
+13
+75
+0
+0
+ADDR_066
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_071
+nullptr_expr
+<Id to Class Map>
+ADDR_072
+InitListExpr
+<Visited Children>
+ADDR_073
+1
+ADDR_072
+<VarDeclData>
+ADDR_073
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+13
+2
+<TEST_DIR>/qualifiers.cpp
+13
+75
+0
+0
+0
+0
+0
+0
+0
+0
+A
+SPACE2
+0
+1
+0
+External
+Default
+ADDR_066
+0
+Static
+NONE
+0
+CINIT
+1
+1
+0
+1
+<Id to Class Map>
+ADDR_073
+VarDecl
+<Visited Children>
+ADDR_074
+0
+<TagTypeData>
+ADDR_074
+RecordType
+std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+nullptr_type
+ADDR_075
+<Id to Class Map>
+ADDR_074
+RecordType
+<Visited Children>
+ADDR_076
+0
+<TagTypeData>
+ADDR_076
+RecordType
+std::array<int, 2>
+NONE
+0
+0
+0
+nullptr_type
+ADDR_077
+<Id to Class Map>
+ADDR_076
+RecordType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_078
+0
+<IntegerLiteralData>
+ADDR_078
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+14
+46
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_078
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_079
+1
+ADDR_078
+<ExprData>
+ADDR_079
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+14
+46
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_079
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_080
+1
+ADDR_079
+<ExprData>
+ADDR_080
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+14
+46
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_080
+ConstantExpr
+<Visited Children>
+ADDR_081
+0
+<TemplateSpecializationTypeData>
+ADDR_081
+TemplateSpecializationType
+array<int, 2>
+NONE
+0
+0
+0
+ADDR_076
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_080
+<Id to Class Map>
+ADDR_081
+TemplateSpecializationType
+<Visited Children>
+ADDR_082
+0
+<ElaboratedTypeData>
+ADDR_082
+ElaboratedType
+std::array<int, 2>
+NONE
+0
+0
+0
+ADDR_081
+None
+std::
+ADDR_081
+<Id to Class Map>
+ADDR_082
+ElaboratedType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_083
+0
+<IntegerLiteralData>
+ADDR_083
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+14
+50
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_083
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_084
+1
+ADDR_083
+<ExprData>
+ADDR_084
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+14
+50
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_084
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_085
+1
+ADDR_084
+<ExprData>
+ADDR_085
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+14
+50
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_085
+ConstantExpr
+<Visited Children>
+ADDR_086
+0
+<TemplateSpecializationTypeData>
+ADDR_086
+TemplateSpecializationType
+array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_082
+Expression
+ADDR_085
+<Id to Class Map>
+ADDR_086
+TemplateSpecializationType
+<Visited Children>
+ADDR_087
+0
+<ElaboratedTypeData>
+ADDR_087
+ElaboratedType
+std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_086
+None
+std::
+ADDR_086
+<Id to Class Map>
+ADDR_087
+ElaboratedType
+<Visited Children>
+ADDR_088
+0
+<QualTypeData>
+ADDR_088
+QualType
+const std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_074
+<Id to Class Map>
+ADDR_088
+QualType
+<Visited Children>
+ADDR_089
+0
+<QualTypeData>
+ADDR_089
+QualType
+const array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+1
+CONST
+NONE
+0
+ADDR_086
+<Id to Class Map>
+ADDR_089
+QualType
+<Visited Children>
+ADDR_090
+0
+<QualTypeData>
+ADDR_090
+QualType
+const std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_086
+1
+CONST
+NONE
+0
+ADDR_087
+<Id to Class Map>
+ADDR_090
+QualType
+<Top Level Types>
+ADDR_090
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_091
+0
+<IntegerLiteralData>
+ADDR_091
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+14
+71
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_091
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_092
+0
+<IntegerLiteralData>
+ADDR_092
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+14
+74
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_092
+IntegerLiteral
+<Visited Children>
+ADDR_093
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_093
+SubstTemplateTypeParmType
+int
+NONE
+0
+0
+0
+ADDR_012
+ADDR_052
+ADDR_012
+<Id to Class Map>
+ADDR_093
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_094
+0
+<ConstantArrayTypeData>
+ADDR_094
+ConstantArrayType
+int[2]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_093
+2
+<Id to Class Map>
+ADDR_094
+ConstantArrayType
+<Top Level Types>
+ADDR_094
+<Top Level Types>
+ADDR_094
+<Visited Children>
+ADDR_095
+2
+ADDR_091
+ADDR_092
+<InitListExprData>
+ADDR_095
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+70
+<TEST_DIR>/qualifiers.cpp
+14
+75
+0
+0
+ADDR_094
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_096
+<Id to Class Map>
+ADDR_095
+InitListExpr
+<Visited Children>
+ADDR_096
+2
+ADDR_091
+ADDR_092
+<InitListExprData>
+ADDR_096
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+70
+<TEST_DIR>/qualifiers.cpp
+14
+75
+0
+0
+ADDR_094
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_095
+nullptr_expr
+<Id to Class Map>
+ADDR_096
+InitListExpr
+<Visited Children>
+ADDR_097
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_097
+SubstTemplateTypeParmType
+std::array<int, 2>
+NONE
+0
+0
+0
+ADDR_076
+ADDR_052
+ADDR_076
+<Id to Class Map>
+ADDR_097
+SubstTemplateTypeParmType
+<Top Level Types>
+ADDR_097
+<Top Level Types>
+ADDR_097
+<Visited Children>
+ADDR_098
+1
+ADDR_095
+<InitListExprData>
+ADDR_098
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+69
+<TEST_DIR>/qualifiers.cpp
+14
+76
+0
+0
+ADDR_097
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_099
+<Id to Class Map>
+ADDR_098
+InitListExpr
+<Visited Children>
+ADDR_099
+1
+ADDR_096
+<InitListExprData>
+ADDR_099
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+69
+<TEST_DIR>/qualifiers.cpp
+14
+76
+0
+0
+ADDR_097
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_098
+nullptr_expr
+<Id to Class Map>
+ADDR_099
+InitListExpr
+<Visited Children>
+ADDR_100
+0
+<ConstantArrayTypeData>
+ADDR_100
+ConstantArrayType
+std::array<int, 2>[1]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_097
+1
+<Id to Class Map>
+ADDR_100
+ConstantArrayType
+<Top Level Types>
+ADDR_100
+<Top Level Types>
+ADDR_100
+<Visited Children>
+ADDR_101
+1
+ADDR_098
+<InitListExprData>
+ADDR_101
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+68
+<TEST_DIR>/qualifiers.cpp
+14
+77
+0
+0
+ADDR_100
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_102
+<Id to Class Map>
+ADDR_101
+InitListExpr
+<Visited Children>
+ADDR_102
+1
+ADDR_099
+<InitListExprData>
+ADDR_102
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+68
+<TEST_DIR>/qualifiers.cpp
+14
+77
+0
+0
+ADDR_100
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_101
+nullptr_expr
+<Id to Class Map>
+ADDR_102
+InitListExpr
+<Top Level Types>
+ADDR_090
+<Top Level Types>
+ADDR_090
+<Visited Children>
+ADDR_103
+1
+ADDR_101
+<InitListExprData>
+ADDR_103
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+67
+<TEST_DIR>/qualifiers.cpp
+14
+78
+0
+0
+ADDR_090
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_104
+<Id to Class Map>
+ADDR_103
+InitListExpr
+<Visited Children>
+ADDR_104
+1
+ADDR_102
+<InitListExprData>
+ADDR_104
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+14
+67
+<TEST_DIR>/qualifiers.cpp
+14
+78
+0
+0
+ADDR_090
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_103
+nullptr_expr
+<Id to Class Map>
+ADDR_104
+InitListExpr
+<Visited Children>
+ADDR_105
+1
+ADDR_104
+<VarDeclData>
+ADDR_105
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+14
+2
+<TEST_DIR>/qualifiers.cpp
+14
+78
+0
+0
+0
+0
+0
+0
+0
+0
+A
+ARRAY_IN_ARRAY
+0
+1
+0
+External
+Default
+ADDR_090
+0
+Static
+NONE
+0
+LIST_INIT
+1
+1
+0
+1
+<Id to Class Map>
+ADDR_105
+VarDecl
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_106
+0
+<IntegerLiteralData>
+ADDR_106
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+15
+46
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_106
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_107
+1
+ADDR_106
+<ExprData>
+ADDR_107
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+15
+46
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_107
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_108
+1
+ADDR_107
+<ExprData>
+ADDR_108
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+15
+46
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_108
+ConstantExpr
+<Visited Children>
+ADDR_109
+0
+<TemplateSpecializationTypeData>
+ADDR_109
+TemplateSpecializationType
+array<int, 2>
+NONE
+0
+0
+0
+ADDR_076
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_108
+<Id to Class Map>
+ADDR_109
+TemplateSpecializationType
+<Visited Children>
+ADDR_110
+0
+<ElaboratedTypeData>
+ADDR_110
+ElaboratedType
+std::array<int, 2>
+NONE
+0
+0
+0
+ADDR_109
+None
+std::
+ADDR_109
+<Id to Class Map>
+ADDR_110
+ElaboratedType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_111
+0
+<IntegerLiteralData>
+ADDR_111
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+15
+50
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_111
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_112
+1
+ADDR_111
+<ExprData>
+ADDR_112
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+15
+50
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_112
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_113
+1
+ADDR_112
+<ExprData>
+ADDR_113
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+15
+50
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_113
+ConstantExpr
+<Visited Children>
+ADDR_114
+0
+<TemplateSpecializationTypeData>
+ADDR_114
+TemplateSpecializationType
+array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_110
+Expression
+ADDR_113
+<Id to Class Map>
+ADDR_114
+TemplateSpecializationType
+<Visited Children>
+ADDR_115
+0
+<ElaboratedTypeData>
+ADDR_115
+ElaboratedType
+std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_114
+None
+std::
+ADDR_114
+<Id to Class Map>
+ADDR_115
+ElaboratedType
+<Visited Children>
+ADDR_116
+0
+<QualTypeData>
+ADDR_116
+QualType
+const array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+1
+CONST
+NONE
+0
+ADDR_114
+<Id to Class Map>
+ADDR_116
+QualType
+<Visited Children>
+ADDR_117
+0
+<QualTypeData>
+ADDR_117
+QualType
+const std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_114
+1
+CONST
+NONE
+0
+ADDR_115
+<Id to Class Map>
+ADDR_117
+QualType
+<Top Level Types>
+ADDR_117
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_118
+0
+<IntegerLiteralData>
+ADDR_118
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+15
+73
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_118
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_119
+0
+<IntegerLiteralData>
+ADDR_119
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+15
+75
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_119
+IntegerLiteral
+<Top Level Types>
+ADDR_094
+<Visited Children>
+ADDR_120
+2
+ADDR_118
+ADDR_119
+<InitListExprData>
+ADDR_120
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+15
+73
+<TEST_DIR>/qualifiers.cpp
+15
+75
+0
+0
+ADDR_094
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+nullptr_expr
+<Id to Class Map>
+ADDR_120
+InitListExpr
+<Top Level Types>
+ADDR_097
+<Visited Children>
+ADDR_121
+1
+ADDR_120
+<InitListExprData>
+ADDR_121
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+15
+73
+<TEST_DIR>/qualifiers.cpp
+15
+75
+0
+0
+ADDR_097
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+nullptr_expr
+<Id to Class Map>
+ADDR_121
+InitListExpr
+<Top Level Types>
+ADDR_100
+<Top Level Types>
+ADDR_100
+<Visited Children>
+ADDR_122
+2
+ADDR_118
+ADDR_119
+<InitListExprData>
+ADDR_122
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+15
+72
+<TEST_DIR>/qualifiers.cpp
+15
+76
+0
+0
+ADDR_100
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_123
+<Id to Class Map>
+ADDR_122
+InitListExpr
+<Visited Children>
+ADDR_123
+1
+ADDR_121
+<InitListExprData>
+ADDR_123
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+15
+72
+<TEST_DIR>/qualifiers.cpp
+15
+76
+0
+0
+ADDR_100
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_122
+nullptr_expr
+<Id to Class Map>
+ADDR_123
+InitListExpr
+<Top Level Types>
+ADDR_117
+<Top Level Types>
+ADDR_117
+<Visited Children>
+ADDR_124
+1
+ADDR_122
+<InitListExprData>
+ADDR_124
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+15
+71
+<TEST_DIR>/qualifiers.cpp
+15
+77
+0
+0
+ADDR_117
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_125
+<Id to Class Map>
+ADDR_124
+InitListExpr
+<Visited Children>
+ADDR_125
+1
+ADDR_123
+<InitListExprData>
+ADDR_125
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+15
+71
+<TEST_DIR>/qualifiers.cpp
+15
+77
+0
+0
+ADDR_117
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_124
+nullptr_expr
+<Id to Class Map>
+ADDR_125
+InitListExpr
+<Visited Children>
+ADDR_126
+1
+ADDR_125
+<VarDeclData>
+ADDR_126
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+15
+2
+<TEST_DIR>/qualifiers.cpp
+15
+77
+0
+0
+0
+0
+0
+0
+0
+0
+A
+ARRAY_IN_ARRAY2
+0
+1
+0
+External
+Default
+ADDR_117
+0
+Static
+NONE
+0
+CINIT
+1
+1
+0
+1
+<Id to Class Map>
+ADDR_126
+VarDecl
+<Visited Children>
+ADDR_020
+7
+ADDR_022
+ADDR_027
+ADDR_030
+ADDR_058
+ADDR_073
+ADDR_105
+ADDR_126
+<CXXRecordDeclData>
+ADDR_020
+CXXRecordDecl
+<TEST_DIR>/qualifiers.cpp
+7
+1
+<TEST_DIR>/qualifiers.cpp
+16
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+A
+0
+0
+0
+External
+Default
+ADDR_021
+Class
+1
+0
+0
+ADDR_020
+<Id to Class Map>
+ADDR_020
+CXXRecordDecl
+<Top Level Nodes>
+ADDR_127
+<Top Level Types>
+ADDR_024
+<Visited Children>
+ADDR_128
+0
+<StmtData>
+ADDR_128
+CompoundStmt
+<TEST_DIR>/qualifiers.cpp
+18
+33
+<TEST_DIR>/qualifiers.cpp
+19
+1
+0
+0
+<Id to Class Map>
+ADDR_128
+CompoundStmt
+<Visited Children>
+ADDR_127
+1
+ADDR_128
+<CXXMethodDeclData>
+ADDR_127
+CXXMethodDecl
+<TEST_DIR>/qualifiers.cpp
+18
+1
+<TEST_DIR>/qualifiers.cpp
+19
+1
+0
+0
+0
+0
+0
+0
+0
+0
+A
+constFoo
+0
+1
+1
+External
+Default
+ADDR_024
+0
+0
+0
+None
+1
+0
+0
+0
+0
+ADDR_027
+ADDR_027
+nullptr_decl
+0
+ADDR_020
+0
+0
+1
+1
+0
+0
+0
+0
+ADDR_026
+ADDR_025
+0
+0
+<Id to Class Map>
+ADDR_127
+CXXMethodDecl
+<Top Level Nodes>
+ADDR_129
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_130
+0
+<DeclRefExprData>
+ADDR_130
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+22
+27
+<TEST_DIR>/qualifiers.cpp
+22
+30
+0
+0
+ADDR_028
+1
+0
+0
+A::
+0
+ADDR_030
+<Id to Class Map>
+ADDR_130
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_131
+1
+ADDR_130
+<ExprData>
+ADDR_131
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+22
+27
+<TEST_DIR>/qualifiers.cpp
+22
+30
+0
+0
+ADDR_012
+0
+0
+0
+<Id to Class Map>
+ADDR_131
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_132
+1
+ADDR_131
+<ExprData>
+ADDR_132
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+22
+27
+<TEST_DIR>/qualifiers.cpp
+22
+30
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_132
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_133
+1
+ADDR_132
+<ExprData>
+ADDR_133
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+22
+27
+<TEST_DIR>/qualifiers.cpp
+22
+30
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_133
+ConstantExpr
+<Visited Children>
+ADDR_134
+0
+<TemplateSpecializationTypeData>
+ADDR_134
+TemplateSpecializationType
+array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_133
+<Id to Class Map>
+ADDR_134
+TemplateSpecializationType
+<Visited Children>
+ADDR_135
+0
+<ElaboratedTypeData>
+ADDR_135
+ElaboratedType
+std::array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_134
+None
+std::
+ADDR_134
+<Id to Class Map>
+ADDR_135
+ElaboratedType
+<Visited Children>
+ADDR_136
+0
+<QualTypeData>
+ADDR_136
+QualType
+const array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+1
+CONST
+NONE
+0
+ADDR_134
+<Id to Class Map>
+ADDR_136
+QualType
+<Visited Children>
+ADDR_137
+0
+<QualTypeData>
+ADDR_137
+QualType
+const std::array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_134
+1
+CONST
+NONE
+0
+ADDR_135
+<Id to Class Map>
+ADDR_137
+QualType
+<Top Level Types>
+ADDR_137
+<Visited Children>
+ADDR_129
+0
+<VarDeclData>
+ADDR_129
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+22
+1
+<TEST_DIR>/qualifiers.cpp
+22
+50
+0
+0
+0
+0
+0
+0
+0
+0
+A
+SPACE
+0
+1
+0
+External
+Default
+ADDR_137
+0
+None
+NONE
+0
+CINIT
+1
+1
+1
+1
+<Id to Class Map>
+ADDR_129
+VarDecl
+<Top Level Nodes>
+ADDR_138
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_139
+0
+<DeclRefExprData>
+ADDR_139
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+23
+27
+<TEST_DIR>/qualifiers.cpp
+23
+30
+0
+0
+ADDR_028
+1
+0
+0
+A::
+0
+ADDR_030
+<Id to Class Map>
+ADDR_139
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_140
+1
+ADDR_139
+<ExprData>
+ADDR_140
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+23
+27
+<TEST_DIR>/qualifiers.cpp
+23
+30
+0
+0
+ADDR_012
+0
+0
+0
+<Id to Class Map>
+ADDR_140
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_141
+1
+ADDR_140
+<ExprData>
+ADDR_141
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+23
+27
+<TEST_DIR>/qualifiers.cpp
+23
+30
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_141
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_142
+1
+ADDR_141
+<ExprData>
+ADDR_142
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+23
+27
+<TEST_DIR>/qualifiers.cpp
+23
+30
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_142
+ConstantExpr
+<Visited Children>
+ADDR_143
+0
+<TemplateSpecializationTypeData>
+ADDR_143
+TemplateSpecializationType
+array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_142
+<Id to Class Map>
+ADDR_143
+TemplateSpecializationType
+<Visited Children>
+ADDR_144
+0
+<ElaboratedTypeData>
+ADDR_144
+ElaboratedType
+std::array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_143
+None
+std::
+ADDR_143
+<Id to Class Map>
+ADDR_144
+ElaboratedType
+<Visited Children>
+ADDR_145
+0
+<QualTypeData>
+ADDR_145
+QualType
+const array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_031
+1
+CONST
+NONE
+0
+ADDR_143
+<Id to Class Map>
+ADDR_145
+QualType
+<Visited Children>
+ADDR_146
+0
+<QualTypeData>
+ADDR_146
+QualType
+const std::array<int, A::number_of_sizes>
+NONE
+0
+0
+0
+ADDR_143
+1
+CONST
+NONE
+0
+ADDR_144
+<Id to Class Map>
+ADDR_146
+QualType
+<Top Level Types>
+ADDR_146
+<Visited Children>
+ADDR_138
+0
+<VarDeclData>
+ADDR_138
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+23
+1
+<TEST_DIR>/qualifiers.cpp
+23
+50
+0
+0
+0
+0
+0
+0
+0
+0
+A
+SPACE2
+0
+1
+0
+External
+Default
+ADDR_146
+0
+None
+NONE
+0
+CINIT
+1
+1
+1
+1
+<Id to Class Map>
+ADDR_138
+VarDecl
+<Top Level Nodes>
+ADDR_147
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_148
+0
+<IntegerLiteralData>
+ADDR_148
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+24
+38
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_148
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_149
+1
+ADDR_148
+<ExprData>
+ADDR_149
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+24
+38
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_149
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_150
+1
+ADDR_149
+<ExprData>
+ADDR_150
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+24
+38
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_150
+ConstantExpr
+<Visited Children>
+ADDR_151
+0
+<TemplateSpecializationTypeData>
+ADDR_151
+TemplateSpecializationType
+array<int, 2>
+NONE
+0
+0
+0
+ADDR_076
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_150
+<Id to Class Map>
+ADDR_151
+TemplateSpecializationType
+<Visited Children>
+ADDR_152
+0
+<ElaboratedTypeData>
+ADDR_152
+ElaboratedType
+std::array<int, 2>
+NONE
+0
+0
+0
+ADDR_151
+None
+std::
+ADDR_151
+<Id to Class Map>
+ADDR_152
+ElaboratedType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_153
+0
+<IntegerLiteralData>
+ADDR_153
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+24
+42
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_153
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_154
+1
+ADDR_153
+<ExprData>
+ADDR_154
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+24
+42
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_154
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_155
+1
+ADDR_154
+<ExprData>
+ADDR_155
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+24
+42
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_155
+ConstantExpr
+<Visited Children>
+ADDR_156
+0
+<TemplateSpecializationTypeData>
+ADDR_156
+TemplateSpecializationType
+array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_152
+Expression
+ADDR_155
+<Id to Class Map>
+ADDR_156
+TemplateSpecializationType
+<Visited Children>
+ADDR_157
+0
+<ElaboratedTypeData>
+ADDR_157
+ElaboratedType
+std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_156
+None
+std::
+ADDR_156
+<Id to Class Map>
+ADDR_157
+ElaboratedType
+<Visited Children>
+ADDR_158
+0
+<QualTypeData>
+ADDR_158
+QualType
+const array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+1
+CONST
+NONE
+0
+ADDR_156
+<Id to Class Map>
+ADDR_158
+QualType
+<Visited Children>
+ADDR_159
+0
+<QualTypeData>
+ADDR_159
+QualType
+const std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_156
+1
+CONST
+NONE
+0
+ADDR_157
+<Id to Class Map>
+ADDR_159
+QualType
+<Top Level Types>
+ADDR_159
+<Visited Children>
+ADDR_147
+0
+<VarDeclData>
+ADDR_147
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+24
+1
+<TEST_DIR>/qualifiers.cpp
+24
+48
+0
+0
+0
+0
+0
+0
+0
+0
+A
+ARRAY_IN_ARRAY
+0
+1
+0
+External
+Default
+ADDR_159
+0
+None
+NONE
+0
+CINIT
+1
+1
+1
+1
+<Id to Class Map>
+ADDR_147
+VarDecl
+<Top Level Nodes>
+ADDR_160
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_161
+0
+<IntegerLiteralData>
+ADDR_161
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+25
+38
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_161
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_162
+1
+ADDR_161
+<ExprData>
+ADDR_162
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+25
+38
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_162
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_163
+1
+ADDR_162
+<ExprData>
+ADDR_163
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+25
+38
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_163
+ConstantExpr
+<Visited Children>
+ADDR_164
+0
+<TemplateSpecializationTypeData>
+ADDR_164
+TemplateSpecializationType
+array<int, 2>
+NONE
+0
+0
+0
+ADDR_076
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_012
+Expression
+ADDR_163
+<Id to Class Map>
+ADDR_164
+TemplateSpecializationType
+<Visited Children>
+ADDR_165
+0
+<ElaboratedTypeData>
+ADDR_165
+ElaboratedType
+std::array<int, 2>
+NONE
+0
+0
+0
+ADDR_164
+None
+std::
+ADDR_164
+<Id to Class Map>
+ADDR_165
+ElaboratedType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_166
+0
+<IntegerLiteralData>
+ADDR_166
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+25
+42
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_166
+IntegerLiteral
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_167
+1
+ADDR_166
+<ExprData>
+ADDR_167
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+25
+42
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_167
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_168
+1
+ADDR_167
+<ExprData>
+ADDR_168
+ConstantExpr
+<TEST_DIR>/qualifiers.cpp
+25
+42
+<end>
+0
+0
+ADDR_039
+0
+0
+0
+<Id to Class Map>
+ADDR_168
+ConstantExpr
+<Visited Children>
+ADDR_169
+0
+<TemplateSpecializationTypeData>
+ADDR_169
+TemplateSpecializationType
+array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+0
+nullptr_type
+array
+ADDR_043
+2
+Type
+ADDR_165
+Expression
+ADDR_168
+<Id to Class Map>
+ADDR_169
+TemplateSpecializationType
+<Visited Children>
+ADDR_170
+0
+<ElaboratedTypeData>
+ADDR_170
+ElaboratedType
+std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_169
+None
+std::
+ADDR_169
+<Id to Class Map>
+ADDR_170
+ElaboratedType
+<Visited Children>
+ADDR_171
+0
+<QualTypeData>
+ADDR_171
+QualType
+const array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_074
+1
+CONST
+NONE
+0
+ADDR_169
+<Id to Class Map>
+ADDR_171
+QualType
+<Visited Children>
+ADDR_172
+0
+<QualTypeData>
+ADDR_172
+QualType
+const std::array<std::array<int, 2>, 1>
+NONE
+0
+0
+0
+ADDR_169
+1
+CONST
+NONE
+0
+ADDR_170
+<Id to Class Map>
+ADDR_172
+QualType
+<Top Level Types>
+ADDR_172
+<Visited Children>
+ADDR_160
+0
+<VarDeclData>
+ADDR_160
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+25
+1
+<TEST_DIR>/qualifiers.cpp
+25
+48
+0
+0
+0
+0
+0
+0
+0
+0
+A
+ARRAY_IN_ARRAY2
+0
+1
+0
+External
+Default
+ADDR_172
+0
+None
+NONE
+0
+CINIT
+1
+1
+1
+1
+<Id to Class Map>
+ADDR_160
+VarDecl
+<Top Level Nodes>
+ADDR_173
+<Visited Children>
+ADDR_174
+0
+<FunctionProtoTypeData>
+ADDR_174
+FunctionProtoType
+int ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_012
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_174
+FunctionProtoType
+<Top Level Types>
+ADDR_174
+<Top Level Types>
+ADDR_012
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_175
+0
+<IntegerLiteralData>
+ADDR_175
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+29
+14
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_175
+IntegerLiteral
+<Visited Children>
+ADDR_176
+1
+ADDR_175
+<VarDeclData>
+ADDR_176
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+29
+5
+<TEST_DIR>/qualifiers.cpp
+29
+14
+0
+0
+0
+1
+1
+0
+0
+0
+
+n1
+0
+0
+0
+None
+Default
+ADDR_012
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_176
+VarDecl
+<Visited Children>
+ADDR_177
+1
+ADDR_176
+<StmtData>
+ADDR_177
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+29
+5
+<TEST_DIR>/qualifiers.cpp
+29
+15
+0
+0
+<Id to Class Map>
+ADDR_177
+DeclStmt
+<Top Level Types>
+ADDR_028
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_178
+0
+<IntegerLiteralData>
+ADDR_178
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+30
+27
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_178
+IntegerLiteral
+<Visited Children>
+ADDR_179
+1
+ADDR_178
+<VarDeclData>
+ADDR_179
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+30
+5
+<TEST_DIR>/qualifiers.cpp
+30
+27
+0
+0
+0
+1
+1
+0
+0
+0
+
+n2
+0
+0
+0
+None
+Default
+ADDR_028
+0
+Static
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_179
+VarDecl
+<Visited Children>
+ADDR_180
+1
+ADDR_179
+<StmtData>
+ADDR_180
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+30
+5
+<TEST_DIR>/qualifiers.cpp
+30
+28
+0
+0
+<Id to Class Map>
+ADDR_180
+DeclStmt
+<Top Level Types>
+ADDR_028
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_181
+0
+<IntegerLiteralData>
+ADDR_181
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+31
+20
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_181
+IntegerLiteral
+<Visited Children>
+ADDR_182
+1
+ADDR_181
+<VarDeclData>
+ADDR_182
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+31
+5
+<TEST_DIR>/qualifiers.cpp
+31
+20
+0
+0
+0
+0
+0
+0
+0
+0
+
+n3
+0
+0
+0
+None
+Default
+ADDR_028
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_182
+VarDecl
+<Visited Children>
+ADDR_183
+1
+ADDR_182
+<StmtData>
+ADDR_183
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+31
+5
+<TEST_DIR>/qualifiers.cpp
+31
+21
+0
+0
+<Id to Class Map>
+ADDR_183
+DeclStmt
+<Visited Children>
+ADDR_184
+0
+<QualTypeData>
+ADDR_184
+QualType
+volatile int
+NONE
+0
+0
+0
+nullptr_type
+1
+VOLATILE
+NONE
+0
+ADDR_012
+<Id to Class Map>
+ADDR_184
+QualType
+<Top Level Types>
+ADDR_184
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_185
+0
+<IntegerLiteralData>
+ADDR_185
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+32
+23
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_185
+IntegerLiteral
+<Visited Children>
+ADDR_186
+1
+ADDR_185
+<VarDeclData>
+ADDR_186
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+32
+5
+<TEST_DIR>/qualifiers.cpp
+32
+23
+0
+0
+0
+1
+1
+0
+0
+0
+
+n4
+0
+0
+0
+None
+Default
+ADDR_184
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_186
+VarDecl
+<Visited Children>
+ADDR_187
+1
+ADDR_186
+<StmtData>
+ADDR_187
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+32
+5
+<TEST_DIR>/qualifiers.cpp
+32
+24
+0
+0
+<Id to Class Map>
+ADDR_187
+DeclStmt
+<Visited Children>
+ADDR_188
+0
+<TagTypeData>
+ADDR_188
+RecordType
+(unnamed struct at <TEST_DIR>/qualifiers.cpp:33:11)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_189
+<Id to Class Map>
+ADDR_188
+RecordType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_190
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_190
+FieldDecl
+<TEST_DIR>/qualifiers.cpp
+35
+9
+<TEST_DIR>/qualifiers.cpp
+35
+13
+0
+0
+0
+0
+0
+0
+0
+0
+main()::(anonymous struct)
+n1
+0
+1
+1
+None
+Default
+ADDR_012
+0
+0
+<Id to Class Map>
+ADDR_190
+FieldDecl
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_191
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_191
+FieldDecl
+<TEST_DIR>/qualifiers.cpp
+36
+9
+<TEST_DIR>/qualifiers.cpp
+36
+21
+0
+0
+0
+0
+1
+0
+0
+0
+main()::(anonymous struct)
+n2
+0
+1
+1
+None
+Default
+ADDR_012
+0
+1
+<Id to Class Map>
+ADDR_191
+FieldDecl
+<Visited Children>
+ADDR_189
+2
+ADDR_190
+ADDR_191
+<CXXRecordDeclData>
+ADDR_189
+CXXRecordDecl
+<TEST_DIR>/qualifiers.cpp
+33
+11
+<TEST_DIR>/qualifiers.cpp
+37
+5
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_188
+Struct
+1
+0
+0
+ADDR_189
+<Id to Class Map>
+ADDR_189
+CXXRecordDecl
+<Visited Children>
+ADDR_192
+0
+<ElaboratedTypeData>
+ADDR_192
+ElaboratedType
+struct (unnamed struct at <TEST_DIR>/qualifiers.cpp:33:11)
+NONE
+0
+0
+0
+ADDR_188
+Struct
+
+ADDR_188
+<Id to Class Map>
+ADDR_192
+ElaboratedType
+<Visited Children>
+ADDR_193
+0
+<QualTypeData>
+ADDR_193
+QualType
+const (unnamed struct at <TEST_DIR>/qualifiers.cpp:33:11)
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_188
+<Id to Class Map>
+ADDR_193
+QualType
+<Visited Children>
+ADDR_194
+0
+<QualTypeData>
+ADDR_194
+QualType
+const struct (unnamed struct at <TEST_DIR>/qualifiers.cpp:33:11)
+NONE
+0
+0
+0
+ADDR_188
+1
+CONST
+NONE
+0
+ADDR_192
+<Id to Class Map>
+ADDR_194
+QualType
+<Top Level Types>
+ADDR_194
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_195
+0
+<IntegerLiteralData>
+ADDR_195
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+37
+12
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_195
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_196
+0
+<IntegerLiteralData>
+ADDR_196
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+37
+15
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_196
+IntegerLiteral
+<Top Level Types>
+ADDR_194
+<Top Level Types>
+ADDR_194
+<Visited Children>
+ADDR_197
+2
+ADDR_195
+ADDR_196
+<InitListExprData>
+ADDR_197
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+37
+11
+<TEST_DIR>/qualifiers.cpp
+37
+16
+0
+0
+ADDR_194
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_198
+<Id to Class Map>
+ADDR_197
+InitListExpr
+<Visited Children>
+ADDR_198
+2
+ADDR_195
+ADDR_196
+<InitListExprData>
+ADDR_198
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+37
+11
+<TEST_DIR>/qualifiers.cpp
+37
+16
+0
+0
+ADDR_194
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_197
+nullptr_expr
+<Id to Class Map>
+ADDR_198
+InitListExpr
+<Visited Children>
+ADDR_199
+1
+ADDR_198
+<VarDeclData>
+ADDR_199
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+33
+5
+<TEST_DIR>/qualifiers.cpp
+37
+16
+0
+0
+0
+1
+1
+0
+0
+0
+
+x
+0
+0
+0
+None
+Default
+ADDR_194
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_199
+VarDecl
+<Visited Children>
+ADDR_200
+2
+ADDR_189
+ADDR_199
+<StmtData>
+ADDR_200
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+33
+5
+<TEST_DIR>/qualifiers.cpp
+37
+17
+0
+0
+<Id to Class Map>
+ADDR_200
+DeclStmt
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_201
+0
+<DeclRefExprData>
+ADDR_201
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+39
+5
+<end>
+0
+0
+ADDR_012
+1
+0
+0
+
+0
+ADDR_176
+<Id to Class Map>
+ADDR_201
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_202
+0
+<IntegerLiteralData>
+ADDR_202
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+39
+10
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+1
+<Id to Class Map>
+ADDR_202
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_203
+2
+ADDR_201
+ADDR_202
+<BinaryOperatorData>
+ADDR_203
+BinaryOperator
+<TEST_DIR>/qualifiers.cpp
+39
+5
+<TEST_DIR>/qualifiers.cpp
+39
+10
+0
+0
+ADDR_012
+1
+0
+0
+Assign
+<Id to Class Map>
+ADDR_203
+BinaryOperator
+<Top Level Types>
+ADDR_184
+<Visited Children>
+ADDR_204
+0
+<DeclRefExprData>
+ADDR_204
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+41
+5
+<end>
+0
+0
+ADDR_184
+1
+0
+0
+
+0
+ADDR_186
+<Id to Class Map>
+ADDR_204
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_205
+0
+<IntegerLiteralData>
+ADDR_205
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+41
+10
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+3
+<Id to Class Map>
+ADDR_205
+IntegerLiteral
+<Top Level Types>
+ADDR_184
+<Visited Children>
+ADDR_206
+2
+ADDR_204
+ADDR_205
+<BinaryOperatorData>
+ADDR_206
+BinaryOperator
+<TEST_DIR>/qualifiers.cpp
+41
+5
+<TEST_DIR>/qualifiers.cpp
+41
+10
+0
+0
+ADDR_184
+1
+0
+0
+Assign
+<Id to Class Map>
+ADDR_206
+BinaryOperator
+<Top Level Types>
+ADDR_194
+<Visited Children>
+ADDR_207
+0
+<DeclRefExprData>
+ADDR_207
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+43
+5
+<end>
+0
+0
+ADDR_194
+1
+0
+0
+
+0
+ADDR_199
+<Id to Class Map>
+ADDR_207
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_208
+1
+ADDR_207
+<MemberExprData>
+ADDR_208
+MemberExpr
+<TEST_DIR>/qualifiers.cpp
+43
+5
+<TEST_DIR>/qualifiers.cpp
+43
+7
+0
+0
+ADDR_012
+1
+0
+0
+0
+n2
+ADDR_191
+ADDR_191
+PUBLIC
+<Id to Class Map>
+ADDR_208
+MemberExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_209
+0
+<IntegerLiteralData>
+ADDR_209
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+43
+12
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+4
+<Id to Class Map>
+ADDR_209
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_210
+2
+ADDR_208
+ADDR_209
+<BinaryOperatorData>
+ADDR_210
+BinaryOperator
+<TEST_DIR>/qualifiers.cpp
+43
+5
+<TEST_DIR>/qualifiers.cpp
+43
+12
+0
+0
+ADDR_012
+1
+0
+0
+Assign
+<Id to Class Map>
+ADDR_210
+BinaryOperator
+<Visited Children>
+ADDR_211
+0
+<ReferenceTypeData>
+ADDR_211
+LValueReferenceType
+const int &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_028
+<Id to Class Map>
+ADDR_211
+LValueReferenceType
+<Top Level Types>
+ADDR_211
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_212
+0
+<DeclRefExprData>
+ADDR_212
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+45
+21
+<end>
+0
+0
+ADDR_012
+1
+0
+0
+
+0
+ADDR_176
+<Id to Class Map>
+ADDR_212
+DeclRefExpr
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_213
+1
+ADDR_212
+<ExprData>
+ADDR_213
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+45
+21
+<end>
+0
+0
+ADDR_028
+1
+0
+0
+<Id to Class Map>
+ADDR_213
+ImplicitCastExpr
+<Visited Children>
+ADDR_214
+1
+ADDR_213
+<VarDeclData>
+ADDR_214
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+45
+5
+<TEST_DIR>/qualifiers.cpp
+45
+21
+0
+0
+0
+1
+1
+0
+0
+0
+
+r1
+0
+0
+0
+None
+Default
+ADDR_211
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_214
+VarDecl
+<Visited Children>
+ADDR_215
+1
+ADDR_214
+<StmtData>
+ADDR_215
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+45
+5
+<TEST_DIR>/qualifiers.cpp
+45
+23
+0
+0
+<Id to Class Map>
+ADDR_215
+DeclStmt
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_216
+0
+<DeclRefExprData>
+ADDR_216
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+47
+22
+<end>
+0
+0
+ADDR_028
+1
+0
+0
+
+0
+ADDR_214
+<Id to Class Map>
+ADDR_216
+DeclRefExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_217
+0
+<ReferenceTypeData>
+ADDR_217
+LValueReferenceType
+int &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_012
+<Id to Class Map>
+ADDR_217
+LValueReferenceType
+<Visited Children>
+ADDR_218
+1
+ADDR_216
+<CXXNamedCastExprData>
+ADDR_218
+CXXConstCastExpr
+<TEST_DIR>/qualifiers.cpp
+47
+5
+<TEST_DIR>/qualifiers.cpp
+47
+24
+0
+0
+ADDR_012
+1
+0
+0
+NoOp
+ADDR_217
+const_cast
+<Id to Class Map>
+ADDR_218
+CXXConstCastExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_219
+0
+<IntegerLiteralData>
+ADDR_219
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+47
+28
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+2
+<Id to Class Map>
+ADDR_219
+IntegerLiteral
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_220
+2
+ADDR_218
+ADDR_219
+<BinaryOperatorData>
+ADDR_220
+BinaryOperator
+<TEST_DIR>/qualifiers.cpp
+47
+5
+<TEST_DIR>/qualifiers.cpp
+47
+28
+0
+0
+ADDR_012
+1
+0
+0
+Assign
+<Id to Class Map>
+ADDR_220
+BinaryOperator
+<Top Level Types>
+ADDR_211
+<Top Level Types>
+ADDR_028
+<Visited Children>
+ADDR_221
+0
+<DeclRefExprData>
+ADDR_221
+DeclRefExpr
+<TEST_DIR>/qualifiers.cpp
+49
+21
+<end>
+0
+0
+ADDR_028
+1
+0
+0
+
+0
+ADDR_179
+<Id to Class Map>
+ADDR_221
+DeclRefExpr
+<Visited Children>
+ADDR_222
+1
+ADDR_221
+<VarDeclData>
+ADDR_222
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+49
+5
+<TEST_DIR>/qualifiers.cpp
+49
+21
+0
+0
+0
+0
+0
+0
+0
+0
+
+r2
+0
+0
+0
+None
+Default
+ADDR_211
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_222
+VarDecl
+<Visited Children>
+ADDR_223
+1
+ADDR_222
+<StmtData>
+ADDR_223
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+49
+5
+<TEST_DIR>/qualifiers.cpp
+49
+23
+0
+0
+<Id to Class Map>
+ADDR_223
+DeclStmt
+<Visited Children>
+ADDR_224
+0
+<PointerTypeData>
+ADDR_224
+PointerType
+const int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_028
+<Id to Class Map>
+ADDR_224
+PointerType
+<Top Level Types>
+ADDR_224
+<Visited Children>
+ADDR_225
+0
+<VarDeclData>
+ADDR_225
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+57
+2
+<TEST_DIR>/qualifiers.cpp
+57
+14
+0
+0
+0
+0
+0
+0
+0
+0
+
+constant1
+0
+0
+0
+None
+Default
+ADDR_224
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_225
+VarDecl
+<Visited Children>
+ADDR_226
+1
+ADDR_225
+<StmtData>
+ADDR_226
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+57
+2
+<TEST_DIR>/qualifiers.cpp
+57
+23
+0
+0
+<Id to Class Map>
+ADDR_226
+DeclStmt
+<Top Level Types>
+ADDR_224
+<Visited Children>
+ADDR_227
+0
+<VarDeclData>
+ADDR_227
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+58
+2
+<TEST_DIR>/qualifiers.cpp
+58
+14
+0
+0
+0
+0
+0
+0
+0
+0
+
+constant2
+0
+0
+0
+None
+Default
+ADDR_224
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_227
+VarDecl
+<Visited Children>
+ADDR_228
+1
+ADDR_227
+<StmtData>
+ADDR_228
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+58
+2
+<TEST_DIR>/qualifiers.cpp
+58
+23
+0
+0
+<Id to Class Map>
+ADDR_228
+DeclStmt
+<Visited Children>
+ADDR_229
+0
+<PointerTypeData>
+ADDR_229
+PointerType
+int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_012
+<Id to Class Map>
+ADDR_229
+PointerType
+<Visited Children>
+ADDR_230
+0
+<QualTypeData>
+ADDR_230
+QualType
+int *const
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_229
+<Id to Class Map>
+ADDR_230
+QualType
+<Top Level Types>
+ADDR_230
+<Visited Children>
+ADDR_231
+0
+<BuiltinTypeData>
+ADDR_231
+BuiltinType
+std::nullptr_t
+NONE
+0
+0
+0
+nullptr_type
+NullPtr
+std::nullptr_t
+<Id to Class Map>
+ADDR_231
+BuiltinType
+<Top Level Types>
+ADDR_231
+<Visited Children>
+ADDR_232
+0
+<ExprData>
+ADDR_232
+CXXNullPtrLiteralExpr
+<TEST_DIR>/qualifiers.cpp
+60
+26
+<end>
+0
+0
+ADDR_231
+0
+0
+0
+<Id to Class Map>
+ADDR_232
+CXXNullPtrLiteralExpr
+<Top Level Types>
+ADDR_230
+<Visited Children>
+ADDR_233
+1
+ADDR_232
+<ExprData>
+ADDR_233
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+60
+26
+<end>
+0
+0
+ADDR_230
+0
+0
+0
+<Id to Class Map>
+ADDR_233
+ImplicitCastExpr
+<Visited Children>
+ADDR_234
+1
+ADDR_233
+<VarDeclData>
+ADDR_234
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+60
+2
+<TEST_DIR>/qualifiers.cpp
+60
+26
+0
+0
+0
+0
+0
+0
+0
+0
+
+constant3
+0
+0
+0
+None
+Default
+ADDR_230
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_234
+VarDecl
+<Visited Children>
+ADDR_235
+1
+ADDR_234
+<StmtData>
+ADDR_235
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+60
+2
+<TEST_DIR>/qualifiers.cpp
+60
+33
+0
+0
+<Id to Class Map>
+ADDR_235
+DeclStmt
+<Visited Children>
+ADDR_236
+0
+<QualTypeData>
+ADDR_236
+QualType
+const int *const
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_224
+<Id to Class Map>
+ADDR_236
+QualType
+<Top Level Types>
+ADDR_236
+<Top Level Types>
+ADDR_231
+<Visited Children>
+ADDR_237
+0
+<ExprData>
+ADDR_237
+CXXNullPtrLiteralExpr
+<TEST_DIR>/qualifiers.cpp
+62
+32
+<end>
+0
+0
+ADDR_231
+0
+0
+0
+<Id to Class Map>
+ADDR_237
+CXXNullPtrLiteralExpr
+<Top Level Types>
+ADDR_236
+<Visited Children>
+ADDR_238
+1
+ADDR_237
+<ExprData>
+ADDR_238
+ImplicitCastExpr
+<TEST_DIR>/qualifiers.cpp
+62
+32
+<end>
+0
+0
+ADDR_236
+0
+0
+0
+<Id to Class Map>
+ADDR_238
+ImplicitCastExpr
+<Visited Children>
+ADDR_239
+1
+ADDR_238
+<VarDeclData>
+ADDR_239
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+62
+2
+<TEST_DIR>/qualifiers.cpp
+62
+32
+0
+0
+0
+0
+0
+0
+0
+0
+
+constant4
+0
+0
+0
+None
+Default
+ADDR_236
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_239
+VarDecl
+<Visited Children>
+ADDR_240
+1
+ADDR_239
+<StmtData>
+ADDR_240
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+62
+2
+<TEST_DIR>/qualifiers.cpp
+62
+39
+0
+0
+<Id to Class Map>
+ADDR_240
+DeclStmt
+<Visited Children>
+ADDR_241
+0
+<TagTypeData>
+ADDR_241
+RecordType
+(unnamed struct at <TEST_DIR>/qualifiers.cpp:64:8)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_242
+<Id to Class Map>
+ADDR_241
+RecordType
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_243
+2
+nullptr_expr
+nullptr_expr
+<FieldDeclData>
+ADDR_243
+FieldDecl
+<TEST_DIR>/qualifiers.cpp
+66
+9
+<TEST_DIR>/qualifiers.cpp
+66
+13
+0
+0
+0
+0
+0
+0
+0
+0
+main()::(anonymous struct)
+n1
+0
+1
+1
+None
+Default
+ADDR_012
+0
+0
+<Id to Class Map>
+ADDR_243
+FieldDecl
+<Visited Children>
+ADDR_242
+1
+ADDR_243
+<CXXRecordDeclData>
+ADDR_242
+CXXRecordDecl
+<TEST_DIR>/qualifiers.cpp
+64
+8
+<TEST_DIR>/qualifiers.cpp
+67
+5
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_241
+Struct
+1
+0
+0
+ADDR_242
+<Id to Class Map>
+ADDR_242
+CXXRecordDecl
+<Visited Children>
+ADDR_244
+0
+<ElaboratedTypeData>
+ADDR_244
+ElaboratedType
+struct (unnamed struct at <TEST_DIR>/qualifiers.cpp:64:8)
+NONE
+0
+0
+0
+ADDR_241
+Struct
+
+ADDR_241
+<Id to Class Map>
+ADDR_244
+ElaboratedType
+<Visited Children>
+ADDR_245
+0
+<QualTypeData>
+ADDR_245
+QualType
+const (unnamed struct at <TEST_DIR>/qualifiers.cpp:64:8)
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_241
+<Id to Class Map>
+ADDR_245
+QualType
+<Visited Children>
+ADDR_246
+0
+<QualTypeData>
+ADDR_246
+QualType
+const struct (unnamed struct at <TEST_DIR>/qualifiers.cpp:64:8)
+NONE
+0
+0
+0
+ADDR_241
+1
+CONST
+NONE
+0
+ADDR_244
+<Id to Class Map>
+ADDR_246
+QualType
+<Top Level Types>
+ADDR_246
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_247
+0
+<IntegerLiteralData>
+ADDR_247
+IntegerLiteral
+<TEST_DIR>/qualifiers.cpp
+67
+13
+<end>
+0
+0
+ADDR_012
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_247
+IntegerLiteral
+<Top Level Types>
+ADDR_246
+<Top Level Types>
+ADDR_246
+<Visited Children>
+ADDR_248
+1
+ADDR_247
+<InitListExprData>
+ADDR_248
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+67
+12
+<TEST_DIR>/qualifiers.cpp
+67
+14
+0
+0
+ADDR_246
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_249
+<Id to Class Map>
+ADDR_248
+InitListExpr
+<Visited Children>
+ADDR_249
+1
+ADDR_247
+<InitListExprData>
+ADDR_249
+InitListExpr
+<TEST_DIR>/qualifiers.cpp
+67
+12
+<TEST_DIR>/qualifiers.cpp
+67
+14
+0
+0
+ADDR_246
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_248
+nullptr_expr
+<Id to Class Map>
+ADDR_249
+InitListExpr
+<Visited Children>
+ADDR_250
+1
+ADDR_249
+<VarDeclData>
+ADDR_250
+VarDecl
+<TEST_DIR>/qualifiers.cpp
+64
+2
+<TEST_DIR>/qualifiers.cpp
+67
+14
+0
+0
+0
+0
+0
+0
+0
+0
+
+x2
+0
+0
+0
+None
+Default
+ADDR_246
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_250
+VarDecl
+<Visited Children>
+ADDR_251
+2
+ADDR_242
+ADDR_250
+<StmtData>
+ADDR_251
+DeclStmt
+<TEST_DIR>/qualifiers.cpp
+64
+2
+<TEST_DIR>/qualifiers.cpp
+67
+15
+0
+0
+<Id to Class Map>
+ADDR_251
+DeclStmt
+<Visited Children>
+ADDR_252
+16
+ADDR_177
+ADDR_180
+ADDR_183
+ADDR_187
+ADDR_200
+ADDR_203
+ADDR_206
+ADDR_210
+ADDR_215
+ADDR_220
+ADDR_223
+ADDR_226
+ADDR_228
+ADDR_235
+ADDR_240
+ADDR_251
+<StmtData>
+ADDR_252
+CompoundStmt
+<TEST_DIR>/qualifiers.cpp
+28
+1
+<TEST_DIR>/qualifiers.cpp
+69
+1
+0
+0
+<Id to Class Map>
+ADDR_252
+CompoundStmt
+<Visited Children>
+ADDR_173
+1
+ADDR_252
+<FunctionDeclData>
+ADDR_173
+FunctionDecl
+<TEST_DIR>/qualifiers.cpp
+27
+1
+<TEST_DIR>/qualifiers.cpp
+69
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+main
+0
+0
+0
+External
+Default
+ADDR_174
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_173
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_173
+FunctionDecl
