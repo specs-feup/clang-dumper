@@ -227,6 +227,9 @@ jobs:
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
+            --extra-clang-arg="-nostdinc++" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LLVM_PREFIX}/include/c++/v1" \
             --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Test plugin
@@ -234,6 +237,9 @@ jobs:
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
+            --extra-clang-arg="-nostdinc++" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LLVM_PREFIX}/include/c++/v1" \
             --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Check tool runtime dependencies
