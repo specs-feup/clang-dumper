@@ -692,12 +692,22 @@ def run_single_test(
     )
 
     if return_code != 0:
+        if failure_output_dir is not None:
+            failure_output_dir.mkdir(parents=True, exist_ok=True)
+            failure_output_file = failure_output_dir / expected_file_name
+            failure_output_file.write_text(normalized_output, encoding="utf-8")
         # Include stderr excerpt for debugging
         stderr_lines = normalized_output.splitlines()
-        stderr_excerpt = "\n".join(stderr_lines[:50]) if stderr_lines else "(empty)"
+        if stderr_lines:
+            head_excerpt = "\n".join(stderr_lines[:50])
+            tail_excerpt = "\n".join(stderr_lines[-50:])
+        else:
+            head_excerpt = "(empty)"
+            tail_excerpt = "(empty)"
         return TestStatus.FAIL, (
             f"Tool exited with code {return_code}\n"
-            f"Stderr (first 50 lines):\n{stderr_excerpt}"
+            f"Stderr (first 50 lines):\n{head_excerpt}\n"
+            f"Stderr (last 50 lines):\n{tail_excerpt}"
         )
 
     # Check address consistency
