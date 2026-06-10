@@ -103,7 +103,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "clava_issue11.cpp": T(),
     "clava_issue13.cpp": T(),
     "clava_issue14.h": T(flags=["-x", "c++"]),
-    "clava_issue15.cpp": T(),
+    "clava_issue15.cpp": T(requires={"x86"}),
     "clava_issue17.cpp": T(),
     "clava_issue18.cpp": T(),
     "clava_issue19.cpp": T(),
@@ -232,7 +232,7 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     # macOS: Homebrew and Xcode Clang installations
     (r"/usr/local/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
     (r"/opt/homebrew/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/Applications/Xcode\.app/.+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
+    (r"/Applications/Xcode[^/]*\.app/.+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
 
     # Windows: MSYS2/MinGW and LLVM installations
     (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
@@ -271,8 +271,10 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     (r"/usr/include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # macOS: SDK and system headers
+    (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"/Applications/Xcode\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # Windows: MSVC and Windows SDK headers
     (r"[A-Za-z]:[/\\]Program Files[/\\]Microsoft Visual Studio[/\\][^/\\]+[/\\][^/\\]+[/\\]VC[/\\]Tools[/\\]MSVC[/\\][\d.]+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
@@ -454,6 +456,7 @@ def run_tool_and_normalize(
     inputs_dir_str: str,
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
+    system_header_threshold: Optional[int] = 0,
 ) -> tuple[int, str, str, dict[str, list[str]]]:
     """
     Run the clang-dumper tool or plugin and normalize output via streaming.
@@ -477,29 +480,36 @@ def run_tool_and_normalize(
     flags = extra_flags or []
 
     if mode == "tool":
-        cmd = [path, f"-id={test_id}", input_file, "--"] + flags
+        cmd = [path, f"-id={test_id}"]
+        if system_header_threshold is not None:
+            cmd.append(f"-system-header-threshold={system_header_threshold}")
+        cmd += [input_file, "--"] + flags
     else:
         # Plugin mode - invoke clang with the plugin loaded
         assert clang_path is not None, "clang_path required for plugin mode"
-        cmd = (
-            [
-                clang_path,
-                f"-fplugin={path}",
-                "-Xclang",
-                "-plugin",
-                "-Xclang",
-                "DumpAst",
+        cmd = [
+            clang_path,
+            f"-fplugin={path}",
+            "-Xclang",
+            "-plugin",
+            "-Xclang",
+            "DumpAst",
+            "-Xclang",
+            "-plugin-arg-DumpAst",
+            "-Xclang",
+            f"-file-id={test_id}",
+        ]
+        if system_header_threshold is not None:
+            cmd += [
                 "-Xclang",
                 "-plugin-arg-DumpAst",
                 "-Xclang",
-                f"-file-id={test_id}",
+                f"-system-header-threshold={system_header_threshold}",
             ]
-            + flags
-            + [
-                "-fsyntax-only",
-                input_file,
-            ]
-        )
+        cmd += flags + [
+            "-fsyntax-only",
+            input_file,
+        ]
 
     # State for address normalization
     address_map: dict[str, str] = {}  # raw_address -> placeholder
@@ -603,6 +613,7 @@ def run_single_test(
     enabled_features: set[str],
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
+    system_header_threshold: Optional[int] = 0,
 ) -> tuple[str, str]:
     """
     Run a single test case.
@@ -638,7 +649,14 @@ def run_single_test(
     # Run the tool/plugin with streaming normalization
     flags = list(global_flags or []) + config.flags
     return_code, stdout, normalized_output, placeholder_to_raw = run_tool_and_normalize(
-        mode, path, str(input_file), config.id, inputs_dir_str, clang_path, flags
+        mode,
+        path,
+        str(input_file),
+        config.id,
+        inputs_dir_str,
+        clang_path,
+        flags,
+        system_header_threshold,
     )
 
     if return_code != 0:
@@ -737,6 +755,11 @@ def main():
         help="Enable CUDA tests (requires CUDA support in clang)",
     )
     parser.add_argument(
+        "--enable-opencl",
+        action="store_true",
+        help="Enable OpenCL tests (requires target support for the tested OpenCL features)",
+    )
+    parser.add_argument(
         "--extra-clang-arg",
         action="append",
         default=[],
@@ -747,6 +770,15 @@ def main():
         type=int,
         default=None,
         help="Number of parallel test workers (default: CPU count).",
+    )
+    parser.add_argument(
+        "--system-header-threshold",
+        type=int,
+        default=0,
+        help=(
+            "Maximum system-header traversal depth for test output. "
+            "Use -1 for the tool/plugin default of unlimited traversal."
+        ),
     )
 
     args = parser.parse_args()
@@ -806,9 +838,12 @@ def main():
     enabled_features: set[str] = set()
     if platform.system() != "Windows":
         enabled_features.add("posix")  # POSIX headers like unistd.h
-        enabled_features.add("opencl")  # OpenCL headers (typically available on Linux/macOS)
     if args.enable_cuda:
         enabled_features.add("cuda")
+    if args.enable_opencl:
+        enabled_features.add("opencl")
+    if platform.machine().lower() in {"amd64", "x86_64"}:
+        enabled_features.add("x86")
 
     global_flags = shlex.split(os.environ.get("CLANG_DUMPER_TEST_CLANG_ARGS", ""))
     global_flags.extend(args.extra_clang_arg)
@@ -904,6 +939,7 @@ def main():
                 enabled_features=enabled_features,
                 clang_path=clang_path,
                 global_flags=global_flags,
+                system_header_threshold=args.system_header_threshold,
             ): test_file
             for test_file in tests
         }

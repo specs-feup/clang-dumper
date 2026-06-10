@@ -9,7 +9,8 @@
 static llvm::cl::OptionCategory MyToolCategory("my-tool options");
 static llvm::cl::opt<int> UserIdOption("id", llvm::cl::cat(MyToolCategory));
 static llvm::cl::opt<int> UserSystemHeaderThresholdOption(
-        "system-header-threshold", llvm::cl::cat(MyToolCategory));
+        "system-header-threshold", llvm::cl::init(-1),
+        llvm::cl::cat(MyToolCategory));
 
 
 int main(int argc, const char *argv[]) {

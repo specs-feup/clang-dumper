@@ -97,6 +97,10 @@ void ClangAstDumper::VisitStmtTop(const Stmt *Node) {
     return;
   }
 
+  if (isPastSystemHeaderThreshold() || shouldSkipSystemHeaderChild(Node)) {
+    return;
+  }
+
 #ifdef VISIT_CHECK
   clava::dump(TOP_VISIT_START);
   clava::dump(clava::getId(Node, id));
@@ -112,6 +116,10 @@ void ClangAstDumper::VisitStmtTop(const Stmt *Node) {
 
 void ClangAstDumper::VisitDeclTop(const Decl *Node) {
   if (Node == nullptr) {
+    return;
+  }
+
+  if (isPastSystemHeaderThreshold() || shouldSkipSystemHeaderChild(Node)) {
     return;
   }
 
@@ -284,12 +292,27 @@ void ClangAstDumper::emptyChildren(const void *pointer) {
   dumpVisitedChildren(pointer, noChildren);
 }
 
+bool ClangAstDumper::isPastSystemHeaderThreshold() const {
+  return systemHeaderThreshold >= 0 &&
+         currentSystemHeaderLevel > systemHeaderThreshold;
+}
+
+bool ClangAstDumper::shouldSkipSystemHeaderChild(const Decl *addr) const {
+  return addr != nullptr && systemHeaderThreshold >= 0 &&
+         currentSystemHeaderLevel >= systemHeaderThreshold &&
+         clava::isSystemHeader(addr, Context);
+}
+
+bool ClangAstDumper::shouldSkipSystemHeaderChild(const Stmt *addr) const {
+  return addr != nullptr && systemHeaderThreshold >= 0 &&
+         currentSystemHeaderLevel >= systemHeaderThreshold &&
+         clava::isSystemHeader(addr, Context);
+}
+
 const void ClangAstDumper::addChild(const Decl *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold() || shouldSkipSystemHeaderChild(addr)) {
     return;
   }
 
@@ -335,9 +358,7 @@ const void ClangAstDumper::addChildren(DeclContext::decl_range decls,
 const void ClangAstDumper::addChild(const Stmt *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold() || shouldSkipSystemHeaderChild(addr)) {
     return;
   }
 
@@ -364,9 +385,7 @@ const void ClangAstDumper::addChild(const Stmt *addr,
 const void ClangAstDumper::addChild(const Expr *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold() || shouldSkipSystemHeaderChild(addr)) {
     return;
   }
 
@@ -393,9 +412,7 @@ const void ClangAstDumper::addChild(const Expr *addr,
 const void ClangAstDumper::addChild(const Type *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -422,9 +439,7 @@ const void ClangAstDumper::addChild(const Type *addr,
 const void ClangAstDumper::addChild(const QualType &addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -447,9 +462,7 @@ const void ClangAstDumper::addChild(const QualType &addr,
 const void ClangAstDumper::addChild(const Attr *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 

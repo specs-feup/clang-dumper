@@ -4,7 +4,7 @@
 
 class Plugin : public DumpAstAction, public PluginASTAction {
 public:
-  Plugin() { DumpResources::init(0, 0); }
+  Plugin() { DumpResources::init(0, -1); }
   ~Plugin() override { DumpResources::finish(); }
 
   // Both DumpAstAction (via ASTFrontendAction) and PluginASTAction declare
@@ -25,6 +25,9 @@ public:
       } else if (Arg.find("-system-threshold=") == 0) {
         DumpResources::setSystemHeaderThreshold(
             std::stoi(Arg.substr(strlen("-system-threshold="))));
+      } else if (Arg.find("-system-header-threshold=") == 0) {
+        DumpResources::setSystemHeaderThreshold(
+            std::stoi(Arg.substr(strlen("-system-header-threshold="))));
       }
     }
 

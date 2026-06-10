@@ -27,7 +27,7 @@ private:
   ASTContext *Context;
   int id;
 
-  int systemHeaderThreshold = 2;
+  int systemHeaderThreshold = -1;
   int currentSystemHeaderLevel = 0;
 
   std::set<const void *> seenTypes;
@@ -140,6 +140,10 @@ private:
   void visitChildren(const QualType &T);
   void visitChildren(clava::AttrNode attrNode, const Attr *A);
   void emptyChildren(const void *pointer);
+
+  bool shouldSkipSystemHeaderChild(const Decl *addr) const;
+  bool shouldSkipSystemHeaderChild(const Stmt *addr) const;
+  bool isPastSystemHeaderThreshold() const;
 
   // Children visitors for Decls
   void VisitDeclChildren(const Decl *D, std::vector<std::string> &children);
