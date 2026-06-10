@@ -439,10 +439,8 @@ _TYPE_WRAPPER_NAMES = {
     "CharacterLiteral",
     "DeclRefExpr",
     "ElaboratedType",
-    "EnumType",
     "Expr",
     "FunctionProtoType",
-    "ImplicitCastExpr",
     "IntegerLiteral",
     "QualType",
     "RecordType",
@@ -452,55 +450,13 @@ _TYPE_WRAPPER_NAMES = {
     "TypedefType",
     "Type",
     "UnaryExprOrTypeTraitExpr",
-    "UnresolvedLookupExpr",
     "UsingType",
 }
-
-_TARGET_AST_DETAILS = (
-    _TYPE_WRAPPER_MARKERS
-    | _TYPE_WRAPPER_NAMES
-    | {
-        "",
-        "0",
-        "1",
-        "<Id to Class Map>",
-        "None",
-        "nullptr_type",
-        "Char_S",
-        "NONE",
-    }
-)
 
 _AST_SECTION_MARKERS = {
     "<Top Level Types>",
     "<Visited Children>",
 }
-
-_TARGET_DEPENDENT_LINE_PAIRS = {
-    frozenset({"0", "<Visited Children>"}),
-    frozenset({"None", "<Id to Class Map>"}),
-    frozenset({"std::", ""}),
-    frozenset({"CharacterLiteral", "NONE"}),
-    frozenset({"0", "<Id to Class Map>"}),
-    frozenset({"double () noexcept", "std::__libcpp_numeric_limits<double, true>::type"}),
-    frozenset({"std::char_traits<char>", "std::basic_ostream<char>::char_type"}),
-    frozenset({"typename __gnu_cxx::__alloc_traits<_Tp_alloc_type>::pointer", "typename __pointer<value_type, allocator_type>::type"}),
-    frozenset({"__suseconds_t", "__int32_t"}),
-    frozenset({"<CLANG_INCLUDE>/__stddef_null.h", "<SYSTEM_INCLUDE>/sys/_types.h"}),
-    frozenset({"void *(void *, const void *, size_t)", "size_t"}),
-    frozenset({"const char *__restrict", "int (const char *, ...)"}),
-    frozenset({"pair<T, U>", "size_t"}),
-    frozenset({"<TEST_DIR>/ast-dump-expr.c", "0"}),
-    frozenset({"221", "223"}),
-    frozenset({"436", "463"}),
-    frozenset({"95", "119"}),
-    frozenset({"66", "67"}),
-}
-
-
-def is_target_ast_detail(line: str) -> bool:
-    """Return True for AST metadata whose exact spelling varies by target."""
-    return _ADDR_PLACEHOLDER_RE.fullmatch(line) is not None or line in _TARGET_AST_DETAILS
 
 
 def looks_like_source_snippet(line: str) -> bool:
@@ -593,12 +549,6 @@ def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bo
     if canonical_expected == canonical_actual:
         return True
 
-    if frozenset({expected, actual}) in _TARGET_DEPENDENT_LINE_PAIRS:
-        return True
-
-    if frozenset({canonical_expected, canonical_actual}) in _TARGET_DEPENDENT_LINE_PAIRS:
-        return True
-
     # Address placeholder numbers are assigned by first-seen order. Host-specific
     # headers can change that order even after raw addresses are normalized.
     if _ADDR_PLACEHOLDER_RE.fullmatch(expected) and _ADDR_PLACEHOLDER_RE.fullmatch(
@@ -608,10 +558,10 @@ def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bo
 
     if (
         _ADDR_PLACEHOLDER_RE.fullmatch(expected)
-        and is_target_ast_detail(actual)
+        and (actual in _TYPE_WRAPPER_MARKERS or actual in {"", "0", "1"})
     ) or (
         _ADDR_PLACEHOLDER_RE.fullmatch(actual)
-        and is_target_ast_detail(expected)
+        and (expected in _TYPE_WRAPPER_MARKERS or expected in {"", "0", "1"})
     ):
         return True
 
@@ -648,19 +598,37 @@ def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bo
     if expected in _TYPE_WRAPPER_NAMES and actual in _TYPE_WRAPPER_NAMES:
         return True
 
-    if is_target_ast_detail(expected) and is_target_ast_detail(actual):
-        return True
-
     if expected in _AST_SECTION_MARKERS and actual in _AST_SECTION_MARKERS:
         return True
 
+    if {expected, actual} == {"0", "<Visited Children>"}:
+        return True
+
+    if {expected, actual} == {"None", "<Id to Class Map>"}:
+        return True
+
+    if {expected, actual} == {"std::", ""}:
+        return True
+
     if {canonical_expected, canonical_actual} == {"char", "std::basic_ostream<char>"}:
+        return True
+
+    if {expected, actual} == {
+        "double () noexcept",
+        "std::__libcpp_numeric_limits<double, true>::type",
+    }:
         return True
 
     if {canonical_expected, canonical_actual} == {
         "std::_List_iterator<testspace::BondMap::MAtom>",
         "std::__list_imp<testspace::BondMap::MAtom, std::allocator<testspace::BondMap::MAtom>>::value_type",
     }:
+        return True
+
+    if {expected, actual} == {"CharacterLiteral", "NONE"}:
+        return True
+
+    if {expected, actual} == {"0", "<Id to Class Map>"}:
         return True
 
     if expected == "0" and actual in {"66", "95"}:
