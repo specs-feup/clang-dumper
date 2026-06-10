@@ -363,111 +363,6 @@ _SOURCE_BLOCK_RE = re.compile(
     re.MULTILINE,
 )
 
-_CANONICAL_LINE_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
-    (re.compile(r"^ULongLong$"), "ULong"),
-    (re.compile(r"^LongLong$"), "Long"),
-    (re.compile(r"^string$"), "std::basic_string<char>"),
-    (re.compile(r"^std::string$"), "std::basic_string<char>"),
-    (re.compile(r"^const string$"), "const std::basic_string<char>"),
-    (re.compile(r"^ostream$"), "std::basic_ostream<char>"),
-    (re.compile(r"^std::ostream$"), "std::basic_ostream<char>"),
-    (re.compile(r"^std::filebuf$"), "std::basic_filebuf<char>"),
-    (re.compile(r"^std::ios$"), "std::basic_ios<char>"),
-    (re.compile(r"^const std::ios$"), "const std::basic_ios<char>"),
-    (re.compile(r"^__darwin_size_t$"), "size_t"),
-    (re.compile(r"^std::size_t$"), "size_t"),
-    (re.compile(r"^__darwin_time_t$"), "__time_t"),
-    (re.compile(r"^__int64_t$"), "int64_t"),
-    (re.compile(r"^__bool_constant<false>$"), "std::false_type"),
-    (re.compile(r"^struct __sFILE$"), "struct _IO_FILE"),
-    (
-        re.compile(r"^std::__list_iterator<(.+), void \*>$"),
-        r"std::_List_iterator<\1>",
-    ),
-    (
-        re.compile(r"^_List_iterator<(.+)>$"),
-        r"std::_List_iterator<\1>",
-    ),
-    (
-        re.compile(r"^std::__wrap_iter<int \*>$"),
-        "__gnu_cxx::__normal_iterator<int *, std::vector<int>>",
-    ),
-    (
-        re.compile(r"^std::__underlying_type_impl<([^,>]+), true>::type$"),
-        r"std::__underlying_type_impl<\1>::type",
-    ),
-    (re.compile(r"^typename allocator<int>::pointer$"), "typename _Base_type::pointer"),
-    (re.compile(r"^allocator<int>::$"), "_Base_type::"),
-)
-
-_CANONICAL_TEXT_REPLACEMENTS: tuple[tuple[str, str], ...] = (
-    ("std::string", "std::basic_string<char>"),
-    ("std::ostream", "std::basic_ostream<char>"),
-    ("std::istream", "std::basic_istream<char>"),
-    ("std::ifstream", "std::basic_ifstream<char>"),
-    ("std::ofstream", "std::basic_ofstream<char>"),
-    ("std::streambuf", "std::basic_streambuf<char>"),
-    ("std::filebuf", "std::basic_filebuf<char>"),
-    (
-        "std::allocator<int>::pointer",
-        "std::allocator_traits<std::allocator<int>>::pointer",
-    ),
-    ("unsigned long long", "unsigned long"),
-)
-
-_TYPE_WRAPPER_MARKERS = {
-    "<AttributedTypeData>",
-    "<BuiltinTypeData>",
-    "<CharacterLiteralData>",
-    "<DeclRefExprData>",
-    "<ElaboratedTypeData>",
-    "<ExprData>",
-    "<FunctionProtoTypeData>",
-    "<IntegerLiteralData>",
-    "<QualTypeData>",
-    "<SubstTemplateTypeParmTypeData>",
-    "<TagTypeData>",
-    "<TemplateSpecializationTypeData>",
-    "<TypedefTypeData>",
-    "<TypeData>",
-    "<UnaryExprOrTypeTraitExprData>",
-}
-
-_TYPE_WRAPPER_NAMES = {
-    "AttributedType",
-    "BuiltinType",
-    "CharacterLiteral",
-    "DeclRefExpr",
-    "ElaboratedType",
-    "Expr",
-    "FunctionProtoType",
-    "IntegerLiteral",
-    "QualType",
-    "RecordType",
-    "SubstTemplateTypeParmType",
-    "TagType",
-    "TemplateSpecializationType",
-    "TypedefType",
-    "Type",
-    "UnaryExprOrTypeTraitExpr",
-    "UsingType",
-}
-
-_AST_SECTION_MARKERS = {
-    "<Top Level Types>",
-    "<Visited Children>",
-}
-
-
-def looks_like_source_snippet(line: str) -> bool:
-    """Return True for source text echoed by Clava source-region dumping."""
-    if not line.startswith((" ", "\t")):
-        return False
-
-    stripped = line.strip()
-    return bool(stripped) and stripped not in _TYPE_WRAPPER_MARKERS
-
-
 def normalize_type_widths(output: str) -> str:
     """
     Normalize platform-specific type width values in the output.
@@ -527,26 +422,12 @@ def normalize_static_output(output: str) -> str:
     return output
 
 
-def canonical_compare_line(line: str) -> str:
-    """Canonicalize one already-normalized line for cross-target comparison."""
-    for old, new in _CANONICAL_TEXT_REPLACEMENTS:
-        line = line.replace(old, new)
-    for pattern, replacement in _CANONICAL_LINE_REPLACEMENTS:
-        line = pattern.sub(replacement, line)
-    return line
-
-
 def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bool:
     """Return True when two normalized lines are equivalent across hosts."""
     expected = expected_line.rstrip("\r\n")
     actual = actual_line.rstrip("\r\n")
-    canonical_expected = canonical_compare_line(expected)
-    canonical_actual = canonical_compare_line(actual)
 
     if expected == actual:
-        return True
-
-    if canonical_expected == canonical_actual:
         return True
 
     # Address placeholder numbers are assigned by first-seen order. Host-specific
@@ -554,140 +435,6 @@ def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bo
     if _ADDR_PLACEHOLDER_RE.fullmatch(expected) and _ADDR_PLACEHOLDER_RE.fullmatch(
         actual
     ):
-        return True
-
-    if (
-        _ADDR_PLACEHOLDER_RE.fullmatch(expected)
-        and (actual in _TYPE_WRAPPER_MARKERS or actual in {"", "0", "1"})
-    ) or (
-        _ADDR_PLACEHOLDER_RE.fullmatch(actual)
-        and (expected in _TYPE_WRAPPER_MARKERS or expected in {"", "0", "1"})
-    ):
-        return True
-
-    # Windows targets use LLP64, so some size-related AST spellings that are
-    # "unsigned long" on LP64 hosts become "unsigned long long".
-    if expected == "unsigned long" and actual == "unsigned long long":
-        return True
-
-    if expected == "long" and actual == "long long":
-        return True
-
-    # Clang reports different character offsets for these record-printing tests
-    # across target ABIs. The surrounding file/line data remains checked.
-    if test_name == "ast-print-record-decl.c" and expected == "391" and actual in {
-        "401",
-        "405",
-        "415",
-        "417",
-        "447",
-    }:
-        return True
-    if test_name == "ast-print-record-decl.cpp" and expected == "455" and actual in {
-        "465",
-        "468",
-        "478",
-        "480",
-        "510",
-    }:
-        return True
-
-    if expected in _TYPE_WRAPPER_MARKERS and actual in _TYPE_WRAPPER_MARKERS:
-        return True
-
-    if expected in _TYPE_WRAPPER_NAMES and actual in _TYPE_WRAPPER_NAMES:
-        return True
-
-    if expected in _AST_SECTION_MARKERS and actual in _AST_SECTION_MARKERS:
-        return True
-
-    if {expected, actual} == {"0", "<Visited Children>"}:
-        return True
-
-    if {expected, actual} == {"None", "<Id to Class Map>"}:
-        return True
-
-    if {expected, actual} == {"std::", ""}:
-        return True
-
-    if {canonical_expected, canonical_actual} == {"char", "std::basic_ostream<char>"}:
-        return True
-
-    if {expected, actual} == {
-        "double () noexcept",
-        "std::__libcpp_numeric_limits<double, true>::type",
-    }:
-        return True
-
-    if {canonical_expected, canonical_actual} == {
-        "std::_List_iterator<testspace::BondMap::MAtom>",
-        "std::__list_imp<testspace::BondMap::MAtom, std::allocator<testspace::BondMap::MAtom>>::value_type",
-    }:
-        return True
-
-    if {expected, actual} == {"CharacterLiteral", "NONE"}:
-        return True
-
-    if {expected, actual} == {"0", "<Id to Class Map>"}:
-        return True
-
-    if expected == "0" and actual in {"66", "95"}:
-        return True
-
-    if expected == "1" and _ADDR_PLACEHOLDER_RE.fullmatch(actual):
-        return True
-
-    if expected == "std::" and _ADDR_PLACEHOLDER_RE.fullmatch(actual):
-        return True
-
-    if expected == "nullptr_type" and _ADDR_PLACEHOLDER_RE.fullmatch(actual):
-        return True
-
-    if {
-        canonical_expected,
-        canonical_actual,
-    } == {
-        "__gnu_cxx::__alloc_traits<std::allocator<int>>::pointer",
-        "std::__pointer<int, std::allocator<int>>::type",
-    }:
-        return True
-
-    if test_name == "ast-dump-expr.c" and expected == "<Visited Children>" and actual == "0":
-        return True
-
-    if test_name == "ast-dump-expr.c" and (
-        _ADDR_PLACEHOLDER_RE.fullmatch(expected)
-        or _ADDR_PLACEHOLDER_RE.fullmatch(actual)
-        or expected in _TYPE_WRAPPER_MARKERS
-        or actual in _TYPE_WRAPPER_MARKERS
-        or expected in _TYPE_WRAPPER_NAMES
-        or actual in _TYPE_WRAPPER_NAMES
-        or actual in {"NONE", "unsigned int *"}
-    ):
-        return True
-
-    if test_name == "dbl_max.cpp" and expected == "221" and actual == "220":
-        return True
-
-    if expected == "4" and actual == "2":
-        return True
-
-    if {expected, actual} in ({"52", "26"}, {"32", "16"}):
-        return True
-
-    if actual == "" and (expected.startswith((" ", "\t")) or '"' in expected):
-        return True
-
-    if looks_like_source_snippet(expected) and looks_like_source_snippet(actual):
-        return True
-
-    if (
-        expected in {"%CLAVA_SOURCE_BEGIN%", "%CLAVA_SOURCE_END%"}
-        and looks_like_source_snippet(actual)
-    ):
-        return True
-
-    if test_name == "variadic.c":
         return True
 
     return False
@@ -978,8 +725,6 @@ def run_single_test(
 
     # Different number of lines
     if len(normalized_lines) != len(expected_lines):
-        if test_name == "variadic.c":
-            return TestStatus.PASS, "PASSED"
         return TestStatus.FAIL, (
             f"Line count mismatch: expected {len(expected_lines)}, got {len(normalized_lines)}"
         )
