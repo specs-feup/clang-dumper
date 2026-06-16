@@ -77,9 +77,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-42
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 42
 <Id to Class Map>
 ADDR_003
@@ -153,11 +151,7 @@ baz
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace baz {
-             int qux = 42;
-         }
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_005
 NamespaceDecl
@@ -189,13 +183,7 @@ bar
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace bar {
-         namespace baz {
-             int qux = 42;
-         }
-    }
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_006
 NamespaceDecl
@@ -227,15 +215,7 @@ foo
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace foo {
-    namespace bar {
-         namespace baz {
-             int qux = 42;
-         }
-    }
-}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_001
 NamespaceDecl
@@ -268,9 +248,7 @@ fbz
 0
 None
 Default
-%CLAVA_SOURCE_BEGIN%
-foo::bar::
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ADDR_005
 <Id to Class Map>
 ADDR_007
@@ -304,9 +282,7 @@ f
 0
 None
 Default
-%CLAVA_SOURCE_BEGIN%
-
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ADDR_001
 <Id to Class Map>
 ADDR_008
@@ -352,7 +328,7 @@ ADDR_011
 <TagTypeData>
 ADDR_011
 RecordType
-std::basic_ostream<char>
+std::ostream
 NONE
 0
 0
@@ -705,7 +681,7 @@ ADDR_036
 <TypedefTypeData>
 ADDR_036
 TypedefType
-std::basic_ostream<char>::__ostream_type
+std::ostream::__ostream_type
 NONE
 0
 0
@@ -849,7 +825,7 @@ ADDR_045
 <TemplateSpecializationTypeData>
 ADDR_045
 TemplateSpecializationType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -871,7 +847,7 @@ ADDR_047
 <ElaboratedTypeData>
 ADDR_047
 ElaboratedType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -1038,9 +1014,7 @@ ADDR_013
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-'\n'
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 10
 ORDINARY
 <Id to Class Map>

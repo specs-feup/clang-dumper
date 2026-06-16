@@ -1309,7 +1309,7 @@ ADDR_042
 <TagTypeData>
 ADDR_042
 RecordType
-std::basic_string<char>
+std::string
 NONE
 0
 0
@@ -1342,7 +1342,7 @@ ADDR_045
 <TemplateSpecializationTypeData>
 ADDR_045
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1364,7 +1364,7 @@ ADDR_047
 <ElaboratedTypeData>
 ADDR_047
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1897,7 +1897,7 @@ ADDR_065
 <TagTypeData>
 ADDR_065
 RecordType
-std::basic_ostream<char>
+std::ostream
 NONE
 0
 0
@@ -2005,7 +2005,7 @@ ADDR_076
 <TypedefTypeData>
 ADDR_076
 TypedefType
-std::basic_ostream<char>::__ostream_type
+std::ostream::__ostream_type
 NONE
 0
 0
@@ -2476,7 +2476,7 @@ ADDR_103
 <TemplateSpecializationTypeData>
 ADDR_103
 TemplateSpecializationType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -2498,7 +2498,7 @@ ADDR_105
 <ElaboratedTypeData>
 ADDR_105
 ElaboratedType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -2607,9 +2607,7 @@ ADDR_111
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"delete"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 6
 1
@@ -3076,9 +3074,6 @@ ADDR_063
 <Id to Class Map>
 ADDR_063
 CXXRecordDecl
-<TEST_DIR>/destructor.cpp:54:3: warning: '~Custom2' has a non-throwing exception specification but can still throw [-Wexceptions]
-   54 |                 throw "abc";
-      |                 ^
 <TEST_DIR>/destructor.cpp:53:2: note: destructor has a implicit non-throwing exception specification
    53 |         ~Custom2() {
       |         ^
@@ -3139,9 +3134,7 @@ ADDR_136
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"abc"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 3
 1

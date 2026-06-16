@@ -256,13 +256,7 @@ B
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace B {
-		void foo1();
-		void foo2();
-		void foo3();
-	}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_007
 NamespaceDecl
@@ -434,13 +428,7 @@ B2
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace B2 {
-		void foo1();
-		void foo2();
-		void foo3();
-	}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_011
 NamespaceDecl
@@ -473,22 +461,7 @@ A
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace A {
-	namespace B {
-		void foo1();
-		void foo2();
-		void foo3();
-	}
-	
-	namespace B2 {
-		void foo1();
-		void foo2();
-		void foo3();
-	}
-	
-}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_001
 NamespaceDecl
@@ -608,11 +581,7 @@ B
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace B {
-		void foo1(){};
-	}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_016
 NamespaceDecl
@@ -730,11 +699,7 @@ B2
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace B2 {
-		void foo1(){};
-	}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_020
 NamespaceDecl
@@ -941,20 +906,7 @@ A
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace A {
-	namespace B {
-		void foo1(){};
-	}
-	
-	namespace B2 {
-		void foo1(){};
-	}
-	
-	void B::foo2(){};
-	void B2::foo2(){};
-}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_012
 NamespaceDecl

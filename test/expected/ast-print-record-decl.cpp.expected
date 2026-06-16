@@ -87,15 +87,9 @@ ADDR_001
 <Id to Class Map>
 ADDR_001
 CXXRecordDecl
-<TEST_DIR>/ast-print-record-decl.cpp:113:67: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-      |                                                                   ^
 <TEST_DIR>/ast-print-record-decl.cpp:113:50: note: 'T' has been explicitly marked deprecated here
   113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
       |                                                  ^
-<TEST_DIR>/ast-print-record-decl.cpp:118:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  118 |   KW T *p1; // expected-warning {{'T' is deprecated}}
-      |      ^
 <TEST_DIR>/ast-print-record-decl.cpp:113:50: note: 'T' has been explicitly marked deprecated here
   113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
       |                                                  ^
@@ -186,9 +180,7 @@ ADDR_006
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-16
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 16
 <Id to Class Map>
 ADDR_007
@@ -335,7 +327,7 @@ CXXRecordDecl
 3
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 115
@@ -415,7 +407,7 @@ VarDecl
 6
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 115
@@ -463,7 +455,7 @@ DeclStmt
 8
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 115
@@ -522,7 +514,7 @@ VarDecl
 9
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 118
@@ -569,7 +561,7 @@ DeclStmt
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 118
@@ -710,9 +702,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_027
 UnaryExprOrTypeTraitExpr
@@ -897,9 +887,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_034
 UnaryExprOrTypeTraitExpr
@@ -1052,9 +1040,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_003
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:136:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:136:21: note: 'T' has been explicitly marked deprecated here
   136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
       |                     ^
@@ -1080,9 +1065,7 @@ ADDR_006
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-16
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 16
 <Id to Class Map>
 ADDR_040
@@ -1241,7 +1224,7 @@ CXXRecordDecl
 55
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 136
@@ -1301,7 +1284,7 @@ CXXRecordDecl
 35
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 129
@@ -1380,7 +1363,7 @@ VarDecl
 38
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 129
@@ -1428,7 +1411,7 @@ DeclStmt
 40
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 129
@@ -1487,7 +1470,7 @@ VarDecl
 58
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 136
@@ -1535,7 +1518,7 @@ DeclStmt
 60
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 136
@@ -1642,9 +1625,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_060
 UnaryExprOrTypeTraitExpr
@@ -1829,9 +1810,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_067
 UnaryExprOrTypeTraitExpr
@@ -1984,21 +1963,12 @@ nullptr_decl
 <Id to Class Map>
 ADDR_039
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:149:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  149 |   KW __attribute__((deprecated(""))) T *p0;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
   149 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:154:35: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  154 |   KW __attribute__((aligned(16))) T BASES { int i; } *p1; // expected-warning {{'T' is deprecated}}
-      |                                   ^
 <TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
   149 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:157:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  157 |   KW T *p2; // expected-warning {{'T' is deprecated}}
-      |      ^
 <TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
   149 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
@@ -2072,9 +2042,7 @@ ADDR_006
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-16
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 16
 <Id to Class Map>
 ADDR_075
@@ -2181,7 +2149,7 @@ CXXRecordDecl
 52
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 154
@@ -2241,7 +2209,7 @@ CXXRecordDecl
 38
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 149
@@ -2320,7 +2288,7 @@ VarDecl
 41
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 149
@@ -2368,7 +2336,7 @@ DeclStmt
 43
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 149
@@ -2427,7 +2395,7 @@ VarDecl
 55
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 154
@@ -2475,7 +2443,7 @@ DeclStmt
 57
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 154
@@ -2534,7 +2502,7 @@ VarDecl
 9
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 157
@@ -2581,7 +2549,7 @@ DeclStmt
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 157
@@ -2688,9 +2656,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_097
 UnaryExprOrTypeTraitExpr
@@ -2875,9 +2841,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_104
 UnaryExprOrTypeTraitExpr
@@ -3062,9 +3026,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_111
 UnaryExprOrTypeTraitExpr
@@ -3219,15 +3181,9 @@ nullptr_decl
 <Id to Class Map>
 ADDR_072
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:172:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  172 |   KW __attribute__((deprecated(""))) T *p0;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:172:21: note: 'T' has been explicitly marked deprecated here
   172 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:180:35: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  180 |   KW __attribute__((aligned(64))) T BASES { // expected-warning {{'T' is deprecated}}
-      |                                   ^
 <TEST_DIR>/ast-print-record-decl.cpp:172:21: note: 'T' has been explicitly marked deprecated here
   172 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
@@ -3301,9 +3257,7 @@ ADDR_006
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-64
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 64
 <Id to Class Map>
 ADDR_119
@@ -3447,7 +3401,7 @@ FieldDecl
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 182
@@ -3508,7 +3462,7 @@ CXXRecordDecl
 35
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 187
@@ -3589,7 +3543,7 @@ FieldDecl
 38
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 187
@@ -3632,7 +3586,7 @@ FieldDecl
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 188
@@ -3676,7 +3630,7 @@ CXXRecordDecl
 3
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 189
@@ -3736,7 +3690,7 @@ CXXRecordDecl
 38
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 172
@@ -3815,7 +3769,7 @@ VarDecl
 41
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 172
@@ -3863,7 +3817,7 @@ DeclStmt
 43
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 172
@@ -3922,7 +3876,7 @@ VarDecl
 6
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 189
@@ -3970,7 +3924,7 @@ DeclStmt
 8
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 189
@@ -4077,9 +4031,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_146
 UnaryExprOrTypeTraitExpr
@@ -4264,9 +4216,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_153
 UnaryExprOrTypeTraitExpr
@@ -4504,9 +4454,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p0->p2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_162
 UnaryExprOrTypeTraitExpr
@@ -4744,9 +4692,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p1->p3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_171
 UnaryExprOrTypeTraitExpr
@@ -5037,9 +4983,7 @@ ADDR_026
 SizeOf
 0
 nullptr_type
-%CLAVA_SOURCE_BEGIN%
-sizeof *p1->p4->p2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_182
 UnaryExprOrTypeTraitExpr
@@ -5195,15 +5139,9 @@ nullptr_decl
 <Id to Class Map>
 ADDR_116
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:217:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  217 |   KW __attribute__((deprecated(""))) T *p3;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:217:21: note: 'T' has been explicitly marked deprecated here
   217 |   KW __attribute__((deprecated(""))) T *p3;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:220:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  220 |   KW T *p4; // expected-warning {{'T' is deprecated}}
-      |      ^
 <TEST_DIR>/ast-print-record-decl.cpp:217:21: note: 'T' has been explicitly marked deprecated here
   217 |   KW __attribute__((deprecated(""))) T *p3;
       |                     ^
@@ -5241,7 +5179,7 @@ CXXRecordDecl
 6
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 206
@@ -5319,7 +5257,7 @@ VarDecl
 9
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 206
@@ -5367,7 +5305,7 @@ DeclStmt
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 206
@@ -5412,7 +5350,7 @@ CXXRecordDecl
 33
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 209
@@ -5491,7 +5429,7 @@ VarDecl
 36
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 209
@@ -5539,7 +5477,7 @@ DeclStmt
 38
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 209
@@ -5598,7 +5536,7 @@ VarDecl
 9
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 212
@@ -5645,7 +5583,7 @@ DeclStmt
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 212
@@ -5714,7 +5652,7 @@ CXXRecordDecl
 38
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 217
@@ -5794,7 +5732,7 @@ VarDecl
 41
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 217
@@ -5842,7 +5780,7 @@ DeclStmt
 43
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 217
@@ -5867,7 +5805,7 @@ VarDecl
 9
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 220
@@ -5914,7 +5852,7 @@ DeclStmt
 11
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 220
@@ -6062,7 +6000,7 @@ CXXRecordDecl
 18
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 231
@@ -6105,7 +6043,7 @@ DeclStmt
 19
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 231
@@ -6166,7 +6104,7 @@ FieldDecl
 17
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 235
@@ -6206,7 +6144,7 @@ CXXRecordDecl
 20
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 235
@@ -6249,7 +6187,7 @@ DeclStmt
 21
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 235
@@ -6394,7 +6332,7 @@ CXXRecordDecl
 18
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 243
@@ -6437,7 +6375,7 @@ DeclStmt
 19
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 243
@@ -6514,7 +6452,7 @@ CXXRecordDecl
 19
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 247
@@ -6603,9 +6541,7 @@ ADDR_026
 SizeOf
 1
 ADDR_234
-%CLAVA_SOURCE_BEGIN%
-sizeof(KW T1)
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_235
 UnaryExprOrTypeTraitExpr
@@ -6706,7 +6642,7 @@ VarDecl
 40
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 247
@@ -6754,7 +6690,7 @@ DeclStmt
 41
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 247
@@ -6899,7 +6835,7 @@ CXXRecordDecl
 18
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 259
@@ -6942,7 +6878,7 @@ DeclStmt
 19
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 259
@@ -6981,7 +6917,7 @@ CXXRecordDecl
 10
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 262
@@ -7040,7 +6976,7 @@ VarDecl
 17
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 262
@@ -7088,7 +7024,7 @@ DeclStmt
 18
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 262
@@ -7233,7 +7169,7 @@ CXXRecordDecl
 34
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 271
@@ -7311,7 +7247,7 @@ VarDecl
 37
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 271
@@ -7901,7 +7837,7 @@ CXXRecordDecl
 1
 1
 
-455
+<ANON_DECL_NAME>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 288
@@ -7947,9 +7883,7 @@ ADDR_006
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_280

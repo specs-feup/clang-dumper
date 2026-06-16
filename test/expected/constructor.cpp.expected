@@ -776,9 +776,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_024
@@ -913,9 +911,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_029
@@ -1073,9 +1069,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_035
@@ -1201,7 +1195,7 @@ ADDR_040
 <TagTypeData>
 ADDR_040
 RecordType
-std::basic_string<char>
+std::string
 NONE
 0
 0
@@ -1234,7 +1228,7 @@ ADDR_043
 <TemplateSpecializationTypeData>
 ADDR_043
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1256,7 +1250,7 @@ ADDR_045
 <ElaboratedTypeData>
 ADDR_045
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1361,9 +1355,7 @@ ADDR_050
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Initial string"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 14
 1
@@ -1750,7 +1742,7 @@ ADDR_071
 <ElaboratedTypeData>
 ADDR_071
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1768,7 +1760,7 @@ ADDR_072
 <QualTypeData>
 ADDR_072
 QualType
-const std::basic_string<char>
+const std::string
 NONE
 0
 0
@@ -1788,7 +1780,7 @@ ADDR_073
 <QualTypeData>
 ADDR_073
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -1980,9 +1972,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-8
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 8
 <Id to Class Map>
 ADDR_081
@@ -2112,7 +2102,7 @@ ADDR_092
 <TypedefTypeData>
 ADDR_092
 TypedefType
-std::basic_string<char>::size_type
+std::string::size_type
 NONE
 0
 0
@@ -2180,9 +2170,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_096
@@ -2340,9 +2328,7 @@ ADDR_102
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"A character sequence"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 20
 1
@@ -2564,9 +2550,7 @@ ADDR_110
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Another character sequence"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 26
 1
@@ -2640,9 +2624,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-12
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 12
 <Id to Class Map>
 ADDR_113
@@ -2823,9 +2805,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-10
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 10
 <Id to Class Map>
 ADDR_121
@@ -2870,9 +2850,7 @@ ADDR_042
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-'x'
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 120
 ORDINARY
 <Id to Class Map>
@@ -3032,9 +3010,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-10
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 10
 <Id to Class Map>
 ADDR_130
@@ -3079,9 +3055,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-42
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 42
 <Id to Class Map>
 ADDR_132
@@ -3337,7 +3311,7 @@ ADDR_145
 <TagTypeData>
 ADDR_145
 RecordType
-__gnu_cxx::__normal_iterator<char *, std::basic_string<char>>
+__gnu_cxx::__normal_iterator<char *, std::string>
 NONE
 0
 0
@@ -3454,7 +3428,7 @@ ADDR_156
 <TypedefTypeData>
 ADDR_156
 TypedefType
-std::basic_string<char>::pointer
+std::string::pointer
 NONE
 0
 0
@@ -3488,7 +3462,7 @@ ADDR_159
 <TemplateSpecializationTypeData>
 ADDR_159
 TemplateSpecializationType
-__normal_iterator<pointer, basic_string<char>>
+__normal_iterator<pointer, string>
 NONE
 0
 0
@@ -3512,7 +3486,7 @@ ADDR_161
 <ElaboratedTypeData>
 ADDR_161
 ElaboratedType
-__gnu_cxx::__normal_iterator<pointer, basic_string<char>>
+__gnu_cxx::__normal_iterator<pointer, string>
 NONE
 0
 0
@@ -3530,7 +3504,7 @@ ADDR_162
 <TypedefTypeData>
 ADDR_162
 TypedefType
-std::basic_string<char>::iterator
+std::string::iterator
 NONE
 0
 0
@@ -3590,7 +3564,7 @@ ADDR_166
 <ElaboratedTypeData>
 ADDR_166
 ElaboratedType
-__normal_iterator<char *, basic_string<char>>
+__normal_iterator<char *, string>
 NONE
 0
 0
@@ -3693,7 +3667,7 @@ ADDR_174
 <TypedefTypeData>
 ADDR_174
 TypedefType
-__gnu_cxx::__normal_iterator<char *, std::basic_string<char>>::difference_type
+__gnu_cxx::__normal_iterator<char *, std::string>::difference_type
 NONE
 0
 0
@@ -3727,7 +3701,7 @@ ADDR_177
 <FunctionProtoTypeData>
 ADDR_177
 FunctionProtoType
-__normal_iterator<char *, basic_string<char>> (difference_type) const noexcept
+__normal_iterator<char *, string> (difference_type) const noexcept
 NONE
 0
 0
@@ -3783,7 +3757,7 @@ ADDR_180
 <PointerTypeData>
 ADDR_180
 PointerType
-__normal_iterator<char *, basic_string<char>> (*)(difference_type) const noexcept
+__normal_iterator<char *, string> (*)(difference_type) const noexcept
 NONE
 0
 0
@@ -3925,7 +3899,7 @@ ADDR_186
 <QualTypeData>
 ADDR_186
 QualType
-const __gnu_cxx::__normal_iterator<char *, std::basic_string<char>>
+const __gnu_cxx::__normal_iterator<char *, std::string>
 NONE
 0
 0
@@ -3981,9 +3955,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-7
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 7
 <Id to Class Map>
 ADDR_188

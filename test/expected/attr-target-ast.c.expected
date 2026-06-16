@@ -33,9 +33,6 @@
 <Id-File Map>
 0
 <TEST_DIR>/attr-target-ast.c
-<TEST_DIR>/attr-target-ast.c:3:27: warning: target attribute diagnostic normalized; target attribute ignored [-Wignored-attributes]
-    3 | int __attribute__((target("arch=hiss,arch=woof"))) pine_tree() { return 4; }
-      |                           ^
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
@@ -99,9 +96,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-4
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 4
 <Id to Class Map>
 ADDR_004

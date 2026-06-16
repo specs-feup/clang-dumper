@@ -827,24 +827,7 @@ Routing
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace Routing {
-
-   struct ShortcutPosition {
-   public:
-       int edgeId;
-       int position;
-       int count;
-
-       ShortcutPosition() {};
-
-       ShortcutPosition(int edgeId, int position, int count) :
-               edgeId(edgeId),
-               position(position),
-               count(count) { };
-   };
-}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_001
 NamespaceDecl

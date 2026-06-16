@@ -53,10 +53,6 @@ typeinfo
 array
 4
 1
-<TEST_DIR>/decl.cpp:6:18: warning: implicit conversion of NULL constant to 'int' [-Wnull-conversion]
-    6 | int nullGlobal = NULL;
-      |     ~~~~~~~~~~   ^~~~
-      |                  0
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
@@ -193,9 +189,6 @@ CINIT
 <Id to Class Map>
 ADDR_001
 VarDecl
-<TEST_DIR>/decl.cpp:7:24: warning: use of NULL in arithmetic operation [-Wnull-arithmetic]
-    7 | int nullGlobal2 = NULL + 1;
-      |                   ~~~~ ^
 <Top Level Nodes>
 ADDR_006
 <Top Level Types>
@@ -243,9 +236,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_008
@@ -433,9 +424,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_015
@@ -1744,9 +1733,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_052
@@ -1957,7 +1944,7 @@ ADDR_058
 <TagTypeData>
 ADDR_058
 RecordType
-std::vector<std::basic_string<char>>
+std::vector<std::string>
 NONE
 0
 0
@@ -1973,7 +1960,7 @@ ADDR_060
 <TagTypeData>
 ADDR_060
 RecordType
-std::basic_string<char>
+std::string
 NONE
 0
 0
@@ -2006,7 +1993,7 @@ ADDR_063
 <TemplateSpecializationTypeData>
 ADDR_063
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -2028,7 +2015,7 @@ ADDR_065
 <ElaboratedTypeData>
 ADDR_065
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -2441,7 +2428,7 @@ ADDR_086
 <QualTypeData>
 ADDR_086
 QualType
-const std::basic_string<char>
+const std::string
 NONE
 0
 0
@@ -2461,7 +2448,7 @@ ADDR_087
 <QualTypeData>
 ADDR_087
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -2481,7 +2468,7 @@ ADDR_088
 <QualTypeData>
 ADDR_088
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -2935,9 +2922,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_103
@@ -3065,9 +3050,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_107
@@ -3133,9 +3116,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_109
@@ -3220,9 +3201,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_112
@@ -3306,9 +3285,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-4
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 4
 <Id to Class Map>
 ADDR_115
@@ -4059,9 +4036,7 @@ ADDR_146
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Hello"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 5
 1
@@ -5218,9 +5193,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_208
@@ -5890,9 +5863,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_238
@@ -6071,9 +6042,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_246
@@ -6235,9 +6204,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-512
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 512
 <Id to Class Map>
 ADDR_256
@@ -6260,9 +6227,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-256
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 256
 <Id to Class Map>
 ADDR_257
@@ -6285,9 +6250,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-128
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 128
 <Id to Class Map>
 ADDR_258
@@ -6530,9 +6493,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_270
@@ -6643,9 +6604,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-512
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 512
 <Id to Class Map>
 ADDR_275
@@ -6668,9 +6627,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-256
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 256
 <Id to Class Map>
 ADDR_276
@@ -6693,9 +6650,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-128
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 128
 <Id to Class Map>
 ADDR_277
@@ -6939,9 +6894,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-34
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 34
 <Id to Class Map>
 ADDR_286
@@ -6964,9 +6917,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-23
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 23
 <Id to Class Map>
 ADDR_287
@@ -7454,9 +7405,7 @@ ADDR_312
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-true
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_313
@@ -7479,9 +7428,7 @@ nullptr_type
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"This is a static decl"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 UNEVALUATED
 21
 1
@@ -7572,9 +7519,7 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_317

@@ -423,25 +423,26 @@ def normalize_type_widths(output: str) -> str:
     from the <Compiler Instance Data> marker. This function replaces those
     values with placeholders to ensure cross-platform test compatibility.
     """
-    lines = output.split('\n')
-    
-    # Find the <Compiler Instance Data> marker
-    compiler_data_idx = None
-    for i, line in enumerate(lines):
-        if line.strip() == "<Compiler Instance Data>":
-            compiler_data_idx = i
-            break
-    
-    if compiler_data_idx is None:
+    marker = "<Compiler Instance Data>\n"
+    marker_idx = output.find(marker)
+    if marker_idx < 0:
         return output
-    
-    # Replace platform-specific lines with placeholders
+
+    rest_start = marker_idx + len(marker)
+    max_offset = max(_TYPE_WIDTH_LINE_OFFSETS)
+    # Offsets are relative to the marker line. Split only the small prefix that
+    # contains the fields we patch, not the whole AST dump.
+    lines = output[rest_start:].split("\n", max_offset + 1)
+    changed = False
     for offset, placeholder in _TYPE_WIDTH_LINE_OFFSETS.items():
-        target_idx = compiler_data_idx + offset
+        target_idx = offset - 1
         if target_idx < len(lines) and lines[target_idx].strip().isdigit():
             lines[target_idx] = placeholder
-    
-    return '\n'.join(lines)
+            changed = True
+
+    if not changed:
+        return output
+    return output[:rest_start] + "\n".join(lines)
 
 
 def normalize_plain_char_arrays(output: str) -> str:
@@ -480,47 +481,57 @@ def normalize_plain_char_arrays(output: str) -> str:
     return "\n".join(lines)
 
 
-def normalize_static_output(output: str, normalize_dynamic_tokens: bool = True) -> str:
+def normalize_static_output(output: str) -> str:
     """
     Normalize architecture- and installation-dependent text that can appear in
-    both freshly generated output and checked-in baselines.
+    freshly generated output.
     """
     output = output.replace("\r\n", "\n").replace("\r", "\n")
-    if normalize_dynamic_tokens:
-        output = _UNIFIED_REGEX.sub(
-            lambda match: _UNIFIED_REPLACEMENTS.get(match.lastgroup, match.group(0))
-            if match.lastgroup != "addr"
-            else match.group(0),
-            output,
-        )
-    output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
-    output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
+    if "Char_U" in output:
+        output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
+    if "WChar_U" in output:
+        output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
     if "unsigned int[" in output and "<BuiltinTypeData>" in output:
         output = normalize_plain_char_arrays(output)
     if "\nWIDE\n" in output or output.startswith("WIDE\n"):
         output = normalize_wide_string_literals(output)
-    output = _UNSIGNED_LONG_LONG_LINE_RE.sub("unsigned long", output)
-    output = _ULONG_LONG_KIND_RE.sub("ULong", output)
-    output = output.replace("std::basic_string<char>", "std::string")
-    output = output.replace("basic_string<char>", "string")
-    output = output.replace("std::basic_ostream<char>", "std::ostream")
-    output = output.replace("basic_ostream<char>", "ostream")
-    output = output.replace("std::basic_istream<char>", "std::istream")
-    output = output.replace("basic_istream<char>", "istream")
-    output = _ANON_DECL_NAME_RE.sub(r"\1<ANON_DECL_NAME>\3", output)
+    if "unsigned long long" in output:
+        output = _UNSIGNED_LONG_LONG_LINE_RE.sub("unsigned long", output)
+    if "ULongLong" in output:
+        output = _ULONG_LONG_KIND_RE.sub("ULong", output)
+    if "basic_string<char>" in output:
+        output = output.replace("std::basic_string<char>", "std::string")
+        output = output.replace("basic_string<char>", "string")
+    if "basic_ostream<char>" in output:
+        output = output.replace("std::basic_ostream<char>", "std::ostream")
+        output = output.replace("basic_ostream<char>", "ostream")
+    if "basic_istream<char>" in output:
+        output = output.replace("std::basic_istream<char>", "std::istream")
+        output = output.replace("basic_istream<char>", "istream")
+    if "\n12\n" in output:
+        output = _ANON_DECL_NAME_RE.sub(r"\1<ANON_DECL_NAME>\3", output)
     if ":<" in output:
         output = _DRIVE_PREFIXED_PLACEHOLDER_RE.sub("", output)
-    output = _TARGET_ATTR_WARNING_RE.sub(
-        "warning: target attribute diagnostic normalized; "
-        "target attribute ignored [-Wignored-attributes]",
-        output,
-    )
+    if "target attribute ignored [-Wignored-attributes]" in output:
+        output = _TARGET_ATTR_WARNING_RE.sub(
+            "warning: target attribute diagnostic normalized; "
+            "target attribute ignored [-Wignored-attributes]",
+            output,
+        )
     if " warning: " in output and PATH_PLACEHOLDER in output:
         output = _DIAGNOSTIC_RE.sub("", output)
     if "%CLAVA_SOURCE_BEGIN%" in output:
         output = _SOURCE_BLOCK_RE.sub("%CLAVA_SOURCE_BLOCK%\n", output)
-    output = normalize_type_widths(output)
+    if "<Compiler Instance Data>" in output:
+        output = normalize_type_widths(output)
     return output
+
+
+def line_needs_unified_regex(line: str) -> bool:
+    """Return true when a raw line can contain a path or address token."""
+    if "0x" in line or "/" in line or "\\" in line:
+        return True
+    return "_" in line and _WINDOWS_ADDR_CANDIDATE_RE.search(line) is not None
 
 
 def normalize_captured_lines(
@@ -563,20 +574,12 @@ def normalize_captured_lines(
         line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
         line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
         line = line.replace(PATH_PLACEHOLDER + "\\", PATH_PLACEHOLDER + "/")
-        if (
-            "0x" in line
-            or "/" in line
-            or "\\" in line
-            or _WINDOWS_ADDR_CANDIDATE_RE.search(line)
-        ):
+        if line_needs_unified_regex(line):
             line = _UNIFIED_REGEX.sub(unified_replacer, line)
         normalized_lines.append(line)
 
     return (
-        normalize_static_output(
-            "".join(normalized_lines),
-            normalize_dynamic_tokens=False,
-        ),
+        normalize_static_output("".join(normalized_lines)),
         placeholder_to_raw,
     )
 
@@ -590,7 +593,6 @@ def normalize_captured_output(
 
 
 def lines_equivalent(
-    test_name: str,
     expected_line: str,
     actual_line: str,
     expected_to_actual_addr: dict[str, str],
@@ -625,9 +627,7 @@ def compare_normalized_outputs(
     expected_output: str,
     normalized_output: str,
 ) -> Optional[str]:
-    """Return a failure message when two normalized outputs differ."""
-    expected_output = normalize_static_output(expected_output)
-
+    """Return a failure message when two already-normalized outputs differ."""
     if normalized_output == expected_output:
         return None
 
@@ -638,7 +638,6 @@ def compare_normalized_outputs(
 
     for i, (norm_line, exp_line) in enumerate(zip(normalized_lines, expected_lines), 1):
         if not lines_equivalent(
-            test_name,
             exp_line,
             norm_line,
             expected_to_actual_addr,

@@ -221,7 +221,7 @@ ADDR_013
 <TagTypeData>
 ADDR_013
 RecordType
-std::basic_ostream<char>
+std::ostream
 NONE
 0
 0
@@ -237,7 +237,7 @@ ADDR_015
 <TemplateSpecializationTypeData>
 ADDR_015
 TemplateSpecializationType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -259,7 +259,7 @@ ADDR_017
 <ElaboratedTypeData>
 ADDR_017
 ElaboratedType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -459,7 +459,7 @@ ADDR_034
 <TypedefTypeData>
 ADDR_034
 TypedefType
-std::basic_ostream<char>::__streambuf_type
+std::ostream::__streambuf_type
 NONE
 0
 0
@@ -614,7 +614,7 @@ ADDR_043
 <TagTypeData>
 ADDR_043
 RecordType
-std::basic_string<char>
+std::string
 NONE
 0
 0
@@ -630,7 +630,7 @@ ADDR_045
 <TemplateSpecializationTypeData>
 ADDR_045
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -652,7 +652,7 @@ ADDR_047
 <ElaboratedTypeData>
 ADDR_047
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -704,7 +704,7 @@ ADDR_051
 <QualTypeData>
 ADDR_051
 QualType
-const std::basic_string<char>
+const std::string
 NONE
 0
 0
@@ -724,7 +724,7 @@ ADDR_052
 <QualTypeData>
 ADDR_052
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -744,7 +744,7 @@ ADDR_053
 <QualTypeData>
 ADDR_053
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -3153,7 +3153,7 @@ ADDR_185
 <TypedefTypeData>
 ADDR_185
 TypedefType
-std::basic_ostream<char>::__ostream_type
+std::ostream::__ostream_type
 NONE
 0
 0
@@ -3678,9 +3678,7 @@ ADDR_208
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-20
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 20
 <Id to Class Map>
 ADDR_214
@@ -3911,9 +3909,7 @@ ADDR_005
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-' '
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 32
 ORDINARY
 <Id to Class Map>

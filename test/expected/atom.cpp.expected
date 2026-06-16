@@ -77,9 +77,7 @@ UsingDirectiveDecl
 0
 None
 Default
-%CLAVA_SOURCE_BEGIN%
-using namespace std
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ADDR_002
 ADDR_002
 <Id to Class Map>
@@ -182,7 +180,7 @@ ADDR_008
 <TagTypeData>
 ADDR_008
 RecordType
-std::basic_string<char>
+std::string
 NONE
 0
 0
@@ -215,7 +213,7 @@ ADDR_011
 <TemplateSpecializationTypeData>
 ADDR_011
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -237,7 +235,7 @@ ADDR_013
 <ElaboratedTypeData>
 ADDR_013
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -255,7 +253,7 @@ ADDR_014
 <QualTypeData>
 ADDR_014
 QualType
-const std::basic_string<char>
+const std::string
 NONE
 0
 0
@@ -275,7 +273,7 @@ ADDR_015
 <QualTypeData>
 ADDR_015
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -295,7 +293,7 @@ ADDR_016
 <QualTypeData>
 ADDR_016
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -315,7 +313,7 @@ ADDR_017
 <PointerTypeData>
 ADDR_017
 PointerType
-const basic_string<char> *
+const string *
 NONE
 0
 0
@@ -368,7 +366,7 @@ ADDR_019
 <TemplateSpecializationTypeData>
 ADDR_019
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -390,7 +388,7 @@ ADDR_020
 <ElaboratedTypeData>
 ADDR_020
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -900,9 +898,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_039
@@ -996,9 +992,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_043
@@ -1170,9 +1164,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_050
@@ -1266,9 +1258,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_054
@@ -1440,9 +1430,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_061
@@ -1536,9 +1524,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_065
@@ -1743,7 +1729,7 @@ ADDR_073
 <TemplateSpecializationTypeData>
 ADDR_073
 TemplateSpecializationType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1765,7 +1751,7 @@ ADDR_074
 <ElaboratedTypeData>
 ADDR_074
 ElaboratedType
-basic_string<char>
+string
 NONE
 0
 0
@@ -1783,7 +1769,7 @@ ADDR_075
 <QualTypeData>
 ADDR_075
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -1803,7 +1789,7 @@ ADDR_076
 <QualTypeData>
 ADDR_076
 QualType
-const basic_string<char>
+const string
 NONE
 0
 0
@@ -1823,7 +1809,7 @@ ADDR_077
 <PointerTypeData>
 ADDR_077
 PointerType
-const basic_string<char> *
+const string *
 NONE
 0
 0
@@ -1839,7 +1825,7 @@ ADDR_078
 <FunctionProtoTypeData>
 ADDR_078
 FunctionProtoType
-void (double *, const basic_string<char> *)
+void (double *, const string *)
 NONE
 0
 0
@@ -2122,9 +2108,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_087
@@ -2218,9 +2202,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_091
@@ -2392,9 +2374,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_098
@@ -2488,9 +2468,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_102
@@ -2662,9 +2640,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_109
@@ -2758,9 +2734,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_113
@@ -3041,9 +3015,7 @@ ADDR_124
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-""
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 0
 1
@@ -3368,9 +3340,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_139
@@ -3393,9 +3363,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_140
@@ -3418,9 +3386,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_141
@@ -3637,9 +3603,7 @@ ADDR_005
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-23.20
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2.320000e+01
 <Id to Class Map>
 ADDR_150
@@ -3662,9 +3626,7 @@ ADDR_005
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-25.06
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2.506000e+01
 <Id to Class Map>
 ADDR_151
@@ -3687,9 +3649,7 @@ ADDR_005
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1.009
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1.009000e+00
 <Id to Class Map>
 ADDR_152
@@ -4037,9 +3997,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_166
@@ -4147,9 +4105,7 @@ ADDR_038
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_169

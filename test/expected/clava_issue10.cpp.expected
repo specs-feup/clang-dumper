@@ -435,12 +435,7 @@ c
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace c {
-         class ForwardDeclClass4;
-         class RegularClass3 {};
-      }
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_016
 NamespaceDecl
@@ -474,16 +469,7 @@ b
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace b {
-      class ForwardDeclClass3;
-      class RegularClass2 {};
-      namespace c {
-         class ForwardDeclClass4;
-         class RegularClass3 {};
-      }
-   }
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_017
 NamespaceDecl
@@ -517,20 +503,7 @@ a
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace a {
-   class ForwardDeclClass2;
-   class RegularClass1 {};
-   namespace b {
-      class ForwardDeclClass3;
-      class RegularClass2 {};
-      namespace c {
-         class ForwardDeclClass4;
-         class RegularClass3 {};
-      }
-   }
-}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_003
 NamespaceDecl
@@ -766,7 +739,7 @@ ADDR_028
 <TagTypeData>
 ADDR_028
 RecordType
-std::basic_ostream<char>
+std::ostream
 NONE
 0
 0
@@ -874,7 +847,7 @@ ADDR_039
 <TypedefTypeData>
 ADDR_039
 TypedefType
-std::basic_ostream<char>::__ostream_type
+std::ostream::__ostream_type
 NONE
 0
 0
@@ -1345,7 +1318,7 @@ ADDR_066
 <TemplateSpecializationTypeData>
 ADDR_066
 TemplateSpecializationType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -1367,7 +1340,7 @@ ADDR_068
 <ElaboratedTypeData>
 ADDR_068
 ElaboratedType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -1476,9 +1449,7 @@ ADDR_074
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Hello World!"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 12
 1
@@ -1840,9 +1811,7 @@ ADDR_019
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_094

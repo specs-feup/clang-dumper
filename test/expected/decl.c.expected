@@ -147,9 +147,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
 ADDR_006
@@ -606,9 +604,7 @@ ADDR_019
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-2.0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 2.000000e+00
 <Id to Class Map>
 ADDR_024
@@ -735,14 +731,14 @@ ADDR_030
 <BuiltinTypeData>
 ADDR_030
 BuiltinType
-unsigned long long
+unsigned long
 NONE
 0
 0
 0
 nullptr_type
-ULongLong
-unsigned long long
+ULong
+unsigned long
 <Id to Class Map>
 ADDR_030
 BuiltinType
@@ -1057,9 +1053,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_040
@@ -1353,9 +1347,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_050
@@ -1528,9 +1520,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_057
@@ -2512,9 +2502,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_091
@@ -2814,9 +2802,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_103
@@ -2911,9 +2897,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_107
@@ -3180,9 +3164,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_118
@@ -3277,9 +3259,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_122
@@ -4085,9 +4065,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-10
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 10
 <Id to Class Map>
 ADDR_154
@@ -4249,9 +4227,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_161
@@ -4542,9 +4518,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_174
@@ -4639,9 +4613,7 @@ ADDR_177
 SizeOf
 1
 ADDR_158
-%CLAVA_SOURCE_BEGIN%
-sizeof(base)
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_178
 UnaryExprOrTypeTraitExpr
@@ -4760,9 +4732,7 @@ ADDR_004
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_183
@@ -5314,12 +5284,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_131
 FunctionDecl
-<TEST_DIR>/decl.c:50:31: warning: declaration of 'struct s1' will not be visible outside of this function [-Wvisibility]
-   50 | static void parenType1(struct s1 *s, void (fname) (struct s1 *, struct s2 *));
-      |                               ^
-<TEST_DIR>/decl.c:50:72: warning: declaration of 'struct s2' will not be visible outside of this function [-Wvisibility]
-   50 | static void parenType1(struct s1 *s, void (fname) (struct s1 *, struct s2 *));
-      |                                                                        ^
 <Top Level Nodes>
 ADDR_202
 <Visited Children>

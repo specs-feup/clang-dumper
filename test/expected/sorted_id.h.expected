@@ -1208,9 +1208,7 @@ ADDR_050
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-false
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_053
@@ -2290,9 +2288,7 @@ ADDR_050
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-false
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_098
@@ -2389,9 +2385,7 @@ ADDR_050
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-true
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_103
@@ -2626,9 +2620,7 @@ ADDR_075
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_111
@@ -2840,9 +2832,7 @@ ADDR_075
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_119
@@ -5190,9 +5180,7 @@ ADDR_075
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_211
@@ -5589,9 +5577,7 @@ ADDR_075
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_227
@@ -6419,7 +6405,7 @@ ADDR_262
 <TagTypeData>
 ADDR_262
 RecordType
-std::basic_ostream<char>
+std::ostream
 NONE
 0
 0
@@ -6732,7 +6718,7 @@ ADDR_283
 <TemplateSpecializationTypeData>
 ADDR_283
 TemplateSpecializationType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -6754,7 +6740,7 @@ ADDR_285
 <ElaboratedTypeData>
 ADDR_285
 ElaboratedType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -6863,9 +6849,7 @@ ADDR_291
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Data for key "
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 13
 1
@@ -7022,9 +7006,7 @@ ADDR_297
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-" not found.\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 12
 1
@@ -9008,88 +8990,7 @@ StoreMap
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace StoreMap{
-        template<typename K, typename T>
-        class SortedId {
-            //typedef std::pair<K, T> std::pair<K, T>;
-        public:
-
-			SortedId(const std::vector<std::pair<K, T>> &data) :
-                    data(new std::vector<std::pair<K, T>>(data)) {
-
-                this->Sort();
-            }
-			
-
-            SortedId(std::vector<std::pair<K, T>> &&data, bool isSorted = false) :
-                    data(new std::vector<std::pair<K, T>>(std::move(data))) {
-                this->Sort();
-            }
-
-            inline int DataSize(void) { return this->data->size(); };
-
-            inline bool ValueExist(int value) const {
-                try {
-                    this->GetData(value);
-                }
-                catch (std::logic_error &e){
-                    return false;
-                }
-
-                return true;
-            };
-
-            const T GetData(K key) const {
-                unsigned long low = 0;
-                unsigned long high = this->data->size() - 1;
-                unsigned long mid;
-
-                while ((*this->data)[high].first != (*this->data)[low].first &&
-                       key >= (*this->data)[low].first &&
-                       key <= (*this->data)[high].first) {
-
-                    mid = low + (key -
-                            (*this->data)[low].first) * ((high - low) /
-                            ((*this->data)[high].first - (*this->data)[low].first));
-
-                    if ((*this->data)[mid].first < key)
-                        low = mid + 1;
-                    else if (key < (*this->data)[mid].first)
-                        high = mid - 1;
-                    else {
-                        return (*this->data)[mid].second;
-                    }
-                }
-
-                if (key == (*this->data)[low].first) {
-                    return (*this->data)[low].second;
-                } else {
-                    std::cerr << "Data for key " << key << " not found.\n";
-                    throw std::logic_error(to_string(key));
-                }
-
-            }
-
-            void Print() {
-                for (const auto &p: *data) {
-                    std::cout << p << std::endl;
-                }
-            }
-
-        private:
-            std::unique_ptr<std::vector<std::pair<K, T>>> data;
-
-            void Sort(){
-                std::sort(this->data->begin(), this->data->end(),
-                          [](const std::pair<K, T> &first, const std::pair<K, T> &second) -> bool {
-                              return first.first < second.first;
-                          });
-            }
-
-        };
-    }
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_376
 NamespaceDecl
@@ -9121,91 +9022,7 @@ Routing
 0
 External
 Default
-%CLAVA_SOURCE_BEGIN%
-namespace Routing {
-
-    namespace StoreMap{
-        template<typename K, typename T>
-        class SortedId {
-            //typedef std::pair<K, T> std::pair<K, T>;
-        public:
-
-			SortedId(const std::vector<std::pair<K, T>> &data) :
-                    data(new std::vector<std::pair<K, T>>(data)) {
-
-                this->Sort();
-            }
-			
-
-            SortedId(std::vector<std::pair<K, T>> &&data, bool isSorted = false) :
-                    data(new std::vector<std::pair<K, T>>(std::move(data))) {
-                this->Sort();
-            }
-
-            inline int DataSize(void) { return this->data->size(); };
-
-            inline bool ValueExist(int value) const {
-                try {
-                    this->GetData(value);
-                }
-                catch (std::logic_error &e){
-                    return false;
-                }
-
-                return true;
-            };
-
-            const T GetData(K key) const {
-                unsigned long low = 0;
-                unsigned long high = this->data->size() - 1;
-                unsigned long mid;
-
-                while ((*this->data)[high].first != (*this->data)[low].first &&
-                       key >= (*this->data)[low].first &&
-                       key <= (*this->data)[high].first) {
-
-                    mid = low + (key -
-                            (*this->data)[low].first) * ((high - low) /
-                            ((*this->data)[high].first - (*this->data)[low].first));
-
-                    if ((*this->data)[mid].first < key)
-                        low = mid + 1;
-                    else if (key < (*this->data)[mid].first)
-                        high = mid - 1;
-                    else {
-                        return (*this->data)[mid].second;
-                    }
-                }
-
-                if (key == (*this->data)[low].first) {
-                    return (*this->data)[low].second;
-                } else {
-                    std::cerr << "Data for key " << key << " not found.\n";
-                    throw std::logic_error(to_string(key));
-                }
-
-            }
-
-            void Print() {
-                for (const auto &p: *data) {
-                    std::cout << p << std::endl;
-                }
-            }
-
-        private:
-            std::unique_ptr<std::vector<std::pair<K, T>>> data;
-
-            void Sort(){
-                std::sort(this->data->begin(), this->data->end(),
-                          [](const std::pair<K, T> &first, const std::pair<K, T> &second) -> bool {
-                              return first.first < second.first;
-                          });
-            }
-
-        };
-    }
-}
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_001
 NamespaceDecl

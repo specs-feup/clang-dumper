@@ -191,9 +191,7 @@ ADDR_003
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-0
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 0
 <Id to Class Map>
 ADDR_007
@@ -246,7 +244,7 @@ ADDR_009
 <TagTypeData>
 ADDR_009
 RecordType
-std::basic_ostream<char>
+std::ostream
 NONE
 0
 0
@@ -635,7 +633,7 @@ ADDR_036
 <TypedefTypeData>
 ADDR_036
 TypedefType
-std::basic_ostream<char>::__ostream_type
+std::ostream::__ostream_type
 NONE
 0
 0
@@ -825,7 +823,7 @@ ADDR_047
 <TemplateSpecializationTypeData>
 ADDR_047
 TemplateSpecializationType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -847,7 +845,7 @@ ADDR_049
 <ElaboratedTypeData>
 ADDR_049
 ElaboratedType
-basic_ostream<char>
+ostream
 NONE
 0
 0
@@ -956,9 +954,7 @@ ADDR_055
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"A("
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 2
 1
@@ -1127,9 +1123,7 @@ ADDR_062
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-") constructed successfully\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 27
 1
@@ -1578,9 +1572,7 @@ ADDR_055
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"A("
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 2
 1
@@ -1773,9 +1765,7 @@ ADDR_086
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-") destroyed\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 12
 1
@@ -2031,9 +2021,7 @@ ADDR_094
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"error"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 5
 1
@@ -2563,9 +2551,7 @@ ADDR_062
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"B constructed successfully\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 27
 1
@@ -2776,9 +2762,7 @@ ADDR_124
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"B::B() exiting with exception\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 30
 1
@@ -2955,9 +2939,7 @@ ADDR_003
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-1
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
 ADDR_132
@@ -3129,9 +3111,7 @@ ADDR_003
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-3
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 3
 <Id to Class Map>
 ADDR_139
@@ -3338,9 +3318,7 @@ ADDR_086
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"B destroyed\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 12
 1
@@ -3636,9 +3614,7 @@ ADDR_124
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"C::C() completed successfully\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 30
 1
@@ -3833,9 +3809,7 @@ ADDR_124
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"C::C() exiting with exception\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 30
 1
@@ -4253,9 +4227,7 @@ ADDR_086
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"C destroyed\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 12
 1
@@ -4448,9 +4420,6 @@ ADDR_150
 <Id to Class Map>
 ADDR_150
 CXXRecordDecl
-<TEST_DIR>/exceptions.cpp:62:17: warning: exception of type 'const std::runtime_error &' will be caught by earlier handler [-Wexceptions]
-   62 |         } catch (const std::runtime_error& e) {
-      |                        ^
 <TEST_DIR>/exceptions.cpp:60:17: note: for type 'const std::exception &'
    60 |         } catch (const std::exception& e) {
       |                        ^
@@ -4567,9 +4536,7 @@ ADDR_186
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Throwing an integer exception...\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 33
 1
@@ -4677,9 +4644,7 @@ ADDR_003
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-42
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 42
 <Id to Class Map>
 ADDR_190
@@ -5152,9 +5117,7 @@ ADDR_212
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-" the integer exception was caught, with value: "
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 47
 1
@@ -5349,9 +5312,7 @@ ADDR_011
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-'\n'
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 10
 ORDINARY
 <Id to Class Map>
@@ -5549,9 +5510,7 @@ ADDR_227
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Creating a vector of size 5... \n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 32
 1
@@ -5716,9 +5675,7 @@ ADDR_003
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-5
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 5
 <Id to Class Map>
 ADDR_236
@@ -6219,9 +6176,7 @@ ADDR_265
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"Accessing the 11th element of the vector...\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 44
 1
@@ -6482,9 +6437,7 @@ ADDR_003
 0
 0
 0
-%CLAVA_SOURCE_BEGIN%
-10
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 10
 <Id to Class Map>
 ADDR_276
@@ -7028,9 +6981,7 @@ ADDR_304
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-" a standard exception was caught, with message '"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 48
 1
@@ -7259,9 +7210,7 @@ ADDR_055
 1
 0
 0
-%CLAVA_SOURCE_BEGIN%
-"'\n"
-%CLAVA_SOURCE_END%
+%CLAVA_SOURCE_BLOCK%
 ORDINARY
 2
 1
