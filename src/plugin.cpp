@@ -4,7 +4,7 @@
 
 class Plugin : public DumpAstAction, public PluginASTAction {
 public:
-  Plugin() { DumpResources::init(0, -1); }
+  Plugin() { DumpResources::init(0, 0); }
   ~Plugin() override { DumpResources::finish(); }
 
   // Both DumpAstAction (via ASTFrontendAction) and PluginASTAction declare

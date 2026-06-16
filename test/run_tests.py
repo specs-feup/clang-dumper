@@ -852,7 +852,7 @@ def main():
         default=0,
         help=(
             "Maximum system-header traversal depth for test output. "
-            "Use -1 for the tool/plugin default of unlimited traversal."
+            "Use -1 for unlimited traversal."
         ),
     )
     parser.add_argument(
