@@ -661,7 +661,6 @@ def run_single_test(
     path: str,
     input_file: Path,
     expected_dir: Path,
-    expected_profile_dir: Optional[Path],
     failure_output_dir: Optional[Path],
     inputs_dir_str: str,
     generate: bool,
@@ -694,10 +693,6 @@ def run_single_test(
 
     expected_file_name = f"{test_name}.expected"
     expected_file = expected_dir / expected_file_name
-    if expected_profile_dir is not None:
-        profile_expected_file = expected_profile_dir / expected_file_name
-        if profile_expected_file.exists() or generate:
-            expected_file = profile_expected_file
 
     # Verify expected file exists (unless generating)
     if not generate and not expected_file.exists():
@@ -779,7 +774,7 @@ def run_single_test(
             f"Line count mismatch: expected {len(expected_lines)}, got {len(normalized_lines)}"
         )
 
-    return TestStatus.PASS, "PASSED"
+    return TestStatus.FAIL, "Unknown difference"
 
 
 def get_default_plugin_extension() -> str:
@@ -856,19 +851,11 @@ def main():
         ),
     )
     parser.add_argument(
-        "--expected-profile",
-        default=None,
-        help=(
-            "Optional target profile under test/expected-profiles/. "
-            "Only files present in the profile override the default expected output."
-        ),
-    )
-    parser.add_argument(
         "--failure-output-dir",
         default=None,
         help=(
             "Write normalized outputs for failed comparisons to this directory. "
-            "Useful for reviewing target-profile expected overrides from CI."
+            "Useful for reviewing CI differences without committing target-specific baselines."
         ),
     )
 
@@ -886,9 +873,6 @@ def main():
 
     inputs_dir = test_dir / "inputs"
     expected_dir = test_dir / "expected"
-    expected_profile_dir: Optional[Path] = None
-    if args.expected_profile:
-        expected_profile_dir = test_dir / "expected-profiles" / args.expected_profile
 
     if not inputs_dir.exists():
         print(f"ERROR: Inputs directory not found: {inputs_dir}", file=sys.stderr)
@@ -897,9 +881,6 @@ def main():
     if not args.generate and not expected_dir.exists():
         print(f"ERROR: Expected directory not found: {expected_dir}", file=sys.stderr)
         sys.exit(1)
-
-    if args.generate and expected_profile_dir is not None:
-        expected_profile_dir.mkdir(parents=True, exist_ok=True)
 
     failure_output_dir: Optional[Path] = None
     if args.failure_output_dir:
@@ -988,8 +969,6 @@ def main():
         print(f"Enabled features: {', '.join(sorted(enabled_features))}")
     if global_flags:
         print(f"Extra compiler args: {shlex.join(global_flags)}")
-    if expected_profile_dir is not None:
-        print(f"Expected profile: {args.expected_profile}")
     print()
 
     passed = 0
@@ -1037,7 +1016,6 @@ def main():
                 path=str(target_path),
                 input_file=test_file,
                 expected_dir=expected_dir,
-                expected_profile_dir=expected_profile_dir,
                 failure_output_dir=failure_output_dir,
                 inputs_dir_str=inputs_dir_str,
                 generate=args.generate,

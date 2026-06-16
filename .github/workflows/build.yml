@@ -100,11 +100,9 @@ jobs:
           - arch: x64
             runner: ubuntu-24.04
             opencl-arg: --enable-opencl
-            expected-profile: linux-x64
           - arch: arm64
             runner: ubuntu-24.04-arm
             opencl-arg: ""
-            expected-profile: linux-arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -145,21 +143,19 @@ jobs:
       - name: Test tool
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
-            --expected-profile=${{ matrix.expected-profile }} \
-            --failure-output-dir test/failures/${{ matrix.expected-profile }}/tool
+            --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool
 
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.opencl-arg }} \
-            --expected-profile=${{ matrix.expected-profile }} \
-            --failure-output-dir test/failures/${{ matrix.expected-profile }}/plugin
+            --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin
 
       - name: Upload failed test outputs
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: failed-test-outputs-${{ matrix.expected-profile }}
-          path: test/failures/${{ matrix.expected-profile }}/
+          name: failed-test-outputs-linux-${{ matrix.arch }}
+          path: test/failures/linux-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
 
@@ -198,11 +194,9 @@ jobs:
           - arch: x64
             runner: macos-15-intel
             opencl-arg: --enable-opencl
-            expected-profile: macos-x64
           - arch: arm64
             runner: macos-26
             opencl-arg: ""
-            expected-profile: macos-arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -244,8 +238,7 @@ jobs:
       - name: Test tool
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
-            --expected-profile=${{ matrix.expected-profile }} \
-            --failure-output-dir test/failures/${{ matrix.expected-profile }}/tool \
+            --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
             --extra-clang-arg="-nostdinc++" \
@@ -256,8 +249,7 @@ jobs:
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
-            --expected-profile=${{ matrix.expected-profile }} \
-            --failure-output-dir test/failures/${{ matrix.expected-profile }}/plugin \
+            --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
             --extra-clang-arg="-nostdinc++" \
@@ -277,8 +269,8 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: failed-test-outputs-${{ matrix.expected-profile }}
-          path: test/failures/${{ matrix.expected-profile }}/
+          name: failed-test-outputs-macos-${{ matrix.arch }}
+          path: test/failures/macos-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
 
@@ -391,14 +383,12 @@ jobs:
             executable: clang-dumper-windows-arm64.exe
             include-package: clang-dumper-windows-arm64-includes.zip
             triple: aarch64-w64-mingw32
-            expected-profile: windows-arm64
           - arch: x86_64
             runner: windows-2025
             artifact: windows-x86_64-tool
             executable: clang-dumper-windows-x86_64.exe
             include-package: clang-dumper-windows-x86_64-includes.zip
             triple: x86_64-w64-mingw32
-            expected-profile: windows-x86_64
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -424,8 +414,7 @@ jobs:
           INCLUDE_ROOT="$(pwd -W)/windows-includes"
 
           python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
-            --expected-profile=${{ matrix.expected-profile }} \
-            --failure-output-dir test/failures/${{ matrix.expected-profile }}/tool \
+            --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
             --extra-clang-arg="--target=${{ matrix.triple }}" \
             --extra-clang-arg="-Wno-unused-command-line-argument" \
             --extra-clang-arg="-nostdinc" \
@@ -441,7 +430,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: failed-test-outputs-${{ matrix.expected-profile }}
-          path: test/failures/${{ matrix.expected-profile }}/
+          name: failed-test-outputs-windows-${{ matrix.arch }}
+          path: test/failures/windows-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
