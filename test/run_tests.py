@@ -342,14 +342,13 @@ _TARGET_ATTR_WARNING_RE = re.compile(
 # signed. The tests exercise AST shape, not the host default-char ABI.
 _PLAIN_CHAR_KIND_RE = re.compile(r"^Char_[SU]$", re.MULTILINE)
 _WIDE_CHAR_KIND_RE = re.compile(r"^WChar_[SU]$", re.MULTILINE)
+_UNSIGNED_INT_ARRAY_RE = re.compile(r"^unsigned int\[(\d+)\]$")
 _DRIVE_PREFIXED_PLACEHOLDER_RE = re.compile(
     rf"\b[A-Za-z]:(?={re.escape(PATH_PLACEHOLDER)}|"
     rf"{re.escape(SYSTEM_INCLUDE_PLACEHOLDER)}|"
     rf"{re.escape(CLANG_INCLUDE_PLACEHOLDER)}|"
     rf"{re.escape(GCC_INCLUDE_PLACEHOLDER)})"
 )
-_PLAIN_CHAR_ARRAY_RE = re.compile(r"^unsigned int\[(\d+)\]$", re.MULTILINE)
-
 _DIAGNOSTIC_RE = re.compile(
     r"^<TEST_DIR>/[^\n]+: warning: [^\n]+\n"
     r"(?:[ \t]*\d+ \|[^\n]*\n)?"
@@ -396,6 +395,42 @@ def normalize_type_widths(output: str) -> str:
     return '\n'.join(lines)
 
 
+def normalize_plain_char_arrays(output: str) -> str:
+    """
+    Normalize host-dependent plain-char array spellings without rewriting real
+    unsigned-int arrays. A ConstantArrayType spelling is only treated as a
+    plain-char artifact when its element type points at a BuiltinType for char.
+    """
+    lines = output.split("\n")
+    plain_char_type_ids: set[str] = set()
+
+    for i, line in enumerate(lines):
+        if (
+            line == "<BuiltinTypeData>"
+            and i + 11 < len(lines)
+            and lines[i + 2] == "BuiltinType"
+            and lines[i + 3] == "char"
+            and lines[i + 10] == "char"
+        ):
+            plain_char_type_ids.add(lines[i + 1])
+
+    if not plain_char_type_ids:
+        return output
+
+    for i, line in enumerate(lines):
+        match = _UNSIGNED_INT_ARRAY_RE.fullmatch(line)
+        if (
+            match
+            and i >= 3
+            and lines[i - 3] == "<ConstantArrayTypeData>"
+            and i + 8 < len(lines)
+            and lines[i + 8] in plain_char_type_ids
+        ):
+            lines[i] = f"char[{match.group(1)}]"
+
+    return "\n".join(lines)
+
+
 def normalize_static_output(output: str) -> str:
     """
     Normalize architecture- and installation-dependent text that can appear in
@@ -409,7 +444,7 @@ def normalize_static_output(output: str) -> str:
     )
     output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
     output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
-    output = _PLAIN_CHAR_ARRAY_RE.sub(r"int[\1]", output)
+    output = normalize_plain_char_arrays(output)
     output = _DRIVE_PREFIXED_PLACEHOLDER_RE.sub("", output)
     output = _TARGET_ATTR_WARNING_RE.sub(
         "warning: target attribute diagnostic normalized; "
@@ -428,13 +463,6 @@ def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bo
     actual = actual_line.rstrip("\r\n")
 
     if expected == actual:
-        return True
-
-    # Address placeholder numbers are assigned by first-seen order. Host-specific
-    # headers can change that order even after raw addresses are normalized.
-    if _ADDR_PLACEHOLDER_RE.fullmatch(expected) and _ADDR_PLACEHOLDER_RE.fullmatch(
-        actual
-    ):
         return True
 
     return False
