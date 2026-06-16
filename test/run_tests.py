@@ -16,6 +16,7 @@ Usage:
 """
 
 import argparse
+import gzip
 import json
 import os
 import platform
@@ -368,6 +369,16 @@ _ANON_DECL_NAME_RE = re.compile(r"^(\n)(\d+)(\n12\n)", re.MULTILINE)
 _WINDOWS_ADDR_CANDIDATE_RE = re.compile(r"\b[0-9a-fA-F]{16}_\d+\b")
 
 
+def canonical_raw_address(raw_address: str) -> str:
+    """Return a stable key for raw address tokens across platform spellings."""
+    pointer, suffix = raw_address.rsplit("_", 1)
+    pointer = pointer.lower()
+    if pointer.startswith("0x"):
+        pointer = pointer[2:]
+    pointer = pointer.lstrip("0") or "0"
+    return f"{pointer}_{suffix}"
+
+
 def normalize_wide_string_literals(output: str) -> str:
     """
     Normalize target-dependent WIDE string literal byte payloads.
@@ -484,8 +495,10 @@ def normalize_static_output(output: str, normalize_dynamic_tokens: bool = True) 
         )
     output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
     output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
-    output = normalize_plain_char_arrays(output)
-    output = normalize_wide_string_literals(output)
+    if "unsigned int[" in output and "<BuiltinTypeData>" in output:
+        output = normalize_plain_char_arrays(output)
+    if "\nWIDE\n" in output or output.startswith("WIDE\n"):
+        output = normalize_wide_string_literals(output)
     output = _UNSIGNED_LONG_LONG_LINE_RE.sub("unsigned long", output)
     output = _ULONG_LONG_KIND_RE.sub("ULong", output)
     output = output.replace("std::basic_string<char>", "std::string")
@@ -495,14 +508,17 @@ def normalize_static_output(output: str, normalize_dynamic_tokens: bool = True) 
     output = output.replace("std::basic_istream<char>", "std::istream")
     output = output.replace("basic_istream<char>", "istream")
     output = _ANON_DECL_NAME_RE.sub(r"\1<ANON_DECL_NAME>\3", output)
-    output = _DRIVE_PREFIXED_PLACEHOLDER_RE.sub("", output)
+    if ":<" in output:
+        output = _DRIVE_PREFIXED_PLACEHOLDER_RE.sub("", output)
     output = _TARGET_ATTR_WARNING_RE.sub(
         "warning: target attribute diagnostic normalized; "
         "target attribute ignored [-Wignored-attributes]",
         output,
     )
-    output = _DIAGNOSTIC_RE.sub("", output)
-    output = _SOURCE_BLOCK_RE.sub("%CLAVA_SOURCE_BLOCK%\n", output)
+    if " warning: " in output and PATH_PLACEHOLDER in output:
+        output = _DIAGNOSTIC_RE.sub("", output)
+    if "%CLAVA_SOURCE_BEGIN%" in output:
+        output = _SOURCE_BLOCK_RE.sub("%CLAVA_SOURCE_BLOCK%\n", output)
     output = normalize_type_widths(output)
     return output
 
@@ -524,13 +540,14 @@ def normalize_captured_lines(
 
         if group_name == "addr":
             raw_address = match.group(0)
-            if raw_address not in address_map:
+            address_key = canonical_raw_address(raw_address)
+            if address_key not in address_map:
                 placeholder = f"ADDR_{counter[0]:03d}"
-                address_map[raw_address] = placeholder
+                address_map[address_key] = placeholder
                 placeholder_to_raw[placeholder] = [raw_address]
                 counter[0] += 1
             else:
-                placeholder = address_map[raw_address]
+                placeholder = address_map[address_key]
                 if raw_address not in placeholder_to_raw[placeholder]:
                     placeholder_to_raw[placeholder].append(raw_address)
             return placeholder
@@ -642,6 +659,48 @@ def compare_normalized_outputs(
     return "Unknown difference"
 
 
+def platform_expected_dir(test_dir: Path, baseline_platform: Optional[str]) -> Optional[Path]:
+    """Return the platform baseline directory for a requested CI target."""
+    if not baseline_platform:
+        return None
+    return test_dir / "expected-platforms" / baseline_platform
+
+
+def platform_expected_dirs(test_dir: Path, baseline_platform: Optional[str]) -> list[Path]:
+    """Return exact and OS-family platform baseline directories in lookup order."""
+    exact_dir = platform_expected_dir(test_dir, baseline_platform)
+    if exact_dir is None:
+        return []
+
+    dirs = [exact_dir]
+    os_family = baseline_platform.split("-", 1)[0]
+    if os_family != baseline_platform:
+        dirs.append(test_dir / "expected-platforms" / os_family)
+    return dirs
+
+
+def resolve_expected_file(
+    expected_dir: Path,
+    platform_dirs: Iterable[Path],
+    test_name: str,
+) -> tuple[Path, str]:
+    """Prefer a platform baseline when present, otherwise use the shared one."""
+    for platform_dir in platform_dirs:
+        for suffix in (".expected", ".expected.gz"):
+            platform_file = platform_dir / f"{test_name}{suffix}"
+            if platform_file.exists():
+                return platform_file, platform_dir.name
+    return expected_dir / f"{test_name}.expected", "shared"
+
+
+def read_expected_output(expected_file: Path) -> str:
+    """Read a plain or gzip-compressed expected-output file."""
+    if expected_file.suffix == ".gz":
+        with gzip.open(expected_file, "rt", encoding="utf-8") as stream:
+            return stream.read()
+    return expected_file.read_text(encoding="utf-8")
+
+
 def get_test_config(test_name: str) -> TestConfig:
     """
     Get the configuration for a test file.
@@ -666,7 +725,7 @@ def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[
     """
     errors = []
     for placeholder, raw_addresses in placeholder_to_raw.items():
-        unique_addresses = set(raw_addresses)
+        unique_addresses = {canonical_raw_address(address) for address in raw_addresses}
         if len(unique_addresses) > 1:
             errors.append(
                 f"Inconsistent address for {placeholder}: "
@@ -785,11 +844,11 @@ def run_single_test(
     path: str,
     input_file: Path,
     expected_dir: Path,
+    platform_expected_dirs: list[Path],
     failure_output_dir: Optional[Path],
     raw_output_dir: Optional[Path],
     inputs_dir_str: str,
     generate: bool,
-    compare_expected: bool,
     enabled_features: set[str],
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
@@ -819,9 +878,16 @@ def run_single_test(
 
     expected_file_name = f"{test_name}.expected"
     expected_file = expected_dir / expected_file_name
+    expected_source = "shared"
+    if not generate:
+        expected_file, expected_source = resolve_expected_file(
+            expected_dir,
+            platform_expected_dirs,
+            test_name,
+        )
 
     # Verify expected file exists (unless generating)
-    if not generate and compare_expected and not expected_file.exists():
+    if not generate and not expected_file.exists():
         return TestStatus.FAIL, (
             f"Expected file not found: {expected_file}\n"
             f"Run with --generate to create it, or check if the test is properly registered."
@@ -877,9 +943,6 @@ def run_single_test(
             consistency_errors
         )
 
-    if not compare_expected:
-        return TestStatus.PASS, "PASSED"
-
     if generate:
         # Generate mode: save normalized output as expected
         expected_file.parent.mkdir(parents=True, exist_ok=True)
@@ -888,7 +951,7 @@ def run_single_test(
 
     mismatch = compare_normalized_outputs(
         test_name,
-        expected_file.read_text(encoding="utf-8"),
+        read_expected_output(expected_file),
         normalized_output,
     )
     if mismatch is None:
@@ -899,18 +962,10 @@ def run_single_test(
         failure_output_file = failure_output_dir / expected_file_name
         failure_output_file.write_text(normalized_output, encoding="utf-8")
 
-    return TestStatus.FAIL, mismatch
-
-
-def get_default_plugin_extension() -> str:
-    """Get the default plugin file extension for the current platform."""
-    system = platform.system()
-    if system == "Darwin":  # macOS
-        return ".dylib"
-    elif system == "Windows":
-        return ".dll"
-    else:
-        return ".so"
+    return TestStatus.FAIL, (
+        f"{mismatch}\n"
+        f"  Expected file: {expected_file} ({expected_source} baseline)"
+    )
 
 
 def main():
@@ -980,7 +1035,7 @@ def main():
         default=None,
         help=(
             "Write normalized outputs for failed comparisons to this directory. "
-            "Useful for reviewing CI differences without committing target-specific baselines."
+            "Useful for reviewing CI differences and replaying normalization changes."
         ),
     )
     parser.add_argument(
@@ -992,12 +1047,11 @@ def main():
         ),
     )
     parser.add_argument(
-        "--no-compare",
-        action="store_true",
+        "--baseline-platform",
+        default=None,
         help=(
-            "Run every enabled test and require successful dumping, but skip "
-            "comparison against expected files. Useful for target ABIs whose "
-            "full AST graph is expected to differ."
+            "Use test/expected-platforms/<platform>/<test>.expected when it "
+            "exists, falling back to test/expected/<test>.expected."
         ),
     )
 
@@ -1015,6 +1069,10 @@ def main():
 
     inputs_dir = test_dir / "inputs"
     expected_dir = test_dir / "expected"
+    target_platform_expected_dirs = platform_expected_dirs(
+        test_dir,
+        args.baseline_platform,
+    )
 
     if not inputs_dir.exists():
         print(f"ERROR: Inputs directory not found: {inputs_dir}", file=sys.stderr)
@@ -1113,7 +1171,7 @@ def main():
             "enabled_features": sorted(enabled_features),
             "extra_clang_args": global_flags,
             "system_header_threshold": args.system_header_threshold,
-            "compare_expected": not args.no_compare,
+            "baseline_platform": args.baseline_platform,
         }
         (raw_output_dir / "_manifest.json").write_text(
             json.dumps(manifest, indent=2, sort_keys=True) + "\n",
@@ -1131,6 +1189,8 @@ def main():
         print(f"Enabled features: {', '.join(sorted(enabled_features))}")
     if global_flags:
         print(f"Extra compiler args: {shlex.join(global_flags)}")
+    if args.baseline_platform:
+        print(f"Baseline platform: {args.baseline_platform}")
     print()
 
     passed = 0
@@ -1178,11 +1238,11 @@ def main():
                 path=str(target_path),
                 input_file=test_file,
                 expected_dir=expected_dir,
+                platform_expected_dirs=target_platform_expected_dirs,
                 failure_output_dir=failure_output_dir,
                 raw_output_dir=raw_output_dir,
                 inputs_dir_str=inputs_dir_str,
                 generate=args.generate,
-                compare_expected=not args.no_compare,
                 enabled_features=enabled_features,
                 clang_path=clang_path,
                 global_flags=global_flags,

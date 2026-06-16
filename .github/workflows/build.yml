@@ -143,12 +143,14 @@ jobs:
       - name: Test tool
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
+            --baseline-platform linux-${{ matrix.arch }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.opencl-arg }} \
+            --baseline-platform linux-${{ matrix.arch }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
 
@@ -249,7 +251,7 @@ jobs:
       - name: Test tool
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
-            --no-compare \
+            --baseline-platform macos-${{ matrix.arch }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
@@ -262,7 +264,7 @@ jobs:
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
-            --no-compare \
+            --baseline-platform macos-${{ matrix.arch }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
@@ -437,7 +439,8 @@ jobs:
           python -m zipfile -e "dist/${{ matrix.include-package }}" windows-includes
           INCLUDE_ROOT="$(pwd -W)/windows-includes"
 
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 --no-compare \
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
+            --baseline-platform windows-${{ matrix.arch }} \
             --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
             --extra-clang-arg="--target=${{ matrix.triple }}" \
