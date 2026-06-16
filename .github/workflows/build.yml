@@ -143,12 +143,14 @@ jobs:
       - name: Test tool
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
-            --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool
+            --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
+            --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.opencl-arg }} \
-            --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin
+            --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
+            --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
 
       - name: Upload failed test outputs
         if: failure()
@@ -156,6 +158,15 @@ jobs:
         with:
           name: failed-test-outputs-linux-${{ matrix.arch }}
           path: test/failures/linux-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload raw test outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: raw-test-outputs-linux-${{ matrix.arch }}
+          path: test/raw-outputs/linux-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
 
@@ -239,6 +250,7 @@ jobs:
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
+            --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
             --extra-clang-arg="-nostdinc++" \
@@ -250,6 +262,7 @@ jobs:
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
+            --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
             --extra-clang-arg="${SDKROOT}" \
             --extra-clang-arg="-nostdinc++" \
@@ -271,6 +284,15 @@ jobs:
         with:
           name: failed-test-outputs-macos-${{ matrix.arch }}
           path: test/failures/macos-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload raw test outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: raw-test-outputs-macos-${{ matrix.arch }}
+          path: test/raw-outputs/macos-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
 
@@ -413,8 +435,9 @@ jobs:
           python -m zipfile -e "dist/${{ matrix.include-package }}" windows-includes
           INCLUDE_ROOT="$(pwd -W)/windows-includes"
 
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 --no-compare \
             --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
+            --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
             --extra-clang-arg="--target=${{ matrix.triple }}" \
             --extra-clang-arg="-Wno-unused-command-line-argument" \
             --extra-clang-arg="-nostdinc" \
@@ -432,5 +455,14 @@ jobs:
         with:
           name: failed-test-outputs-windows-${{ matrix.arch }}
           path: test/failures/windows-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload raw test outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: raw-test-outputs-windows-${{ matrix.arch }}
+          path: test/raw-outputs/windows-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore

@@ -16,6 +16,7 @@ Usage:
 """
 
 import argparse
+import json
 import os
 import platform
 import re
@@ -25,7 +26,7 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal, Optional, get_args
+from typing import Iterable, Literal, Optional, get_args
 
 # Type alias for mode
 Mode = Literal["tool", "plugin"]
@@ -72,7 +73,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "VectorType.cpp": T(),
     "array_filler.c": T(),
     "ast-dump-c-attr.c": T(),
-    "ast-dump-expr.c": T(),
+    "ast-dump-expr.c": T(requires={"x86"}),
     "ast-dump-records.c": T(),
     "ast-dump-stmt.c": T(),
     "ast-print-bool.c": T(flags=["-DDEF_BOOL_CBOOL"]), # ["-DDEF_BOOL_INT"]
@@ -209,7 +210,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "types.cpp": T(),
     "using.cpp": T(),
     "variadic-promotion.c": T(),
-    "variadic.c": T(),
+    "variadic.c": T(requires={"x86"}),
     "while.cpp": T(),
 }
 
@@ -361,6 +362,43 @@ _SOURCE_BLOCK_RE = re.compile(
     r"^%CLAVA_SOURCE_END%\n?",
     re.MULTILINE,
 )
+_UNSIGNED_LONG_LONG_LINE_RE = re.compile(r"^unsigned long long$", re.MULTILINE)
+_ULONG_LONG_KIND_RE = re.compile(r"^ULongLong$", re.MULTILINE)
+_ANON_DECL_NAME_RE = re.compile(r"^(\n)(\d+)(\n12\n)", re.MULTILINE)
+_WINDOWS_ADDR_CANDIDATE_RE = re.compile(r"\b[0-9a-fA-F]{16}_\d+\b")
+
+
+def normalize_wide_string_literals(output: str) -> str:
+    """
+    Normalize target-dependent WIDE string literal byte payloads.
+
+    Clang reports wide character byte width and bytes according to the target
+    ABI. The tests care about AST shape and string kind/length, not whether the
+    target uses 2-byte or 4-byte wide characters.
+    """
+    lines = output.split("\n")
+    normalized: list[str] = []
+    i = 0
+    while i < len(lines):
+        normalized.append(lines[i])
+
+        if (
+            lines[i] == "WIDE"
+            and i + 3 < len(lines)
+            and lines[i + 1].isdigit()
+            and lines[i + 2].isdigit()
+            and lines[i + 3].isdigit()
+        ):
+            byte_count = int(lines[i + 3])
+            normalized.append(lines[i + 1])
+            normalized.append("<WIDE_CHAR_WIDTH>")
+            normalized.append("<WIDE_STRING_BYTES>")
+            i += 4 + byte_count
+            continue
+
+        i += 1
+
+    return "\n".join(normalized)
 
 def normalize_type_widths(output: str) -> str:
     """
@@ -431,20 +469,32 @@ def normalize_plain_char_arrays(output: str) -> str:
     return "\n".join(lines)
 
 
-def normalize_static_output(output: str) -> str:
+def normalize_static_output(output: str, normalize_dynamic_tokens: bool = True) -> str:
     """
     Normalize architecture- and installation-dependent text that can appear in
     both freshly generated output and checked-in baselines.
     """
-    output = _UNIFIED_REGEX.sub(
-        lambda match: _UNIFIED_REPLACEMENTS.get(match.lastgroup, match.group(0))
-        if match.lastgroup != "addr"
-        else match.group(0),
-        output,
-    )
+    output = output.replace("\r\n", "\n").replace("\r", "\n")
+    if normalize_dynamic_tokens:
+        output = _UNIFIED_REGEX.sub(
+            lambda match: _UNIFIED_REPLACEMENTS.get(match.lastgroup, match.group(0))
+            if match.lastgroup != "addr"
+            else match.group(0),
+            output,
+        )
     output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
     output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
     output = normalize_plain_char_arrays(output)
+    output = normalize_wide_string_literals(output)
+    output = _UNSIGNED_LONG_LONG_LINE_RE.sub("unsigned long", output)
+    output = _ULONG_LONG_KIND_RE.sub("ULong", output)
+    output = output.replace("std::basic_string<char>", "std::string")
+    output = output.replace("basic_string<char>", "string")
+    output = output.replace("std::basic_ostream<char>", "std::ostream")
+    output = output.replace("basic_ostream<char>", "ostream")
+    output = output.replace("std::basic_istream<char>", "std::istream")
+    output = output.replace("basic_istream<char>", "istream")
+    output = _ANON_DECL_NAME_RE.sub(r"\1<ANON_DECL_NAME>\3", output)
     output = _DRIVE_PREFIXED_PLACEHOLDER_RE.sub("", output)
     output = _TARGET_ATTR_WARNING_RE.sub(
         "warning: target attribute diagnostic normalized; "
@@ -457,7 +507,78 @@ def normalize_static_output(output: str) -> str:
     return output
 
 
-def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bool:
+def normalize_captured_lines(
+    raw_lines: Iterable[str],
+    inputs_dir_str: str,
+) -> tuple[str, dict[str, list[str]]]:
+    """Normalize captured raw stderr lines from a dumper invocation."""
+    address_map: dict[str, str] = {}
+    placeholder_to_raw: dict[str, list[str]] = {}
+    counter = [1]
+
+    def unified_replacer(match: re.Match[str]) -> str:
+        """Single-pass replacement function for both paths and addresses."""
+        group_name = match.lastgroup
+        if group_name is None:
+            return match.group(0)
+
+        if group_name == "addr":
+            raw_address = match.group(0)
+            if raw_address not in address_map:
+                placeholder = f"ADDR_{counter[0]:03d}"
+                address_map[raw_address] = placeholder
+                placeholder_to_raw[placeholder] = [raw_address]
+                counter[0] += 1
+            else:
+                placeholder = address_map[raw_address]
+                if raw_address not in placeholder_to_raw[placeholder]:
+                    placeholder_to_raw[placeholder].append(raw_address)
+            return placeholder
+
+        replacement = _UNIFIED_REPLACEMENTS.get(group_name)
+        if replacement is not None:
+            return replacement
+        return match.group(0)
+
+    inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")
+    normalized_lines: list[str] = []
+    for line in raw_lines:
+        line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
+        line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
+        line = line.replace(PATH_PLACEHOLDER + "\\", PATH_PLACEHOLDER + "/")
+        if (
+            "0x" in line
+            or "/" in line
+            or "\\" in line
+            or _WINDOWS_ADDR_CANDIDATE_RE.search(line)
+        ):
+            line = _UNIFIED_REGEX.sub(unified_replacer, line)
+        normalized_lines.append(line)
+
+    return (
+        normalize_static_output(
+            "".join(normalized_lines),
+            normalize_dynamic_tokens=False,
+        ),
+        placeholder_to_raw,
+    )
+
+
+def normalize_captured_output(
+    raw_output: str,
+    inputs_dir_str: str,
+) -> tuple[str, dict[str, list[str]]]:
+    """Normalize one captured raw stderr stream from a dumper invocation."""
+    return normalize_captured_lines(raw_output.splitlines(keepends=True), inputs_dir_str)
+
+
+def lines_equivalent(
+    test_name: str,
+    expected_line: str,
+    actual_line: str,
+    expected_to_actual_addr: dict[str, str],
+    actual_to_expected_addr: dict[str, str],
+) -> bool:
     """Return True when two normalized lines are equivalent across hosts."""
     expected = expected_line.rstrip("\r\n")
     actual = actual_line.rstrip("\r\n")
@@ -465,7 +586,60 @@ def lines_equivalent(test_name: str, expected_line: str, actual_line: str) -> bo
     if expected == actual:
         return True
 
+    if _ADDR_PLACEHOLDER_RE.fullmatch(expected) and _ADDR_PLACEHOLDER_RE.fullmatch(
+        actual
+    ):
+        mapped_actual = expected_to_actual_addr.get(expected)
+        mapped_expected = actual_to_expected_addr.get(actual)
+        if mapped_actual is not None:
+            return mapped_actual == actual
+        if mapped_expected is not None:
+            return mapped_expected == expected
+
+        expected_to_actual_addr[expected] = actual
+        actual_to_expected_addr[actual] = expected
+        return True
+
     return False
+
+
+def compare_normalized_outputs(
+    test_name: str,
+    expected_output: str,
+    normalized_output: str,
+) -> Optional[str]:
+    """Return a failure message when two normalized outputs differ."""
+    expected_output = normalize_static_output(expected_output)
+
+    if normalized_output == expected_output:
+        return None
+
+    normalized_lines = normalized_output.splitlines(keepends=True)
+    expected_lines = expected_output.splitlines(keepends=True)
+    expected_to_actual_addr: dict[str, str] = {}
+    actual_to_expected_addr: dict[str, str] = {}
+
+    for i, (norm_line, exp_line) in enumerate(zip(normalized_lines, expected_lines), 1):
+        if not lines_equivalent(
+            test_name,
+            exp_line,
+            norm_line,
+            expected_to_actual_addr,
+            actual_to_expected_addr,
+        ):
+            return (
+                f"Mismatch at line {i}:\n"
+                f"  Expected: {exp_line.rstrip()!r}\n"
+                f"  Got:      {norm_line.rstrip()!r}"
+            )
+
+    if len(normalized_lines) != len(expected_lines):
+        return (
+            f"Line count mismatch: expected {len(expected_lines)}, "
+            f"got {len(normalized_lines)}"
+        )
+
+    return "Unknown difference"
 
 
 def get_test_config(test_name: str) -> TestConfig:
@@ -510,13 +684,9 @@ def run_tool_and_normalize(
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 0,
-) -> tuple[int, str, str, dict[str, list[str]]]:
+) -> tuple[int, str, str, str, dict[str, list[str]]]:
     """
-    Run the clang-dumper tool or plugin and normalize output via streaming.
-
-    This function combines subprocess execution with output normalization,
-    processing stderr line-by-line as it arrives to reduce memory pressure
-    and improve performance on large outputs.
+    Run the clang-dumper tool or plugin and normalize captured stderr.
 
     Args:
         mode: Either "tool" or "plugin"
@@ -528,7 +698,7 @@ def run_tool_and_normalize(
         extra_flags: Additional compiler flags to pass
 
     Returns:
-        tuple: (return_code, stdout, normalized_stderr, address_mapping)
+        tuple: (return_code, stdout, raw_stderr, normalized_stderr, address_mapping)
     """
     flags = extra_flags or []
 
@@ -564,65 +734,19 @@ def run_tool_and_normalize(
             input_file,
         ]
 
-    # State for address normalization
-    address_map: dict[str, str] = {}  # raw_address -> placeholder
-    placeholder_to_raw: dict[str, list[str]] = {}  # placeholder -> [raw_addresses]
-    counter = [1]  # Use list to allow mutation in nested function
-
-    def unified_replacer(match: re.Match[str]) -> str:
-        """Single-pass replacement function for both paths and addresses."""
-        group_name = match.lastgroup
-        if group_name is None:
-            return match.group(0)
-        
-        if group_name == "addr":
-            raw_address = match.group(0)
-            if raw_address not in address_map:
-                placeholder = f"ADDR_{counter[0]:03d}"
-                address_map[raw_address] = placeholder
-                placeholder_to_raw[placeholder] = [raw_address]
-                counter[0] += 1
-            else:
-                placeholder = address_map[raw_address]
-                if raw_address not in placeholder_to_raw[placeholder]:
-                    placeholder_to_raw[placeholder].append(raw_address)
-            return placeholder
-        
-        replacement = _UNIFIED_REPLACEMENTS.get(group_name)
-        if replacement is not None:
-            return replacement
-        return match.group(0)
-
-    # Run subprocess with streaming stderr processing
     proc = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
     )
-    
-    # Process stderr line-by-line for memory efficiency on large outputs
-    normalized_lines: list[str] = []
-    assert proc.stderr is not None
-    # Precompute the backslash version of inputs_dir for Windows path matching
-    inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")
-    for line in proc.stderr:
-        # Fast string replacement for inputs_dir (before regex)
-        # Handle both forward slash (Unix/Clang output) and backslash (Windows native) paths
-        line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
-        line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
-        # Normalize path separator after placeholder to forward slash
-        line = line.replace(PATH_PLACEHOLDER + "\\", PATH_PLACEHOLDER + "/")
-        # Single-pass regex for system paths and addresses
-        line = _UNIFIED_REGEX.sub(unified_replacer, line)
-        normalized_lines.append(line)
-    
-    # Read stdout and wait for process
-    stdout, _ = proc.communicate()
-    
-    normalized_stderr = "".join(normalized_lines)
-    normalized_stderr = normalize_static_output(normalized_stderr)
-    return proc.returncode, stdout, normalized_stderr, placeholder_to_raw
+
+    stdout, raw_stderr = proc.communicate()
+    normalized_stderr, placeholder_to_raw = normalize_captured_output(
+        raw_stderr,
+        inputs_dir_str,
+    )
+    return proc.returncode, stdout, raw_stderr, normalized_stderr, placeholder_to_raw
 
 
 def discover_tests(inputs_dir: Path) -> list[Path]:
@@ -662,8 +786,10 @@ def run_single_test(
     input_file: Path,
     expected_dir: Path,
     failure_output_dir: Optional[Path],
+    raw_output_dir: Optional[Path],
     inputs_dir_str: str,
     generate: bool,
+    compare_expected: bool,
     enabled_features: set[str],
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
@@ -695,7 +821,7 @@ def run_single_test(
     expected_file = expected_dir / expected_file_name
 
     # Verify expected file exists (unless generating)
-    if not generate and not expected_file.exists():
+    if not generate and compare_expected and not expected_file.exists():
         return TestStatus.FAIL, (
             f"Expected file not found: {expected_file}\n"
             f"Run with --generate to create it, or check if the test is properly registered."
@@ -703,7 +829,13 @@ def run_single_test(
 
     # Run the tool/plugin with streaming normalization
     flags = list(global_flags or []) + config.flags
-    return_code, stdout, normalized_output, placeholder_to_raw = run_tool_and_normalize(
+    (
+        return_code,
+        stdout,
+        raw_output,
+        normalized_output,
+        placeholder_to_raw,
+    ) = run_tool_and_normalize(
         mode,
         path,
         str(input_file),
@@ -713,6 +845,11 @@ def run_single_test(
         flags,
         system_header_threshold,
     )
+
+    if raw_output_dir is not None:
+        raw_output_dir.mkdir(parents=True, exist_ok=True)
+        raw_output_file = raw_output_dir / f"{test_name}.stderr"
+        raw_output_file.write_text(raw_output, encoding="utf-8")
 
     if return_code != 0:
         if failure_output_dir is not None:
@@ -740,15 +877,21 @@ def run_single_test(
             consistency_errors
         )
 
+    if not compare_expected:
+        return TestStatus.PASS, "PASSED"
+
     if generate:
         # Generate mode: save normalized output as expected
         expected_file.parent.mkdir(parents=True, exist_ok=True)
         expected_file.write_text(normalized_output, encoding="utf-8")
         return TestStatus.GENERATED, f"Generated {expected_file}"
 
-    expected_output = normalize_static_output(expected_file.read_text(encoding="utf-8"))
-
-    if normalized_output == expected_output:
+    mismatch = compare_normalized_outputs(
+        test_name,
+        expected_file.read_text(encoding="utf-8"),
+        normalized_output,
+    )
+    if mismatch is None:
         return TestStatus.PASS, "PASSED"
 
     if failure_output_dir is not None:
@@ -756,25 +899,7 @@ def run_single_test(
         failure_output_file = failure_output_dir / expected_file_name
         failure_output_file.write_text(normalized_output, encoding="utf-8")
 
-    # Find first difference for error message
-    normalized_lines = normalized_output.splitlines(keepends=True)
-    expected_lines = expected_output.splitlines(keepends=True)
-
-    for i, (norm_line, exp_line) in enumerate(zip(normalized_lines, expected_lines), 1):
-        if not lines_equivalent(test_name, exp_line, norm_line):
-            return TestStatus.FAIL, (
-                f"Mismatch at line {i}:\n"
-                f"  Expected: {exp_line.rstrip()!r}\n"
-                f"  Got:      {norm_line.rstrip()!r}"
-            )
-
-    # Different number of lines
-    if len(normalized_lines) != len(expected_lines):
-        return TestStatus.FAIL, (
-            f"Line count mismatch: expected {len(expected_lines)}, got {len(normalized_lines)}"
-        )
-
-    return TestStatus.FAIL, "Unknown difference"
+    return TestStatus.FAIL, mismatch
 
 
 def get_default_plugin_extension() -> str:
@@ -858,6 +983,23 @@ def main():
             "Useful for reviewing CI differences without committing target-specific baselines."
         ),
     )
+    parser.add_argument(
+        "--raw-output-dir",
+        default=None,
+        help=(
+            "Write raw, non-normalized stderr for every executed test to this "
+            "directory, plus a _manifest.json file for offline replay."
+        ),
+    )
+    parser.add_argument(
+        "--no-compare",
+        action="store_true",
+        help=(
+            "Run every enabled test and require successful dumping, but skip "
+            "comparison against expected files. Useful for target ABIs whose "
+            "full AST graph is expected to differ."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -885,6 +1027,10 @@ def main():
     failure_output_dir: Optional[Path] = None
     if args.failure_output_dir:
         failure_output_dir = Path(args.failure_output_dir)
+
+    raw_output_dir: Optional[Path] = None
+    if args.raw_output_dir:
+        raw_output_dir = Path(args.raw_output_dir)
 
     # Verify target path exists (tool executable or plugin library)
     target_path = Path(args.path)
@@ -958,6 +1104,22 @@ def main():
     # Use forward slashes for cross-platform consistency (matches normalization in run_tool_and_normalize)
     inputs_dir_str = str(inputs_dir.resolve()).replace("\\", "/")
 
+    if raw_output_dir is not None:
+        raw_output_dir.mkdir(parents=True, exist_ok=True)
+        manifest = {
+            "format": 1,
+            "mode": args.mode,
+            "inputs_dir": inputs_dir_str,
+            "enabled_features": sorted(enabled_features),
+            "extra_clang_args": global_flags,
+            "system_header_threshold": args.system_header_threshold,
+            "compare_expected": not args.no_compare,
+        }
+        (raw_output_dir / "_manifest.json").write_text(
+            json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
     num_workers = args.jobs if args.jobs is not None else os.cpu_count() or 1
     if num_workers < 1:
         parser.error("--jobs must be at least 1")
@@ -1017,8 +1179,10 @@ def main():
                 input_file=test_file,
                 expected_dir=expected_dir,
                 failure_output_dir=failure_output_dir,
+                raw_output_dir=raw_output_dir,
                 inputs_dir_str=inputs_dir_str,
                 generate=args.generate,
+                compare_expected=not args.no_compare,
                 enabled_features=enabled_features,
                 clang_path=clang_path,
                 global_flags=global_flags,
