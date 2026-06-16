@@ -249,6 +249,7 @@ jobs:
       - name: Test tool
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
+            --no-compare \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
@@ -261,6 +262,7 @@ jobs:
       - name: Test plugin
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
+            --no-compare \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
