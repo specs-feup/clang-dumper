@@ -8,8 +8,6 @@ target binaries.
 """
 
 import argparse
-import gzip
-import io
 import json
 import os
 import sys
@@ -24,7 +22,6 @@ from run_tests import (
     normalize_captured_lines,
     platform_expected_dir,
     platform_expected_dirs,
-    read_expected_output,
     resolve_expected_file,
 )
 
@@ -60,22 +57,15 @@ def replay_single_output(
 
         mismatch = compare_normalized_outputs(
             test_name,
-            read_expected_output(shared_expected_file),
+            shared_expected_file.read_text(encoding="utf-8"),
             normalized_output,
         )
         if mismatch is None:
             return TestStatus.PASS, "Matches shared baseline"
 
         write_platform_baseline_dir.mkdir(parents=True, exist_ok=True)
-        platform_expected_file = write_platform_baseline_dir / f"{test_name}.expected.gz"
-        with platform_expected_file.open("wb") as raw_stream:
-            with gzip.GzipFile(
-                fileobj=raw_stream,
-                mode="wb",
-                mtime=0,
-            ) as gzip_stream:
-                with io.TextIOWrapper(gzip_stream, encoding="utf-8") as text_stream:
-                    text_stream.write(normalized_output)
+        platform_expected_file = write_platform_baseline_dir / f"{test_name}.expected"
+        platform_expected_file.write_text(normalized_output, encoding="utf-8")
         return TestStatus.GENERATED, f"Generated {platform_expected_file}"
 
     expected_file, expected_source = resolve_expected_file(
@@ -88,7 +78,7 @@ def replay_single_output(
 
     mismatch = compare_normalized_outputs(
         test_name,
-        read_expected_output(expected_file),
+        expected_file.read_text(encoding="utf-8"),
         normalized_output,
     )
     if mismatch is None:

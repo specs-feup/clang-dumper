@@ -16,7 +16,6 @@ Usage:
 """
 
 import argparse
-import gzip
 import json
 import os
 import platform
@@ -685,19 +684,10 @@ def resolve_expected_file(
 ) -> tuple[Path, str]:
     """Prefer a platform baseline when present, otherwise use the shared one."""
     for platform_dir in platform_dirs:
-        for suffix in (".expected", ".expected.gz"):
-            platform_file = platform_dir / f"{test_name}{suffix}"
-            if platform_file.exists():
-                return platform_file, platform_dir.name
+        platform_file = platform_dir / f"{test_name}.expected"
+        if platform_file.exists():
+            return platform_file, platform_dir.name
     return expected_dir / f"{test_name}.expected", "shared"
-
-
-def read_expected_output(expected_file: Path) -> str:
-    """Read a plain or gzip-compressed expected-output file."""
-    if expected_file.suffix == ".gz":
-        with gzip.open(expected_file, "rt", encoding="utf-8") as stream:
-            return stream.read()
-    return expected_file.read_text(encoding="utf-8")
 
 
 def get_test_config(test_name: str) -> TestConfig:
@@ -950,7 +940,7 @@ def run_single_test(
 
     mismatch = compare_normalized_outputs(
         test_name,
-        read_expected_output(expected_file),
+        expected_file.read_text(encoding="utf-8"),
         normalized_output,
     )
     if mismatch is None:
