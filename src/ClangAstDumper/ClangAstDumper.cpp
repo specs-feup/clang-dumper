@@ -31,6 +31,10 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
     return;
   }
 
+  if (isPastSystemHeaderThreshold()) {
+    return;
+  }
+
   // Check if QualType is the same as the underlying type
   if ((void *)T.getTypePtr() == T.getAsOpaquePtr()) {
 #ifdef VISIT_CHECK
@@ -73,6 +77,10 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
 
 void ClangAstDumper::VisitTypeTop(const Type *T) {
   if (T == nullptr) {
+    return;
+  }
+
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -135,6 +143,10 @@ void ClangAstDumper::VisitDeclTop(const Decl *Node) {
 
 void ClangAstDumper::VisitAttrTop(const Attr *Node) {
   if (Node == nullptr) {
+    return;
+  }
+
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -290,8 +302,8 @@ void ClangAstDumper::emptyChildren(const void *pointer) {
 }
 
 bool ClangAstDumper::isPastSystemHeaderThreshold() const {
-  return systemHeaderThreshold >= 0 &&
-         currentSystemHeaderLevel >= systemHeaderThreshold;
+  return systemHeaderThreshold > 0 &&
+         currentSystemHeaderLevel > systemHeaderThreshold;
 }
 
 const void ClangAstDumper::addChild(const Decl *addr,

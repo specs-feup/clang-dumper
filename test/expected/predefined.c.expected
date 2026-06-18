@@ -173,8 +173,293 @@ ADDR_007
 <Visited Children>
 ADDR_008
 0
-<DeclRefExprData>
+<AttributeData>
 ADDR_008
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+1
+0
+0
+<Id to Class Map>
+ADDR_008
+BuiltinAttr
+<Top Level Attributes>
+ADDR_008
+<Visited Children>
+ADDR_009
+0
+<FormatAttrData>
+ADDR_009
+FormatAttr
+<SYSTEM_INCLUDE>/stdio.h
+363
+12
+<end>
+0
+1
+Format
+0
+1
+0
+0
+printf
+1
+2
+<Id to Class Map>
+ADDR_009
+FormatAttr
+<Top Level Attributes>
+ADDR_009
+<Top Level Types>
+ADDR_007
+<Visited Children>
+ADDR_010
+0
+<AttributeData>
+ADDR_010
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+0
+0
+0
+<Id to Class Map>
+ADDR_010
+BuiltinAttr
+<Top Level Attributes>
+ADDR_010
+<Visited Children>
+ADDR_011
+0
+<FormatAttrData>
+ADDR_011
+FormatAttr
+<SYSTEM_INCLUDE>/stdio.h
+363
+12
+<end>
+0
+1
+Format
+1
+0
+0
+0
+printf
+1
+2
+<Id to Class Map>
+ADDR_011
+FormatAttr
+<Top Level Attributes>
+ADDR_011
+<Top Level Types>
+ADDR_007
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_012
+0
+<ParmVarDeclData>
+ADDR_012
+ParmVarDecl
+<invalid>
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_006
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_012
+ParmVarDecl
+<Visited Children>
+ADDR_013
+1
+ADDR_012
+<FunctionDeclData>
+ADDR_013
+FunctionDecl
+<SYSTEM_INCLUDE>/stdio.h
+363
+12
+<end>
+0
+1
+1
+1
+1
+0
+0
+2
+ADDR_010
+ADDR_011
+
+printf
+0
+0
+0
+External
+Default
+ADDR_007
+0
+0
+0
+Extern
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_013
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_013
+FunctionDecl
+<Visited Children>
+ADDR_014
+0
+<QualTypeData>
+ADDR_014
+QualType
+const char *restrict
+NONE
+0
+0
+0
+nullptr_type
+1
+RESTRICT_C99
+NONE
+0
+ADDR_006
+<Id to Class Map>
+ADDR_014
+QualType
+<Top Level Types>
+ADDR_014
+<Visited Children>
+ADDR_015
+0
+<ParmVarDeclData>
+ADDR_015
+ParmVarDecl
+<SYSTEM_INCLUDE>/stdio.h
+363
+20
+<SYSTEM_INCLUDE>/stdio.h
+363
+43
+0
+1
+0
+0
+0
+0
+0
+0
+
+__format
+0
+0
+0
+None
+Default
+ADDR_014
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_015
+ParmVarDecl
+<Visited Children>
+ADDR_016
+1
+ADDR_015
+<FunctionDeclData>
+ADDR_016
+FunctionDecl
+<SYSTEM_INCLUDE>/stdio.h
+363
+1
+<SYSTEM_INCLUDE>/stdio.h
+363
+56
+0
+1
+0
+1
+1
+0
+0
+2
+ADDR_008
+ADDR_009
+
+printf
+0
+0
+0
+External
+Default
+ADDR_007
+0
+0
+0
+Extern
+0
+0
+0
+0
+0
+ADDR_013
+ADDR_013
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_016
+FunctionDecl
+<Visited Children>
+ADDR_017
+0
+<DeclRefExprData>
+ADDR_017
 DeclRefExpr
 <TEST_DIR>/predefined.c
 4
@@ -188,15 +473,15 @@ ADDR_007
 0
 
 0
-ADDR_009
+ADDR_016
 <Id to Class Map>
-ADDR_008
+ADDR_017
 DeclRefExpr
 <Visited Children>
-ADDR_010
+ADDR_018
 0
 <PointerTypeData>
-ADDR_010
+ADDR_018
 PointerType
 int (*)(const char *, ...)
 NONE
@@ -206,16 +491,16 @@ NONE
 nullptr_type
 ADDR_007
 <Id to Class Map>
-ADDR_010
+ADDR_018
 PointerType
 <Top Level Types>
-ADDR_010
+ADDR_018
 <Visited Children>
-ADDR_011
+ADDR_019
 1
-ADDR_008
+ADDR_017
 <ExprData>
-ADDR_011
+ADDR_019
 ImplicitCastExpr
 <TEST_DIR>/predefined.c
 4
@@ -223,18 +508,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_010
+ADDR_018
 0
 0
 0
 <Id to Class Map>
-ADDR_011
+ADDR_019
 ImplicitCastExpr
 <Visited Children>
-ADDR_012
+ADDR_020
 0
 <ConstantArrayTypeData>
-ADDR_012
+ADDR_020
 ConstantArrayType
 char[9]
 NONE
@@ -247,15 +532,15 @@ Normal
 ADDR_004
 9
 <Id to Class Map>
-ADDR_012
+ADDR_020
 ConstantArrayType
 <Top Level Types>
-ADDR_012
+ADDR_020
 <Visited Children>
-ADDR_013
+ADDR_021
 0
 <StringLiteralData>
-ADDR_013
+ADDR_021
 StringLiteral
 <TEST_DIR>/predefined.c
 4
@@ -263,7 +548,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_012
+ADDR_020
 1
 0
 0
@@ -281,13 +566,13 @@ ORDINARY
 37
 115
 <Id to Class Map>
-ADDR_013
+ADDR_021
 StringLiteral
 <Visited Children>
-ADDR_014
+ADDR_022
 0
 <PointerTypeData>
-ADDR_014
+ADDR_022
 PointerType
 char *
 NONE
@@ -297,16 +582,16 @@ NONE
 nullptr_type
 ADDR_004
 <Id to Class Map>
-ADDR_014
+ADDR_022
 PointerType
 <Top Level Types>
-ADDR_014
+ADDR_022
 <Visited Children>
-ADDR_015
+ADDR_023
 1
-ADDR_013
+ADDR_021
 <ExprData>
-ADDR_015
+ADDR_023
 ImplicitCastExpr
 <TEST_DIR>/predefined.c
 4
@@ -314,21 +599,21 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_014
+ADDR_022
 0
 0
 0
 <Id to Class Map>
-ADDR_015
+ADDR_023
 ImplicitCastExpr
 <Top Level Types>
 ADDR_006
 <Visited Children>
-ADDR_016
+ADDR_024
 1
-ADDR_015
+ADDR_023
 <ExprData>
-ADDR_016
+ADDR_024
 ImplicitCastExpr
 <TEST_DIR>/predefined.c
 4
@@ -341,13 +626,13 @@ ADDR_006
 0
 0
 <Id to Class Map>
-ADDR_016
+ADDR_024
 ImplicitCastExpr
 <Visited Children>
-ADDR_017
+ADDR_025
 0
 <ConstantArrayTypeData>
-ADDR_017
+ADDR_025
 ConstantArrayType
 const char[5]
 NONE
@@ -360,15 +645,15 @@ Normal
 ADDR_005
 5
 <Id to Class Map>
-ADDR_017
+ADDR_025
 ConstantArrayType
 <Top Level Types>
-ADDR_017
+ADDR_025
 <Visited Children>
-ADDR_018
+ADDR_026
 0
 <StringLiteralData>
-ADDR_018
+ADDR_026
 StringLiteral
 <TEST_DIR>/predefined.c
 4
@@ -376,7 +661,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_017
+ADDR_025
 1
 0
 0
@@ -390,16 +675,16 @@ ORDINARY
 105
 110
 <Id to Class Map>
-ADDR_018
+ADDR_026
 StringLiteral
 <Top Level Types>
-ADDR_017
+ADDR_025
 <Visited Children>
-ADDR_019
+ADDR_027
 1
-ADDR_018
+ADDR_026
 <PredefinedExprData>
-ADDR_019
+ADDR_027
 PredefinedExpr
 <TEST_DIR>/predefined.c
 4
@@ -407,22 +692,22 @@ PredefinedExpr
 <end>
 0
 0
-ADDR_017
+ADDR_025
 1
 0
 0
 Func
 <Id to Class Map>
-ADDR_019
+ADDR_027
 PredefinedExpr
 <Top Level Types>
 ADDR_006
 <Visited Children>
-ADDR_020
+ADDR_028
 1
-ADDR_019
+ADDR_027
 <ExprData>
-ADDR_020
+ADDR_028
 ImplicitCastExpr
 <TEST_DIR>/predefined.c
 4
@@ -435,18 +720,18 @@ ADDR_006
 0
 0
 <Id to Class Map>
-ADDR_020
+ADDR_028
 ImplicitCastExpr
 <Top Level Types>
 ADDR_002
 <Visited Children>
-ADDR_021
+ADDR_029
 3
-ADDR_011
-ADDR_016
-ADDR_020
+ADDR_019
+ADDR_024
+ADDR_028
 <CallExprData>
-ADDR_021
+ADDR_029
 CallExpr
 <TEST_DIR>/predefined.c
 4
@@ -460,16 +745,16 @@ ADDR_002
 0
 0
 0
-ADDR_009
+ADDR_016
 <Id to Class Map>
-ADDR_021
+ADDR_029
 CallExpr
 <Visited Children>
-ADDR_022
+ADDR_030
 1
-ADDR_021
+ADDR_029
 <StmtData>
-ADDR_022
+ADDR_030
 CompoundStmt
 <TEST_DIR>/predefined.c
 3
@@ -480,12 +765,12 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_022
+ADDR_030
 CompoundStmt
 <Visited Children>
 ADDR_001
 1
-ADDR_022
+ADDR_030
 <FunctionDeclData>
 ADDR_001
 FunctionDecl
