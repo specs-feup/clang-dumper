@@ -250,14 +250,18 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]03-mingw", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # ==================== GCC HEADERS ====================
-    # Linux: Canonicalize /usr/bin/../lib/gcc/ to /usr/lib/gcc/
-    (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
     # Linux: GCC's libstdc++ headers are often reported through a target-triple
     # relative path rooted under /usr/lib/gcc.
+    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include", SYSTEM_INCLUDE_PLACEHOLDER),
     (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
     (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include", SYSTEM_INCLUDE_PLACEHOLDER),
+    # Linux: Canonicalize remaining GCC lib paths that are not system includes.
+    (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
 
     # macOS: GCC from Homebrew
     (r"/usr/local/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
