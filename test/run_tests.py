@@ -875,12 +875,7 @@ def run_single_test(
             test_name,
         )
 
-    # Verify expected file exists (unless generating)
-    if not generate and not expected_file.exists():
-        return TestStatus.FAIL, (
-            f"Expected file not found: {expected_file}\n"
-            f"Run with --generate to create it, or check if the test is properly registered."
-        )
+    missing_expected = not generate and not expected_file.exists()
 
     # Run the tool/plugin with streaming normalization
     flags = list(global_flags or []) + config.flags
@@ -930,6 +925,12 @@ def run_single_test(
     if consistency_errors:
         return TestStatus.FAIL, "Address consistency errors:\n" + "\n".join(
             consistency_errors
+        )
+
+    if missing_expected:
+        return TestStatus.FAIL, (
+            f"Expected file not found: {expected_file}\n"
+            f"Run with --generate to create it, or check if the test is properly registered."
         )
 
     if generate:

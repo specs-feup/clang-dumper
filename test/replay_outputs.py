@@ -52,16 +52,14 @@ def replay_single_output(
 
     if write_platform_baseline_dir is not None:
         shared_expected_file = expected_dir / f"{test_name}.expected"
-        if not shared_expected_file.exists():
-            return TestStatus.FAIL, f"Expected file not found: {shared_expected_file}"
-
-        mismatch = compare_normalized_outputs(
-            test_name,
-            shared_expected_file.read_text(encoding="utf-8"),
-            normalized_output,
-        )
-        if mismatch is None:
-            return TestStatus.PASS, "Matches shared baseline"
+        if shared_expected_file.exists():
+            mismatch = compare_normalized_outputs(
+                test_name,
+                shared_expected_file.read_text(encoding="utf-8"),
+                normalized_output,
+            )
+            if mismatch is None:
+                return TestStatus.PASS, "Matches shared baseline"
 
         write_platform_baseline_dir.mkdir(parents=True, exist_ok=True)
         platform_expected_file = write_platform_baseline_dir / f"{test_name}.expected"

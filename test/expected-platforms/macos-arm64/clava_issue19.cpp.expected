@@ -1,0 +1,3505 @@
+<Compiler Instance Data>
+<TEST_DIR>/clava_issue19.cpp
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+1
+0
+1
+8
+32
+64
+<LONG_DOUBLE_WIDTH>
+8
+16
+32
+<LONG_WIDTH>
+64
+<Id-File Map>
+0
+<TEST_DIR>/clava_issue19.cpp
+<Includes>
+<TEST_DIR>/clava_issue19.cpp
+iostream
+1
+1
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<TemplateTypeParmTypeData>
+ADDR_002
+TemplateTypeParmType
+T
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_003
+<Id to Class Map>
+ADDR_002
+TemplateTypeParmType
+<Visited Children>
+ADDR_003
+0
+<TemplateTypeParmDeclData>
+ADDR_003
+TemplateTypeParmDecl
+<TEST_DIR>/clava_issue19.cpp
+3
+11
+<TEST_DIR>/clava_issue19.cpp
+3
+20
+0
+0
+0
+0
+1
+0
+0
+0
+
+T
+0
+0
+0
+None
+Default
+ADDR_002
+TYPENAME
+0
+nullptr_type
+<Id to Class Map>
+ADDR_003
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_004
+0
+<BuiltinTypeData>
+ADDR_004
+BuiltinType
+unsigned long
+NONE
+0
+0
+0
+nullptr_type
+ULong
+unsigned long
+<Id to Class Map>
+ADDR_004
+BuiltinType
+<Visited Children>
+ADDR_005
+0
+<TypedefNameDeclData>
+ADDR_005
+TypedefDecl
+<CLANG_INCLUDE>/__stddef_size_t.h
+18
+1
+<CLANG_INCLUDE>/__stddef_size_t.h
+18
+23
+0
+1
+0
+0
+1
+0
+0
+0
+
+size_t
+0
+0
+0
+None
+Default
+ADDR_006
+ADDR_004
+<Id to Class Map>
+ADDR_005
+TypedefDecl
+<Visited Children>
+ADDR_006
+0
+<TypedefTypeData>
+ADDR_006
+TypedefType
+size_t
+NONE
+0
+0
+0
+ADDR_004
+ADDR_005
+<Id to Class Map>
+ADDR_006
+TypedefType
+<Visited Children>
+ADDR_007
+0
+<TypeData>
+ADDR_007
+UsingType
+size_t
+NONE
+0
+0
+0
+ADDR_006
+<Id to Class Map>
+ADDR_007
+UsingType
+<Visited Children>
+ADDR_008
+0
+<ElaboratedTypeData>
+ADDR_008
+ElaboratedType
+std::size_t
+NONE
+0
+0
+0
+ADDR_007
+None
+std::
+ADDR_007
+<Id to Class Map>
+ADDR_008
+ElaboratedType
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_009
+0
+<NonTypeTemplateParmDeclData>
+ADDR_009
+NonTypeTemplateParmDecl
+<TEST_DIR>/clava_issue19.cpp
+3
+23
+<TEST_DIR>/clava_issue19.cpp
+3
+35
+0
+0
+0
+0
+1
+0
+0
+0
+
+N
+0
+0
+0
+External
+Default
+ADDR_008
+0
+nullptr_expr
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_009
+NonTypeTemplateParmDecl
+<Visited Children>
+ADDR_010
+0
+<TypeData>
+ADDR_010
+UsingType
+size_t
+NONE
+0
+0
+0
+ADDR_006
+<Id to Class Map>
+ADDR_010
+UsingType
+<Visited Children>
+ADDR_011
+0
+<ElaboratedTypeData>
+ADDR_011
+ElaboratedType
+std::size_t
+NONE
+0
+0
+0
+ADDR_010
+None
+std::
+ADDR_010
+<Id to Class Map>
+ADDR_011
+ElaboratedType
+<Visited Children>
+ADDR_012
+0
+<QualTypeData>
+ADDR_012
+QualType
+const T
+DEPENDENT
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_002
+<Id to Class Map>
+ADDR_012
+QualType
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_013
+0
+<DeclRefExprData>
+ADDR_013
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+4
+43
+<end>
+0
+0
+ADDR_008
+0
+0
+0
+
+0
+ADDR_009
+<Id to Class Map>
+ADDR_013
+DeclRefExpr
+<Visited Children>
+ADDR_014
+0
+<DependentSizedArrayTypeData>
+ADDR_014
+DependentSizedArrayType
+const T[N]
+DEPENDENT
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_012
+ADDR_013
+<Id to Class Map>
+ADDR_014
+DependentSizedArrayType
+<Visited Children>
+ADDR_015
+0
+<TypeData>
+ADDR_015
+ParenType
+const T[N]
+DEPENDENT
+0
+0
+0
+ADDR_014
+<Id to Class Map>
+ADDR_015
+ParenType
+<Visited Children>
+ADDR_016
+0
+<ReferenceTypeData>
+ADDR_016
+LValueReferenceType
+const T (&)[N]
+DEPENDENT
+0
+0
+0
+nullptr_type
+ADDR_015
+<Id to Class Map>
+ADDR_016
+LValueReferenceType
+<Visited Children>
+ADDR_017
+0
+<FunctionProtoTypeData>
+ADDR_017
+FunctionProtoType
+std::size_t (const T (&)[N]) noexcept
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_011
+1
+1
+ADDR_016
+0
+0
+None
+BasicNoexcept
+0
+<Id to Class Map>
+ADDR_017
+FunctionProtoType
+<Top Level Types>
+ADDR_017
+<Top Level Types>
+ADDR_016
+<Visited Children>
+ADDR_018
+0
+<ParmVarDeclData>
+ADDR_018
+ParmVarDecl
+<TEST_DIR>/clava_issue19.cpp
+4
+31
+<TEST_DIR>/clava_issue19.cpp
+4
+44
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_016
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_018
+ParmVarDecl
+<Top Level Types>
+ADDR_008
+<Visited Children>
+ADDR_019
+0
+<DeclRefExprData>
+ADDR_019
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+6
+9
+<end>
+0
+0
+ADDR_008
+0
+0
+0
+
+0
+ADDR_009
+<Id to Class Map>
+ADDR_019
+DeclRefExpr
+<Visited Children>
+ADDR_020
+1
+ADDR_019
+<StmtData>
+ADDR_020
+ReturnStmt
+<TEST_DIR>/clava_issue19.cpp
+6
+2
+<TEST_DIR>/clava_issue19.cpp
+6
+9
+0
+0
+<Id to Class Map>
+ADDR_020
+ReturnStmt
+<Visited Children>
+ADDR_021
+1
+ADDR_020
+<StmtData>
+ADDR_021
+CompoundStmt
+<TEST_DIR>/clava_issue19.cpp
+5
+1
+<TEST_DIR>/clava_issue19.cpp
+7
+1
+0
+0
+<Id to Class Map>
+ADDR_021
+CompoundStmt
+<Visited Children>
+ADDR_022
+2
+ADDR_018
+ADDR_021
+<FunctionDeclData>
+ADDR_022
+FunctionDecl
+<TEST_DIR>/clava_issue19.cpp
+4
+1
+<TEST_DIR>/clava_issue19.cpp
+7
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+countof
+0
+0
+0
+External
+Default
+ADDR_017
+0
+1
+1
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_022
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_022
+FunctionDecl
+<Visited Children>
+ADDR_001
+3
+ADDR_003
+ADDR_009
+ADDR_022
+<TemplateDeclData>
+ADDR_001
+FunctionTemplateDecl
+<TEST_DIR>/clava_issue19.cpp
+3
+1
+<TEST_DIR>/clava_issue19.cpp
+7
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+countof
+0
+0
+0
+External
+Default
+2
+ADDR_003
+ADDR_009
+ADDR_022
+<Id to Class Map>
+ADDR_001
+FunctionTemplateDecl
+<Top Level Nodes>
+ADDR_023
+<Visited Children>
+ADDR_024
+0
+<TypeData>
+ADDR_024
+UsingType
+size_t
+NONE
+0
+0
+0
+ADDR_006
+<Id to Class Map>
+ADDR_024
+UsingType
+<Visited Children>
+ADDR_025
+0
+<ElaboratedTypeData>
+ADDR_025
+ElaboratedType
+std::size_t
+NONE
+0
+0
+0
+ADDR_024
+None
+std::
+ADDR_024
+<Id to Class Map>
+ADDR_025
+ElaboratedType
+<Visited Children>
+ADDR_026
+0
+<QualTypeData>
+ADDR_026
+QualType
+const unsigned long
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_004
+<Id to Class Map>
+ADDR_026
+QualType
+<Visited Children>
+ADDR_027
+0
+<QualTypeData>
+ADDR_027
+QualType
+const size_t
+NONE
+0
+0
+0
+ADDR_004
+1
+CONST
+NONE
+0
+ADDR_006
+<Id to Class Map>
+ADDR_027
+QualType
+<Visited Children>
+ADDR_028
+0
+<QualTypeData>
+ADDR_028
+QualType
+const size_t
+NONE
+0
+0
+0
+ADDR_006
+1
+CONST
+NONE
+0
+ADDR_024
+<Id to Class Map>
+ADDR_028
+QualType
+<Visited Children>
+ADDR_029
+0
+<QualTypeData>
+ADDR_029
+QualType
+const std::size_t
+NONE
+0
+0
+0
+ADDR_024
+1
+CONST
+NONE
+0
+ADDR_025
+<Id to Class Map>
+ADDR_029
+QualType
+<Visited Children>
+ADDR_030
+0
+<ConstantArrayTypeData>
+ADDR_030
+ConstantArrayType
+const std::size_t[5]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_029
+5
+<Id to Class Map>
+ADDR_030
+ConstantArrayType
+<Top Level Types>
+ADDR_030
+<Visited Children>
+ADDR_031
+0
+<BuiltinTypeData>
+ADDR_031
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_031
+BuiltinType
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_032
+0
+<IntegerLiteralData>
+ADDR_032
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+9
+38
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+42
+<Id to Class Map>
+ADDR_032
+IntegerLiteral
+<Top Level Types>
+ADDR_029
+<Visited Children>
+ADDR_033
+1
+ADDR_032
+<ExprData>
+ADDR_033
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+38
+<end>
+0
+0
+ADDR_029
+0
+0
+0
+<Id to Class Map>
+ADDR_033
+ImplicitCastExpr
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_034
+0
+<IntegerLiteralData>
+ADDR_034
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+9
+42
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+76
+<Id to Class Map>
+ADDR_034
+IntegerLiteral
+<Top Level Types>
+ADDR_029
+<Visited Children>
+ADDR_035
+1
+ADDR_034
+<ExprData>
+ADDR_035
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+42
+<end>
+0
+0
+ADDR_029
+0
+0
+0
+<Id to Class Map>
+ADDR_035
+ImplicitCastExpr
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_036
+0
+<IntegerLiteralData>
+ADDR_036
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+9
+46
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+16
+<Id to Class Map>
+ADDR_036
+IntegerLiteral
+<Top Level Types>
+ADDR_029
+<Visited Children>
+ADDR_037
+1
+ADDR_036
+<ExprData>
+ADDR_037
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+46
+<end>
+0
+0
+ADDR_029
+0
+0
+0
+<Id to Class Map>
+ADDR_037
+ImplicitCastExpr
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_038
+0
+<IntegerLiteralData>
+ADDR_038
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+9
+50
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+11
+<Id to Class Map>
+ADDR_038
+IntegerLiteral
+<Top Level Types>
+ADDR_029
+<Visited Children>
+ADDR_039
+1
+ADDR_038
+<ExprData>
+ADDR_039
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+50
+<end>
+0
+0
+ADDR_029
+0
+0
+0
+<Id to Class Map>
+ADDR_039
+ImplicitCastExpr
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_040
+0
+<IntegerLiteralData>
+ADDR_040
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+9
+54
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+31
+<Id to Class Map>
+ADDR_040
+IntegerLiteral
+<Top Level Types>
+ADDR_029
+<Visited Children>
+ADDR_041
+1
+ADDR_040
+<ExprData>
+ADDR_041
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+54
+<end>
+0
+0
+ADDR_029
+0
+0
+0
+<Id to Class Map>
+ADDR_041
+ImplicitCastExpr
+<Top Level Types>
+ADDR_030
+<Top Level Types>
+ADDR_030
+<Visited Children>
+ADDR_042
+5
+ADDR_032
+ADDR_034
+ADDR_036
+ADDR_038
+ADDR_040
+<InitListExprData>
+ADDR_042
+InitListExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+37
+<TEST_DIR>/clava_issue19.cpp
+9
+56
+0
+0
+ADDR_030
+0
+0
+0
+nullptr_expr
+1
+0
+nullptr_expr
+ADDR_043
+<Id to Class Map>
+ADDR_042
+InitListExpr
+<Visited Children>
+ADDR_043
+5
+ADDR_033
+ADDR_035
+ADDR_037
+ADDR_039
+ADDR_041
+<InitListExprData>
+ADDR_043
+InitListExpr
+<TEST_DIR>/clava_issue19.cpp
+9
+37
+<TEST_DIR>/clava_issue19.cpp
+9
+56
+0
+0
+ADDR_030
+0
+0
+0
+nullptr_expr
+1
+0
+ADDR_042
+nullptr_expr
+<Id to Class Map>
+ADDR_043
+InitListExpr
+<Visited Children>
+ADDR_023
+1
+ADDR_043
+<VarDeclData>
+ADDR_023
+VarDecl
+<TEST_DIR>/clava_issue19.cpp
+9
+1
+<TEST_DIR>/clava_issue19.cpp
+9
+56
+0
+0
+0
+0
+0
+0
+0
+0
+
+values
+0
+0
+0
+Internal
+Default
+ADDR_030
+0
+Static
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_023
+VarDecl
+<Top Level Nodes>
+ADDR_044
+<Visited Children>
+ADDR_045
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_045
+SubstTemplateTypeParmType
+unsigned long
+NONE
+0
+0
+0
+ADDR_004
+ADDR_003
+ADDR_004
+<Id to Class Map>
+ADDR_045
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_046
+0
+<QualTypeData>
+ADDR_046
+QualType
+const unsigned long
+NONE
+0
+0
+0
+ADDR_004
+1
+CONST
+NONE
+0
+ADDR_045
+<Id to Class Map>
+ADDR_046
+QualType
+<Visited Children>
+ADDR_047
+0
+<ConstantArrayTypeData>
+ADDR_047
+ConstantArrayType
+const unsigned long[5]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_046
+5
+<Id to Class Map>
+ADDR_047
+ConstantArrayType
+<Visited Children>
+ADDR_048
+0
+<TypeData>
+ADDR_048
+ParenType
+const unsigned long[5]
+NONE
+0
+0
+0
+ADDR_047
+<Id to Class Map>
+ADDR_048
+ParenType
+<Visited Children>
+ADDR_049
+0
+<ReferenceTypeData>
+ADDR_049
+LValueReferenceType
+const unsigned long (&)[5]
+NONE
+0
+0
+0
+nullptr_type
+ADDR_048
+<Id to Class Map>
+ADDR_049
+LValueReferenceType
+<Visited Children>
+ADDR_050
+0
+<FunctionProtoTypeData>
+ADDR_050
+FunctionProtoType
+std::size_t (const unsigned long (&)[5]) noexcept
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_011
+1
+1
+ADDR_049
+0
+0
+None
+BasicNoexcept
+0
+<Id to Class Map>
+ADDR_050
+FunctionProtoType
+<Top Level Types>
+ADDR_050
+<Top Level Types>
+ADDR_049
+<Visited Children>
+ADDR_051
+0
+<ParmVarDeclData>
+ADDR_051
+ParmVarDecl
+<TEST_DIR>/clava_issue19.cpp
+4
+31
+<TEST_DIR>/clava_issue19.cpp
+4
+44
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_049
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_051
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_052
+0
+<IntegerLiteralData>
+ADDR_052
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+6
+9
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+5
+<Id to Class Map>
+ADDR_052
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_053
+1
+ADDR_052
+<ExprData>
+ADDR_053
+SubstNonTypeTemplateParmExpr
+<TEST_DIR>/clava_issue19.cpp
+6
+9
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_053
+SubstNonTypeTemplateParmExpr
+<Visited Children>
+ADDR_054
+1
+ADDR_053
+<StmtData>
+ADDR_054
+ReturnStmt
+<TEST_DIR>/clava_issue19.cpp
+6
+2
+<TEST_DIR>/clava_issue19.cpp
+6
+9
+0
+0
+<Id to Class Map>
+ADDR_054
+ReturnStmt
+<Visited Children>
+ADDR_055
+1
+ADDR_054
+<StmtData>
+ADDR_055
+CompoundStmt
+<TEST_DIR>/clava_issue19.cpp
+5
+1
+<TEST_DIR>/clava_issue19.cpp
+7
+1
+0
+0
+<Id to Class Map>
+ADDR_055
+CompoundStmt
+<Visited Children>
+ADDR_044
+2
+ADDR_051
+ADDR_055
+<FunctionDeclData>
+ADDR_044
+FunctionDecl
+<TEST_DIR>/clava_issue19.cpp
+4
+1
+<TEST_DIR>/clava_issue19.cpp
+7
+1
+0
+0
+0
+0
+1
+0
+0
+0
+
+countof
+0
+0
+0
+External
+Default
+ADDR_050
+0
+1
+3
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_044
+ADDR_022
+2
+Type
+ADDR_004
+Integral
+5
+<Id to Class Map>
+ADDR_044
+FunctionDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_056
+0
+<IntegerLiteralData>
+ADDR_056
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+4
+43
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+5
+<Id to Class Map>
+ADDR_056
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_057
+1
+ADDR_056
+<ExprData>
+ADDR_057
+SubstNonTypeTemplateParmExpr
+<TEST_DIR>/clava_issue19.cpp
+4
+43
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_057
+SubstNonTypeTemplateParmExpr
+<Top Level Nodes>
+ADDR_058
+<Visited Children>
+ADDR_059
+0
+<BuiltinTypeData>
+ADDR_059
+BuiltinType
+char
+NONE
+0
+0
+0
+nullptr_type
+Char_S
+char
+<Id to Class Map>
+ADDR_059
+BuiltinType
+<Visited Children>
+ADDR_060
+0
+<PointerTypeData>
+ADDR_060
+PointerType
+char *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_059
+<Id to Class Map>
+ADDR_060
+PointerType
+<Visited Children>
+ADDR_061
+0
+<PointerTypeData>
+ADDR_061
+PointerType
+char **
+NONE
+0
+0
+0
+nullptr_type
+ADDR_060
+<Id to Class Map>
+ADDR_061
+PointerType
+<Visited Children>
+ADDR_062
+0
+<ArrayTypeData>
+ADDR_062
+IncompleteArrayType
+char *[]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_060
+<Id to Class Map>
+ADDR_062
+IncompleteArrayType
+<Visited Children>
+ADDR_063
+0
+<DecayedTypeData>
+ADDR_063
+DecayedType
+char **
+NONE
+0
+0
+0
+ADDR_061
+ADDR_062
+ADDR_061
+ADDR_061
+ADDR_060
+<Id to Class Map>
+ADDR_063
+DecayedType
+<Visited Children>
+ADDR_064
+0
+<FunctionProtoTypeData>
+ADDR_064
+FunctionProtoType
+int (int, char **)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_031
+2
+2
+ADDR_031
+ADDR_063
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_064
+FunctionProtoType
+<Top Level Types>
+ADDR_064
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_065
+0
+<ParmVarDeclData>
+ADDR_065
+ParmVarDecl
+<TEST_DIR>/clava_issue19.cpp
+11
+10
+<TEST_DIR>/clava_issue19.cpp
+11
+14
+0
+0
+0
+0
+0
+0
+0
+0
+
+argc
+0
+0
+0
+None
+Default
+ADDR_031
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_065
+ParmVarDecl
+<Top Level Types>
+ADDR_063
+<Visited Children>
+ADDR_066
+0
+<ParmVarDeclData>
+ADDR_066
+ParmVarDecl
+<TEST_DIR>/clava_issue19.cpp
+11
+20
+<TEST_DIR>/clava_issue19.cpp
+11
+31
+0
+0
+0
+0
+0
+0
+0
+0
+
+argv
+0
+0
+0
+None
+Default
+ADDR_063
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_066
+ParmVarDecl
+<Visited Children>
+ADDR_067
+0
+<TypeData>
+ADDR_067
+UsingType
+size_t
+NONE
+0
+0
+0
+ADDR_006
+<Id to Class Map>
+ADDR_067
+UsingType
+<Visited Children>
+ADDR_068
+0
+<ElaboratedTypeData>
+ADDR_068
+ElaboratedType
+std::size_t
+NONE
+0
+0
+0
+ADDR_067
+None
+std::
+ADDR_067
+<Id to Class Map>
+ADDR_068
+ElaboratedType
+<Top Level Types>
+ADDR_068
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_069
+0
+<IntegerLiteralData>
+ADDR_069
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+12
+24
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_069
+IntegerLiteral
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_070
+1
+ADDR_069
+<ExprData>
+ADDR_070
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+24
+<end>
+0
+0
+ADDR_068
+0
+0
+0
+<Id to Class Map>
+ADDR_070
+ImplicitCastExpr
+<Visited Children>
+ADDR_071
+1
+ADDR_070
+<VarDeclData>
+ADDR_071
+VarDecl
+<TEST_DIR>/clava_issue19.cpp
+12
+8
+<TEST_DIR>/clava_issue19.cpp
+12
+24
+0
+0
+0
+1
+1
+0
+0
+0
+
+i
+0
+0
+0
+None
+Default
+ADDR_068
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_071
+VarDecl
+<Visited Children>
+ADDR_072
+1
+ADDR_071
+<StmtData>
+ADDR_072
+DeclStmt
+<TEST_DIR>/clava_issue19.cpp
+12
+8
+<TEST_DIR>/clava_issue19.cpp
+12
+25
+0
+0
+<Id to Class Map>
+ADDR_072
+DeclStmt
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_073
+0
+<DeclRefExprData>
+ADDR_073
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+27
+<end>
+0
+0
+ADDR_068
+1
+0
+0
+
+0
+ADDR_071
+<Id to Class Map>
+ADDR_073
+DeclRefExpr
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_074
+1
+ADDR_073
+<ExprData>
+ADDR_074
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+27
+<end>
+0
+0
+ADDR_068
+0
+0
+0
+<Id to Class Map>
+ADDR_074
+ImplicitCastExpr
+<Top Level Types>
+ADDR_050
+<Visited Children>
+ADDR_075
+0
+<DeclRefExprData>
+ADDR_075
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+31
+<end>
+0
+0
+ADDR_050
+1
+0
+0
+
+0
+ADDR_044
+<Id to Class Map>
+ADDR_075
+DeclRefExpr
+<Visited Children>
+ADDR_076
+0
+<PointerTypeData>
+ADDR_076
+PointerType
+std::size_t (*)(const unsigned long (&)[5]) noexcept
+NONE
+0
+0
+0
+nullptr_type
+ADDR_050
+<Id to Class Map>
+ADDR_076
+PointerType
+<Top Level Types>
+ADDR_076
+<Visited Children>
+ADDR_077
+1
+ADDR_075
+<ExprData>
+ADDR_077
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+31
+<end>
+0
+0
+ADDR_076
+0
+0
+0
+<Id to Class Map>
+ADDR_077
+ImplicitCastExpr
+<Top Level Types>
+ADDR_030
+<Visited Children>
+ADDR_078
+0
+<DeclRefExprData>
+ADDR_078
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+39
+<end>
+0
+0
+ADDR_030
+1
+0
+0
+
+0
+ADDR_023
+<Id to Class Map>
+ADDR_078
+DeclRefExpr
+<Top Level Types>
+ADDR_011
+<Visited Children>
+ADDR_079
+2
+ADDR_077
+ADDR_078
+<CallExprData>
+ADDR_079
+CallExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+31
+<TEST_DIR>/clava_issue19.cpp
+12
+45
+0
+0
+ADDR_011
+0
+0
+0
+ADDR_044
+<Id to Class Map>
+ADDR_079
+CallExpr
+<Visited Children>
+ADDR_080
+0
+<BuiltinTypeData>
+ADDR_080
+BuiltinType
+bool
+NONE
+0
+0
+0
+nullptr_type
+Bool
+bool
+<Id to Class Map>
+ADDR_080
+BuiltinType
+<Top Level Types>
+ADDR_080
+<Visited Children>
+ADDR_081
+2
+ADDR_074
+ADDR_079
+<BinaryOperatorData>
+ADDR_081
+BinaryOperator
+<TEST_DIR>/clava_issue19.cpp
+12
+27
+<TEST_DIR>/clava_issue19.cpp
+12
+45
+0
+0
+ADDR_080
+0
+0
+0
+LT
+<Id to Class Map>
+ADDR_081
+BinaryOperator
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_082
+0
+<DeclRefExprData>
+ADDR_082
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+12
+50
+<end>
+0
+0
+ADDR_068
+1
+0
+0
+
+0
+ADDR_071
+<Id to Class Map>
+ADDR_082
+DeclRefExpr
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_083
+1
+ADDR_082
+<UnaryOperatorData>
+ADDR_083
+UnaryOperator
+<TEST_DIR>/clava_issue19.cpp
+12
+48
+<TEST_DIR>/clava_issue19.cpp
+12
+50
+0
+0
+ADDR_068
+1
+0
+0
+PreInc
+PREFIX
+<Id to Class Map>
+ADDR_083
+UnaryOperator
+<Top Level Attributes>
+ADDR_084
+<Top Level Attributes>
+ADDR_085
+<Visited Children>
+ADDR_086
+0
+<ClassTemplateSpecializationDeclData>
+ADDR_086
+ClassTemplateSpecializationDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+1019
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+1019
+74
+0
+1
+0
+0
+0
+0
+0
+2
+ADDR_084
+ADDR_085
+std
+basic_ostream
+0
+0
+0
+External
+Default
+ADDR_087
+Class
+1
+0
+1
+1
+0
+PUBLIC
+PUBLIC
+ADDR_088
+ADDR_086
+ADDR_089
+ExplicitInstantiationDeclaration
+2
+Type
+ADDR_059
+Type
+ADDR_090
+<Id to Class Map>
+ADDR_086
+ClassTemplateSpecializationDecl
+<Visited Children>
+ADDR_087
+0
+<TagTypeData>
+ADDR_087
+RecordType
+std::ostream
+NONE
+0
+0
+0
+nullptr_type
+ADDR_086
+<Id to Class Map>
+ADDR_087
+RecordType
+<Visited Children>
+ADDR_091
+0
+<ElaboratedTypeData>
+ADDR_091
+ElaboratedType
+ostream
+NONE
+0
+0
+0
+ADDR_087
+None
+
+ADDR_087
+<Id to Class Map>
+ADDR_091
+ElaboratedType
+<Visited Children>
+ADDR_092
+0
+<ReferenceTypeData>
+ADDR_092
+LValueReferenceType
+ostream &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_091
+<Id to Class Map>
+ADDR_092
+LValueReferenceType
+<Visited Children>
+ADDR_093
+0
+<FunctionProtoTypeData>
+ADDR_093
+FunctionProtoType
+ostream &(ostream &)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_092
+1
+1
+ADDR_092
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_093
+FunctionProtoType
+<Visited Children>
+ADDR_094
+0
+<TypeData>
+ADDR_094
+ParenType
+ostream &(ostream &)
+NONE
+0
+0
+0
+ADDR_093
+<Id to Class Map>
+ADDR_094
+ParenType
+<Visited Children>
+ADDR_095
+0
+<PointerTypeData>
+ADDR_095
+PointerType
+ostream &(*)(ostream &)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_094
+<Id to Class Map>
+ADDR_095
+PointerType
+<Visited Children>
+ADDR_096
+0
+<FunctionProtoTypeData>
+ADDR_096
+FunctionProtoType
+ostream &(ostream &(*)(ostream &))
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_092
+1
+1
+ADDR_095
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_096
+FunctionProtoType
+<Top Level Types>
+ADDR_096
+<Top Level Attributes>
+ADDR_097
+<Top Level Attributes>
+ADDR_098
+<Top Level Types>
+ADDR_096
+<Visited Children>
+ADDR_099
+0
+<CXXMethodDeclData>
+ADDR_099
+CXXMethodDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+241
+3
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+243
+3
+0
+1
+0
+1
+1
+0
+0
+2
+ADDR_097
+ADDR_098
+std::ostream
+operator<<
+6
+1
+1
+External
+Hidden
+ADDR_096
+0
+0
+2
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_099
+nullptr_decl
+0
+ADDR_086
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_100
+ADDR_087
+1
+0
+<Id to Class Map>
+ADDR_099
+CXXMethodDecl
+<Visited Children>
+ADDR_101
+0
+<DeclRefExprData>
+ADDR_101
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+30
+<end>
+0
+0
+ADDR_096
+1
+0
+0
+
+0
+ADDR_099
+<Id to Class Map>
+ADDR_101
+DeclRefExpr
+<Visited Children>
+ADDR_102
+0
+<PointerTypeData>
+ADDR_102
+PointerType
+ostream &(*)(ostream &(*)(ostream &))
+NONE
+0
+0
+0
+nullptr_type
+ADDR_096
+<Id to Class Map>
+ADDR_102
+PointerType
+<Top Level Types>
+ADDR_102
+<Visited Children>
+ADDR_103
+1
+ADDR_101
+<ExprData>
+ADDR_103
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+30
+<end>
+0
+0
+ADDR_102
+0
+0
+0
+<Id to Class Map>
+ADDR_103
+ImplicitCastExpr
+<Visited Children>
+ADDR_104
+0
+<FunctionProtoTypeData>
+ADDR_104
+FunctionProtoType
+ostream &(unsigned long)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_092
+1
+1
+ADDR_004
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_104
+FunctionProtoType
+<Top Level Types>
+ADDR_104
+<Top Level Types>
+ADDR_104
+<Visited Children>
+ADDR_105
+0
+<CXXMethodDeclData>
+ADDR_105
+CXXMethodDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+262
+3
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+262
+46
+0
+1
+0
+1
+1
+0
+0
+0
+std::ostream
+operator<<
+6
+1
+1
+External
+Default
+ADDR_104
+0
+0
+2
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_105
+nullptr_decl
+0
+ADDR_086
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_100
+ADDR_087
+0
+0
+<Id to Class Map>
+ADDR_105
+CXXMethodDecl
+<Visited Children>
+ADDR_106
+0
+<DeclRefExprData>
+ADDR_106
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+17
+<end>
+0
+0
+ADDR_104
+1
+0
+0
+
+0
+ADDR_105
+<Id to Class Map>
+ADDR_106
+DeclRefExpr
+<Visited Children>
+ADDR_107
+0
+<PointerTypeData>
+ADDR_107
+PointerType
+ostream &(*)(unsigned long)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_104
+<Id to Class Map>
+ADDR_107
+PointerType
+<Top Level Types>
+ADDR_107
+<Visited Children>
+ADDR_108
+1
+ADDR_106
+<ExprData>
+ADDR_108
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+17
+<end>
+0
+0
+ADDR_107
+0
+0
+0
+<Id to Class Map>
+ADDR_108
+ImplicitCastExpr
+<Visited Children>
+ADDR_089
+0
+<TemplateDeclData>
+ADDR_089
+ClassTemplateDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/__fwd/ostream.h
+21
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/__fwd/ostream.h
+22
+28
+0
+1
+0
+0
+0
+0
+0
+0
+std
+basic_ostream
+0
+0
+0
+External
+Default
+2
+ADDR_109
+ADDR_110
+ADDR_111
+<Id to Class Map>
+ADDR_089
+ClassTemplateDecl
+<Visited Children>
+ADDR_112
+0
+<TemplateSpecializationTypeData>
+ADDR_112
+TemplateSpecializationType
+ostream
+NONE
+0
+0
+0
+ADDR_087
+0
+nullptr_type
+basic_ostream
+ADDR_089
+1
+Type
+ADDR_059
+<Id to Class Map>
+ADDR_112
+TemplateSpecializationType
+<Visited Children>
+ADDR_113
+0
+<ElaboratedTypeData>
+ADDR_113
+ElaboratedType
+ostream
+NONE
+0
+0
+0
+ADDR_112
+None
+
+ADDR_112
+<Id to Class Map>
+ADDR_113
+ElaboratedType
+<Visited Children>
+ADDR_114
+0
+<TypedefNameDeclData>
+ADDR_114
+TypeAliasDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/__fwd/ostream.h
+24
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/__fwd/ostream.h
+24
+35
+0
+1
+0
+0
+1
+0
+0
+0
+std
+ostream
+0
+0
+0
+None
+Default
+ADDR_115
+ADDR_113
+<Id to Class Map>
+ADDR_114
+TypeAliasDecl
+<Visited Children>
+ADDR_115
+0
+<TypedefTypeData>
+ADDR_115
+TypedefType
+std::ostream
+NONE
+0
+0
+0
+ADDR_113
+ADDR_114
+<Id to Class Map>
+ADDR_115
+TypedefType
+<Visited Children>
+ADDR_116
+0
+<ElaboratedTypeData>
+ADDR_116
+ElaboratedType
+ostream
+NONE
+0
+0
+0
+ADDR_115
+None
+
+ADDR_115
+<Id to Class Map>
+ADDR_116
+ElaboratedType
+<Top Level Types>
+ADDR_116
+<Top Level Attributes>
+ADDR_117
+<Top Level Types>
+ADDR_116
+<Visited Children>
+ADDR_118
+0
+<VarDeclData>
+ADDR_118
+VarDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/iostream
+55
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/iostream
+55
+42
+0
+1
+0
+1
+1
+0
+0
+1
+ADDR_117
+std
+cout
+0
+0
+0
+External
+Default
+ADDR_116
+0
+Extern
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_118
+VarDecl
+<Visited Children>
+ADDR_119
+0
+<DeclRefExprData>
+ADDR_119
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+7
+<TEST_DIR>/clava_issue19.cpp
+13
+12
+0
+0
+ADDR_116
+1
+0
+0
+std::
+0
+ADDR_118
+<Id to Class Map>
+ADDR_119
+DeclRefExpr
+<Top Level Types>
+ADDR_030
+<Visited Children>
+ADDR_120
+0
+<DeclRefExprData>
+ADDR_120
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+20
+<end>
+0
+0
+ADDR_030
+1
+0
+0
+
+0
+ADDR_023
+<Id to Class Map>
+ADDR_120
+DeclRefExpr
+<Visited Children>
+ADDR_121
+0
+<PointerTypeData>
+ADDR_121
+PointerType
+const std::size_t *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_029
+<Id to Class Map>
+ADDR_121
+PointerType
+<Top Level Types>
+ADDR_121
+<Visited Children>
+ADDR_122
+1
+ADDR_120
+<ExprData>
+ADDR_122
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+20
+<end>
+0
+0
+ADDR_121
+0
+0
+0
+<Id to Class Map>
+ADDR_122
+ImplicitCastExpr
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_123
+0
+<DeclRefExprData>
+ADDR_123
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+27
+<end>
+0
+0
+ADDR_068
+1
+0
+0
+
+0
+ADDR_071
+<Id to Class Map>
+ADDR_123
+DeclRefExpr
+<Top Level Types>
+ADDR_068
+<Visited Children>
+ADDR_124
+1
+ADDR_123
+<ExprData>
+ADDR_124
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+27
+<end>
+0
+0
+ADDR_068
+0
+0
+0
+<Id to Class Map>
+ADDR_124
+ImplicitCastExpr
+<Top Level Types>
+ADDR_029
+<Visited Children>
+ADDR_125
+2
+ADDR_122
+ADDR_124
+<ExprData>
+ADDR_125
+ArraySubscriptExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+20
+<TEST_DIR>/clava_issue19.cpp
+13
+28
+0
+0
+ADDR_029
+1
+0
+0
+<Id to Class Map>
+ADDR_125
+ArraySubscriptExpr
+<Top Level Types>
+ADDR_025
+<Visited Children>
+ADDR_126
+1
+ADDR_125
+<ExprData>
+ADDR_126
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+20
+<TEST_DIR>/clava_issue19.cpp
+13
+28
+0
+0
+ADDR_025
+0
+0
+0
+<Id to Class Map>
+ADDR_126
+ImplicitCastExpr
+<Top Level Types>
+ADDR_091
+<Visited Children>
+ADDR_127
+3
+ADDR_108
+ADDR_119
+ADDR_126
+<CallExprData>
+ADDR_127
+CXXOperatorCallExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+7
+<TEST_DIR>/clava_issue19.cpp
+13
+28
+0
+0
+ADDR_091
+1
+0
+0
+ADDR_105
+<Id to Class Map>
+ADDR_127
+CXXOperatorCallExpr
+<Visited Children>
+ADDR_128
+0
+<TemplateTypeParmDeclData>
+ADDR_128
+TemplateTypeParmDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+890
+11
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+890
+17
+0
+1
+0
+0
+1
+0
+0
+0
+
+_CharT
+0
+0
+0
+None
+Hidden
+ADDR_129
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_128
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_130
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_130
+SubstTemplateTypeParmType
+char
+NONE
+0
+0
+0
+ADDR_059
+ADDR_128
+ADDR_059
+<Id to Class Map>
+ADDR_130
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_131
+0
+<ClassTemplateSpecializationDeclData>
+ADDR_131
+ClassTemplateSpecializationDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/__string/char_traits.h
+177
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/__string/char_traits.h
+269
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+char_traits
+0
+0
+0
+External
+Default
+ADDR_090
+Struct
+1
+0
+0
+ADDR_131
+ADDR_132
+ExplicitSpecialization
+1
+Type
+ADDR_059
+<Id to Class Map>
+ADDR_131
+ClassTemplateSpecializationDecl
+<Visited Children>
+ADDR_090
+0
+<TagTypeData>
+ADDR_090
+RecordType
+std::char_traits<char>
+NONE
+0
+0
+0
+nullptr_type
+ADDR_131
+<Id to Class Map>
+ADDR_090
+RecordType
+<Visited Children>
+ADDR_133
+0
+<TemplateTypeParmDeclData>
+ADDR_133
+TemplateTypeParmDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+890
+25
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+890
+31
+0
+1
+0
+0
+1
+0
+0
+0
+
+_Traits
+0
+0
+0
+None
+Hidden
+ADDR_134
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_133
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_135
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_135
+SubstTemplateTypeParmType
+std::char_traits<char>
+NONE
+0
+0
+0
+ADDR_090
+ADDR_133
+ADDR_090
+<Id to Class Map>
+ADDR_135
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_136
+0
+<TemplateDeclData>
+ADDR_136
+ClassTemplateDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+207
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+296
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+basic_ostream
+0
+0
+0
+External
+Default
+2
+ADDR_137
+ADDR_138
+ADDR_139
+<Id to Class Map>
+ADDR_136
+ClassTemplateDecl
+<Visited Children>
+ADDR_140
+0
+<TemplateSpecializationTypeData>
+ADDR_140
+TemplateSpecializationType
+basic_ostream<char, std::char_traits<char>>
+NONE
+0
+0
+0
+ADDR_087
+0
+nullptr_type
+basic_ostream
+ADDR_136
+2
+Type
+ADDR_130
+Type
+ADDR_135
+<Id to Class Map>
+ADDR_140
+TemplateSpecializationType
+<Visited Children>
+ADDR_141
+0
+<ElaboratedTypeData>
+ADDR_141
+ElaboratedType
+basic_ostream<char, char_traits<char>>
+NONE
+0
+0
+0
+ADDR_140
+None
+
+ADDR_140
+<Id to Class Map>
+ADDR_141
+ElaboratedType
+<Visited Children>
+ADDR_142
+0
+<ReferenceTypeData>
+ADDR_142
+LValueReferenceType
+basic_ostream<char, char_traits<char>> &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_141
+<Id to Class Map>
+ADDR_142
+LValueReferenceType
+<Visited Children>
+ADDR_143
+0
+<TemplateSpecializationTypeData>
+ADDR_143
+TemplateSpecializationType
+basic_ostream<char, std::char_traits<char>>
+NONE
+0
+0
+0
+ADDR_087
+0
+nullptr_type
+basic_ostream
+ADDR_136
+2
+Type
+ADDR_130
+Type
+ADDR_135
+<Id to Class Map>
+ADDR_143
+TemplateSpecializationType
+<Visited Children>
+ADDR_144
+0
+<ElaboratedTypeData>
+ADDR_144
+ElaboratedType
+basic_ostream<char, char_traits<char>>
+NONE
+0
+0
+0
+ADDR_143
+None
+
+ADDR_143
+<Id to Class Map>
+ADDR_144
+ElaboratedType
+<Visited Children>
+ADDR_145
+0
+<ReferenceTypeData>
+ADDR_145
+LValueReferenceType
+basic_ostream<char, char_traits<char>> &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_144
+<Id to Class Map>
+ADDR_145
+LValueReferenceType
+<Visited Children>
+ADDR_146
+0
+<FunctionProtoTypeData>
+ADDR_146
+FunctionProtoType
+basic_ostream<char, char_traits<char>> &(basic_ostream<char, char_traits<char>> &)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_142
+1
+1
+ADDR_145
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_146
+FunctionProtoType
+<Top Level Types>
+ADDR_146
+<Top Level Attributes>
+ADDR_147
+<Top Level Attributes>
+ADDR_148
+<Top Level Types>
+ADDR_146
+<Visited Children>
+ADDR_149
+0
+<FunctionDeclData>
+ADDR_149
+FunctionDecl
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+891
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+895
+1
+1
+/opt/homebrew/opt/llvm@18/include/c++/v1/__config
+743
+39
+/opt/homebrew/opt/llvm@18/include/c++/v1/ostream
+895
+1
+1
+0
+1
+1
+0
+0
+2
+ADDR_147
+ADDR_148
+std
+endl
+0
+0
+0
+External
+Hidden
+ADDR_146
+0
+0
+3
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_149
+ADDR_150
+2
+Type
+ADDR_059
+Type
+ADDR_090
+<Id to Class Map>
+ADDR_149
+FunctionDecl
+<Visited Children>
+ADDR_151
+0
+<DeclRefExprData>
+ADDR_151
+DeclRefExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+33
+<TEST_DIR>/clava_issue19.cpp
+13
+38
+0
+0
+ADDR_146
+1
+0
+0
+std::
+0
+ADDR_149
+<Id to Class Map>
+ADDR_151
+DeclRefExpr
+<Visited Children>
+ADDR_152
+0
+<PointerTypeData>
+ADDR_152
+PointerType
+basic_ostream<char, char_traits<char>> &(*)(basic_ostream<char, char_traits<char>> &)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_146
+<Id to Class Map>
+ADDR_152
+PointerType
+<Top Level Types>
+ADDR_152
+<Visited Children>
+ADDR_153
+1
+ADDR_151
+<ExprData>
+ADDR_153
+ImplicitCastExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+33
+<TEST_DIR>/clava_issue19.cpp
+13
+38
+0
+0
+ADDR_152
+0
+0
+0
+<Id to Class Map>
+ADDR_153
+ImplicitCastExpr
+<Top Level Types>
+ADDR_091
+<Visited Children>
+ADDR_154
+3
+ADDR_103
+ADDR_127
+ADDR_153
+<CallExprData>
+ADDR_154
+CXXOperatorCallExpr
+<TEST_DIR>/clava_issue19.cpp
+13
+7
+<TEST_DIR>/clava_issue19.cpp
+13
+38
+0
+0
+ADDR_091
+1
+0
+0
+ADDR_099
+<Id to Class Map>
+ADDR_154
+CXXOperatorCallExpr
+<Visited Children>
+ADDR_155
+5
+ADDR_072
+ADDR_081
+ADDR_083
+ADDR_154
+nullptr_decl
+<StmtData>
+ADDR_155
+ForStmt
+<TEST_DIR>/clava_issue19.cpp
+12
+4
+<TEST_DIR>/clava_issue19.cpp
+13
+38
+0
+0
+<Id to Class Map>
+ADDR_155
+ForStmt
+<Top Level Types>
+ADDR_031
+<Visited Children>
+ADDR_156
+0
+<IntegerLiteralData>
+ADDR_156
+IntegerLiteral
+<TEST_DIR>/clava_issue19.cpp
+14
+11
+<end>
+0
+0
+ADDR_031
+0
+0
+0
+%CLAVA_SOURCE_BLOCK%
+0
+<Id to Class Map>
+ADDR_156
+IntegerLiteral
+<Visited Children>
+ADDR_157
+1
+ADDR_156
+<StmtData>
+ADDR_157
+ReturnStmt
+<TEST_DIR>/clava_issue19.cpp
+14
+4
+<TEST_DIR>/clava_issue19.cpp
+14
+11
+0
+0
+<Id to Class Map>
+ADDR_157
+ReturnStmt
+<Visited Children>
+ADDR_158
+2
+ADDR_155
+ADDR_157
+<StmtData>
+ADDR_158
+CompoundStmt
+<TEST_DIR>/clava_issue19.cpp
+11
+33
+<TEST_DIR>/clava_issue19.cpp
+15
+1
+0
+0
+<Id to Class Map>
+ADDR_158
+CompoundStmt
+<Visited Children>
+ADDR_058
+3
+ADDR_065
+ADDR_066
+ADDR_158
+<FunctionDeclData>
+ADDR_058
+FunctionDecl
+<TEST_DIR>/clava_issue19.cpp
+11
+1
+<TEST_DIR>/clava_issue19.cpp
+15
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+main
+0
+0
+0
+External
+Default
+ADDR_064
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_058
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_058
+FunctionDecl
