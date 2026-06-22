@@ -375,7 +375,7 @@ jobs:
 
           llvm-objdump-${{ env.LLVM_VERSION }} -p ${{ matrix.build-dir }}/tool.exe | tee imports.txt
 
-          if grep -E 'DLL Name: .*(clang|LLVM|libc\\+\\+|libunwind|zstd|zlib|pthread).*\\.dll' imports.txt; then
+          if grep -E 'DLL Name: .*(clang|LLVM|libc\+\+|libunwind|zstd|zlib|pthread).*\.dll' imports.txt; then
             echo "Windows tool imports non-system runtime DLLs"
             exit 1
           fi

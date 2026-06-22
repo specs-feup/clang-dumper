@@ -167,7 +167,7 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
     list(APPEND CLANG_ENUMS_EXTRA_CLANG_ARGS
         "--clang-arg=--target=${CROSS_PREFIX}"
         "--clang-arg=--sysroot=${LLVM_WINDOWS_ROOT}"
-        "--clang-arg=-resource-dir=${LLVM_WINDOWS_ROOT}/lib/clang/18"
+        "--clang-arg=-resource-dir=${LLVM_WINDOWS_ROOT}/lib/clang/${CLANG_VERSION}"
         "--clang-arg=-stdlib=libc++"
         "--clang-arg=-nostdinc++"
         "--clang-arg=-isystem"

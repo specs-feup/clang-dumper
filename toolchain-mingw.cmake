@@ -2,6 +2,7 @@ set(CMAKE_SYSTEM_NAME Windows)
 
 # Cross-compiler triplet
 set(CROSS_PREFIX x86_64-w64-mingw32 CACHE STRING "GNU triplet for the target")
+set(CLANG_VERSION 18 CACHE STRING "LLVM/Clang major version to use")
 set(HOST_LLD_DIR "" CACHE PATH "Directory containing a Linux-host ld.lld for MinGW cross-linking")
 if(NOT DEFINED CMAKE_SYSTEM_PROCESSOR)
 	if(CROSS_PREFIX MATCHES "^(aarch64|arm64)-")
@@ -50,7 +51,7 @@ if(MINGW_C_COMPILER MATCHES "/clang[^/]*$" OR MINGW_CXX_COMPILER MATCHES "/clang
 	if(HOST_LLD_DIR)
 		set(_CLANG_MINGW_LINKER_FLAGS "-B${HOST_LLD_DIR} -fuse-ld=lld")
 	endif()
-	set(_CLANG_MINGW_COMPILE_FLAGS "-resource-dir=${MINGW_SYSROOT}/lib/clang/18")
+	set(_CLANG_MINGW_COMPILE_FLAGS "-resource-dir=${MINGW_SYSROOT}/lib/clang/${CLANG_VERSION}")
 	set(_CLANG_MINGW_RUNTIME_FLAGS "-rtlib=compiler-rt -unwindlib=libunwind")
 	set(CMAKE_C_FLAGS_INIT "--target=${CROSS_PREFIX} --sysroot=${MINGW_SYSROOT} ${_CLANG_MINGW_COMPILE_FLAGS}")
 	set(CMAKE_CXX_FLAGS_INIT "--target=${CROSS_PREFIX} --sysroot=${MINGW_SYSROOT} ${_CLANG_MINGW_COMPILE_FLAGS} -stdlib=libc++")
