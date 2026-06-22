@@ -302,7 +302,7 @@ void ClangAstDumper::emptyChildren(const void *pointer) {
 }
 
 bool ClangAstDumper::isPastSystemHeaderThreshold() const {
-  return systemHeaderThreshold > 0 &&
+  return systemHeaderThreshold >= 0 &&
          currentSystemHeaderLevel > systemHeaderThreshold;
 }
 
