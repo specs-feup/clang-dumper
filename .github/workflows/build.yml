@@ -99,10 +99,12 @@ jobs:
         include:
           - arch: x64
             runner: ubuntu-24.04
-            opencl-arg: --enable-opencl
+            feature-args: --enable-opencl --enable-cuda
+            accelerator-packages: nvidia-cuda-toolkit ocl-icd-opencl-dev
           - arch: arm64
             runner: ubuntu-24.04-arm
-            opencl-arg: ""
+            feature-args: ""
+            accelerator-packages: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -125,6 +127,9 @@ jobs:
             libedit-dev \
             libzstd-dev \
             libxml2-dev
+          if [ -n "${{ matrix.accelerator-packages }}" ]; then
+            sudo apt-get install -y --no-install-recommends ${{ matrix.accelerator-packages }}
+          fi
 
       - name: Configure
         run: |
@@ -142,14 +147,14 @@ jobs:
 
       - name: Test tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
+          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
             --baseline-platform linux-${{ matrix.arch }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
       - name: Test plugin
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.opencl-arg }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.feature-args }} \
             --baseline-platform linux-${{ matrix.arch }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
