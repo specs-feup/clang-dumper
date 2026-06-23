@@ -146,6 +146,8 @@ jobs:
         run: cmake --build build --target tool plugin --parallel
 
       - name: Test tool
+        id: test_tool
+        continue-on-error: true
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
             --baseline-platform linux-${{ matrix.arch }} \
@@ -153,6 +155,8 @@ jobs:
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
       - name: Test plugin
+        id: test_plugin
+        continue-on-error: true
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.feature-args }} \
             --baseline-platform linux-${{ matrix.arch }} \
@@ -160,7 +164,7 @@ jobs:
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
 
       - name: Upload failed test outputs
-        if: failure()
+        if: ${{ always() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
         uses: actions/upload-artifact@v7
         with:
           name: failed-test-outputs-linux-${{ matrix.arch }}
@@ -176,6 +180,10 @@ jobs:
           path: test/raw-outputs/linux-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
+
+      - name: Fail if tests failed
+        if: ${{ steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure' }}
+        run: exit 1
 
       - name: Check tool runtime dependencies
         run: |
@@ -254,6 +262,8 @@ jobs:
         run: cmake --build build --target tool plugin --parallel
 
       - name: Test tool
+        id: test_tool
+        continue-on-error: true
         run: |
           python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
             --baseline-platform macos-${{ matrix.arch }} \
@@ -267,6 +277,8 @@ jobs:
             --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Test plugin
+        id: test_plugin
+        continue-on-error: true
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
             --baseline-platform macos-${{ matrix.arch }} \
@@ -280,6 +292,7 @@ jobs:
             --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Check tool runtime dependencies
+        if: ${{ steps.test_tool.outcome == 'success' && steps.test_plugin.outcome == 'success' }}
         run: |
           otool -L build/tool
           if otool -L build/tool | grep -E 'lib(clang|LLVM)'; then
@@ -288,7 +301,7 @@ jobs:
           fi
 
       - name: Upload failed test outputs
-        if: failure()
+        if: ${{ always() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
         uses: actions/upload-artifact@v7
         with:
           name: failed-test-outputs-macos-${{ matrix.arch }}
@@ -304,6 +317,10 @@ jobs:
           path: test/raw-outputs/macos-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
+
+      - name: Fail if tests failed
+        if: ${{ steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure' }}
+        run: exit 1
 
       - name: Upload tool
         uses: actions/upload-artifact@v7
