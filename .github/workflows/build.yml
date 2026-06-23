@@ -155,6 +155,7 @@ jobs:
 
       - name: Test plugin
         id: test_plugin
+        if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.feature-args }} \
             --baseline-platform linux-${{ matrix.arch }} \
@@ -271,6 +272,7 @@ jobs:
 
       - name: Test plugin
         id: test_plugin
+        if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
           python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
             --baseline-platform macos-${{ matrix.arch }} \
