@@ -342,6 +342,9 @@ _TARGET_ATTR_WARNING_RE = re.compile(
     r"warning: (?:unknown CPU 'hiss'|duplicate 'arch=') in the 'target' "
     r"attribute string; 'target' attribute ignored \[-Wignored-attributes\]"
 )
+_CLANG_DIAGNOSTIC_PREFIX_RE = re.compile(
+    r"^clang(?:\+\+)?-\d+:\s+(?=(?:error|warning|note):)"
+)
 
 # AArch64 treats plain char as unsigned by default, while x86_64 treats it as
 # signed. The tests exercise AST shape, not the host default-char ABI.
@@ -574,6 +577,7 @@ def normalize_captured_lines(
     inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")
     normalized_lines: list[str] = []
     for line in raw_lines:
+        line = _CLANG_DIAGNOSTIC_PREFIX_RE.sub("", line)
         line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
         line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
         line = line.replace(PATH_PLACEHOLDER + "\\", PATH_PLACEHOLDER + "/")
