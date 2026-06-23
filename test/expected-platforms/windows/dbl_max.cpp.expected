@@ -145,8 +145,40 @@ ADDR_002
 <Visited Children>
 ADDR_005
 0
-<TypedefTypeData>
+<TypedefNameDeclData>
 ADDR_005
+TypedefDecl
+<SYSTEM_INCLUDE>/c++/limits
+339
+3
+<SYSTEM_INCLUDE>/c++/limits
+339
+18
+0
+1
+0
+0
+1
+0
+0
+0
+std::__libcpp_numeric_limits<double, true>
+type
+0
+1
+0
+None
+Default
+ADDR_006
+ADDR_002
+<Id to Class Map>
+ADDR_005
+TypedefDecl
+<Visited Children>
+ADDR_006
+0
+<TypedefTypeData>
+ADDR_006
 TypedefType
 std::__libcpp_numeric_limits<double, true>::type
 NONE
@@ -154,9 +186,9 @@ NONE
 0
 0
 ADDR_002
-ADDR_006
-<Id to Class Map>
 ADDR_005
+<Id to Class Map>
+ADDR_006
 TypedefType
 <Visited Children>
 ADDR_007
@@ -169,18 +201,50 @@ NONE
 0
 0
 0
-ADDR_005
+ADDR_006
 Typename
 __base::
-ADDR_005
+ADDR_006
 <Id to Class Map>
 ADDR_007
 ElaboratedType
 <Visited Children>
 ADDR_008
 0
-<TypedefTypeData>
+<TypedefNameDeclData>
 ADDR_008
+TypedefDecl
+<SYSTEM_INCLUDE>/c++/limits
+441
+3
+<SYSTEM_INCLUDE>/c++/limits
+441
+33
+0
+1
+0
+0
+1
+0
+0
+0
+std::numeric_limits<double>
+type
+0
+1
+0
+None
+Default
+ADDR_009
+ADDR_007
+<Id to Class Map>
+ADDR_008
+TypedefDecl
+<Visited Children>
+ADDR_009
+0
+<TypedefTypeData>
+ADDR_009
 TypedefType
 std::numeric_limits<double>::type
 NONE
@@ -188,9 +252,9 @@ NONE
 0
 0
 ADDR_007
-ADDR_009
-<Id to Class Map>
 ADDR_008
+<Id to Class Map>
+ADDR_009
 TypedefType
 <Visited Children>
 ADDR_010
@@ -203,10 +267,10 @@ NONE
 0
 0
 0
-ADDR_008
+ADDR_009
 None
 
-ADDR_008
+ADDR_009
 <Id to Class Map>
 ADDR_010
 ElaboratedType
@@ -243,11 +307,82 @@ ADDR_011
 FunctionProtoType
 <Top Level Types>
 ADDR_011
-<Visited Children>
+<Top Level Attributes>
 ADDR_012
+<Top Level Attributes>
+ADDR_013
+<Top Level Types>
+ADDR_011
+<Visited Children>
+ADDR_014
+0
+<CXXMethodDeclData>
+ADDR_014
+CXXMethodDecl
+<SYSTEM_INCLUDE>/c++/limits
+446
+3
+<SYSTEM_INCLUDE>/c++/limits
+446
+95
+1
+<SYSTEM_INCLUDE>/c++/__config
+782
+57
+<SYSTEM_INCLUDE>/c++/limits
+446
+95
+1
+0
+1
+1
+0
+0
+2
+ADDR_012
+ADDR_013
+std::numeric_limits<double>
+max
+0
+1
+0
+External
+Default
+ADDR_011
+0
+1
+2
+Static
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_014
+nullptr_decl
+0
+ADDR_015
+0
+1
+0
+0
+0
+0
+0
+0
+nullptr_type
+nullptr_type
+1
+0
+<Id to Class Map>
+ADDR_014
+CXXMethodDecl
+<Visited Children>
+ADDR_016
 0
 <DeclRefExprData>
-ADDR_012
+ADDR_016
 DeclRefExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -263,15 +398,15 @@ ADDR_011
 0
 std::numeric_limits<double>::
 0
-ADDR_013
+ADDR_014
 <Id to Class Map>
-ADDR_012
+ADDR_016
 DeclRefExpr
 <Visited Children>
-ADDR_014
+ADDR_017
 0
 <PointerTypeData>
-ADDR_014
+ADDR_017
 PointerType
 type (*)() noexcept
 NONE
@@ -281,16 +416,16 @@ NONE
 nullptr_type
 ADDR_011
 <Id to Class Map>
-ADDR_014
+ADDR_017
 PointerType
 <Top Level Types>
-ADDR_014
+ADDR_017
 <Visited Children>
-ADDR_015
+ADDR_018
 1
-ADDR_012
+ADDR_016
 <ExprData>
-ADDR_015
+ADDR_018
 ImplicitCastExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -300,21 +435,21 @@ ImplicitCastExpr
 48
 0
 0
-ADDR_014
+ADDR_017
 0
 0
 0
 <Id to Class Map>
-ADDR_015
+ADDR_018
 ImplicitCastExpr
 <Top Level Types>
 ADDR_010
 <Visited Children>
-ADDR_016
+ADDR_019
 1
-ADDR_015
+ADDR_018
 <CallExprData>
-ADDR_016
+ADDR_019
 CallExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -328,14 +463,14 @@ ADDR_010
 0
 0
 0
-ADDR_013
+ADDR_014
 <Id to Class Map>
-ADDR_016
+ADDR_019
 CallExpr
 <Visited Children>
 ADDR_004
 1
-ADDR_016
+ADDR_019
 <VarDeclData>
 ADDR_004
 VarDecl

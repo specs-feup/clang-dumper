@@ -41,6 +41,43 @@ iostream
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
+ADDR_002
+0
+<NamespaceDeclData>
+ADDR_002
+NamespaceDecl
+<SYSTEM_INCLUDE>/c++/__verbose_abort
+20
+1
+<SYSTEM_INCLUDE>/c++/__verbose_abort
+51
+1
+1
+<SYSTEM_INCLUDE>/c++/__config
+884
+39
+<SYSTEM_INCLUDE>/c++/__config
+886
+38
+1
+0
+0
+0
+0
+0
+0
+
+std
+0
+0
+0
+External
+Default
+%CLAVA_SOURCE_BLOCK%
+<Id to Class Map>
+ADDR_002
+NamespaceDecl
+<Visited Children>
 ADDR_001
 0
 <UsingDirectiveDeclData>
@@ -165,11 +202,62 @@ ADDR_007
 FunctionProtoType
 <Top Level Types>
 ADDR_007
-<Visited Children>
+<Top Level Attributes>
 ADDR_008
+<Visited Children>
+ADDR_009
+0
+<ClassTemplateSpecializationDeclData>
+ADDR_009
+ClassTemplateSpecializationDecl
+<SYSTEM_INCLUDE>/c++/ostream
+1019
+1
+<SYSTEM_INCLUDE>/c++/ostream
+1019
+74
+0
+1
+0
+0
+0
+0
+0
+1
+ADDR_008
+std
+basic_ostream
+0
+0
+0
+External
+Default
+ADDR_010
+Class
+1
+0
+1
+1
+0
+PUBLIC
+PUBLIC
+ADDR_011
+ADDR_009
+ADDR_012
+ExplicitInstantiationDeclaration
+2
+Type
+ADDR_013
+Type
+ADDR_014
+<Id to Class Map>
+ADDR_009
+ClassTemplateSpecializationDecl
+<Visited Children>
+ADDR_010
 0
 <TagTypeData>
-ADDR_008
+ADDR_010
 RecordType
 std::ostream
 NONE
@@ -179,13 +267,13 @@ NONE
 nullptr_type
 ADDR_009
 <Id to Class Map>
-ADDR_008
+ADDR_010
 RecordType
 <Visited Children>
-ADDR_010
+ADDR_013
 0
 <BuiltinTypeData>
-ADDR_010
+ADDR_013
 BuiltinType
 char
 NONE
@@ -196,13 +284,54 @@ nullptr_type
 Char_S
 char
 <Id to Class Map>
-ADDR_010
+ADDR_013
 BuiltinType
 <Visited Children>
-ADDR_011
+ADDR_015
+0
+<ClassTemplateSpecializationDeclData>
+ADDR_015
+ClassTemplateSpecializationDecl
+<SYSTEM_INCLUDE>/c++/__string/char_traits.h
+177
+1
+<SYSTEM_INCLUDE>/c++/__string/char_traits.h
+269
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+char_traits
+0
+0
+0
+External
+Default
+ADDR_014
+Struct
+1
+0
+0
+ADDR_015
+ADDR_016
+ExplicitSpecialization
+1
+Type
+ADDR_013
+<Id to Class Map>
+ADDR_015
+ClassTemplateSpecializationDecl
+<Visited Children>
+ADDR_014
 0
 <TagTypeData>
-ADDR_011
+ADDR_014
 RecordType
 std::char_traits<char>
 NONE
@@ -210,148 +339,216 @@ NONE
 0
 0
 nullptr_type
-ADDR_012
+ADDR_015
 <Id to Class Map>
-ADDR_011
+ADDR_014
 RecordType
 <Visited Children>
-ADDR_013
+ADDR_017
+0
+<TemplateTypeParmDeclData>
+ADDR_017
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/ostream
+785
+11
+<SYSTEM_INCLUDE>/c++/ostream
+785
+17
+0
+1
+0
+0
+1
+0
+0
+0
+
+_Traits
+0
+0
+0
+None
+Default
+ADDR_018
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_017
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_019
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_013
+ADDR_019
 SubstTemplateTypeParmType
 std::char_traits<char>
 NONE
 0
 0
 0
-ADDR_011
 ADDR_014
-ADDR_011
+ADDR_017
+ADDR_014
 <Id to Class Map>
-ADDR_013
+ADDR_019
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_015
+ADDR_020
 0
-<TemplateSpecializationTypeData>
-ADDR_015
-TemplateSpecializationType
-basic_ostream<char, std::char_traits<char>>
-NONE
+<TemplateDeclData>
+ADDR_020
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/ostream
+207
+1
+<SYSTEM_INCLUDE>/c++/ostream
+296
+1
+0
+1
 0
 0
 0
-ADDR_008
 0
-nullptr_type
+0
+0
+std
 basic_ostream
-ADDR_016
+0
+0
+0
+External
+Default
 2
-Type
-ADDR_010
-Type
-ADDR_013
-<Id to Class Map>
-ADDR_015
-TemplateSpecializationType
-<Visited Children>
-ADDR_017
-0
-<ElaboratedTypeData>
-ADDR_017
-ElaboratedType
-basic_ostream<char, char_traits<char>>
-NONE
-0
-0
-0
-ADDR_015
-None
-
-ADDR_015
-<Id to Class Map>
-ADDR_017
-ElaboratedType
-<Visited Children>
-ADDR_018
-0
-<ReferenceTypeData>
-ADDR_018
-LValueReferenceType
-basic_ostream<char, char_traits<char>> &
-NONE
-0
-0
-0
-nullptr_type
-ADDR_017
-<Id to Class Map>
-ADDR_018
-LValueReferenceType
-<Visited Children>
-ADDR_019
-0
-<TemplateSpecializationTypeData>
-ADDR_019
-TemplateSpecializationType
-basic_ostream<char, std::char_traits<char>>
-NONE
-0
-0
-0
-ADDR_008
-0
-nullptr_type
-basic_ostream
-ADDR_016
-2
-Type
-ADDR_010
-Type
-ADDR_013
-<Id to Class Map>
-ADDR_019
-TemplateSpecializationType
-<Visited Children>
-ADDR_020
-0
-<ElaboratedTypeData>
-ADDR_020
-ElaboratedType
-basic_ostream<char, char_traits<char>>
-NONE
-0
-0
-0
-ADDR_019
-None
-
-ADDR_019
-<Id to Class Map>
-ADDR_020
-ElaboratedType
-<Visited Children>
 ADDR_021
-0
-<ReferenceTypeData>
-ADDR_021
-LValueReferenceType
-basic_ostream<char, char_traits<char>> &
-NONE
-0
-0
-0
-nullptr_type
-ADDR_020
-<Id to Class Map>
-ADDR_021
-LValueReferenceType
-<Visited Children>
 ADDR_022
+ADDR_023
+<Id to Class Map>
+ADDR_020
+ClassTemplateDecl
+<Visited Children>
+ADDR_024
+0
+<TemplateSpecializationTypeData>
+ADDR_024
+TemplateSpecializationType
+basic_ostream<char, std::char_traits<char>>
+NONE
+0
+0
+0
+ADDR_010
+0
+nullptr_type
+basic_ostream
+ADDR_020
+2
+Type
+ADDR_013
+Type
+ADDR_019
+<Id to Class Map>
+ADDR_024
+TemplateSpecializationType
+<Visited Children>
+ADDR_025
+0
+<ElaboratedTypeData>
+ADDR_025
+ElaboratedType
+basic_ostream<char, char_traits<char>>
+NONE
+0
+0
+0
+ADDR_024
+None
+
+ADDR_024
+<Id to Class Map>
+ADDR_025
+ElaboratedType
+<Visited Children>
+ADDR_026
+0
+<ReferenceTypeData>
+ADDR_026
+LValueReferenceType
+basic_ostream<char, char_traits<char>> &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_025
+<Id to Class Map>
+ADDR_026
+LValueReferenceType
+<Visited Children>
+ADDR_027
+0
+<TemplateSpecializationTypeData>
+ADDR_027
+TemplateSpecializationType
+basic_ostream<char, std::char_traits<char>>
+NONE
+0
+0
+0
+ADDR_010
+0
+nullptr_type
+basic_ostream
+ADDR_020
+2
+Type
+ADDR_013
+Type
+ADDR_019
+<Id to Class Map>
+ADDR_027
+TemplateSpecializationType
+<Visited Children>
+ADDR_028
+0
+<ElaboratedTypeData>
+ADDR_028
+ElaboratedType
+basic_ostream<char, char_traits<char>>
+NONE
+0
+0
+0
+ADDR_027
+None
+
+ADDR_027
+<Id to Class Map>
+ADDR_028
+ElaboratedType
+<Visited Children>
+ADDR_029
+0
+<ReferenceTypeData>
+ADDR_029
+LValueReferenceType
+basic_ostream<char, char_traits<char>> &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_028
+<Id to Class Map>
+ADDR_029
+LValueReferenceType
+<Visited Children>
+ADDR_030
 0
 <QualTypeData>
-ADDR_022
+ADDR_030
 QualType
 const char
 NONE
@@ -363,15 +560,15 @@ nullptr_type
 CONST
 NONE
 0
-ADDR_010
+ADDR_013
 <Id to Class Map>
-ADDR_022
+ADDR_030
 QualType
 <Visited Children>
-ADDR_023
+ADDR_031
 0
 <PointerTypeData>
-ADDR_023
+ADDR_031
 PointerType
 const char *
 NONE
@@ -379,15 +576,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_022
+ADDR_030
 <Id to Class Map>
-ADDR_023
+ADDR_031
 PointerType
 <Visited Children>
-ADDR_024
+ADDR_032
 0
 <FunctionProtoTypeData>
-ADDR_024
+ADDR_032
 FunctionProtoType
 basic_ostream<char, char_traits<char>> &(basic_ostream<char, char_traits<char>> &, const char *)
 NONE
@@ -403,26 +600,86 @@ nullptr_type
 0
 0
 C
-ADDR_018
+ADDR_026
 2
 2
-ADDR_021
-ADDR_023
+ADDR_029
+ADDR_031
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_024
+ADDR_032
 FunctionProtoType
 <Top Level Types>
-ADDR_024
+ADDR_032
+<Top Level Attributes>
+ADDR_033
+<Top Level Attributes>
+ADDR_034
+<Top Level Types>
+ADDR_032
 <Visited Children>
-ADDR_025
+ADDR_035
+0
+<FunctionDeclData>
+ADDR_035
+FunctionDecl
+<SYSTEM_INCLUDE>/c++/ostream
+786
+1
+<SYSTEM_INCLUDE>/c++/ostream
+788
+1
+1
+<SYSTEM_INCLUDE>/c++/__config
+782
+57
+<SYSTEM_INCLUDE>/c++/ostream
+788
+1
+1
+0
+1
+1
+0
+0
+2
+ADDR_033
+ADDR_034
+std::__1
+operator<<
+6
+0
+0
+External
+Default
+ADDR_032
+0
+0
+3
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_035
+ADDR_036
+1
+Type
+ADDR_014
+<Id to Class Map>
+ADDR_035
+FunctionDecl
+<Visited Children>
+ADDR_037
 0
 <DeclRefExprData>
-ADDR_025
+ADDR_037
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -430,21 +687,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_024
+ADDR_032
 1
 0
 0
 
 0
-ADDR_026
+ADDR_035
 <Id to Class Map>
-ADDR_025
+ADDR_037
 DeclRefExpr
 <Visited Children>
-ADDR_027
+ADDR_038
 0
 <PointerTypeData>
-ADDR_027
+ADDR_038
 PointerType
 basic_ostream<char, char_traits<char>> &(*)(basic_ostream<char, char_traits<char>> &, const char *)
 NONE
@@ -452,18 +709,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_024
+ADDR_032
 <Id to Class Map>
-ADDR_027
+ADDR_038
 PointerType
 <Top Level Types>
-ADDR_027
+ADDR_038
 <Visited Children>
-ADDR_028
+ADDR_039
 1
-ADDR_025
+ADDR_037
 <ExprData>
-ADDR_028
+ADDR_039
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -471,94 +728,202 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_027
+ADDR_038
 0
 0
 0
 <Id to Class Map>
-ADDR_028
+ADDR_039
 ImplicitCastExpr
 <Visited Children>
-ADDR_029
+ADDR_012
+0
+<TemplateDeclData>
+ADDR_012
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/__fwd/ostream.h
+21
+1
+<SYSTEM_INCLUDE>/c++/__fwd/ostream.h
+22
+28
+0
+1
+0
+0
+0
+0
+0
+0
+std
+basic_ostream
+0
+0
+0
+External
+Default
+2
+ADDR_040
+ADDR_041
+ADDR_042
+<Id to Class Map>
+ADDR_012
+ClassTemplateDecl
+<Visited Children>
+ADDR_043
 0
 <TemplateSpecializationTypeData>
-ADDR_029
+ADDR_043
 TemplateSpecializationType
 ostream
 NONE
 0
 0
 0
-ADDR_008
+ADDR_010
 0
 nullptr_type
 basic_ostream
-ADDR_030
+ADDR_012
 1
 Type
-ADDR_010
+ADDR_013
 <Id to Class Map>
-ADDR_029
+ADDR_043
 TemplateSpecializationType
 <Visited Children>
-ADDR_031
+ADDR_044
 0
 <ElaboratedTypeData>
-ADDR_031
+ADDR_044
 ElaboratedType
 ostream
 NONE
 0
 0
 0
-ADDR_029
+ADDR_043
 None
 
-ADDR_029
+ADDR_043
 <Id to Class Map>
-ADDR_031
+ADDR_044
 ElaboratedType
 <Visited Children>
-ADDR_032
+ADDR_045
+0
+<TypedefNameDeclData>
+ADDR_045
+TypeAliasDecl
+<SYSTEM_INCLUDE>/c++/__fwd/ostream.h
+24
+1
+<SYSTEM_INCLUDE>/c++/__fwd/ostream.h
+24
+35
+0
+1
+0
+0
+1
+0
+0
+0
+std
+ostream
+0
+0
+0
+None
+Default
+ADDR_046
+ADDR_044
+<Id to Class Map>
+ADDR_045
+TypeAliasDecl
+<Visited Children>
+ADDR_046
 0
 <TypedefTypeData>
-ADDR_032
+ADDR_046
 TypedefType
 std::ostream
 NONE
 0
 0
 0
-ADDR_031
-ADDR_033
+ADDR_044
+ADDR_045
 <Id to Class Map>
-ADDR_032
+ADDR_046
 TypedefType
 <Visited Children>
-ADDR_034
+ADDR_047
 0
 <ElaboratedTypeData>
-ADDR_034
+ADDR_047
 ElaboratedType
 ostream
 NONE
 0
 0
 0
-ADDR_032
+ADDR_046
 None
 
-ADDR_032
+ADDR_046
 <Id to Class Map>
-ADDR_034
+ADDR_047
 ElaboratedType
 <Top Level Types>
-ADDR_034
+ADDR_047
+<Top Level Types>
+ADDR_047
 <Visited Children>
-ADDR_035
+ADDR_048
+0
+<VarDeclData>
+ADDR_048
+VarDecl
+<SYSTEM_INCLUDE>/c++/iostream
+55
+1
+<SYSTEM_INCLUDE>/c++/iostream
+55
+42
+0
+1
+0
+1
+1
+0
+0
+0
+std
+cout
+0
+0
+0
+External
+Default
+ADDR_047
+0
+Extern
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_048
+VarDecl
+<Visited Children>
+ADDR_049
 0
 <DeclRefExprData>
-ADDR_035
+ADDR_049
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -566,21 +931,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_034
+ADDR_047
 1
 0
 0
 
 0
-ADDR_036
+ADDR_048
 <Id to Class Map>
-ADDR_035
+ADDR_049
 DeclRefExpr
 <Visited Children>
-ADDR_037
+ADDR_050
 0
 <ConstantArrayTypeData>
-ADDR_037
+ADDR_050
 ConstantArrayType
 const char[9]
 NONE
@@ -590,18 +955,18 @@ NONE
 nullptr_type
 Normal
 0
-ADDR_022
+ADDR_030
 9
 <Id to Class Map>
-ADDR_037
+ADDR_050
 ConstantArrayType
 <Top Level Types>
-ADDR_037
+ADDR_050
 <Visited Children>
-ADDR_038
+ADDR_051
 0
 <StringLiteralData>
-ADDR_038
+ADDR_051
 StringLiteral
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -609,7 +974,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_037
+ADDR_050
 1
 0
 0
@@ -627,16 +992,16 @@ ORDINARY
 49
 10
 <Id to Class Map>
-ADDR_038
+ADDR_051
 StringLiteral
 <Top Level Types>
-ADDR_023
+ADDR_031
 <Visited Children>
-ADDR_039
+ADDR_052
 1
-ADDR_038
+ADDR_051
 <ExprData>
-ADDR_039
+ADDR_052
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -644,23 +1009,23 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_023
+ADDR_031
 0
 0
 0
 <Id to Class Map>
-ADDR_039
+ADDR_052
 ImplicitCastExpr
 <Top Level Types>
-ADDR_017
+ADDR_025
 <Visited Children>
-ADDR_040
+ADDR_053
 3
-ADDR_028
-ADDR_035
 ADDR_039
+ADDR_049
+ADDR_052
 <CallExprData>
-ADDR_040
+ADDR_053
 CXXOperatorCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -670,20 +1035,20 @@ CXXOperatorCallExpr
 29
 0
 0
-ADDR_017
+ADDR_025
 1
 0
 0
-ADDR_026
+ADDR_035
 <Id to Class Map>
-ADDR_040
+ADDR_053
 CXXOperatorCallExpr
 <Visited Children>
-ADDR_041
+ADDR_054
 1
-ADDR_040
+ADDR_053
 <StmtData>
-ADDR_041
+ADDR_054
 CompoundStmt
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -694,13 +1059,13 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_041
+ADDR_054
 CompoundStmt
 <Visited Children>
-ADDR_042
+ADDR_055
 0
 <PointerTypeData>
-ADDR_042
+ADDR_055
 PointerType
 Testpm *
 NONE
@@ -710,14 +1075,14 @@ NONE
 nullptr_type
 ADDR_004
 <Id to Class Map>
-ADDR_042
+ADDR_055
 PointerType
 <Visited Children>
-ADDR_043
+ADDR_056
 1
-ADDR_041
+ADDR_054
 <CXXMethodDeclData>
-ADDR_043
+ADDR_056
 CXXMethodDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 10
@@ -751,7 +1116,7 @@ None
 0
 0
 nullptr_decl
-ADDR_043
+ADDR_056
 nullptr_decl
 0
 ADDR_003
@@ -763,18 +1128,18 @@ ADDR_003
 0
 0
 0
-ADDR_042
+ADDR_055
 ADDR_004
 1
 0
 <Id to Class Map>
-ADDR_043
+ADDR_056
 CXXMethodDecl
 <Visited Children>
-ADDR_044
+ADDR_057
 0
 <BuiltinTypeData>
-ADDR_044
+ADDR_057
 BuiltinType
 int
 NONE
@@ -785,17 +1150,17 @@ nullptr_type
 Int
 int
 <Id to Class Map>
-ADDR_044
+ADDR_057
 BuiltinType
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_045
+ADDR_058
 2
 nullptr_expr
 nullptr_expr
 <FieldDeclData>
-ADDR_045
+ADDR_058
 FieldDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 11
@@ -818,18 +1183,18 @@ m_num
 1
 External
 Default
-ADDR_044
+ADDR_057
 0
 0
 <Id to Class Map>
-ADDR_045
+ADDR_058
 FieldDecl
 <Visited Children>
 ADDR_003
 3
 ADDR_005
-ADDR_043
-ADDR_045
+ADDR_056
+ADDR_058
 <CXXRecordDeclData>
 ADDR_003
 CXXRecordDecl
@@ -864,12 +1229,12 @@ ADDR_003
 ADDR_003
 CXXRecordDecl
 <Top Level Nodes>
-ADDR_046
+ADDR_059
 <Visited Children>
-ADDR_047
+ADDR_060
 0
 <TypeData>
-ADDR_047
+ADDR_060
 MemberPointerType
 void (Testpm::*)()
 NONE
@@ -878,17 +1243,17 @@ NONE
 0
 nullptr_type
 <Id to Class Map>
-ADDR_047
+ADDR_060
 MemberPointerType
 <Top Level Types>
-ADDR_047
+ADDR_060
 <Top Level Types>
 ADDR_007
 <Visited Children>
-ADDR_048
+ADDR_061
 0
 <DeclRefExprData>
-ADDR_048
+ADDR_061
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 17
@@ -904,15 +1269,15 @@ ADDR_007
 0
 Testpm::
 0
-ADDR_043
+ADDR_056
 <Id to Class Map>
-ADDR_048
+ADDR_061
 DeclRefExpr
 <Visited Children>
-ADDR_049
+ADDR_062
 0
 <TypeData>
-ADDR_049
+ADDR_062
 MemberPointerType
 void (Testpm::*)()
 NONE
@@ -921,16 +1286,16 @@ NONE
 0
 nullptr_type
 <Id to Class Map>
-ADDR_049
+ADDR_062
 MemberPointerType
 <Top Level Types>
-ADDR_049
+ADDR_062
 <Visited Children>
-ADDR_050
+ADDR_063
 1
-ADDR_048
+ADDR_061
 <UnaryOperatorData>
-ADDR_050
+ADDR_063
 UnaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 17
@@ -940,21 +1305,21 @@ UnaryOperator
 35
 0
 0
-ADDR_049
+ADDR_062
 0
 0
 0
 AddrOf
 PREFIX
 <Id to Class Map>
-ADDR_050
+ADDR_063
 UnaryOperator
 <Visited Children>
-ADDR_046
+ADDR_059
 1
-ADDR_050
+ADDR_063
 <VarDeclData>
-ADDR_046
+ADDR_059
 VarDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 17
@@ -977,7 +1342,7 @@ pmfn
 0
 External
 Default
-ADDR_047
+ADDR_060
 0
 None
 NONE
@@ -988,15 +1353,15 @@ CINIT
 0
 1
 <Id to Class Map>
-ADDR_046
+ADDR_059
 VarDecl
 <Top Level Nodes>
-ADDR_051
+ADDR_064
 <Visited Children>
-ADDR_052
+ADDR_065
 0
 <TypeData>
-ADDR_052
+ADDR_065
 MemberPointerType
 int Testpm::*
 NONE
@@ -1005,17 +1370,17 @@ NONE
 0
 nullptr_type
 <Id to Class Map>
-ADDR_052
+ADDR_065
 MemberPointerType
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_053
+ADDR_066
 0
 <DeclRefExprData>
-ADDR_053
+ADDR_066
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 18
@@ -1025,24 +1390,24 @@ DeclRefExpr
 29
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 Testpm::
 0
-ADDR_045
+ADDR_058
 <Id to Class Map>
-ADDR_053
+ADDR_066
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_054
+ADDR_067
 1
-ADDR_053
+ADDR_066
 <UnaryOperatorData>
-ADDR_054
+ADDR_067
 UnaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 18
@@ -1052,21 +1417,21 @@ UnaryOperator
 29
 0
 0
-ADDR_052
+ADDR_065
 0
 0
 0
 AddrOf
 PREFIX
 <Id to Class Map>
-ADDR_054
+ADDR_067
 UnaryOperator
 <Visited Children>
-ADDR_051
+ADDR_064
 1
-ADDR_054
+ADDR_067
 <VarDeclData>
-ADDR_051
+ADDR_064
 VarDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 18
@@ -1089,7 +1454,7 @@ pmd
 0
 External
 Default
-ADDR_052
+ADDR_065
 0
 None
 NONE
@@ -1100,15 +1465,15 @@ CINIT
 0
 1
 <Id to Class Map>
-ADDR_051
+ADDR_064
 VarDecl
 <Top Level Nodes>
-ADDR_055
+ADDR_068
 <Visited Children>
-ADDR_056
+ADDR_069
 0
 <FunctionProtoTypeData>
-ADDR_056
+ADDR_069
 FunctionProtoType
 int ()
 NONE
@@ -1124,7 +1489,7 @@ nullptr_type
 0
 0
 C
-ADDR_044
+ADDR_057
 0
 0
 0
@@ -1133,15 +1498,15 @@ None
 None
 0
 <Id to Class Map>
-ADDR_056
+ADDR_069
 FunctionProtoType
 <Top Level Types>
-ADDR_056
+ADDR_069
 <Visited Children>
-ADDR_057
+ADDR_070
 0
 <ElaboratedTypeData>
-ADDR_057
+ADDR_070
 ElaboratedType
 Testpm
 NONE
@@ -1153,17 +1518,17 @@ None
 
 ADDR_004
 <Id to Class Map>
-ADDR_057
+ADDR_070
 ElaboratedType
 <Top Level Types>
-ADDR_057
+ADDR_070
 <Top Level Types>
-ADDR_057
+ADDR_070
 <Visited Children>
-ADDR_058
+ADDR_071
 0
 <FunctionProtoTypeData>
-ADDR_058
+ADDR_071
 FunctionProtoType
 void () noexcept
 NONE
@@ -1188,15 +1553,15 @@ None
 BasicNoexcept
 0
 <Id to Class Map>
-ADDR_058
+ADDR_071
 FunctionProtoType
 <Top Level Types>
-ADDR_058
+ADDR_071
 <Visited Children>
-ADDR_059
+ADDR_072
 0
 <StmtData>
-ADDR_059
+ADDR_072
 CompoundStmt
 <TEST_DIR>/pointer_to_member_operators.cpp
 8
@@ -1205,14 +1570,14 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_059
+ADDR_072
 CompoundStmt
 <Visited Children>
-ADDR_060
+ADDR_073
 1
-ADDR_059
+ADDR_072
 <CXXConstructorDeclData>
-ADDR_060
+ADDR_073
 CXXConstructorDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 8
@@ -1233,7 +1598,7 @@ Testpm
 1
 External
 Default
-ADDR_058
+ADDR_071
 0
 0
 0
@@ -1244,7 +1609,7 @@ None
 0
 0
 nullptr_decl
-ADDR_060
+ADDR_073
 nullptr_decl
 0
 ADDR_003
@@ -1256,7 +1621,7 @@ ADDR_003
 0
 0
 0
-ADDR_042
+ADDR_055
 ADDR_004
 1
 0
@@ -1267,13 +1632,13 @@ ResolvedFalse
 nullptr_expr
 0
 <Id to Class Map>
-ADDR_060
+ADDR_073
 CXXConstructorDecl
 <Visited Children>
-ADDR_061
+ADDR_074
 0
 <CXXConstructExprData>
-ADDR_061
+ADDR_074
 CXXConstructExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 21
@@ -1281,7 +1646,7 @@ CXXConstructExpr
 <end>
 0
 0
-ADDR_057
+ADDR_070
 0
 0
 0
@@ -1291,16 +1656,16 @@ ADDR_057
 0
 Complete
 1
-ADDR_060
+ADDR_073
 <Id to Class Map>
-ADDR_061
+ADDR_074
 CXXConstructExpr
 <Visited Children>
-ADDR_062
+ADDR_075
 1
-ADDR_061
+ADDR_074
 <VarDeclData>
-ADDR_062
+ADDR_075
 VarDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 21
@@ -1323,7 +1688,7 @@ ATestpm
 0
 None
 Default
-ADDR_057
+ADDR_070
 0
 None
 NONE
@@ -1334,14 +1699,14 @@ CALL_INIT
 0
 0
 <Id to Class Map>
-ADDR_062
+ADDR_075
 VarDecl
 <Visited Children>
-ADDR_063
+ADDR_076
 1
-ADDR_062
+ADDR_075
 <StmtData>
-ADDR_063
+ADDR_076
 DeclStmt
 <TEST_DIR>/pointer_to_member_operators.cpp
 21
@@ -1352,13 +1717,13 @@ DeclStmt
 0
 0
 <Id to Class Map>
-ADDR_063
+ADDR_076
 DeclStmt
 <Visited Children>
-ADDR_064
+ADDR_077
 0
 <PointerTypeData>
-ADDR_064
+ADDR_077
 PointerType
 Testpm *
 NONE
@@ -1366,19 +1731,19 @@ NONE
 0
 0
 nullptr_type
-ADDR_057
+ADDR_070
 <Id to Class Map>
-ADDR_064
+ADDR_077
 PointerType
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Top Level Types>
-ADDR_057
+ADDR_070
 <Visited Children>
-ADDR_065
+ADDR_078
 0
 <CXXConstructExprData>
-ADDR_065
+ADDR_078
 CXXConstructExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 22
@@ -1386,7 +1751,7 @@ CXXConstructExpr
 <end>
 0
 0
-ADDR_057
+ADDR_070
 0
 0
 0
@@ -1396,18 +1761,76 @@ ADDR_057
 0
 Complete
 1
-ADDR_060
+ADDR_073
 <Id to Class Map>
-ADDR_065
+ADDR_078
 CXXConstructExpr
 <Top Level Types>
-ADDR_064
+ADDR_077
+<Top Level Attributes>
+ADDR_079
+<Top Level Attributes>
+ADDR_080
+<Top Level Attributes>
+ADDR_081
+<Top Level Attributes>
+ADDR_082
+<Top Level Types>
+ADDR_083
 <Visited Children>
-ADDR_066
+ADDR_084
+0
+<FunctionDeclData>
+ADDR_084
+FunctionDecl
+<SYSTEM_INCLUDE>/c++/new
+207
+60
+<SYSTEM_INCLUDE>/c++/new
+207
+95
+0
 1
-ADDR_065
+0
+1
+1
+0
+0
+4
+ADDR_079
+ADDR_080
+ADDR_081
+ADDR_082
+
+operator new
+6
+0
+0
+External
+Default
+ADDR_083
+0
+0
+0
+None
+0
+0
+0
+0
+0
+ADDR_085
+ADDR_085
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_084
+FunctionDecl
+<Visited Children>
+ADDR_086
+1
+ADDR_078
 <CXXNewExprData>
-ADDR_066
+ADDR_086
 CXXNewExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 22
@@ -1417,7 +1840,7 @@ CXXNewExpr
 26
 0
 0
-ADDR_064
+ADDR_077
 0
 0
 0
@@ -1425,19 +1848,19 @@ ADDR_064
 0
 1
 NO_INIT
-ADDR_065
-ADDR_065
+ADDR_078
+ADDR_078
 nullptr_expr
-ADDR_067
+ADDR_084
 <Id to Class Map>
-ADDR_066
+ADDR_086
 CXXNewExpr
 <Visited Children>
-ADDR_068
+ADDR_087
 1
-ADDR_066
+ADDR_086
 <VarDeclData>
-ADDR_068
+ADDR_087
 VarDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 22
@@ -1460,7 +1883,7 @@ pTestpm
 0
 None
 Default
-ADDR_064
+ADDR_077
 0
 None
 NONE
@@ -1471,14 +1894,14 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_068
+ADDR_087
 VarDecl
 <Visited Children>
-ADDR_069
+ADDR_088
 1
-ADDR_068
+ADDR_087
 <StmtData>
-ADDR_069
+ADDR_088
 DeclStmt
 <TEST_DIR>/pointer_to_member_operators.cpp
 22
@@ -1489,15 +1912,15 @@ DeclStmt
 0
 0
 <Id to Class Map>
-ADDR_069
+ADDR_088
 DeclStmt
 <Top Level Types>
-ADDR_057
-<Visited Children>
 ADDR_070
+<Visited Children>
+ADDR_089
 0
 <DeclRefExprData>
-ADDR_070
+ADDR_089
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 25
@@ -1505,23 +1928,23 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_057
+ADDR_070
 1
 0
 0
 
 0
-ADDR_062
+ADDR_075
 <Id to Class Map>
-ADDR_070
+ADDR_089
 DeclRefExpr
 <Top Level Types>
-ADDR_047
+ADDR_060
 <Visited Children>
-ADDR_071
+ADDR_090
 0
 <DeclRefExprData>
-ADDR_071
+ADDR_090
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 25
@@ -1529,24 +1952,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_047
+ADDR_060
 1
 0
 0
 
 0
-ADDR_046
+ADDR_059
 <Id to Class Map>
-ADDR_071
+ADDR_090
 DeclRefExpr
 <Top Level Types>
-ADDR_047
+ADDR_060
 <Visited Children>
-ADDR_072
+ADDR_091
 1
-ADDR_071
+ADDR_090
 <ExprData>
-ADDR_072
+ADDR_091
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 25
@@ -1554,18 +1977,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_047
+ADDR_060
 0
 0
 0
 <Id to Class Map>
-ADDR_072
+ADDR_091
 ImplicitCastExpr
 <Visited Children>
-ADDR_073
+ADDR_092
 0
 <BuiltinTypeData>
-ADDR_073
+ADDR_092
 BuiltinType
 <bound member function type>
 NONE
@@ -1576,17 +1999,17 @@ nullptr_type
 BoundMember
 <bound member function type>
 <Id to Class Map>
-ADDR_073
+ADDR_092
 BuiltinType
 <Top Level Types>
-ADDR_073
+ADDR_092
 <Visited Children>
-ADDR_074
+ADDR_093
 2
-ADDR_070
-ADDR_072
+ADDR_089
+ADDR_091
 <BinaryOperatorData>
-ADDR_074
+ADDR_093
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 25
@@ -1596,22 +2019,22 @@ BinaryOperator
 14
 0
 0
-ADDR_073
+ADDR_092
 0
 0
 0
 PtrMemD
 <Id to Class Map>
-ADDR_074
+ADDR_093
 BinaryOperator
 <Top Level Types>
-ADDR_073
+ADDR_092
 <Visited Children>
-ADDR_075
+ADDR_094
 1
-ADDR_074
+ADDR_093
 <ExprData>
-ADDR_075
+ADDR_094
 ParenExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 25
@@ -1621,21 +2044,21 @@ ParenExpr
 18
 0
 0
-ADDR_073
+ADDR_092
 0
 0
 0
 <Id to Class Map>
-ADDR_075
+ADDR_094
 ParenExpr
 <Top Level Types>
 ADDR_006
 <Visited Children>
-ADDR_076
+ADDR_095
 1
-ADDR_075
+ADDR_094
 <CXXMemberCallExprData>
-ADDR_076
+ADDR_095
 CXXMemberCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 25
@@ -1652,15 +2075,15 @@ ADDR_006
 nullptr_decl
 nullptr_decl
 <Id to Class Map>
-ADDR_076
+ADDR_095
 CXXMemberCallExpr
 <Top Level Types>
-ADDR_064
-<Visited Children>
 ADDR_077
+<Visited Children>
+ADDR_096
 0
 <DeclRefExprData>
-ADDR_077
+ADDR_096
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1668,24 +2091,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 1
 0
 0
 
 0
-ADDR_068
+ADDR_087
 <Id to Class Map>
-ADDR_077
+ADDR_096
 DeclRefExpr
 <Top Level Types>
-ADDR_064
-<Visited Children>
-ADDR_078
-1
 ADDR_077
+<Visited Children>
+ADDR_097
+1
+ADDR_096
 <ExprData>
-ADDR_078
+ADDR_097
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1693,20 +2116,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 0
 0
 0
 <Id to Class Map>
-ADDR_078
+ADDR_097
 ImplicitCastExpr
 <Top Level Types>
-ADDR_047
+ADDR_060
 <Visited Children>
-ADDR_079
+ADDR_098
 0
 <DeclRefExprData>
-ADDR_079
+ADDR_098
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1714,24 +2137,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_047
+ADDR_060
 1
 0
 0
 
 0
-ADDR_046
+ADDR_059
 <Id to Class Map>
-ADDR_079
+ADDR_098
 DeclRefExpr
 <Top Level Types>
-ADDR_047
+ADDR_060
 <Visited Children>
-ADDR_080
+ADDR_099
 1
-ADDR_079
+ADDR_098
 <ExprData>
-ADDR_080
+ADDR_099
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1739,22 +2162,22 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_047
+ADDR_060
 0
 0
 0
 <Id to Class Map>
-ADDR_080
+ADDR_099
 ImplicitCastExpr
 <Top Level Types>
-ADDR_073
+ADDR_092
 <Visited Children>
-ADDR_081
+ADDR_100
 2
-ADDR_078
-ADDR_080
+ADDR_097
+ADDR_099
 <BinaryOperatorData>
-ADDR_081
+ADDR_100
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1764,22 +2187,22 @@ BinaryOperator
 15
 0
 0
-ADDR_073
+ADDR_092
 0
 0
 0
 PtrMemI
 <Id to Class Map>
-ADDR_081
+ADDR_100
 BinaryOperator
 <Top Level Types>
-ADDR_073
+ADDR_092
 <Visited Children>
-ADDR_082
+ADDR_101
 1
-ADDR_081
+ADDR_100
 <ExprData>
-ADDR_082
+ADDR_101
 ParenExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1789,21 +2212,21 @@ ParenExpr
 19
 0
 0
-ADDR_073
+ADDR_092
 0
 0
 0
 <Id to Class Map>
-ADDR_082
+ADDR_101
 ParenExpr
 <Top Level Types>
 ADDR_006
 <Visited Children>
-ADDR_083
+ADDR_102
 1
-ADDR_082
+ADDR_101
 <CXXMemberCallExprData>
-ADDR_083
+ADDR_102
 CXXMemberCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 26
@@ -1820,15 +2243,15 @@ ADDR_006
 nullptr_decl
 nullptr_decl
 <Id to Class Map>
-ADDR_083
+ADDR_102
 CXXMemberCallExpr
 <Top Level Types>
-ADDR_057
+ADDR_070
 <Visited Children>
-ADDR_084
+ADDR_103
 0
 <DeclRefExprData>
-ADDR_084
+ADDR_103
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 30
@@ -1836,23 +2259,23 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_057
+ADDR_070
 1
 0
 0
 
 0
-ADDR_062
+ADDR_075
 <Id to Class Map>
-ADDR_084
+ADDR_103
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_085
+ADDR_104
 0
 <DeclRefExprData>
-ADDR_085
+ADDR_104
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 30
@@ -1860,24 +2283,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 1
 0
 0
 
 0
-ADDR_051
+ADDR_064
 <Id to Class Map>
-ADDR_085
+ADDR_104
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_086
+ADDR_105
 1
-ADDR_085
+ADDR_104
 <ExprData>
-ADDR_086
+ADDR_105
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 30
@@ -1885,22 +2308,22 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 0
 0
 0
 <Id to Class Map>
-ADDR_086
+ADDR_105
 ImplicitCastExpr
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_087
+ADDR_106
 2
-ADDR_084
-ADDR_086
+ADDR_103
+ADDR_105
 <BinaryOperatorData>
-ADDR_087
+ADDR_106
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 30
@@ -1910,21 +2333,21 @@ BinaryOperator
 13
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 PtrMemD
 <Id to Class Map>
-ADDR_087
+ADDR_106
 BinaryOperator
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_088
+ADDR_107
 0
 <IntegerLiteralData>
-ADDR_088
+ADDR_107
 IntegerLiteral
 <TEST_DIR>/pointer_to_member_operators.cpp
 30
@@ -1932,24 +2355,24 @@ IntegerLiteral
 <end>
 0
 0
-ADDR_044
+ADDR_057
 0
 0
 0
 %CLAVA_SOURCE_BLOCK%
 1
 <Id to Class Map>
-ADDR_088
+ADDR_107
 IntegerLiteral
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_089
+ADDR_108
 2
-ADDR_087
-ADDR_088
+ADDR_106
+ADDR_107
 <BinaryOperatorData>
-ADDR_089
+ADDR_108
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 30
@@ -1959,21 +2382,21 @@ BinaryOperator
 19
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 Assign
 <Id to Class Map>
-ADDR_089
+ADDR_108
 BinaryOperator
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Visited Children>
-ADDR_090
+ADDR_109
 0
 <DeclRefExprData>
-ADDR_090
+ADDR_109
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -1981,24 +2404,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 1
 0
 0
 
 0
-ADDR_068
+ADDR_087
 <Id to Class Map>
-ADDR_090
+ADDR_109
 DeclRefExpr
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Visited Children>
-ADDR_091
+ADDR_110
 1
-ADDR_090
+ADDR_109
 <ExprData>
-ADDR_091
+ADDR_110
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -2006,20 +2429,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 0
 0
 0
 <Id to Class Map>
-ADDR_091
+ADDR_110
 ImplicitCastExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_092
+ADDR_111
 0
 <DeclRefExprData>
-ADDR_092
+ADDR_111
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -2027,24 +2450,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 1
 0
 0
 
 0
-ADDR_051
+ADDR_064
 <Id to Class Map>
-ADDR_092
+ADDR_111
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_093
+ADDR_112
 1
-ADDR_092
+ADDR_111
 <ExprData>
-ADDR_093
+ADDR_112
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -2052,22 +2475,22 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 0
 0
 0
 <Id to Class Map>
-ADDR_093
+ADDR_112
 ImplicitCastExpr
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_094
+ADDR_113
 2
-ADDR_091
-ADDR_093
+ADDR_110
+ADDR_112
 <BinaryOperatorData>
-ADDR_094
+ADDR_113
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -2077,21 +2500,21 @@ BinaryOperator
 14
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 PtrMemI
 <Id to Class Map>
-ADDR_094
+ADDR_113
 BinaryOperator
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_095
+ADDR_114
 0
 <IntegerLiteralData>
-ADDR_095
+ADDR_114
 IntegerLiteral
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -2099,24 +2522,24 @@ IntegerLiteral
 <end>
 0
 0
-ADDR_044
+ADDR_057
 0
 0
 0
 %CLAVA_SOURCE_BLOCK%
 2
 <Id to Class Map>
-ADDR_095
+ADDR_114
 IntegerLiteral
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_096
+ADDR_115
 2
-ADDR_094
-ADDR_095
+ADDR_113
+ADDR_114
 <BinaryOperatorData>
-ADDR_096
+ADDR_115
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 31
@@ -2126,37 +2549,37 @@ BinaryOperator
 20
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 Assign
 <Id to Class Map>
-ADDR_096
+ADDR_115
 BinaryOperator
 <Visited Children>
-ADDR_097
+ADDR_116
 0
 <ElaboratedTypeData>
-ADDR_097
+ADDR_116
 ElaboratedType
 ostream
 NONE
 0
 0
 0
-ADDR_008
+ADDR_010
 None
 
-ADDR_008
+ADDR_010
 <Id to Class Map>
-ADDR_097
+ADDR_116
 ElaboratedType
 <Visited Children>
-ADDR_098
+ADDR_117
 0
 <ReferenceTypeData>
-ADDR_098
+ADDR_117
 LValueReferenceType
 ostream &
 NONE
@@ -2164,15 +2587,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_097
+ADDR_116
 <Id to Class Map>
-ADDR_098
+ADDR_117
 LValueReferenceType
 <Visited Children>
-ADDR_099
+ADDR_118
 0
 <FunctionProtoTypeData>
-ADDR_099
+ADDR_118
 FunctionProtoType
 ostream &(ostream &)
 NONE
@@ -2188,38 +2611,38 @@ nullptr_type
 0
 0
 C
-ADDR_098
+ADDR_117
 1
 1
-ADDR_098
+ADDR_117
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_099
+ADDR_118
 FunctionProtoType
 <Visited Children>
-ADDR_100
+ADDR_119
 0
 <TypeData>
-ADDR_100
+ADDR_119
 ParenType
 ostream &(ostream &)
 NONE
 0
 0
 0
-ADDR_099
+ADDR_118
 <Id to Class Map>
-ADDR_100
+ADDR_119
 ParenType
 <Visited Children>
-ADDR_101
+ADDR_120
 0
 <PointerTypeData>
-ADDR_101
+ADDR_120
 PointerType
 ostream &(*)(ostream &)
 NONE
@@ -2227,15 +2650,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_100
+ADDR_119
 <Id to Class Map>
-ADDR_101
+ADDR_120
 PointerType
 <Visited Children>
-ADDR_102
+ADDR_121
 0
 <FunctionProtoTypeData>
-ADDR_102
+ADDR_121
 FunctionProtoType
 ostream &(ostream &(*)(ostream &))
 NONE
@@ -2251,25 +2674,90 @@ nullptr_type
 0
 0
 C
-ADDR_098
+ADDR_117
 1
 1
-ADDR_101
+ADDR_120
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_102
+ADDR_121
 FunctionProtoType
 <Top Level Types>
-ADDR_102
+ADDR_121
+<Top Level Attributes>
+ADDR_122
+<Top Level Attributes>
+ADDR_123
+<Top Level Types>
+ADDR_121
 <Visited Children>
-ADDR_103
+ADDR_124
+0
+<CXXMethodDeclData>
+ADDR_124
+CXXMethodDecl
+<SYSTEM_INCLUDE>/c++/ostream
+241
+3
+<SYSTEM_INCLUDE>/c++/ostream
+243
+3
+0
+1
+0
+1
+1
+0
+0
+2
+ADDR_122
+ADDR_123
+std::ostream
+operator<<
+6
+1
+1
+External
+Default
+ADDR_121
+0
+0
+2
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_124
+nullptr_decl
+0
+ADDR_009
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_125
+ADDR_010
+1
+0
+<Id to Class Map>
+ADDR_124
+CXXMethodDecl
+<Visited Children>
+ADDR_126
 0
 <DeclRefExprData>
-ADDR_103
+ADDR_126
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -2277,21 +2765,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_102
+ADDR_121
 1
 0
 0
 
 0
-ADDR_104
+ADDR_124
 <Id to Class Map>
-ADDR_103
+ADDR_126
 DeclRefExpr
 <Visited Children>
-ADDR_105
+ADDR_127
 0
 <PointerTypeData>
-ADDR_105
+ADDR_127
 PointerType
 ostream &(*)(ostream &(*)(ostream &))
 NONE
@@ -2299,18 +2787,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_102
+ADDR_121
 <Id to Class Map>
-ADDR_105
+ADDR_127
 PointerType
 <Top Level Types>
-ADDR_105
+ADDR_127
 <Visited Children>
-ADDR_106
+ADDR_128
 1
-ADDR_103
+ADDR_126
 <ExprData>
-ADDR_106
+ADDR_128
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -2318,18 +2806,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_105
+ADDR_127
 0
 0
 0
 <Id to Class Map>
-ADDR_106
+ADDR_128
 ImplicitCastExpr
 <Visited Children>
-ADDR_107
+ADDR_129
 0
 <FunctionProtoTypeData>
-ADDR_107
+ADDR_129
 FunctionProtoType
 ostream &(int)
 NONE
@@ -2345,25 +2833,84 @@ nullptr_type
 0
 0
 C
-ADDR_098
+ADDR_117
 1
 1
-ADDR_044
+ADDR_057
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_107
+ADDR_129
 FunctionProtoType
 <Top Level Types>
-ADDR_107
+ADDR_129
+<Top Level Types>
+ADDR_129
 <Visited Children>
-ADDR_108
+ADDR_130
+0
+<CXXMethodDeclData>
+ADDR_130
+CXXMethodDecl
+<SYSTEM_INCLUDE>/c++/ostream
+259
+3
+<SYSTEM_INCLUDE>/c++/ostream
+259
+36
+0
+1
+0
+1
+1
+0
+0
+0
+std::ostream
+operator<<
+6
+1
+1
+External
+Default
+ADDR_129
+0
+0
+2
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_130
+nullptr_decl
+0
+ADDR_009
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_125
+ADDR_010
+0
+0
+<Id to Class Map>
+ADDR_130
+CXXMethodDecl
+<Visited Children>
+ADDR_131
 0
 <DeclRefExprData>
-ADDR_108
+ADDR_131
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -2371,21 +2918,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_107
+ADDR_129
 1
 0
 0
 
 0
-ADDR_109
+ADDR_130
 <Id to Class Map>
-ADDR_108
+ADDR_131
 DeclRefExpr
 <Visited Children>
-ADDR_110
+ADDR_132
 0
 <PointerTypeData>
-ADDR_110
+ADDR_132
 PointerType
 ostream &(*)(int)
 NONE
@@ -2393,18 +2940,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_107
+ADDR_129
 <Id to Class Map>
-ADDR_110
+ADDR_132
 PointerType
 <Top Level Types>
-ADDR_110
+ADDR_132
 <Visited Children>
-ADDR_111
+ADDR_133
 1
-ADDR_108
+ADDR_131
 <ExprData>
-ADDR_111
+ADDR_133
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -2412,20 +2959,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_110
+ADDR_132
 0
 0
 0
 <Id to Class Map>
-ADDR_111
+ADDR_133
 ImplicitCastExpr
 <Top Level Types>
-ADDR_102
+ADDR_121
 <Visited Children>
-ADDR_112
+ADDR_134
 0
 <DeclRefExprData>
-ADDR_112
+ADDR_134
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2433,24 +2980,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_102
+ADDR_121
 1
 0
 0
 
 0
-ADDR_104
+ADDR_124
 <Id to Class Map>
-ADDR_112
+ADDR_134
 DeclRefExpr
 <Top Level Types>
-ADDR_105
+ADDR_127
 <Visited Children>
-ADDR_113
+ADDR_135
 1
-ADDR_112
+ADDR_134
 <ExprData>
-ADDR_113
+ADDR_135
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2458,20 +3005,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_105
+ADDR_127
 0
 0
 0
 <Id to Class Map>
-ADDR_113
+ADDR_135
 ImplicitCastExpr
 <Top Level Types>
-ADDR_107
+ADDR_129
 <Visited Children>
-ADDR_114
+ADDR_136
 0
 <DeclRefExprData>
-ADDR_114
+ADDR_136
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2479,24 +3026,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_107
+ADDR_129
 1
 0
 0
 
 0
-ADDR_109
+ADDR_130
 <Id to Class Map>
-ADDR_114
+ADDR_136
 DeclRefExpr
 <Top Level Types>
-ADDR_110
+ADDR_132
 <Visited Children>
-ADDR_115
+ADDR_137
 1
-ADDR_114
+ADDR_136
 <ExprData>
-ADDR_115
+ADDR_137
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2504,20 +3051,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_110
+ADDR_132
 0
 0
 0
 <Id to Class Map>
-ADDR_115
+ADDR_137
 ImplicitCastExpr
 <Top Level Types>
-ADDR_034
+ADDR_047
 <Visited Children>
-ADDR_116
+ADDR_138
 0
 <DeclRefExprData>
-ADDR_116
+ADDR_138
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2525,23 +3072,23 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_034
+ADDR_047
 1
 0
 0
 
 0
-ADDR_036
+ADDR_048
 <Id to Class Map>
-ADDR_116
+ADDR_138
 DeclRefExpr
 <Top Level Types>
-ADDR_057
+ADDR_070
 <Visited Children>
-ADDR_117
+ADDR_139
 0
 <DeclRefExprData>
-ADDR_117
+ADDR_139
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2549,23 +3096,23 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_057
+ADDR_070
 1
 0
 0
 
 0
-ADDR_062
+ADDR_075
 <Id to Class Map>
-ADDR_117
+ADDR_139
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_118
+ADDR_140
 0
 <DeclRefExprData>
-ADDR_118
+ADDR_140
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2573,24 +3120,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 1
 0
 0
 
 0
-ADDR_051
+ADDR_064
 <Id to Class Map>
-ADDR_118
+ADDR_140
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_119
+ADDR_141
 1
-ADDR_118
+ADDR_140
 <ExprData>
-ADDR_119
+ADDR_141
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2598,22 +3145,22 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 0
 0
 0
 <Id to Class Map>
-ADDR_119
+ADDR_141
 ImplicitCastExpr
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_120
+ADDR_142
 2
-ADDR_117
-ADDR_119
+ADDR_139
+ADDR_141
 <BinaryOperatorData>
-ADDR_120
+ADDR_142
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2623,22 +3170,22 @@ BinaryOperator
 22
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 PtrMemD
 <Id to Class Map>
-ADDR_120
+ADDR_142
 BinaryOperator
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_121
+ADDR_143
 1
-ADDR_120
+ADDR_142
 <ExprData>
-ADDR_121
+ADDR_143
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2648,23 +3195,23 @@ ImplicitCastExpr
 22
 0
 0
-ADDR_044
+ADDR_057
 0
 0
 0
 <Id to Class Map>
-ADDR_121
+ADDR_143
 ImplicitCastExpr
 <Top Level Types>
-ADDR_097
-<Visited Children>
-ADDR_122
-3
-ADDR_115
 ADDR_116
-ADDR_121
+<Visited Children>
+ADDR_144
+3
+ADDR_137
+ADDR_138
+ADDR_143
 <CallExprData>
-ADDR_122
+ADDR_144
 CXXOperatorCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2674,95 +3221,163 @@ CXXOperatorCallExpr
 22
 0
 0
-ADDR_097
+ADDR_116
 1
 0
 0
-ADDR_109
+ADDR_130
 <Id to Class Map>
-ADDR_122
+ADDR_144
 CXXOperatorCallExpr
 <Visited Children>
-ADDR_123
+ADDR_145
+0
+<TemplateTypeParmDeclData>
+ADDR_145
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/ostream
+890
+11
+<SYSTEM_INCLUDE>/c++/ostream
+890
+17
+0
+1
+0
+0
+1
+0
+0
+0
+
+_CharT
+0
+0
+0
+None
+Default
+ADDR_146
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_145
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_147
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_123
+ADDR_147
 SubstTemplateTypeParmType
 char
 NONE
 0
 0
 0
-ADDR_010
-ADDR_124
-ADDR_010
+ADDR_013
+ADDR_145
+ADDR_013
 <Id to Class Map>
-ADDR_123
+ADDR_147
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_125
+ADDR_148
+0
+<TemplateTypeParmDeclData>
+ADDR_148
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/ostream
+890
+25
+<SYSTEM_INCLUDE>/c++/ostream
+890
+31
+0
+1
+0
+0
+1
+0
+0
+0
+
+_Traits
+0
+0
+0
+None
+Default
+ADDR_149
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_148
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_150
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_125
+ADDR_150
 SubstTemplateTypeParmType
 std::char_traits<char>
 NONE
 0
 0
 0
-ADDR_011
-ADDR_126
-ADDR_011
+ADDR_014
+ADDR_148
+ADDR_014
 <Id to Class Map>
-ADDR_125
+ADDR_150
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_127
+ADDR_151
 0
 <TemplateSpecializationTypeData>
-ADDR_127
+ADDR_151
 TemplateSpecializationType
 basic_ostream<char, std::char_traits<char>>
 NONE
 0
 0
 0
-ADDR_008
+ADDR_010
 0
 nullptr_type
 basic_ostream
-ADDR_016
+ADDR_020
 2
 Type
-ADDR_123
+ADDR_147
 Type
-ADDR_125
+ADDR_150
 <Id to Class Map>
-ADDR_127
+ADDR_151
 TemplateSpecializationType
 <Visited Children>
-ADDR_128
+ADDR_152
 0
 <ElaboratedTypeData>
-ADDR_128
+ADDR_152
 ElaboratedType
 basic_ostream<char, char_traits<char>>
 NONE
 0
 0
 0
-ADDR_127
+ADDR_151
 None
 
-ADDR_127
+ADDR_151
 <Id to Class Map>
-ADDR_128
+ADDR_152
 ElaboratedType
 <Visited Children>
-ADDR_129
+ADDR_153
 0
 <ReferenceTypeData>
-ADDR_129
+ADDR_153
 LValueReferenceType
 basic_ostream<char, char_traits<char>> &
 NONE
@@ -2770,57 +3385,57 @@ NONE
 0
 0
 nullptr_type
-ADDR_128
+ADDR_152
 <Id to Class Map>
-ADDR_129
+ADDR_153
 LValueReferenceType
 <Visited Children>
-ADDR_130
+ADDR_154
 0
 <TemplateSpecializationTypeData>
-ADDR_130
+ADDR_154
 TemplateSpecializationType
 basic_ostream<char, std::char_traits<char>>
 NONE
 0
 0
 0
-ADDR_008
+ADDR_010
 0
 nullptr_type
 basic_ostream
-ADDR_016
+ADDR_020
 2
 Type
-ADDR_123
+ADDR_147
 Type
-ADDR_125
+ADDR_150
 <Id to Class Map>
-ADDR_130
+ADDR_154
 TemplateSpecializationType
 <Visited Children>
-ADDR_131
+ADDR_155
 0
 <ElaboratedTypeData>
-ADDR_131
+ADDR_155
 ElaboratedType
 basic_ostream<char, char_traits<char>>
 NONE
 0
 0
 0
-ADDR_130
+ADDR_154
 None
 
-ADDR_130
+ADDR_154
 <Id to Class Map>
-ADDR_131
+ADDR_155
 ElaboratedType
 <Visited Children>
-ADDR_132
+ADDR_156
 0
 <ReferenceTypeData>
-ADDR_132
+ADDR_156
 LValueReferenceType
 basic_ostream<char, char_traits<char>> &
 NONE
@@ -2828,15 +3443,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_131
+ADDR_155
 <Id to Class Map>
-ADDR_132
+ADDR_156
 LValueReferenceType
 <Visited Children>
-ADDR_133
+ADDR_157
 0
 <FunctionProtoTypeData>
-ADDR_133
+ADDR_157
 FunctionProtoType
 basic_ostream<char, char_traits<char>> &(basic_ostream<char, char_traits<char>> &)
 NONE
@@ -2852,25 +3467,87 @@ nullptr_type
 0
 0
 C
-ADDR_129
+ADDR_153
 1
 1
-ADDR_132
+ADDR_156
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_133
+ADDR_157
 FunctionProtoType
 <Top Level Types>
-ADDR_133
+ADDR_157
+<Top Level Attributes>
+ADDR_158
+<Top Level Attributes>
+ADDR_159
+<Top Level Types>
+ADDR_157
 <Visited Children>
-ADDR_134
+ADDR_160
+0
+<FunctionDeclData>
+ADDR_160
+FunctionDecl
+<SYSTEM_INCLUDE>/c++/ostream
+891
+1
+<SYSTEM_INCLUDE>/c++/ostream
+895
+1
+1
+<SYSTEM_INCLUDE>/c++/__config
+782
+57
+<SYSTEM_INCLUDE>/c++/ostream
+895
+1
+1
+0
+1
+1
+0
+0
+2
+ADDR_158
+ADDR_159
+std
+endl
+0
+0
+0
+External
+Default
+ADDR_157
+0
+0
+3
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_160
+ADDR_161
+2
+Type
+ADDR_013
+Type
+ADDR_014
+<Id to Class Map>
+ADDR_160
+FunctionDecl
+<Visited Children>
+ADDR_162
 0
 <DeclRefExprData>
-ADDR_134
+ADDR_162
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2878,21 +3555,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_133
+ADDR_157
 1
 0
 0
 
 0
-ADDR_135
+ADDR_160
 <Id to Class Map>
-ADDR_134
+ADDR_162
 DeclRefExpr
 <Visited Children>
-ADDR_136
+ADDR_163
 0
 <PointerTypeData>
-ADDR_136
+ADDR_163
 PointerType
 basic_ostream<char, char_traits<char>> &(*)(basic_ostream<char, char_traits<char>> &)
 NONE
@@ -2900,18 +3577,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_133
+ADDR_157
 <Id to Class Map>
-ADDR_136
+ADDR_163
 PointerType
 <Top Level Types>
-ADDR_136
+ADDR_163
 <Visited Children>
-ADDR_137
+ADDR_164
 1
-ADDR_134
+ADDR_162
 <ExprData>
-ADDR_137
+ADDR_164
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2919,23 +3596,23 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_136
+ADDR_163
 0
 0
 0
 <Id to Class Map>
-ADDR_137
+ADDR_164
 ImplicitCastExpr
 <Top Level Types>
-ADDR_097
+ADDR_116
 <Visited Children>
-ADDR_138
+ADDR_165
 3
-ADDR_113
-ADDR_122
-ADDR_137
+ADDR_135
+ADDR_144
+ADDR_164
 <CallExprData>
-ADDR_138
+ADDR_165
 CXXOperatorCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -2945,21 +3622,21 @@ CXXOperatorCallExpr
 29
 0
 0
-ADDR_097
+ADDR_116
 1
 0
 0
-ADDR_104
+ADDR_124
 <Id to Class Map>
-ADDR_138
+ADDR_165
 CXXOperatorCallExpr
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Visited Children>
-ADDR_139
+ADDR_166
 0
 <DeclRefExprData>
-ADDR_139
+ADDR_166
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -2967,24 +3644,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 1
 0
 0
 
 0
-ADDR_068
+ADDR_087
 <Id to Class Map>
-ADDR_139
+ADDR_166
 DeclRefExpr
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Visited Children>
-ADDR_140
+ADDR_167
 1
-ADDR_139
+ADDR_166
 <ExprData>
-ADDR_140
+ADDR_167
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -2992,20 +3669,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 0
 0
 0
 <Id to Class Map>
-ADDR_140
+ADDR_167
 ImplicitCastExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_141
+ADDR_168
 0
 <DeclRefExprData>
-ADDR_141
+ADDR_168
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -3013,24 +3690,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 1
 0
 0
 
 0
-ADDR_051
+ADDR_064
 <Id to Class Map>
-ADDR_141
+ADDR_168
 DeclRefExpr
 <Top Level Types>
-ADDR_052
+ADDR_065
 <Visited Children>
-ADDR_142
+ADDR_169
 1
-ADDR_141
+ADDR_168
 <ExprData>
-ADDR_142
+ADDR_169
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -3038,22 +3715,22 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_052
+ADDR_065
 0
 0
 0
 <Id to Class Map>
-ADDR_142
+ADDR_169
 ImplicitCastExpr
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_143
+ADDR_170
 2
-ADDR_140
-ADDR_142
+ADDR_167
+ADDR_169
 <BinaryOperatorData>
-ADDR_143
+ADDR_170
 BinaryOperator
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -3063,22 +3740,22 @@ BinaryOperator
 23
 0
 0
-ADDR_044
+ADDR_057
 1
 0
 0
 PtrMemI
 <Id to Class Map>
-ADDR_143
+ADDR_170
 BinaryOperator
 <Top Level Types>
-ADDR_044
+ADDR_057
 <Visited Children>
-ADDR_144
+ADDR_171
 1
-ADDR_143
+ADDR_170
 <ExprData>
-ADDR_144
+ADDR_171
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -3088,23 +3765,23 @@ ImplicitCastExpr
 23
 0
 0
-ADDR_044
+ADDR_057
 0
 0
 0
 <Id to Class Map>
-ADDR_144
+ADDR_171
 ImplicitCastExpr
 <Top Level Types>
-ADDR_097
+ADDR_116
 <Visited Children>
-ADDR_145
+ADDR_172
 3
-ADDR_111
-ADDR_138
-ADDR_144
+ADDR_133
+ADDR_165
+ADDR_171
 <CallExprData>
-ADDR_145
+ADDR_172
 CXXOperatorCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -3114,21 +3791,21 @@ CXXOperatorCallExpr
 23
 0
 0
-ADDR_097
+ADDR_116
 1
 0
 0
-ADDR_109
+ADDR_130
 <Id to Class Map>
-ADDR_145
+ADDR_172
 CXXOperatorCallExpr
 <Top Level Types>
-ADDR_133
+ADDR_157
 <Visited Children>
-ADDR_146
+ADDR_173
 0
 <DeclRefExprData>
-ADDR_146
+ADDR_173
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -3136,24 +3813,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_133
+ADDR_157
 1
 0
 0
 
 0
-ADDR_135
+ADDR_160
 <Id to Class Map>
-ADDR_146
+ADDR_173
 DeclRefExpr
 <Top Level Types>
-ADDR_136
+ADDR_163
 <Visited Children>
-ADDR_147
+ADDR_174
 1
-ADDR_146
+ADDR_173
 <ExprData>
-ADDR_147
+ADDR_174
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 34
@@ -3161,23 +3838,23 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_136
+ADDR_163
 0
 0
 0
 <Id to Class Map>
-ADDR_147
+ADDR_174
 ImplicitCastExpr
 <Top Level Types>
-ADDR_097
+ADDR_116
 <Visited Children>
-ADDR_148
+ADDR_175
 3
-ADDR_106
-ADDR_145
-ADDR_147
+ADDR_128
+ADDR_172
+ADDR_174
 <CallExprData>
-ADDR_148
+ADDR_175
 CXXOperatorCallExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 33
@@ -3187,21 +3864,21 @@ CXXOperatorCallExpr
 30
 0
 0
-ADDR_097
+ADDR_116
 1
 0
 0
-ADDR_104
+ADDR_124
 <Id to Class Map>
-ADDR_148
+ADDR_175
 CXXOperatorCallExpr
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Visited Children>
-ADDR_149
+ADDR_176
 0
 <DeclRefExprData>
-ADDR_149
+ADDR_176
 DeclRefExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 35
@@ -3209,24 +3886,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 1
 0
 0
 
 0
-ADDR_068
+ADDR_087
 <Id to Class Map>
-ADDR_149
+ADDR_176
 DeclRefExpr
 <Top Level Types>
-ADDR_064
+ADDR_077
 <Visited Children>
-ADDR_150
+ADDR_177
 1
-ADDR_149
+ADDR_176
 <ExprData>
-ADDR_150
+ADDR_177
 ImplicitCastExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 35
@@ -3234,22 +3911,22 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_064
+ADDR_077
 0
 0
 0
 <Id to Class Map>
-ADDR_150
+ADDR_177
 ImplicitCastExpr
 <Top Level Types>
 ADDR_006
 <Visited Children>
-ADDR_151
+ADDR_178
 2
-ADDR_150
-ADDR_150
+ADDR_177
+ADDR_177
 <CXXDeleteExprData>
-ADDR_151
+ADDR_178
 CXXDeleteExpr
 <TEST_DIR>/pointer_to_member_operators.cpp
 35
@@ -3267,21 +3944,21 @@ ADDR_006
 0
 0
 <Id to Class Map>
-ADDR_151
+ADDR_178
 CXXDeleteExpr
 <Visited Children>
-ADDR_152
+ADDR_179
 8
-ADDR_063
-ADDR_069
 ADDR_076
-ADDR_083
-ADDR_089
-ADDR_096
-ADDR_148
-ADDR_151
+ADDR_088
+ADDR_095
+ADDR_102
+ADDR_108
+ADDR_115
+ADDR_175
+ADDR_178
 <StmtData>
-ADDR_152
+ADDR_179
 CompoundStmt
 <TEST_DIR>/pointer_to_member_operators.cpp
 20
@@ -3292,14 +3969,14 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_152
+ADDR_179
 CompoundStmt
 <Visited Children>
-ADDR_055
+ADDR_068
 1
-ADDR_152
+ADDR_179
 <FunctionDeclData>
-ADDR_055
+ADDR_068
 FunctionDecl
 <TEST_DIR>/pointer_to_member_operators.cpp
 20
@@ -3322,7 +3999,7 @@ main
 0
 External
 Default
-ADDR_056
+ADDR_069
 0
 0
 0
@@ -3333,9 +4010,9 @@ None
 0
 0
 nullptr_decl
-ADDR_055
+ADDR_068
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_055
+ADDR_068
 FunctionDecl
