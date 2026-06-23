@@ -99,7 +99,7 @@ jobs:
         include:
           - arch: x64
             runner: ubuntu-24.04
-            feature-args: --enable-opencl --enable-cuda --extra-clang-arg=--no-cuda-version-check
+            feature-args: --enable-opencl --enable-cuda
             accelerator-packages: nvidia-cuda-toolkit ocl-icd-opencl-dev
           - arch: arm64
             runner: ubuntu-24.04-arm

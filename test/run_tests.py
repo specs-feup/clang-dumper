@@ -219,6 +219,7 @@ PATH_PLACEHOLDER = "<TEST_DIR>"
 SYSTEM_INCLUDE_PLACEHOLDER = "<SYSTEM_INCLUDE>"
 CLANG_INCLUDE_PLACEHOLDER = "<CLANG_INCLUDE>"
 GCC_INCLUDE_PLACEHOLDER = "<GCC_INCLUDE>"
+CUDA_VERSION_CHECK_FLAG = "--no-cuda-version-check"
 
 # System header path normalization patterns
 # These patterns replace platform-specific paths with portable placeholders
@@ -887,6 +888,8 @@ def run_single_test(
 
     # Run the tool/plugin with streaming normalization
     flags = list(global_flags or []) + config.flags
+    if input_file.suffix == ".cu" and CUDA_VERSION_CHECK_FLAG not in flags:
+        flags.append(CUDA_VERSION_CHECK_FLAG)
     (
         return_code,
         stdout,
