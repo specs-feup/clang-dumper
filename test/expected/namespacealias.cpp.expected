@@ -77,7 +77,9 @@ ADDR_002
 0
 0
 0
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+42
+%CLAVA_SOURCE_END%
 42
 <Id to Class Map>
 ADDR_003
@@ -151,7 +153,11 @@ baz
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace baz {
+             int qux = 42;
+         }
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_005
 NamespaceDecl
@@ -183,7 +189,13 @@ bar
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace bar {
+         namespace baz {
+             int qux = 42;
+         }
+    }
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_006
 NamespaceDecl
@@ -215,7 +227,15 @@ foo
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace foo {
+    namespace bar {
+         namespace baz {
+             int qux = 42;
+         }
+    }
+}
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_001
 NamespaceDecl
@@ -248,7 +268,9 @@ fbz
 0
 None
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+foo::bar::
+%CLAVA_SOURCE_END%
 ADDR_005
 <Id to Class Map>
 ADDR_007
@@ -282,7 +304,9 @@ f
 0
 None
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+
+%CLAVA_SOURCE_END%
 ADDR_001
 <Id to Class Map>
 ADDR_008
@@ -1486,7 +1510,9 @@ ADDR_015
 0
 0
 0
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+'\n'
+%CLAVA_SOURCE_END%
 10
 ORDINARY
 <Id to Class Map>

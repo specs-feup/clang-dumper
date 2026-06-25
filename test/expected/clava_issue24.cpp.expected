@@ -344,7 +344,9 @@ ADDR_006
 0
 0
 0
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+1
+%CLAVA_SOURCE_END%
 1
 <Id to Class Map>
 ADDR_012
@@ -497,7 +499,19 @@ clt
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace clt {
+
+   struct enclose {
+       struct inner {
+           static int x;
+           void f();
+       };
+   };
+   int enclose::inner::x = 1; // static variable definition
+   void enclose::inner::f() {} // member function definition
+}
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_001
 NamespaceDecl

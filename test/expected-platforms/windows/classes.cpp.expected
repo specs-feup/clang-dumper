@@ -73,7 +73,7 @@ std
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SYSTEM_SOURCE_BLOCK%
 <Id to Class Map>
 ADDR_002
 NamespaceDecl
@@ -104,7 +104,9 @@ UsingDirectiveDecl
 0
 None
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+using namespace std
+%CLAVA_SOURCE_END%
 ADDR_002
 ADDR_002
 <Id to Class Map>
@@ -1461,7 +1463,55 @@ testspace
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace testspace {
+
+
+
+class BondMap {
+
+   
+
+   
+
+   public:
+
+      struct MAtom;
+
+	  struct MBond {
+
+           list<struct MAtom>::iterator atom1;
+
+	  };
+
+	
+
+	  struct MAtom {
+
+			int a;
+
+      };
+
+};
+
+
+
+
+
+class Top {};
+
+class Top2 {};
+
+
+
+class Derived1 : public Top {};
+
+class Derived2 : public virtual Top, public Top2 {};
+
+
+
+}
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_003
 NamespaceDecl

@@ -370,12 +370,6 @@ _DIAGNOSTIC_RE = re.compile(
     r"(?:[ \t]*\|[^\n]*\n)*",
     re.MULTILINE,
 )
-_SOURCE_BLOCK_RE = re.compile(
-    r"^%CLAVA_SOURCE_BEGIN%\n"
-    r"(?:.*\n)*?"
-    r"^%CLAVA_SOURCE_END%\n?",
-    re.MULTILINE,
-)
 _UNSIGNED_LONG_LONG_LINE_RE = re.compile(r"^unsigned long long$", re.MULTILINE)
 _ULONG_LONG_KIND_RE = re.compile(r"^ULongLong$", re.MULTILINE)
 _INTERNAL_BUFFER_LINE_RE = re.compile(
@@ -384,6 +378,15 @@ _INTERNAL_BUFFER_LINE_RE = re.compile(
 )
 _ANON_DECL_NAME_RE = re.compile(r"^(\n)(\d+)(\n12\n)", re.MULTILINE)
 _WINDOWS_ADDR_CANDIDATE_RE = re.compile(r"\b[0-9a-fA-F]{16}_\d+\b")
+_EXTERNAL_SOURCE_PREFIXES = (
+    SYSTEM_INCLUDE_PLACEHOLDER,
+    CLANG_INCLUDE_PLACEHOLDER,
+    GCC_INCLUDE_PLACEHOLDER,
+)
+_INTERNAL_SOURCE_PATHS = {"<built-in>", "<command line>", "<scratch space>"}
+_SOURCE_BEGIN = "%CLAVA_SOURCE_BEGIN%"
+_SOURCE_END = "%CLAVA_SOURCE_END%"
+_SYSTEM_SOURCE_BLOCK = "%CLAVA_SYSTEM_SOURCE_BLOCK%"
 
 
 def canonical_raw_address(raw_address: str) -> str:
@@ -498,6 +501,108 @@ def normalize_plain_char_arrays(output: str) -> str:
     return "\n".join(lines)
 
 
+def parse_source_range(
+    lines: list[str],
+    start: int,
+) -> Optional[tuple[Optional[str], int]]:
+    """Parse one dumpSourceRange payload and return its path and next index."""
+    if start >= len(lines):
+        return None
+    if lines[start] == "<invalid>":
+        return None, start + 1
+    if start + 3 >= len(lines):
+        return None
+
+    path = lines[start]
+    if lines[start + 3] == "<end>":
+        return path, start + 4
+    if start + 5 >= len(lines):
+        return None
+    return path, start + 6
+
+
+def source_block_provenance(
+    lines: list[str],
+    data_start: int,
+    source_start: int,
+) -> Optional[tuple[Optional[str], bool]]:
+    """
+    Return the source path used by getSource() and the system-header flag.
+
+    Data records begin with the data marker, node id, and node class, followed
+    by dumpSourceInfo(). For macros, getSource() extracts text from the spelling
+    range, so that range determines the source block's provenance.
+    """
+    source_info_start = data_start + 3
+    expansion = parse_source_range(lines, source_info_start)
+    if expansion is None:
+        return None
+    expansion_path, index = expansion
+    if index >= source_start or lines[index] not in {"0", "1"}:
+        return None
+
+    is_macro = lines[index] == "1"
+    index += 1
+    source_path = expansion_path
+    if is_macro:
+        spelling = parse_source_range(lines, index)
+        if spelling is None:
+            return None
+        source_path, index = spelling
+
+    if index >= source_start or lines[index] not in {"0", "1"}:
+        return None
+    return source_path, lines[index] == "1"
+
+
+def is_external_source_path(path: Optional[str]) -> bool:
+    """Return true for system, compiler-resource, and internal source paths."""
+    if path is None:
+        return False
+    return path.startswith(_EXTERNAL_SOURCE_PREFIXES) or path in _INTERNAL_SOURCE_PATHS
+
+
+def normalize_system_source_blocks(output: str) -> str:
+    """Replace only source blocks whose extracted text comes from external headers."""
+    lines = output.split("\n")
+    data_start: Optional[int] = None
+    index = 0
+    changed = False
+
+    while index < len(lines):
+        line = lines[index]
+        if line.startswith("<") and line.endswith("Data>"):
+            data_start = index
+            index += 1
+            continue
+        if line != _SOURCE_BEGIN or data_start is None:
+            index += 1
+            continue
+
+        try:
+            source_end = lines.index(_SOURCE_END, index + 1)
+        except ValueError:
+            break
+
+        provenance = source_block_provenance(lines, data_start, index)
+        if provenance is not None:
+            source_path, is_system_header = provenance
+            is_test_source = source_path is not None and source_path.startswith(
+                PATH_PLACEHOLDER
+            )
+            if is_external_source_path(source_path) or (
+                source_path is not None and is_system_header and not is_test_source
+            ):
+                lines[index : source_end + 1] = [_SYSTEM_SOURCE_BLOCK]
+                changed = True
+                index += 1
+                continue
+
+        index = source_end + 1
+
+    return "\n".join(lines) if changed else output
+
+
 def normalize_static_output(output: str) -> str:
     """
     Normalize architecture- and installation-dependent text that can appear in
@@ -545,8 +650,8 @@ def normalize_static_output(output: str) -> str:
         )
     if " warning: " in output and PATH_PLACEHOLDER in output:
         output = _DIAGNOSTIC_RE.sub("", output)
-    if "%CLAVA_SOURCE_BEGIN%" in output:
-        output = _SOURCE_BLOCK_RE.sub("%CLAVA_SOURCE_BLOCK%\n", output)
+    if _SOURCE_BEGIN in output:
+        output = normalize_system_source_blocks(output)
     if "<Compiler Instance Data>" in output:
         output = normalize_type_widths(output)
     return output

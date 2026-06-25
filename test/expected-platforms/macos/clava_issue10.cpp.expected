@@ -435,7 +435,12 @@ c
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace c {
+         class ForwardDeclClass4;
+         class RegularClass3 {};
+      }
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_016
 NamespaceDecl
@@ -469,7 +474,16 @@ b
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace b {
+      class ForwardDeclClass3;
+      class RegularClass2 {};
+      namespace c {
+         class ForwardDeclClass4;
+         class RegularClass3 {};
+      }
+   }
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_017
 NamespaceDecl
@@ -503,7 +517,20 @@ a
 0
 External
 Default
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+namespace a {
+   class ForwardDeclClass2;
+   class RegularClass1 {};
+   namespace b {
+      class ForwardDeclClass3;
+      class RegularClass2 {};
+      namespace c {
+         class ForwardDeclClass4;
+         class RegularClass3 {};
+      }
+   }
+}
+%CLAVA_SOURCE_END%
 <Id to Class Map>
 ADDR_003
 NamespaceDecl
@@ -1756,7 +1783,9 @@ ADDR_084
 1
 0
 0
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+"Hello World!"
+%CLAVA_SOURCE_END%
 ORDINARY
 12
 1
@@ -2248,7 +2277,9 @@ ADDR_019
 0
 0
 0
-%CLAVA_SOURCE_BLOCK%
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
 0
 <Id to Class Map>
 ADDR_109
