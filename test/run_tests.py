@@ -378,6 +378,10 @@ _SOURCE_BLOCK_RE = re.compile(
 )
 _UNSIGNED_LONG_LONG_LINE_RE = re.compile(r"^unsigned long long$", re.MULTILINE)
 _ULONG_LONG_KIND_RE = re.compile(r"^ULongLong$", re.MULTILINE)
+_INTERNAL_BUFFER_LINE_RE = re.compile(
+    r"^(<(?:built-in|command line|scratch space)>)\n\d+\n(\d+)$",
+    re.MULTILINE,
+)
 _ANON_DECL_NAME_RE = re.compile(r"^(\n)(\d+)(\n12\n)", re.MULTILINE)
 _WINDOWS_ADDR_CANDIDATE_RE = re.compile(r"\b[0-9a-fA-F]{16}_\d+\b")
 
@@ -521,6 +525,14 @@ def normalize_static_output(output: str) -> str:
     if "basic_istream<char>" in output:
         output = output.replace("std::basic_istream<char>", "std::istream")
         output = output.replace("basic_istream<char>", "istream")
+    if (
+        "<built-in>" in output
+        or "<command line>" in output
+        or "<scratch space>" in output
+    ):
+        output = _INTERNAL_BUFFER_LINE_RE.sub(
+            r"\1\n<INTERNAL_BUFFER_LINE>\n\2", output
+        )
     if "\n12\n" in output:
         output = _ANON_DECL_NAME_RE.sub(r"\1<ANON_DECL_NAME>\3", output)
     if ":<" in output:

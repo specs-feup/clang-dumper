@@ -14,6 +14,35 @@
 
 using namespace clang;
 
+namespace {
+
+SourceLocation removeTokenSplitExpansions(const SourceManager &SM,
+                                          SourceLocation loc) {
+    while (loc.isMacroID()) {
+        CharSourceRange expansionRange = SM.getImmediateExpansionRange(loc);
+        // Clang models split tokens as character-range expansions.
+        if (expansionRange.isTokenRange()) {
+            break;
+        }
+
+        SourceLocation expansionLoc = expansionRange.getBegin();
+        if (expansionLoc.isInvalid() || expansionLoc == loc) {
+            break;
+        }
+
+        loc = expansionLoc;
+    }
+
+    return loc;
+}
+
+StringRef getLocationFilename(const SourceManager &SM, SourceLocation loc) {
+    StringRef filename = SM.getFilename(loc);
+    return filename.empty() ? SM.getBufferName(loc) : filename;
+}
+
+} // namespace
+
 const std::string clava::getClassName(const Decl *D) {
     const std::string kindName = D->getDeclKindName();
     return kindName + "Decl";
@@ -62,7 +91,7 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
     }
 
     // Dump start location
-    llvm::errs() << SM.getFilename(startSpellingLoc) << "\n";
+    llvm::errs() << getLocationFilename(SM, startSpellingLoc) << "\n";
     llvm::errs() << SM.getSpellingLineNumber(startSpellingLoc) << "\n";
     llvm::errs() << SM.getSpellingColumnNumber(startSpellingLoc) << "\n";
 
@@ -79,34 +108,21 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
         return;
     }
 
-    StringRef endFilename = SM.getFilename(endSpellingLoc);
-    if (endFilename.size() == 0) {
-        endFilename = SM.getFilename(startSpellingLoc);
-    }
-
-    unsigned int endLine = SM.getSpellingLineNumber(endSpellingLoc);
-    if (!endLine) {
-        endLine = SM.getSpellingLineNumber(startSpellingLoc);
-    }
-
-    unsigned int endCol = SM.getSpellingColumnNumber(endSpellingLoc);
-    if (!endCol) {
-        endCol = SM.getSpellingColumnNumber(startSpellingLoc);
-    }
-
     // Dump end location
-    llvm::errs() << endFilename << "\n";
-    llvm::errs() << endLine << "\n";
-    llvm::errs() << endCol << "\n";
+    llvm::errs() << getLocationFilename(SM, endSpellingLoc) << "\n";
+    llvm::errs() << SM.getSpellingLineNumber(endSpellingLoc) << "\n";
+    llvm::errs() << SM.getSpellingColumnNumber(endSpellingLoc) << "\n";
 }
 
 void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
                            SourceLocation end) {
+    const SourceManager &SM = Context->getSourceManager();
+    begin = removeTokenSplitExpansions(SM, begin);
+    end = removeTokenSplitExpansions(SM, end);
 
     // Original source range
-    clava::dumpSourceRange(Context,
-                           Context->getSourceManager().getExpansionLoc(begin),
-                           Context->getSourceManager().getExpansionLoc(end));
+    clava::dumpSourceRange(Context, SM.getExpansionLoc(begin),
+                           SM.getExpansionLoc(end));
 
     // ISMACRO: Disable this when updating
     // If it is a macro
@@ -116,9 +132,8 @@ void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
     // ISMACRO: Disable this when updating
     // Spelling location, if macro
     if (isMacro) {
-        clava::dumpSourceRange(
-            Context, Context->getSourceManager().getSpellingLoc(begin),
-            Context->getSourceManager().getSpellingLoc(end));
+        clava::dumpSourceRange(Context, SM.getSpellingLoc(begin),
+                               SM.getSpellingLoc(end));
     }
 
     // If is in system header
