@@ -279,6 +279,10 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     (r"/usr/include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # macOS: SDK and system headers
+    (r"/usr/local/opt/llvm@?\d*/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/usr/local/Cellar/llvm@?\d*/[\d.]+/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/opt/homebrew/opt/llvm@?\d*/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/opt/homebrew/Cellar/llvm@?\d*/[\d.]+/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
     (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),

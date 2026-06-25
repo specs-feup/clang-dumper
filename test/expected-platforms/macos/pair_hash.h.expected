@@ -256,8 +256,40 @@ BuiltinType
 <Visited Children>
 ADDR_012
 0
-<TypedefTypeData>
+<TypedefNameDeclData>
 ADDR_012
+TypedefDecl
+<SYSTEM_INCLUDE>/i386/_types.h
+111
+1
+<SYSTEM_INCLUDE>/i386/_types.h
+111
+33
+0
+1
+0
+0
+1
+0
+0
+0
+
+__darwin_size_t
+0
+0
+0
+None
+Default
+ADDR_013
+ADDR_011
+<Id to Class Map>
+ADDR_012
+TypedefDecl
+<Visited Children>
+ADDR_013
+0
+<TypedefTypeData>
+ADDR_013
 TypedefType
 __darwin_size_t
 NONE
@@ -265,9 +297,9 @@ NONE
 0
 0
 ADDR_011
-ADDR_013
-<Id to Class Map>
 ADDR_012
+<Id to Class Map>
+ADDR_013
 TypedefType
 <Visited Children>
 ADDR_014
@@ -280,18 +312,50 @@ NONE
 0
 0
 0
-ADDR_012
+ADDR_013
 None
 
-ADDR_012
+ADDR_013
 <Id to Class Map>
 ADDR_014
 ElaboratedType
 <Visited Children>
 ADDR_015
 0
-<TypedefTypeData>
+<TypedefNameDeclData>
 ADDR_015
+TypedefDecl
+<SYSTEM_INCLUDE>/sys/_types/_size_t.h
+50
+1
+<SYSTEM_INCLUDE>/sys/_types/_size_t.h
+50
+32
+0
+1
+0
+0
+1
+0
+0
+0
+
+size_t
+0
+0
+0
+None
+Default
+ADDR_016
+ADDR_014
+<Id to Class Map>
+ADDR_015
+TypedefDecl
+<Visited Children>
+ADDR_016
+0
+<TypedefTypeData>
+ADDR_016
 TypedefType
 size_t
 NONE
@@ -299,9 +363,9 @@ NONE
 0
 0
 ADDR_014
-ADDR_016
-<Id to Class Map>
 ADDR_015
+<Id to Class Map>
+ADDR_016
 TypedefType
 <Visited Children>
 ADDR_017
@@ -314,7 +378,7 @@ NONE
 0
 0
 0
-ADDR_015
+ADDR_016
 <Id to Class Map>
 ADDR_017
 UsingType
@@ -339,8 +403,42 @@ ElaboratedType
 <Visited Children>
 ADDR_019
 0
-<TemplateSpecializationTypeData>
+<TemplateDeclData>
 ADDR_019
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+79
+1
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+504
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+pair
+0
+0
+0
+External
+Default
+2
+ADDR_020
+ADDR_021
+ADDR_022
+<Id to Class Map>
+ADDR_019
+ClassTemplateDecl
+<Visited Children>
+ADDR_023
+0
+<TemplateSpecializationTypeData>
+ADDR_023
 TemplateSpecializationType
 pair<T, U>
 DEPENDENT
@@ -351,38 +449,38 @@ nullptr_type
 0
 nullptr_type
 pair
-ADDR_020
+ADDR_019
 2
 Type
 ADDR_007
 Type
 ADDR_009
 <Id to Class Map>
-ADDR_019
+ADDR_023
 TemplateSpecializationType
 <Visited Children>
-ADDR_021
+ADDR_024
 0
 <ElaboratedTypeData>
-ADDR_021
+ADDR_024
 ElaboratedType
 std::pair<T, U>
 DEPENDENT
 0
 0
 0
-ADDR_019
+ADDR_023
 None
 std::
-ADDR_019
+ADDR_023
 <Id to Class Map>
-ADDR_021
+ADDR_024
 ElaboratedType
 <Visited Children>
-ADDR_022
+ADDR_025
 0
 <QualTypeData>
-ADDR_022
+ADDR_025
 QualType
 const pair<T, U>
 DEPENDENT
@@ -394,35 +492,35 @@ nullptr_type
 CONST
 NONE
 0
-ADDR_019
+ADDR_023
 <Id to Class Map>
-ADDR_022
+ADDR_025
 QualType
 <Visited Children>
-ADDR_023
+ADDR_026
 0
 <QualTypeData>
-ADDR_023
+ADDR_026
 QualType
 const std::pair<T, U>
 DEPENDENT
 0
 0
 0
-ADDR_019
+ADDR_023
 1
 CONST
 NONE
 0
-ADDR_021
+ADDR_024
 <Id to Class Map>
-ADDR_023
+ADDR_026
 QualType
 <Visited Children>
-ADDR_024
+ADDR_027
 0
 <ReferenceTypeData>
-ADDR_024
+ADDR_027
 LValueReferenceType
 const std::pair<T, U> &
 DEPENDENT
@@ -430,15 +528,15 @@ DEPENDENT
 0
 0
 nullptr_type
-ADDR_023
+ADDR_026
 <Id to Class Map>
-ADDR_024
+ADDR_027
 LValueReferenceType
 <Visited Children>
-ADDR_025
+ADDR_028
 0
 <FunctionProtoTypeData>
-ADDR_025
+ADDR_028
 FunctionProtoType
 std::size_t (const std::pair<T, U> &) const
 DEPENDENT
@@ -457,24 +555,24 @@ C
 ADDR_018
 1
 1
-ADDR_024
+ADDR_027
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_025
+ADDR_028
 FunctionProtoType
 <Top Level Types>
-ADDR_025
+ADDR_028
 <Top Level Types>
-ADDR_024
+ADDR_027
 <Visited Children>
-ADDR_026
+ADDR_029
 0
 <ParmVarDeclData>
-ADDR_026
+ADDR_029
 ParmVarDecl
 <TEST_DIR>/pair_hash.h
 12
@@ -497,7 +595,7 @@ x
 0
 None
 Default
-ADDR_024
+ADDR_027
 0
 None
 NONE
@@ -509,13 +607,46 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_026
+ADDR_029
 ParmVarDecl
 <Visited Children>
-ADDR_027
+ADDR_030
+0
+<TemplateDeclData>
+ADDR_030
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
+1543
+1
+<SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
+1544
+29
+0
+1
+0
+0
+0
+0
+0
+0
+std
+hash
+0
+0
+0
+External
+Default
+1
+ADDR_031
+ADDR_032
+<Id to Class Map>
+ADDR_030
+ClassTemplateDecl
+<Visited Children>
+ADDR_033
 0
 <TemplateSpecializationTypeData>
-ADDR_027
+ADDR_033
 TemplateSpecializationType
 hash<T>
 DEPENDENT
@@ -526,38 +657,38 @@ nullptr_type
 0
 nullptr_type
 hash
-ADDR_028
+ADDR_030
 1
 Type
 ADDR_007
 <Id to Class Map>
-ADDR_027
+ADDR_033
 TemplateSpecializationType
 <Visited Children>
-ADDR_029
+ADDR_034
 0
 <ElaboratedTypeData>
-ADDR_029
+ADDR_034
 ElaboratedType
 std::hash<T>
 DEPENDENT
 0
 0
 0
-ADDR_027
+ADDR_033
 None
 std::
-ADDR_027
+ADDR_033
 <Id to Class Map>
-ADDR_029
+ADDR_034
 ElaboratedType
 <Top Level Types>
-ADDR_029
+ADDR_034
 <Visited Children>
-ADDR_030
+ADDR_035
 0
 <ExprData>
-ADDR_030
+ADDR_035
 CXXUnresolvedConstructExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -567,20 +698,20 @@ CXXUnresolvedConstructExpr
 24
 0
 0
-ADDR_029
+ADDR_034
 0
 0
 0
 <Id to Class Map>
-ADDR_030
+ADDR_035
 CXXUnresolvedConstructExpr
 <Top Level Types>
-ADDR_023
+ADDR_026
 <Visited Children>
-ADDR_031
+ADDR_036
 0
 <DeclRefExprData>
-ADDR_031
+ADDR_036
 DeclRefExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -588,21 +719,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_023
+ADDR_026
 1
 0
 0
 
 0
-ADDR_026
+ADDR_029
 <Id to Class Map>
-ADDR_031
+ADDR_036
 DeclRefExpr
 <Visited Children>
-ADDR_032
+ADDR_037
 0
 <BuiltinTypeData>
-ADDR_032
+ADDR_037
 BuiltinType
 <dependent type>
 DEPENDENT
@@ -613,16 +744,16 @@ nullptr_type
 Dependent
 <dependent type>
 <Id to Class Map>
-ADDR_032
+ADDR_037
 BuiltinType
 <Top Level Types>
-ADDR_032
+ADDR_037
 <Visited Children>
-ADDR_033
+ADDR_038
 1
-ADDR_031
+ADDR_036
 <CXXDependentScopeMemberExprData>
-ADDR_033
+ADDR_038
 CXXDependentScopeMemberExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -632,7 +763,7 @@ CXXDependentScopeMemberExpr
 28
 0
 0
-ADDR_032
+ADDR_037
 1
 0
 0
@@ -643,17 +774,17 @@ first
 0
 0
 <Id to Class Map>
-ADDR_033
+ADDR_038
 CXXDependentScopeMemberExpr
 <Top Level Types>
-ADDR_032
+ADDR_037
 <Visited Children>
-ADDR_034
+ADDR_039
 2
-ADDR_030
-ADDR_033
+ADDR_035
+ADDR_038
 <CallExprData>
-ADDR_034
+ADDR_039
 CallExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -663,19 +794,19 @@ CallExpr
 33
 0
 0
-ADDR_032
+ADDR_037
 0
 0
 0
 nullptr_decl
 <Id to Class Map>
-ADDR_034
+ADDR_039
 CallExpr
 <Visited Children>
-ADDR_035
+ADDR_040
 0
 <TemplateSpecializationTypeData>
-ADDR_035
+ADDR_040
 TemplateSpecializationType
 hash<U>
 DEPENDENT
@@ -686,38 +817,38 @@ nullptr_type
 0
 nullptr_type
 hash
-ADDR_028
+ADDR_030
 1
 Type
 ADDR_009
 <Id to Class Map>
-ADDR_035
+ADDR_040
 TemplateSpecializationType
 <Visited Children>
-ADDR_036
+ADDR_041
 0
 <ElaboratedTypeData>
-ADDR_036
+ADDR_041
 ElaboratedType
 std::hash<U>
 DEPENDENT
 0
 0
 0
-ADDR_035
+ADDR_040
 None
 std::
-ADDR_035
+ADDR_040
 <Id to Class Map>
-ADDR_036
+ADDR_041
 ElaboratedType
 <Top Level Types>
-ADDR_036
+ADDR_041
 <Visited Children>
-ADDR_037
+ADDR_042
 0
 <ExprData>
-ADDR_037
+ADDR_042
 CXXUnresolvedConstructExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -727,20 +858,20 @@ CXXUnresolvedConstructExpr
 50
 0
 0
-ADDR_036
+ADDR_041
 0
 0
 0
 <Id to Class Map>
-ADDR_037
+ADDR_042
 CXXUnresolvedConstructExpr
 <Top Level Types>
-ADDR_023
+ADDR_026
 <Visited Children>
-ADDR_038
+ADDR_043
 0
 <DeclRefExprData>
-ADDR_038
+ADDR_043
 DeclRefExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -748,24 +879,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_023
+ADDR_026
 1
 0
 0
 
 0
-ADDR_026
+ADDR_029
 <Id to Class Map>
-ADDR_038
+ADDR_043
 DeclRefExpr
 <Top Level Types>
-ADDR_032
+ADDR_037
 <Visited Children>
-ADDR_039
+ADDR_044
 1
-ADDR_038
+ADDR_043
 <CXXDependentScopeMemberExprData>
-ADDR_039
+ADDR_044
 CXXDependentScopeMemberExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -775,7 +906,7 @@ CXXDependentScopeMemberExpr
 54
 0
 0
-ADDR_032
+ADDR_037
 1
 0
 0
@@ -786,17 +917,17 @@ second
 0
 0
 <Id to Class Map>
-ADDR_039
+ADDR_044
 CXXDependentScopeMemberExpr
 <Top Level Types>
-ADDR_032
-<Visited Children>
-ADDR_040
-2
 ADDR_037
-ADDR_039
+<Visited Children>
+ADDR_045
+2
+ADDR_042
+ADDR_044
 <CallExprData>
-ADDR_040
+ADDR_045
 CallExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -806,23 +937,23 @@ CallExpr
 60
 0
 0
-ADDR_032
+ADDR_037
 0
 0
 0
 nullptr_decl
 <Id to Class Map>
-ADDR_040
+ADDR_045
 CallExpr
 <Top Level Types>
-ADDR_032
+ADDR_037
 <Visited Children>
-ADDR_041
+ADDR_046
 2
-ADDR_034
-ADDR_040
+ADDR_039
+ADDR_045
 <BinaryOperatorData>
-ADDR_041
+ADDR_046
 BinaryOperator
 <TEST_DIR>/pair_hash.h
 14
@@ -832,20 +963,20 @@ BinaryOperator
 60
 0
 0
-ADDR_032
+ADDR_037
 0
 0
 0
 Xor
 <Id to Class Map>
-ADDR_041
+ADDR_046
 BinaryOperator
 <Visited Children>
-ADDR_042
+ADDR_047
 1
-ADDR_041
+ADDR_046
 <StmtData>
-ADDR_042
+ADDR_047
 ReturnStmt
 <TEST_DIR>/pair_hash.h
 14
@@ -856,14 +987,14 @@ ReturnStmt
 0
 0
 <Id to Class Map>
-ADDR_042
+ADDR_047
 ReturnStmt
 <Visited Children>
-ADDR_043
+ADDR_048
 1
-ADDR_042
+ADDR_047
 <StmtData>
-ADDR_043
+ADDR_048
 CompoundStmt
 <TEST_DIR>/pair_hash.h
 13
@@ -874,13 +1005,13 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_043
+ADDR_048
 CompoundStmt
 <Visited Children>
-ADDR_044
+ADDR_049
 0
 <QualTypeData>
-ADDR_044
+ADDR_049
 QualType
 const A::PairHash
 NONE
@@ -894,13 +1025,13 @@ NONE
 0
 ADDR_004
 <Id to Class Map>
-ADDR_044
+ADDR_049
 QualType
 <Visited Children>
-ADDR_045
+ADDR_050
 0
 <PointerTypeData>
-ADDR_045
+ADDR_050
 PointerType
 const A::PairHash *
 NONE
@@ -908,17 +1039,17 @@ NONE
 0
 0
 nullptr_type
-ADDR_044
+ADDR_049
 <Id to Class Map>
-ADDR_045
+ADDR_050
 PointerType
 <Visited Children>
-ADDR_046
+ADDR_051
 2
-ADDR_026
-ADDR_043
+ADDR_029
+ADDR_048
 <CXXMethodDeclData>
-ADDR_046
+ADDR_051
 CXXMethodDecl
 <TEST_DIR>/pair_hash.h
 12
@@ -941,7 +1072,7 @@ operator()
 1
 External
 Default
-ADDR_025
+ADDR_028
 0
 0
 1
@@ -952,7 +1083,7 @@ None
 0
 0
 nullptr_decl
-ADDR_046
+ADDR_051
 nullptr_decl
 0
 ADDR_005
@@ -964,21 +1095,21 @@ ADDR_005
 0
 0
 0
-ADDR_045
-ADDR_044
+ADDR_050
+ADDR_049
 1
 0
 <Id to Class Map>
-ADDR_046
+ADDR_051
 CXXMethodDecl
 <Visited Children>
-ADDR_047
+ADDR_052
 3
 ADDR_008
 ADDR_010
-ADDR_046
+ADDR_051
 <TemplateDeclData>
-ADDR_047
+ADDR_052
 FunctionTemplateDecl
 <TEST_DIR>/pair_hash.h
 11
@@ -1004,15 +1135,15 @@ Default
 2
 ADDR_008
 ADDR_010
-ADDR_046
+ADDR_051
 <Id to Class Map>
-ADDR_047
+ADDR_052
 FunctionTemplateDecl
 <Visited Children>
 ADDR_005
 2
 ADDR_006
-ADDR_047
+ADDR_052
 <CXXRecordDeclData>
 ADDR_005
 CXXRecordDecl
