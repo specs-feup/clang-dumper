@@ -40,13 +40,25 @@ build-win-arm64/tool.exe
 build-win-x86_64/tool.exe
 ```
 
-To stage release executables:
-
-```sh
-mkdir -p dist
-cp build-win-arm64/tool.exe dist/clang-dumper-windows-arm64.exe
-cp build-win-x86_64/tool.exe dist/clang-dumper-windows-x86_64.exe
-```
-
 The produced executables are statically linked against LLVM/Clang and the
 MinGW/LLVM runtime libraries. They should only import Windows system/UCRT DLLs.
+
+# Creating 'include' packages
+
+Clava ships with pre-assembled stdlibc/c++ for several OS (Windows, Linux and MacOS).
+
+To build those include packages, chose a reference system, install Clang in the same version as the dumper, and check which include folders Clang uses for C++:
+
+```
+clang++ -E -x c++ - -v </dev/null
+```
+
+Then, starting with a new, empty folder, copy each include folder to this folder, following the order by which it is listed, and creating folders that also follow this order:
+
+```
+01-libcxx
+02-libc
+...
+```
+
+Finally, zip this folder. The copied include folders should appear in the root of the zip
