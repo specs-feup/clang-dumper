@@ -283,8 +283,10 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     (r"/usr/local/Cellar/llvm@?\d*/[\d.]+/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/opt/homebrew/opt/llvm@?\d*/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/opt/homebrew/Cellar/llvm@?\d*/[\d.]+/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include/(?:arm|i386)", SYSTEM_INCLUDE_PLACEHOLDER + "/arch"),
     (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include/(?:arm|i386)", SYSTEM_INCLUDE_PLACEHOLDER + "/arch"),
     (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
 
