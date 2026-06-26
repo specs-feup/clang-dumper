@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(CLANG_VERSION 18 CACHE STRING "LLVM/Clang major version to use")
-option(CLANG_DUMPER_BUILD_TOOL "Build the standalone clang-dumper executable" ON)
-option(CLANG_DUMPER_BUILD_PLUGIN "Build the clang plugin module" ON)
-option(CLANG_DUMPER_STATIC_TOOL "Link the standalone tool against static LLVM/Clang libraries where available" ON)
 set(LLVM_WINDOWS_ROOT "" CACHE PATH "Windows-target LLVM/Clang SDK root for cross-compilation")
 
 # CMake chooses compilers during project(), so default compiler discovery must
@@ -30,9 +27,6 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
     if(NOT LLVM_WINDOWS_ROOT)
         message(FATAL_ERROR "LLVM_WINDOWS_ROOT is required for Windows cross-compilation")
     endif()
-    set(CLANG_DUMPER_BUILD_TOOL ON CACHE BOOL "" FORCE)
-    set(CLANG_DUMPER_BUILD_PLUGIN OFF CACHE BOOL "Windows cross builds produce the standalone tool only" FORCE)
-    set(CLANG_DUMPER_STATIC_TOOL ON CACHE BOOL "" FORCE)
 elseif(WIN32)
     message(FATAL_ERROR "Native Windows builds are no longer supported. Build Windows tools from Linux with scripts/build_windows_cross.sh.")
 endif()
@@ -249,51 +243,19 @@ set(SOURCE_FILES
     "${ENUMS_AGGREGATED_SRC}"
     )
 
-# Plugin target - dynamic by design. The user must have a compatible clang/LLVM
-# installation, and clang loads this module in-process.
-if(CLANG_DUMPER_BUILD_PLUGIN)
+if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
     target_compile_features(plugin PRIVATE cxx_std_20)
     add_dependencies(plugin clang_enums)
 endif()
 
-if(CLANG_DUMPER_BUILD_TOOL)
-    add_executable(tool ${SOURCE_FILES} src/tool.cpp)
-    target_compile_features(tool PRIVATE cxx_std_20)
-    add_dependencies(tool clang_enums)
-endif()
+add_executable(tool ${SOURCE_FILES} src/tool.cpp)
+target_compile_features(tool PRIVATE cxx_std_20)
+add_dependencies(tool clang_enums)
 
-if(CLANG_DUMPER_BUILD_TOOL)
-    target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
-endif()
+target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
 
-# Locate binutils tools early for post-build debug splitting
-if(NOT CMAKE_OBJCOPY)
-    find_program(CMAKE_OBJCOPY NAMES objcopy)
-endif()
-if(NOT CMAKE_STRIP)
-    find_program(CMAKE_STRIP NAMES strip)
-endif()
-
-
-message(STATUS "SYSTEM PROCESSOR: '${CMAKE_SYSTEM_PROCESSOR}'")
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
-    set(PROCESSOR_PREFIX "ARM")
-else()
-    set(PROCESSOR_PREFIX "X86")
-endif()
-
-
-#set_property(TARGET tool PROPERTY INTERPROCEDURAL_OPTIMIZATION OFF)
-
-
-# --- Tool Linking ---------------------------------------------------------------
-if(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL AND WIN32 AND CMAKE_CROSSCOMPILING)
-    message(STATUS "Configuring 'tool' for Windows cross static linking")
-
-    get_filename_component(LLVM_LIBDIR "${LLVM_DIR}/../.." ABSOLUTE)
-    target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
-
+function(clang_dumper_find_clang_archives out_var llvm_libdir)
     set(CLANG_STATIC_COMPONENTS
         clangTooling
         clangToolingCore
@@ -316,34 +278,62 @@ if(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL AND WIN32 AND CMAKE_CROS
     )
     set(CLANG_ARCHIVES "")
     foreach(component IN LISTS CLANG_STATIC_COMPONENTS)
-        find_library("${component}_ARCHIVE"
+        unset(CLANG_ARCHIVE)
+        unset(CLANG_ARCHIVE CACHE)
+        find_library(CLANG_ARCHIVE
             NAMES "${component}"
-            PATHS "${LLVM_LIBDIR}"
+            PATHS "${llvm_libdir}"
             NO_DEFAULT_PATH
         )
-        if(NOT ${component}_ARCHIVE)
-            message(FATAL_ERROR "Required static Clang archive ${component} was not found in ${LLVM_LIBDIR}")
+        if(NOT CLANG_ARCHIVE)
+            message(FATAL_ERROR "Required static Clang archive ${component} was not found in ${llvm_libdir}")
         endif()
-        list(APPEND CLANG_ARCHIVES "${${component}_ARCHIVE}")
+        list(APPEND CLANG_ARCHIVES "${CLANG_ARCHIVE}")
     endforeach()
+    set(${out_var} "${CLANG_ARCHIVES}" PARENT_SCOPE)
+endfunction()
 
-    file(GLOB LLVM_ARCHIVES "${LLVM_LIBDIR}/libLLVM*.a")
-    list(FILTER LLVM_ARCHIVES EXCLUDE REGEX "[.]dll[.]a$")
-    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(ARM64|AArch64|arm64|aarch64)$")
-        set(HOST_BACKEND_REGEX "AArch64")
+function(clang_dumper_backend_regex out_var target_name)
+    if(target_name MATCHES "(x86_64|amd64|X86|x86)")
+        set(regex "X86")
+    elseif(target_name MATCHES "(aarch64|arm64|AArch64|ARM64)")
+        set(regex "AArch64")
+    elseif(target_name MATCHES "arm")
+        set(regex "ARM")
+    elseif(target_name MATCHES "riscv")
+        set(regex "RISCV")
     else()
-        set(HOST_BACKEND_REGEX "X86")
+        set(regex "")
     endif()
-    set(FILTERED_LLVM_ARCHIVES "")
-    foreach(lib IN LISTS LLVM_ARCHIVES)
+    set(${out_var} "${regex}" PARENT_SCOPE)
+endfunction()
+
+function(clang_dumper_filter_target_archives out_var backend_regex)
+    set(FILTERED_ARCHIVES "")
+    foreach(lib IN LISTS ARGN)
         get_filename_component(libname "${lib}" NAME_WE)
         if(libname MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
-            if(NOT libname MATCHES "${HOST_BACKEND_REGEX}")
+            if(NOT libname MATCHES "${backend_regex}")
                 continue()
             endif()
         endif()
-        list(APPEND FILTERED_LLVM_ARCHIVES "${lib}")
+        list(APPEND FILTERED_ARCHIVES "${lib}")
     endforeach()
+    set(${out_var} "${FILTERED_ARCHIVES}" PARENT_SCOPE)
+endfunction()
+
+# --- Tool Linking ---------------------------------------------------------------
+if(WIN32 AND CMAKE_CROSSCOMPILING)
+    message(STATUS "Configuring 'tool' for Windows cross static linking")
+
+    get_filename_component(LLVM_LIBDIR "${LLVM_DIR}/../.." ABSOLUTE)
+    target_link_directories(tool PRIVATE "${LLVM_LIBDIR}")
+
+    clang_dumper_find_clang_archives(CLANG_ARCHIVES "${LLVM_LIBDIR}")
+    file(GLOB LLVM_ARCHIVES "${LLVM_LIBDIR}/libLLVM*.a")
+    list(FILTER LLVM_ARCHIVES EXCLUDE REGEX "[.]dll[.]a$")
+    clang_dumper_backend_regex(TARGET_BACKEND_REGEX "${CMAKE_SYSTEM_PROCESSOR}")
+    clang_dumper_filter_target_archives(FILTERED_LLVM_ARCHIVES "${TARGET_BACKEND_REGEX}" ${LLVM_ARCHIVES})
 
     set(CLANG_DUMPER_WINDOWS_RUNTIME_LIBS
         c++
@@ -375,46 +365,15 @@ if(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL AND WIN32 AND CMAKE_CROS
     )
     target_link_options(tool PRIVATE -static -Wl,--gc-sections -Wl,--stack,16777216)
 
-elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
+else()
     message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
     find_program(LLVM_CONFIG_EXE NAMES llvm-config-${CLANG_VERSION} llvm-config)
     if(NOT LLVM_CONFIG_EXE)
         message(FATAL_ERROR "llvm-config (version ${CLANG_VERSION}) not found; cannot build statically linked 'tool'.")
-    else()
+    endif()
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --libdir OUTPUT_VARIABLE LLVM_LIBDIR_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     set(LLVM_LIBDIR ${LLVM_LIBDIR_RAW})
-    set(CLANG_STATIC_COMPONENTS
-        clangTooling
-        clangToolingCore
-        clangFrontend
-        clangFrontendTool
-        clangSerialization
-        clangDriver
-        clangParse
-        clangSema
-        clangAnalysis
-        clangASTMatchers
-        clangAST
-        clangLex
-        clangBasic
-        clangEdit
-        clangRewrite
-        clangRewriteFrontend
-        clangAPINotes
-        clangSupport
-    )
-    set(CLANG_ARCHIVES "")
-    foreach(component IN LISTS CLANG_STATIC_COMPONENTS)
-        find_library("${component}_ARCHIVE"
-            NAMES "${component}"
-            PATHS "${LLVM_LIBDIR}"
-            NO_DEFAULT_PATH
-        )
-        if(NOT ${component}_ARCHIVE)
-            message(FATAL_ERROR "Required static Clang archive ${component} was not found in ${LLVM_LIBDIR}")
-        endif()
-        list(APPEND CLANG_ARCHIVES "${${component}_ARCHIVE}")
-    endforeach()
+    clang_dumper_find_clang_archives(CLANG_ARCHIVES "${LLVM_LIBDIR}")
     message(STATUS "Static Clang archives: ${CLANG_ARCHIVES}")
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --libs --system-libs --link-static OUTPUT_VARIABLE LLVM_LIBS_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REGEX REPLACE "\n" " " LLVM_LIBS_RAW "${LLVM_LIBS_RAW}")
@@ -446,33 +405,11 @@ elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
         endif()
     endforeach()
 
-    # Filter (Option 4): retain only host target backends to reduce size.
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --host-target OUTPUT_VARIABLE LLVM_HOST_TARGET_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     set(LLVM_HOST_TARGET ${LLVM_HOST_TARGET_RAW})
-    # Map common triples to backend substring patterns used in library names.
-    if(LLVM_HOST_TARGET MATCHES "x86_64")
-        set(HOST_BACKEND_REGEX "X86")
-    elseif(LLVM_HOST_TARGET MATCHES "aarch64")
-        set(HOST_BACKEND_REGEX "AArch64")
-    elseif(LLVM_HOST_TARGET MATCHES "arm")
-        set(HOST_BACKEND_REGEX "ARM")
-    elseif(LLVM_HOST_TARGET MATCHES "riscv")
-        set(HOST_BACKEND_REGEX "RISCV")
-    else()
-        set(HOST_BACKEND_REGEX "")
-    endif()
+    clang_dumper_backend_regex(HOST_BACKEND_REGEX "${LLVM_HOST_TARGET}")
     if(HOST_BACKEND_REGEX)
-        set(FILTERED_LLVM_LIBS "")
-        foreach(lib IN LISTS LLVM_LIBS_CLEAN)
-            # If it looks like a target-specific codegen/asm/disassembler lib and does not match host, skip.
-            get_filename_component(libname "${lib}" NAME_WE)
-            if(libname MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
-                if(NOT libname MATCHES "${HOST_BACKEND_REGEX}")
-                    continue()
-                endif()
-            endif()
-            list(APPEND FILTERED_LLVM_LIBS ${lib})
-        endforeach()
+        clang_dumper_filter_target_archives(FILTERED_LLVM_LIBS "${HOST_BACKEND_REGEX}" ${LLVM_LIBS_CLEAN})
         set(LLVM_LIBS_CLEAN ${FILTERED_LLVM_LIBS})
         message(STATUS "Filtered LLVM target libs to host (${LLVM_HOST_TARGET} -> ${HOST_BACKEND_REGEX}).")
     else()
@@ -505,75 +442,8 @@ elseif(CLANG_DUMPER_BUILD_TOOL AND CLANG_DUMPER_STATIC_TOOL)
             target_link_options(tool PRIVATE -static-libstdc++ -static-libgcc -Wl,--gc-sections)
         endif()
     endif()
-    endif()  # end of if(NOT LLVM_CONFIG_EXE) else block
-elseif(CLANG_DUMPER_BUILD_TOOL)
-    message(STATUS "Configuring 'tool' for dynamic LLVM/Clang linking")
-    target_link_libraries(tool PRIVATE clang-cpp LLVM)
 endif()  # end tool linking
 
-# Plugin always dynamic (portable; small)
-if(CLANG_DUMPER_BUILD_PLUGIN)
+if(TARGET plugin)
     target_link_libraries(plugin PRIVATE clang-cpp LLVM)
-endif()
-
-
-# If on MacOS, change the expected location of libLLVM.dylib and libzstd.1.dylib
-# To check changes, use 'otool -L tool'
-# Test target - runs Python test script (Python3 already found above for enum generation)
-# Tool tests
-if(CLANG_DUMPER_BUILD_TOOL)
-    add_custom_target(test-tool
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool>
-        DEPENDS tool
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Running clang-dumper tool tests..."
-    )
-endif()
-
-# Test generation target - generates expected output files (uses tool mode)
-if(CLANG_DUMPER_BUILD_TOOL)
-    add_custom_target(test-generate
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode tool --path $<TARGET_FILE:tool> --generate
-        DEPENDS tool
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Generating expected test outputs..."
-    )
-endif()
-
-# Plugin tests are only available when the plugin target is built.
-if(CLANG_DUMPER_BUILD_PLUGIN)
-    # Determine the clang path for plugin tests. We need the actual clang
-    # compiler, not whatever CMAKE_CXX_COMPILER is set to.
-    if(APPLE)
-        set(CLANG_FOR_PLUGIN "${LLVM_TOOLS_BINARY_DIR}/clang")
-    else()
-        set(CLANG_FOR_PLUGIN "clang-${CLANG_VERSION}")
-    endif()
-
-    add_custom_target(test-plugin
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test/run_tests.py --mode plugin --path $<TARGET_FILE:plugin> --clang-path ${CLANG_FOR_PLUGIN}
-        DEPENDS plugin
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Running clang-dumper plugin tests..."
-    )
-
-    # Combined test target that runs both tool and plugin tests
-    if(CLANG_DUMPER_BUILD_TOOL)
-        add_custom_target(test
-            DEPENDS test-tool test-plugin
-            COMMENT "Running all clang-dumper tests..."
-        )
-    else()
-        add_custom_target(test
-            DEPENDS test-plugin
-            COMMENT "Running clang-dumper plugin tests..."
-        )
-    endif()
-else()
-    if(CLANG_DUMPER_BUILD_TOOL)
-        add_custom_target(test
-            DEPENDS test-tool
-            COMMENT "Running clang-dumper tool tests..."
-        )
-    endif()
 endif()

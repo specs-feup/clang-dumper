@@ -4,6 +4,12 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DOWNLOAD_DIR="${ROOT_DIR}/.deps/msys2-sdk-downloads"
 HOST_TOOLS_DIR="${ROOT_DIR}/.deps/host-tools"
+CLANG_VERSION="${CLANG_VERSION:-${LLVM_VERSION:-18}}"
+LLVM_RELEASE="${LLVM_RELEASE:-18.1.8}"
+MSYS2_LLVM_PACKAGE_RELEASE="${MSYS2_LLVM_PACKAGE_RELEASE:-2}"
+MSYS2_MINGW_PACKAGE_RELEASE="${MSYS2_MINGW_PACKAGE_RELEASE:-12.0.0.r747.g1a99f8514-1}"
+MSYS2_ZLIB_NG_RELEASE="${MSYS2_ZLIB_NG_RELEASE:-2.3.3-2}"
+MSYS2_ZSTD_RELEASE="${MSYS2_ZSTD_RELEASE:-1.5.7-2}"
 
 mkdir -p "${DOWNLOAD_DIR}" "${HOST_TOOLS_DIR}/bin"
 
@@ -24,67 +30,51 @@ setup_lld() {
     return
   fi
 
-  if command -v ld.lld-18 >/dev/null 2>&1; then
-    ln -sf "$(command -v ld.lld-18)" "${HOST_TOOLS_DIR}/bin/ld.lld"
+  if command -v "ld.lld-${CLANG_VERSION}" >/dev/null 2>&1; then
+    ln -sf "$(command -v "ld.lld-${CLANG_VERSION}")" "${HOST_TOOLS_DIR}/bin/ld.lld"
     return
   fi
 
   local apt_dir="${ROOT_DIR}/.deps/apt-downloads"
-  mkdir -p "${apt_dir}" "${HOST_TOOLS_DIR}/lld-18"
+  mkdir -p "${apt_dir}" "${HOST_TOOLS_DIR}/lld-${CLANG_VERSION}"
   (
     cd "${apt_dir}"
-    apt-get download lld-18
+    apt-get download "lld-${CLANG_VERSION}"
   )
-  dpkg-deb -x "${apt_dir}"/lld-18_*_amd64.deb "${HOST_TOOLS_DIR}/lld-18"
-  ln -sf ../lld-18/usr/bin/ld.lld-18 "${HOST_TOOLS_DIR}/bin/ld.lld"
+  dpkg-deb -x "${apt_dir}"/lld-"${CLANG_VERSION}"_*_amd64.deb "${HOST_TOOLS_DIR}/lld-${CLANG_VERSION}"
+  ln -sf "../lld-${CLANG_VERSION}/usr/bin/ld.lld-${CLANG_VERSION}" "${HOST_TOOLS_DIR}/bin/ld.lld"
 }
 
-setup_clangarm64() {
-  local root="${ROOT_DIR}/.deps/msys2-clangarm64-18"
-  local base="https://repo.msys2.org/mingw/clangarm64"
-  local packages=(
-    mingw-w64-clang-aarch64-llvm-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-llvm-libs-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-clang-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-clang-libs-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-clang-tools-extra-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-compiler-rt-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-libc%2B%2B-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-libunwind-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-lld-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-headers-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-crt-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-winpthreads-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-zlib-ng-compat-2.3.3-2-any.pkg.tar.zst
-    mingw-w64-clang-aarch64-zstd-1.5.7-2-any.pkg.tar.zst
+setup_msys2_sdk() {
+  local repo="$1"
+  local triplet="$2"
+  local root="${ROOT_DIR}/.deps/msys2-${repo}-${CLANG_VERSION}"
+  local base="https://repo.msys2.org/mingw/${repo}"
+  local llvm_packages=(
+    llvm
+    llvm-libs
+    clang
+    clang-libs
+    clang-tools-extra
+    compiler-rt
+    libc%2B%2B
+    libunwind
+    lld
   )
-  for pkg in "${packages[@]}"; do
-    fetch_extract "${root}" "${base}/${pkg}"
-  done
-}
+  local mingw_packages=(
+    headers-git
+    crt-git
+    winpthreads-git
+  )
 
-setup_clang64() {
-  local root="${ROOT_DIR}/.deps/msys2-clang64-18"
-  local base="https://repo.msys2.org/mingw/clang64"
-  local packages=(
-    mingw-w64-clang-x86_64-llvm-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-llvm-libs-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-clang-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-clang-libs-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-clang-tools-extra-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-compiler-rt-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-libc%2B%2B-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-libunwind-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-lld-18.1.8-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-headers-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-crt-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-winpthreads-git-12.0.0.r747.g1a99f8514-1-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-zlib-ng-compat-2.3.3-2-any.pkg.tar.zst
-    mingw-w64-clang-x86_64-zstd-1.5.7-2-any.pkg.tar.zst
-  )
-  for pkg in "${packages[@]}"; do
-    fetch_extract "${root}" "${base}/${pkg}"
+  for package in "${llvm_packages[@]}"; do
+    fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-${package}-${LLVM_RELEASE}-${MSYS2_LLVM_PACKAGE_RELEASE}-any.pkg.tar.zst"
   done
+  for package in "${mingw_packages[@]}"; do
+    fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-${package}-${MSYS2_MINGW_PACKAGE_RELEASE}-any.pkg.tar.zst"
+  done
+  fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-zlib-ng-compat-${MSYS2_ZLIB_NG_RELEASE}-any.pkg.tar.zst"
+  fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-zstd-${MSYS2_ZSTD_RELEASE}-any.pkg.tar.zst"
 }
 
 if [[ $# -eq 0 ]]; then
@@ -96,10 +86,10 @@ setup_lld
 for target in "$@"; do
   case "${target}" in
     arm64)
-      setup_clangarm64
+      setup_msys2_sdk clangarm64 aarch64
       ;;
     x86_64)
-      setup_clang64
+      setup_msys2_sdk clang64 x86_64
       ;;
     *)
       echo "Unknown Windows SDK target: ${target}" >&2

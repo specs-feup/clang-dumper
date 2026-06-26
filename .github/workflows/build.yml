@@ -42,53 +42,6 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  windows-includes:
-    name: Windows includes ${{ matrix.arch }}
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: arm64
-            package: clang-dumper-windows-arm64-includes.zip
-          - arch: x86_64
-            package: clang-dumper-windows-x86_64-includes.zip
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install host tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            curl \
-            dpkg \
-            lld-${{ env.LLVM_VERSION }} \
-            python3 \
-            rsync \
-            tar \
-            zstd
-
-      - name: Cache Windows cross SDKs
-        uses: actions/cache@v5
-        with:
-          path: .deps
-          key: windows-cross-sdk-${{ env.LLVM_RELEASE }}-${{ matrix.arch }}-v2
-
-      - name: Setup Windows cross SDK
-        run: scripts/setup_windows_cross_sdk.sh ${{ matrix.arch }}
-
-      - name: Package Windows includes
-        run: scripts/package_windows_includes.sh ${{ matrix.arch }} dist/${{ matrix.package }}
-
-      - name: Upload Windows includes
-        uses: actions/upload-artifact@v7
-        with:
-          name: windows-${{ matrix.arch }}-includes
-          path: dist/${{ matrix.package }}
-          retention-days: 1
-          if-no-files-found: error
-
   linux:
     name: Linux ${{ matrix.arch }}
     needs: generate-enums
@@ -137,10 +90,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
             -DCMAKE_C_COMPILER=clang-${{ env.LLVM_VERSION }} \
             -DCMAKE_CXX_COMPILER=clang++-${{ env.LLVM_VERSION }} \
-            -DSKIP_ENUM_GENERATION=ON \
-            -DCLANG_DUMPER_BUILD_TOOL=ON \
-            -DCLANG_DUMPER_BUILD_PLUGIN=ON \
-            -DCLANG_DUMPER_STATIC_TOOL=ON
+            -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
         run: cmake --build build --target tool plugin --parallel
@@ -248,10 +198,7 @@ jobs:
             -DLLVM_PREFIX="${LLVM_PREFIX}" \
             -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
-            -DSKIP_ENUM_GENERATION=ON \
-            -DCLANG_DUMPER_BUILD_TOOL=ON \
-            -DCLANG_DUMPER_BUILD_PLUGIN=ON \
-            -DCLANG_DUMPER_STATIC_TOOL=ON
+            -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
         run: cmake --build build --target tool plugin --parallel
@@ -340,9 +287,11 @@ jobs:
           - arch: arm64
             build-dir: build-win-arm64
             output: clang-dumper-windows-arm64.exe
+            include-package: clang-dumper-windows-arm64-includes.zip
           - arch: x86_64
             build-dir: build-win-x86_64
             output: clang-dumper-windows-x86_64.exe
+            include-package: clang-dumper-windows-x86_64-includes.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -363,6 +312,8 @@ jobs:
             llvm-${{ env.LLVM_VERSION }}-tools \
             curl \
             dpkg \
+            python3 \
+            rsync \
             tar \
             zstd
 
@@ -397,6 +348,9 @@ jobs:
           mkdir -p dist
           cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
 
+      - name: Package Windows includes
+        run: scripts/package_windows_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
       - name: Upload Windows tool
         uses: actions/upload-artifact@v7
         with:
@@ -405,11 +359,18 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+      - name: Upload Windows includes
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
   windows-test:
     name: Windows test ${{ matrix.arch }}
     needs:
       - windows-cross
-      - windows-includes
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false

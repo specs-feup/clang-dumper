@@ -9,16 +9,17 @@ fi
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="$1"
 OUTPUT_ZIP="$2"
+CLANG_VERSION="${CLANG_VERSION:-${LLVM_VERSION:-18}}"
 if [[ "${OUTPUT_ZIP}" != /* ]]; then
   OUTPUT_ZIP="${ROOT_DIR}/${OUTPUT_ZIP}"
 fi
 
 case "${TARGET}" in
   arm64)
-    SDK_ROOT="${ROOT_DIR}/.deps/msys2-clangarm64-18/clangarm64"
+    SDK_ROOT="${ROOT_DIR}/.deps/msys2-clangarm64-${CLANG_VERSION}/clangarm64"
     ;;
   x86_64)
-    SDK_ROOT="${ROOT_DIR}/.deps/msys2-clang64-18/clang64"
+    SDK_ROOT="${ROOT_DIR}/.deps/msys2-clang64-${CLANG_VERSION}/clang64"
     ;;
   *)
     echo "Unknown Windows include package target: ${TARGET}" >&2
@@ -39,7 +40,7 @@ mkdir -p \
   "${STAGING_DIR}/03-mingw"
 
 cp -a "${SDK_ROOT}/include/c++/v1/." "${STAGING_DIR}/01-libcxx/"
-cp -a "${SDK_ROOT}/lib/clang/18/include/." "${STAGING_DIR}/02-clang/"
+cp -a "${SDK_ROOT}/lib/clang/${CLANG_VERSION}/include/." "${STAGING_DIR}/02-clang/"
 
 rsync -a \
   --exclude 'c++' \

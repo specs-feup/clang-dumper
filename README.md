@@ -31,6 +31,8 @@ Windows builds are produced from Linux only. The Windows plugin is not built.
 ```sh
 scripts/setup_windows_cross_sdk.sh
 scripts/build_windows_cross.sh
+scripts/package_windows_includes.sh arm64 dist/clang-dumper-windows-arm64-includes.zip
+scripts/package_windows_includes.sh x86_64 dist/clang-dumper-windows-x86_64-includes.zip
 ```
 
 The scripts build:
@@ -45,9 +47,8 @@ MinGW/LLVM runtime libraries. They should only import Windows system/UCRT DLLs.
 
 # Creating 'include' packages
 
-Clava ships with pre-assembled stdlibc/c++ for several OS (Windows, Linux and MacOS).
-
-To build those include packages, chose a reference system, install Clang in the same version as the dumper, and check which include folders Clang uses for C++:
+Clava ships with pre-assembled stdlibc/c++ for several OS (Windows, Linux and macOS).
+For non-Windows packages, choose a reference system, install Clang in the same version as the dumper, and check which include folders Clang uses for C++:
 
 ```
 clang++ -E -x c++ - -v </dev/null
