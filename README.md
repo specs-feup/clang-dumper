@@ -1,13 +1,12 @@
 # Building
 
 ```sh
-mkdir build
-cd build
-cmake ..
-make
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --target tool plugin --parallel
 ```
 
-The CMakeLists.txt has two targets, `plugin` and `tool`, use `<MAKE_CMD> <target>` to build a specific target.
+The CMakeLists.txt has two targets, `plugin` and `tool`; pass one or both to
+`cmake --build build --target ...` to select what to build.
 
 The target `tool` has been successfully built in Ubuntu and macOS. Windows
 executables are cross-compiled from Linux.
@@ -18,10 +17,13 @@ executables are cross-compiled from Linux.
 
 ```sh
 # Required for all targets
-sudo apt install clang-18 libclang-18-dev llvm-18-dev zlib1g-dev
+sudo apt install python3 clang-18 libclang-18-dev llvm-18-dev zlib1g-dev libxml2-dev
 
 # Required for building the stand-alone tool
 sudo apt install libpolly-18-dev libedit-dev libzstd-dev
+
+# Required for Linux-hosted Windows cross builds
+sudo apt install curl dpkg lld-18 llvm-18-tools rsync tar zstd
 ```
 
 ## Windows Cross Builds
