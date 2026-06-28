@@ -2,6 +2,8 @@ name: Build
 
 on:
   push:
+    branches:
+      - master
     tags:
       - "v*.*.*"
   pull_request:
@@ -469,77 +471,26 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download Linux x64 tool
+      - name: Download Linux release assets
         uses: actions/download-artifact@v8
         with:
-          name: linux-x64-tool
+          pattern: linux-*
           path: release-assets/
+          merge-multiple: true
 
-      - name: Download Linux x64 plugin
+      - name: Download macOS release assets
         uses: actions/download-artifact@v8
         with:
-          name: linux-x64-plugin
+          pattern: macos-*
           path: release-assets/
+          merge-multiple: true
 
-      - name: Download Linux arm64 tool
+      - name: Download Windows release assets
         uses: actions/download-artifact@v8
         with:
-          name: linux-arm64-tool
+          pattern: windows-*
           path: release-assets/
-
-      - name: Download Linux arm64 plugin
-        uses: actions/download-artifact@v8
-        with:
-          name: linux-arm64-plugin
-          path: release-assets/
-
-      - name: Download macOS x64 tool
-        uses: actions/download-artifact@v8
-        with:
-          name: macos-x64-tool
-          path: release-assets/
-
-      - name: Download macOS x64 plugin
-        uses: actions/download-artifact@v8
-        with:
-          name: macos-x64-plugin
-          path: release-assets/
-
-      - name: Download macOS arm64 tool
-        uses: actions/download-artifact@v8
-        with:
-          name: macos-arm64-tool
-          path: release-assets/
-
-      - name: Download macOS arm64 plugin
-        uses: actions/download-artifact@v8
-        with:
-          name: macos-arm64-plugin
-          path: release-assets/
-
-      - name: Download Windows x86_64 tool
-        uses: actions/download-artifact@v8
-        with:
-          name: windows-x86_64-tool
-          path: release-assets/
-
-      - name: Download Windows x86_64 includes
-        uses: actions/download-artifact@v8
-        with:
-          name: windows-x86_64-includes
-          path: release-assets/
-
-      - name: Download Windows arm64 tool
-        uses: actions/download-artifact@v8
-        with:
-          name: windows-arm64-tool
-          path: release-assets/
-
-      - name: Download Windows arm64 includes
-        uses: actions/download-artifact@v8
-        with:
-          name: windows-arm64-includes
-          path: release-assets/
+          merge-multiple: true
 
       - name: Download generated enums
         uses: actions/download-artifact@v8
