@@ -58,8 +58,12 @@ elseif(APPLE)
         set(LLVM_DIR "${LLVM_PREFIX}/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
     endif()
 else()
-    SET(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}")
-    SET(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm")
+    if(NOT DEFINED Clang_DIR)
+        set(Clang_DIR "/usr/lib/cmake/clang-${CLANG_VERSION}" CACHE PATH "Path to ClangConfig.cmake")
+    endif()
+    if(NOT DEFINED LLVM_DIR)
+        set(LLVM_DIR "/usr/lib/llvm-${CLANG_VERSION}/lib/cmake/llvm" CACHE PATH "Path to LLVMConfig.cmake")
+    endif()
 endif()
 
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
@@ -96,18 +100,11 @@ endif()
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
 
-
-# Helpful metadata
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-
-
 
 # Set the LLVM and Clang include directories as SYSTEM to suppress warnings
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 include_directories(SYSTEM ${CLANG_INCLUDE_DIRS})
-
-#include_directories("/usr/lib/llvm-${CLANG_VERSION}/include/")
-#include_directories("/usr/lib/clang/${CLANG_VERSION}/include/")
 
 # Add definitions needed for LLVM and Clang
 add_definitions(${LLVM_DEFINITIONS})
@@ -122,7 +119,7 @@ add_definitions(${CLANG_DEFINITIONS})
 #
 # New approach:
 # 1. A custom command (build step) runs the Python script that (re)generates the
-#    enum sources under src/ClangEnums/.
+#    enum sources under src/enums_cpp/.
 # 2. Immediately after, a small CMake script (executed with -P at build time)
 #    scans the directory and writes a single aggregator translation unit
 #    (clang_enums_aggregated.cpp) which simply #includes every generated
@@ -366,7 +363,10 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
 
 else()
     message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
-    find_program(LLVM_CONFIG_EXE NAMES llvm-config-${CLANG_VERSION} llvm-config)
+    find_program(LLVM_CONFIG_EXE
+        NAMES llvm-config-${CLANG_VERSION} llvm-config
+        HINTS "${LLVM_TOOLS_BINARY_DIR}"
+    )
     if(NOT LLVM_CONFIG_EXE)
         message(FATAL_ERROR "llvm-config (version ${CLANG_VERSION}) not found; cannot build statically linked 'tool'.")
     endif()
