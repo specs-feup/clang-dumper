@@ -2,8 +2,8 @@ name: Build
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - "v*.*.*"
   pull_request:
   workflow_dispatch:
 
@@ -138,11 +138,17 @@ jobs:
             exit 1
           fi
 
+      - name: Stage binaries
+        run: |
+          mkdir -p dist
+          cp build/tool dist/clang-dumper-linux-${{ matrix.arch }}
+          cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
+
       - name: Upload tool
         uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.arch }}-tool
-          path: build/tool
+          path: dist/clang-dumper-linux-${{ matrix.arch }}
           retention-days: 1
           if-no-files-found: error
 
@@ -150,7 +156,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.arch }}-plugin
-          path: build/libplugin.so
+          path: dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
           retention-days: 1
           if-no-files-found: error
 
@@ -241,6 +247,12 @@ jobs:
             exit 1
           fi
 
+      - name: Stage binaries
+        run: |
+          mkdir -p dist
+          cp build/tool dist/clang-dumper-macos-${{ matrix.arch }}
+          cp build/libplugin.so dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
+
       - name: Upload failed test outputs
         if: ${{ failure() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
         uses: actions/upload-artifact@v7
@@ -263,7 +275,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: macos-${{ matrix.arch }}-tool
-          path: build/tool
+          path: dist/clang-dumper-macos-${{ matrix.arch }}
           retention-days: 1
           if-no-files-found: error
 
@@ -271,7 +283,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: macos-${{ matrix.arch }}-plugin
-          path: build/libplugin.so
+          path: dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
           retention-days: 1
           if-no-files-found: error
 
@@ -444,3 +456,105 @@ jobs:
           path: test/raw-outputs/windows-${{ matrix.arch }}/
           retention-days: 1
           if-no-files-found: ignore
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - generate-enums
+      - linux
+      - macos
+      - windows-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Linux x64 tool
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-x64-tool
+          path: release-assets/
+
+      - name: Download Linux x64 plugin
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-x64-plugin
+          path: release-assets/
+
+      - name: Download Linux arm64 tool
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-arm64-tool
+          path: release-assets/
+
+      - name: Download Linux arm64 plugin
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-arm64-plugin
+          path: release-assets/
+
+      - name: Download macOS x64 tool
+        uses: actions/download-artifact@v8
+        with:
+          name: macos-x64-tool
+          path: release-assets/
+
+      - name: Download macOS x64 plugin
+        uses: actions/download-artifact@v8
+        with:
+          name: macos-x64-plugin
+          path: release-assets/
+
+      - name: Download macOS arm64 tool
+        uses: actions/download-artifact@v8
+        with:
+          name: macos-arm64-tool
+          path: release-assets/
+
+      - name: Download macOS arm64 plugin
+        uses: actions/download-artifact@v8
+        with:
+          name: macos-arm64-plugin
+          path: release-assets/
+
+      - name: Download Windows x86_64 tool
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-x86_64-tool
+          path: release-assets/
+
+      - name: Download Windows x86_64 includes
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-x86_64-includes
+          path: release-assets/
+
+      - name: Download Windows arm64 tool
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-arm64-tool
+          path: release-assets/
+
+      - name: Download Windows arm64 includes
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-arm64-includes
+          path: release-assets/
+
+      - name: Download generated enums
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-enums
+          path: release-staging/generated-enums/
+
+      - name: Package generated enums for release
+        run: |
+          (
+            cd release-staging/generated-enums
+            python3 -m zipfile -c ../../release-assets/clang-dumper-generated-enums.zip .
+          )
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
