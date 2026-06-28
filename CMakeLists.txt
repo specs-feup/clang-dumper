@@ -173,21 +173,13 @@ endif()
 set(ENUMS_GEN_DIR "${CMAKE_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${ENUMS_GEN_DIR}")
 set(ENUMS_AGGREGATED_SRC "${ENUMS_GEN_DIR}/clang_enums_aggregated.cpp")
-
-# Build-time script which creates the aggregator translation unit.
-set(GENERATE_ENUMS_AGG_SCRIPT "${ENUMS_GEN_DIR}/generate_enum_aggregator.cmake")
-file(WRITE "${GENERATE_ENUMS_AGG_SCRIPT}" "# Auto-generated helper (do not edit)\n")
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "# Scans src/enums_cpp for cpp files produced by the Python script\n")
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "file(GLOB ENUM_CPP_FILES \"src/enums_cpp/*.cpp\")\n")
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "file(WRITE \"${ENUMS_AGGREGATED_SRC}\" \"// Aggregated enum sources - generated at build time\\n\\n\")\n")
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "foreach(f IN LISTS ENUM_CPP_FILES)\n")
-# Use relative include path so we don't need to escape another variable; this is evaluated when the helper script runs at build time.
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "  file(APPEND \"${ENUMS_AGGREGATED_SRC}\" \"#include \\\"\${f}\\\"\\n\")\n")
-file(APPEND "${GENERATE_ENUMS_AGG_SCRIPT}" "endforeach()\n")
+set(GENERATE_ENUMS_AGG_SCRIPT "${CMAKE_SOURCE_DIR}/cmake/generate_enum_aggregator.cmake")
 
 # Collect Python generation script files as (re)build dependencies (best-effort).
 file(GLOB PYTHON_ENUM_SCRIPTS CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/clang_enums/*.py")
+file(GLOB ENUM_CPP_INPUTS CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/src/enums_cpp/*.cpp")
 
 if(SKIP_ENUM_GENERATION)
     # Skip Python generation, only run aggregator on pre-existing enum files
@@ -195,8 +187,12 @@ if(SKIP_ENUM_GENERATION)
     add_custom_command(
         OUTPUT "${ENUMS_AGGREGATED_SRC}"
         COMMAND ${CMAKE_COMMAND} -E echo "Aggregating pre-existing enum sources..."
-        COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
+        COMMAND ${CMAKE_COMMAND}
+            -DENUMS_SOURCE_DIR=${CMAKE_SOURCE_DIR}/src
+            -DENUMS_AGGREGATED_SRC=${ENUMS_AGGREGATED_SRC}
+            -P "${GENERATE_ENUMS_AGG_SCRIPT}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        DEPENDS "${GENERATE_ENUMS_AGG_SCRIPT}" ${ENUM_CPP_INPUTS}
         COMMENT "Aggregate pre-existing enum sources"
         VERBATIM
     )
@@ -206,9 +202,12 @@ else()
         OUTPUT "${ENUMS_AGGREGATED_SRC}"
         COMMAND ${CMAKE_COMMAND} -E echo "Generating enums (Python) into src/ ..."
         COMMAND ${Python3_EXECUTABLE} -m clang_enums ${LLVM_DIR} src/ ${CLANG_ENUMS_HOST_CLANG_ARG} ${CLANG_ENUMS_EXTRA_CLANG_ARGS}
-        COMMAND ${CMAKE_COMMAND} -P "${GENERATE_ENUMS_AGG_SCRIPT}"
+        COMMAND ${CMAKE_COMMAND}
+            -DENUMS_SOURCE_DIR=${CMAKE_SOURCE_DIR}/src
+            -DENUMS_AGGREGATED_SRC=${ENUMS_AGGREGATED_SRC}
+            -P "${GENERATE_ENUMS_AGG_SCRIPT}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS ${PYTHON_ENUM_SCRIPTS}
+        DEPENDS "${GENERATE_ENUMS_AGG_SCRIPT}" ${PYTHON_ENUM_SCRIPTS} ${ENUM_CPP_INPUTS}
         COMMENT "Run enum generator and aggregate sources"
         VERBATIM
     )
