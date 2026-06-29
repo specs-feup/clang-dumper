@@ -1,0 +1,780 @@
+<Compiler Instance Data>
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+1
+0
+1
+8
+32
+64
+<LONG_DOUBLE_WIDTH>
+8
+16
+32
+<LONG_WIDTH>
+64
+<Id-File Map>
+0
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<BuiltinTypeData>
+ADDR_002
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_002
+BuiltinType
+<Visited Children>
+ADDR_003
+0
+<FunctionProtoTypeData>
+ADDR_003
+FunctionProtoType
+int ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_003
+FunctionProtoType
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_004
+0
+<ConstantArrayTypeData>
+ADDR_004
+ConstantArrayType
+int[10]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_002
+10
+<Id to Class Map>
+ADDR_004
+ConstantArrayType
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_005
+0
+<VarDeclData>
+ADDR_005
+VarDecl
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+4
+5
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+4
+13
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+None
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_005
+VarDecl
+<Visited Children>
+ADDR_006
+1
+ADDR_005
+<StmtData>
+ADDR_006
+DeclStmt
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+4
+5
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+4
+14
+0
+0
+<Id to Class Map>
+ADDR_006
+DeclStmt
+<Visited Children>
+ADDR_007
+0
+<BuiltinTypeData>
+ADDR_007
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_007
+BuiltinType
+<Visited Children>
+ADDR_008
+0
+<AutoTypeData>
+ADDR_008
+AutoType
+void
+NONE
+0
+0
+0
+ADDR_007
+ADDR_007
+<Id to Class Map>
+ADDR_008
+AutoType
+<Visited Children>
+ADDR_009
+0
+<FunctionProtoTypeData>
+ADDR_009
+FunctionProtoType
+auto () const -> void
+NONE
+0
+0
+0
+nullptr_type
+1
+0
+0
+0
+0
+0
+0
+C
+ADDR_008
+0
+0
+1
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_009
+FunctionProtoType
+<Top Level Types>
+ADDR_009
+<Visited Children>
+ADDR_010
+0
+<StmtData>
+ADDR_010
+CompoundStmt
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+17
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+6
+5
+0
+0
+<Id to Class Map>
+ADDR_010
+CompoundStmt
+<Visited Children>
+ADDR_011
+0
+<QualTypeData>
+ADDR_011
+QualType
+const (lambda at <TEST_DIR>/ArrayInitLoopExpr.cpp:5:14)
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_012
+<Id to Class Map>
+ADDR_011
+QualType
+<Visited Children>
+ADDR_013
+0
+<PointerTypeData>
+ADDR_013
+PointerType
+const (lambda at <TEST_DIR>/ArrayInitLoopExpr.cpp:5:14) *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_011
+<Id to Class Map>
+ADDR_013
+PointerType
+<Visited Children>
+ADDR_014
+1
+ADDR_010
+<CXXMethodDeclData>
+ADDR_014
+CXXMethodDecl
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+16
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+6
+5
+0
+0
+0
+0
+0
+0
+0
+0
+main()::(anonymous class)
+operator()
+6
+1
+1
+Internal
+Default
+ADDR_009
+0
+1
+0
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_014
+nullptr_decl
+0
+ADDR_015
+0
+0
+1
+1
+0
+0
+0
+0
+ADDR_013
+ADDR_011
+1
+0
+<Id to Class Map>
+ADDR_014
+CXXMethodDecl
+<Visited Children>
+ADDR_015
+1
+ADDR_014
+<CXXRecordDeclData>
+ADDR_015
+CXXRecordDecl
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+14
+<end>
+0
+0
+1
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+Internal
+Default
+ADDR_012
+Class
+1
+0
+0
+ADDR_015
+<Id to Class Map>
+ADDR_015
+CXXRecordDecl
+<Visited Children>
+ADDR_012
+0
+<TagTypeData>
+ADDR_012
+RecordType
+(lambda at <TEST_DIR>/ArrayInitLoopExpr.cpp:5:14)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_015
+<Id to Class Map>
+ADDR_012
+RecordType
+<Visited Children>
+ADDR_016
+0
+<AutoTypeData>
+ADDR_016
+AutoType
+(lambda at <TEST_DIR>/ArrayInitLoopExpr.cpp:5:14)
+NONE
+0
+0
+0
+ADDR_012
+ADDR_012
+<Id to Class Map>
+ADDR_016
+AutoType
+<Top Level Types>
+ADDR_016
+<Top Level Types>
+ADDR_004
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_017
+0
+<DeclRefExprData>
+ADDR_017
+DeclRefExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+15
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_005
+<Id to Class Map>
+ADDR_017
+DeclRefExpr
+<Visited Children>
+ADDR_018
+1
+ADDR_017
+<ExprData>
+ADDR_018
+OpaqueValueExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+15
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+<Id to Class Map>
+ADDR_018
+OpaqueValueExpr
+<Visited Children>
+ADDR_019
+0
+<PointerTypeData>
+ADDR_019
+PointerType
+int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_002
+<Id to Class Map>
+ADDR_019
+PointerType
+<Top Level Types>
+ADDR_019
+<Visited Children>
+ADDR_020
+1
+ADDR_018
+<ExprData>
+ADDR_020
+ImplicitCastExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+15
+<end>
+0
+0
+ADDR_019
+0
+0
+0
+<Id to Class Map>
+ADDR_020
+ImplicitCastExpr
+<Visited Children>
+ADDR_021
+0
+<BuiltinTypeData>
+ADDR_021
+BuiltinType
+unsigned long long
+NONE
+0
+0
+0
+nullptr_type
+ULongLong
+unsigned long long
+<Id to Class Map>
+ADDR_021
+BuiltinType
+<Top Level Types>
+ADDR_021
+<Visited Children>
+ADDR_022
+0
+<ExprData>
+ADDR_022
+ArrayInitIndexExpr
+<invalid>
+0
+0
+ADDR_021
+0
+0
+0
+<Id to Class Map>
+ADDR_022
+ArrayInitIndexExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_023
+2
+ADDR_020
+ADDR_022
+<ExprData>
+ADDR_023
+ArraySubscriptExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+15
+<end>
+0
+0
+ADDR_002
+1
+0
+0
+<Id to Class Map>
+ADDR_023
+ArraySubscriptExpr
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_024
+1
+ADDR_023
+<ExprData>
+ADDR_024
+ImplicitCastExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+15
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+<Id to Class Map>
+ADDR_024
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_025
+2
+ADDR_018
+ADDR_024
+<ArrayInitLoopExprData>
+ADDR_025
+ArrayInitLoopExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+15
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_025
+ArrayInitLoopExpr
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_026
+2
+ADDR_025
+ADDR_010
+<LambdaExprData>
+ADDR_026
+LambdaExpr
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+14
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+6
+5
+0
+0
+ADDR_012
+0
+0
+0
+0
+0
+0
+0
+None
+ADDR_015
+1
+ByCopy
+<Id to Class Map>
+ADDR_026
+LambdaExpr
+<Visited Children>
+ADDR_027
+1
+ADDR_026
+<VarDeclData>
+ADDR_027
+VarDecl
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+5
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+6
+5
+0
+0
+0
+0
+0
+0
+0
+0
+
+l
+0
+0
+0
+None
+Default
+ADDR_016
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_027
+VarDecl
+<Visited Children>
+ADDR_028
+1
+ADDR_027
+<StmtData>
+ADDR_028
+DeclStmt
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+5
+5
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+6
+6
+0
+0
+<Id to Class Map>
+ADDR_028
+DeclStmt
+<Visited Children>
+ADDR_029
+2
+ADDR_006
+ADDR_028
+<StmtData>
+ADDR_029
+CompoundStmt
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+3
+12
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+7
+1
+0
+0
+<Id to Class Map>
+ADDR_029
+CompoundStmt
+<Visited Children>
+ADDR_001
+1
+ADDR_029
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+3
+1
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+7
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+main
+0
+0
+0
+External
+Default
+ADDR_003
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Top Level Types>
+ADDR_002
+<Visited Children>
+ADDR_030
+0
+<IntegerLiteralData>
+ADDR_030
+IntegerLiteral
+<TEST_DIR>/ArrayInitLoopExpr.cpp
+4
+11
+<end>
+0
+0
+ADDR_002
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+10
+%CLAVA_SOURCE_END%
+10
+<Id to Class Map>
+ADDR_030
+IntegerLiteral
