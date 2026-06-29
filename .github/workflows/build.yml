@@ -56,10 +56,12 @@ jobs:
             runner: ubuntu-24.04
             feature-args: --enable-opencl --enable-cuda
             accelerator-packages: nvidia-cuda-toolkit ocl-icd-opencl-dev
+            include-package: clang-dumper-linux-x64-includes.zip
           - arch: arm64
             runner: ubuntu-24.04-arm
             feature-args: ""
             accelerator-packages: ""
+            include-package: clang-dumper-linux-arm64-includes.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -146,6 +148,9 @@ jobs:
           cp build/tool dist/clang-dumper-linux-${{ matrix.arch }}
           cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
 
+      - name: Package Linux includes
+        run: scripts/package_linux_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
       - name: Upload tool
         uses: actions/upload-artifact@v7
         with:
@@ -162,6 +167,14 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+      - name: Upload Linux includes
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
   macos:
     name: macOS ${{ matrix.arch }}
     needs: generate-enums
@@ -173,9 +186,11 @@ jobs:
           - arch: x64
             runner: macos-15-intel
             opencl-arg: --enable-opencl
+            include-package: clang-dumper-macos-x64-includes.zip
           - arch: arm64
             runner: macos-26
             opencl-arg: ""
+            include-package: clang-dumper-macos-arm64-includes.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -255,6 +270,9 @@ jobs:
           cp build/tool dist/clang-dumper-macos-${{ matrix.arch }}
           cp build/libplugin.so dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
 
+      - name: Package macOS includes
+        run: scripts/package_macos_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
       - name: Upload failed test outputs
         if: ${{ failure() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
         uses: actions/upload-artifact@v7
@@ -286,6 +304,14 @@ jobs:
         with:
           name: macos-${{ matrix.arch }}-plugin
           path: dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload macOS includes
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.include-package }}
           retention-days: 1
           if-no-files-found: error
 
@@ -425,21 +451,23 @@ jobs:
         run: |
           python -m zipfile -e "dist/${{ matrix.include-package }}" windows-includes
           INCLUDE_ROOT="$(pwd -W)/windows-includes"
+          INCLUDE_ARGS=(
+            --extra-clang-arg="--target=${{ matrix.triple }}"
+            --extra-clang-arg="-Wno-unused-command-line-argument"
+            --extra-clang-arg="-nostdinc"
+            --extra-clang-arg="-nostdinc++"
+          )
+
+          while IFS= read -r include_path; do
+            INCLUDE_ARGS+=(--extra-clang-arg="-isystem")
+            INCLUDE_ARGS+=(--extra-clang-arg "${INCLUDE_ROOT}/${include_path}")
+          done < windows-includes/entrypoints.txt
 
           python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
             --baseline-platform windows-${{ matrix.arch }} \
             --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
-            --extra-clang-arg="--target=${{ matrix.triple }}" \
-            --extra-clang-arg="-Wno-unused-command-line-argument" \
-            --extra-clang-arg="-nostdinc" \
-            --extra-clang-arg="-nostdinc++" \
-            --extra-clang-arg="-isystem" \
-            --extra-clang-arg "${INCLUDE_ROOT}/01-libcxx" \
-            --extra-clang-arg="-isystem" \
-            --extra-clang-arg "${INCLUDE_ROOT}/02-clang" \
-            --extra-clang-arg="-isystem" \
-            --extra-clang-arg "${INCLUDE_ROOT}/03-mingw"
+            "${INCLUDE_ARGS[@]}"
 
       - name: Upload failed test outputs
         if: failure()

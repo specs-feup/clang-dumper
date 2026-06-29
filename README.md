@@ -47,6 +47,24 @@ build-win-x86_64/tool.exe
 The produced executables are statically linked against LLVM/Clang and the
 MinGW/LLVM runtime libraries. They should only import Windows system/UCRT DLLs.
 
+## Include Packages
+
+Release builds also publish include packages for each supported OS/architecture.
+The packages contain the minimal copied include roots plus an `entrypoints.txt`
+file. Consumers should pass each path listed in `entrypoints.txt`, in order, as
+an include root relative to the archive root.
+
+```sh
+scripts/package_linux_includes.sh x64 dist/clang-dumper-linux-x64-includes.zip
+scripts/package_linux_includes.sh arm64 dist/clang-dumper-linux-arm64-includes.zip
+
+scripts/package_macos_includes.sh x64 dist/clang-dumper-macos-x64-includes.zip
+scripts/package_macos_includes.sh arm64 dist/clang-dumper-macos-arm64-includes.zip
+
+scripts/package_windows_includes.sh arm64 dist/clang-dumper-windows-arm64-includes.zip
+scripts/package_windows_includes.sh x86_64 dist/clang-dumper-windows-x86_64-includes.zip
+```
+
 # Creating 'include' packages
 
 Clava ships with pre-assembled stdlibc/c++ for several OS (Windows, Linux and macOS).
