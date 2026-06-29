@@ -249,6 +249,9 @@ _SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
     (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]01-libcxx", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
     (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]02-clang", CLANG_INCLUDE_PLACEHOLDER),
     (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]03-mingw", SYSTEM_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]mingw[/\\]c\+\+[/\\]v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]clang", CLANG_INCLUDE_PLACEHOLDER),
+    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]mingw", SYSTEM_INCLUDE_PLACEHOLDER),
 
     # ==================== GCC HEADERS ====================
     # Linux: GCC's libstdc++ headers are often reported through a target-triple

@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from run_tests import normalize_static_output, normalize_system_source_blocks
+from run_tests import normalize_captured_output, normalize_static_output, normalize_system_source_blocks
 
 
 def source_record(
@@ -131,6 +131,24 @@ class NormalizeSystemSourceBlocksTest(unittest.TestCase):
         normalized = normalize_system_source_blocks(system_record + "\n" + test_record)
         self.assertNotIn("SYSTEM_TEXT", normalized)
         self.assertIn("LOCAL_TEXT", normalized)
+
+
+class NormalizeSystemPathsTest(unittest.TestCase):
+    def test_normalizes_entrypoint_windows_include_archive_paths(self) -> None:
+        output = "\n".join(
+            [
+                r"C:\a\clang-dumper\clang-dumper\windows-includes\mingw\c++\v1\vector",
+                r"C:\a\clang-dumper\clang-dumper\windows-includes\clang\stddef.h",
+                r"C:\a\clang-dumper\clang-dumper\windows-includes\mingw\stdio.h",
+            ]
+        )
+
+        normalized, _ = normalize_captured_output(output, "<TEST_DIR>")
+
+        self.assertIn("<SYSTEM_INCLUDE>/c++", normalized)
+        self.assertIn("<CLANG_INCLUDE>", normalized)
+        self.assertIn("<SYSTEM_INCLUDE>", normalized)
+        self.assertNotIn("windows-includes", normalized)
 
 
 class NormalizeUnsignedLongLongTest(unittest.TestCase):
