@@ -2,14 +2,11 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/load_llvm_version.sh"
+load_llvm_version "${ROOT_DIR}/llvm-version.env"
+
 DOWNLOAD_DIR="${ROOT_DIR}/.deps/msys2-sdk-downloads"
 HOST_TOOLS_DIR="${ROOT_DIR}/.deps/host-tools"
-CLANG_VERSION="${CLANG_VERSION:-${LLVM_VERSION:-18}}"
-LLVM_RELEASE="${LLVM_RELEASE:-18.1.8}"
-MSYS2_LLVM_PACKAGE_RELEASE="${MSYS2_LLVM_PACKAGE_RELEASE:-2}"
-MSYS2_MINGW_PACKAGE_RELEASE="${MSYS2_MINGW_PACKAGE_RELEASE:-12.0.0.r747.g1a99f8514-1}"
-MSYS2_ZLIB_NG_RELEASE="${MSYS2_ZLIB_NG_RELEASE:-2.3.3-2}"
-MSYS2_ZSTD_RELEASE="${MSYS2_ZSTD_RELEASE:-1.5.7-2}"
 
 mkdir -p "${DOWNLOAD_DIR}" "${HOST_TOOLS_DIR}/bin"
 

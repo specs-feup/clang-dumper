@@ -9,7 +9,7 @@ Extracts C++ enum definitions from Clang/LLVM headers and generates:
 Usage:
     python -m clang_enums <llvm_dir> <output_dir>
     
-    llvm_dir: Path to LLVM cmake directory (e.g., /usr/lib/llvm-18/lib/cmake/llvm)
+    llvm_dir: Path to LLVM cmake directory (e.g., /usr/lib/llvm-<version>/lib/cmake/llvm)
     output_dir: Directory to write generated files to
 """
 
@@ -99,7 +99,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument(
         "llvm_dir",
         type=Path,
-        help="Path to LLVM cmake directory (e.g., /usr/lib/llvm-18/lib/cmake/llvm)",
+        help="Path to LLVM cmake directory (e.g., /usr/lib/llvm-<version>/lib/cmake/llvm)",
     )
     parser.add_argument(
         "output_dir",

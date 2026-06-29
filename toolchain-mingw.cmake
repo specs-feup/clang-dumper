@@ -1,7 +1,9 @@
 set(CMAKE_SYSTEM_NAME Windows)
 
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/read_llvm_version.cmake")
+clang_dumper_load_llvm_version("${CMAKE_CURRENT_LIST_DIR}/llvm-version.env")
+
 set(CROSS_PREFIX x86_64-w64-mingw32 CACHE STRING "GNU triplet for the target")
-set(CLANG_VERSION 18 CACHE STRING "LLVM/Clang major version to use")
 set(HOST_LLD_DIR "" CACHE PATH "Directory containing a Linux-host ld.lld for MinGW cross-linking")
 if(NOT DEFINED CMAKE_SYSTEM_PROCESSOR)
 	if(CROSS_PREFIX MATCHES "^(aarch64|arm64)-")

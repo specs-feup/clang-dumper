@@ -11,28 +11,35 @@ on:
 
 env:
   CMAKE_BUILD_TYPE: Release
-  LLVM_VERSION: 18
-  LLVM_RELEASE: 18.1.8
 
 jobs:
   generate-enums:
     name: Generate Enums
     runs-on: ubuntu-latest
+    outputs:
+      llvm-version: ${{ steps.llvm_version.outputs.llvm-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Load LLVM version
+        id: llvm_version
+        run: |
+          source llvm-version.env
+          echo "LLVM_VERSION=${LLVM_VERSION}" >> "$GITHUB_ENV"
+          echo "llvm-version=${LLVM_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Install LLVM
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            llvm-${{ env.LLVM_VERSION }}-dev \
-            libclang-${{ env.LLVM_VERSION }}-dev
+            llvm-${LLVM_VERSION}-dev \
+            libclang-${LLVM_VERSION}-dev
 
       - name: Generate enum files
         run: |
           rm -rf src/enums_cpp src/enums_java
-          python3 -m clang_enums /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
+          python3 -m clang_enums /usr/lib/llvm-${LLVM_VERSION}/lib/cmake/llvm src/
 
       - name: Upload enum artifacts
         uses: actions/upload-artifact@v7
@@ -48,6 +55,8 @@ jobs:
     name: Linux ${{ matrix.arch }}
     needs: generate-enums
     runs-on: ${{ matrix.runner }}
+    env:
+      LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -76,10 +85,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            clang-${{ env.LLVM_VERSION }} \
-            llvm-${{ env.LLVM_VERSION }}-dev \
-            libclang-${{ env.LLVM_VERSION }}-dev \
-            libpolly-${{ env.LLVM_VERSION }}-dev \
+            clang-${LLVM_VERSION} \
+            llvm-${LLVM_VERSION}-dev \
+            libclang-${LLVM_VERSION}-dev \
+            libpolly-${LLVM_VERSION}-dev \
             zlib1g-dev \
             libedit-dev \
             libzstd-dev \
@@ -92,8 +101,8 @@ jobs:
         run: |
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-            -DCMAKE_C_COMPILER=clang-${{ env.LLVM_VERSION }} \
-            -DCMAKE_CXX_COMPILER=clang++-${{ env.LLVM_VERSION }} \
+            -DCMAKE_C_COMPILER=clang-${LLVM_VERSION} \
+            -DCMAKE_CXX_COMPILER=clang++-${LLVM_VERSION} \
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
@@ -111,7 +120,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${{ env.LLVM_VERSION }} ${{ matrix.feature-args }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} ${{ matrix.feature-args }} \
             --baseline-platform linux-${{ matrix.arch }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
@@ -179,6 +188,8 @@ jobs:
     name: macOS ${{ matrix.arch }}
     needs: generate-enums
     runs-on: ${{ matrix.runner }}
+    env:
+      LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -203,8 +214,8 @@ jobs:
 
       - name: Install LLVM
         run: |
-          brew install llvm@${{ env.LLVM_VERSION }} zstd
-          LLVM_PREFIX="$(brew --prefix llvm@${{ env.LLVM_VERSION }})"
+          brew install llvm@${LLVM_VERSION} zstd
+          LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
@@ -320,6 +331,8 @@ jobs:
     needs:
       - generate-enums
     runs-on: ubuntu-24.04
+    env:
+      LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -346,10 +359,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            clang-${{ env.LLVM_VERSION }} \
-            lld-${{ env.LLVM_VERSION }} \
-            llvm-${{ env.LLVM_VERSION }} \
-            llvm-${{ env.LLVM_VERSION }}-tools \
+            clang-${LLVM_VERSION} \
+            lld-${LLVM_VERSION} \
+            llvm-${LLVM_VERSION} \
+            llvm-${LLVM_VERSION}-tools \
             curl \
             dpkg \
             python3 \
@@ -361,14 +374,14 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .deps
-          key: windows-cross-sdk-${{ env.LLVM_RELEASE }}-${{ matrix.arch }}-v2
+          key: windows-cross-sdk-${{ hashFiles('llvm-version.env') }}-${{ matrix.arch }}-v2
 
       - name: Setup Windows cross SDKs
         run: scripts/setup_windows_cross_sdk.sh ${{ matrix.arch }}
 
       - name: Build Windows tool
         run: |
-          CLANG_ENUMS_HOST_CLANG=clang++-${{ env.LLVM_VERSION }} \
+          CLANG_ENUMS_HOST_CLANG=clang++-${LLVM_VERSION} \
           SKIP_ENUM_GENERATION=ON \
             scripts/build_windows_cross.sh ${{ matrix.arch }}
 
@@ -376,7 +389,7 @@ jobs:
         run: |
           file ${{ matrix.build-dir }}/tool.exe
 
-          llvm-objdump-${{ env.LLVM_VERSION }} -p ${{ matrix.build-dir }}/tool.exe | tee imports.txt
+          llvm-objdump-${LLVM_VERSION} -p ${{ matrix.build-dir }}/tool.exe | tee imports.txt
 
           if grep -E 'DLL Name: .*(clang|LLVM|libc\+\+|libunwind|zstd|zlib|pthread).*\.dll' imports.txt; then
             echo "Windows tool imports non-system runtime DLLs"

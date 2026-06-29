@@ -6,9 +6,10 @@ if [[ $# -ne 2 ]]; then
   exit 1
 fi
 
-: "${LLVM_VERSION:?LLVM_VERSION is required}"
-
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/load_llvm_version.sh"
+load_llvm_version "${ROOT_DIR}/llvm-version.env"
+
 OUTPUT_ZIP="$2"
 if [[ "${OUTPUT_ZIP}" != /* ]]; then
   OUTPUT_ZIP="${ROOT_DIR}/${OUTPUT_ZIP}"

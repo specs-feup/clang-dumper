@@ -78,7 +78,7 @@ def get_clang_executable(llvm_dir: Path) -> Path:
     Get the path to clang++ from the LLVM directory.
     
     The LLVM directory is expected to be the cmake config dir,
-    e.g., /usr/lib/llvm-18/lib/cmake/llvm
+    e.g., /usr/lib/llvm-<version>/lib/cmake/llvm
     
     Args:
         llvm_dir: Path to the LLVM cmake directory.

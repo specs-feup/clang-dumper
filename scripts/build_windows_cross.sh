@@ -2,7 +2,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CLANG_VERSION="${CLANG_VERSION:-${LLVM_VERSION:-18}}"
+source "${ROOT_DIR}/scripts/load_llvm_version.sh"
+load_llvm_version "${ROOT_DIR}/llvm-version.env"
+
 CMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE:-Release}"
 SKIP_ENUM_GENERATION="${SKIP_ENUM_GENERATION:-OFF}"
 

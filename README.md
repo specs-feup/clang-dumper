@@ -16,14 +16,16 @@ executables are cross-compiled from Linux.
 **Python3 is required to build this project**
 
 ```sh
+source llvm-version.env
+
 # Required for all targets
-sudo apt install python3 clang-18 libclang-18-dev llvm-18-dev zlib1g-dev libxml2-dev
+sudo apt install python3 clang-${LLVM_VERSION} libclang-${LLVM_VERSION}-dev llvm-${LLVM_VERSION}-dev zlib1g-dev libxml2-dev
 
 # Required for building the stand-alone tool
-sudo apt install libpolly-18-dev libedit-dev libzstd-dev
+sudo apt install libpolly-${LLVM_VERSION}-dev libedit-dev libzstd-dev
 
 # Required for Linux-hosted Windows cross builds
-sudo apt install curl dpkg lld-18 llvm-18-tools rsync tar zstd
+sudo apt install curl dpkg lld-${LLVM_VERSION} llvm-${LLVM_VERSION}-tools rsync tar zstd
 ```
 
 ## Windows Cross Builds

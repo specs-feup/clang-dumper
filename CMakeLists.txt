@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CLANG_VERSION 18 CACHE STRING "LLVM/Clang major version to use")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/read_llvm_version.cmake")
+clang_dumper_load_llvm_version("${CMAKE_CURRENT_LIST_DIR}/llvm-version.env")
 set(LLVM_WINDOWS_ROOT "" CACHE PATH "Windows-target LLVM/Clang SDK root for cross-compilation")
 
 # CMake chooses compilers during project(), so default compiler discovery must
