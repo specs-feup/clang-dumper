@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from run_tests import normalize_system_source_blocks
+from run_tests import normalize_static_output, normalize_system_source_blocks
 
 
 def source_record(
@@ -131,6 +131,114 @@ class NormalizeSystemSourceBlocksTest(unittest.TestCase):
         normalized = normalize_system_source_blocks(system_record + "\n" + test_record)
         self.assertNotIn("SYSTEM_TEXT", normalized)
         self.assertIn("LOCAL_TEXT", normalized)
+
+
+class NormalizeUnsignedLongLongTest(unittest.TestCase):
+    def test_preserves_real_unsigned_long_long_builtin(self) -> None:
+        output = "\n".join(
+            [
+                "<BuiltinTypeData>",
+                "ADDR_001",
+                "BuiltinType",
+                "unsigned long long",
+                "NONE",
+                "0",
+                "0",
+                "0",
+                "nullptr_type",
+                "ULongLong",
+                "unsigned long long",
+                "<Id to Class Map>",
+                "ADDR_001",
+                "BuiltinType",
+                "<Visited Children>",
+                "ADDR_002",
+                "0",
+                "<VarDeclData>",
+                "ADDR_002",
+                "VarDecl",
+                "<TEST_DIR>/builtin_types.cpp",
+                "12",
+                "2",
+                "<TEST_DIR>/builtin_types.cpp",
+                "12",
+                "21",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "",
+                "unsignedLongLong",
+                "0",
+                "0",
+                "0",
+                "None",
+                "Default",
+                "ADDR_001",
+            ]
+        )
+
+        self.assertEqual(normalize_static_output(output), output)
+
+    def test_normalizes_external_unsigned_long_long_typedef_builtin(self) -> None:
+        output = "\n".join(
+            [
+                "<BuiltinTypeData>",
+                "ADDR_001",
+                "BuiltinType",
+                "unsigned long long",
+                "NONE",
+                "0",
+                "0",
+                "0",
+                "nullptr_type",
+                "ULongLong",
+                "unsigned long long",
+                "<Id to Class Map>",
+                "ADDR_001",
+                "BuiltinType",
+                "<Visited Children>",
+                "ADDR_002",
+                "0",
+                "<TypedefNameDeclData>",
+                "ADDR_002",
+                "TypedefDecl",
+                "<SYSTEM_INCLUDE>/stdint.h",
+                "27",
+                "1",
+                "<SYSTEM_INCLUDE>/stdint.h",
+                "27",
+                "20",
+                "0",
+                "1",
+                "0",
+                "0",
+                "1",
+                "0",
+                "0",
+                "0",
+                "",
+                "uint64_t",
+                "0",
+                "0",
+                "0",
+                "None",
+                "Default",
+                "ADDR_003",
+                "ADDR_001",
+            ]
+        )
+
+        normalized = normalize_static_output(output)
+
+        self.assertIn("\nunsigned long\n", normalized)
+        self.assertIn("\nULong\n", normalized)
+        self.assertNotIn("\nunsigned long long\n", normalized)
+        self.assertNotIn("\nULongLong\n", normalized)
 
 
 if __name__ == "__main__":

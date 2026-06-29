@@ -370,8 +370,6 @@ _DIAGNOSTIC_RE = re.compile(
     r"(?:[ \t]*\|[^\n]*\n)*",
     re.MULTILINE,
 )
-_UNSIGNED_LONG_LONG_LINE_RE = re.compile(r"^unsigned long long$", re.MULTILINE)
-_ULONG_LONG_KIND_RE = re.compile(r"^ULongLong$", re.MULTILINE)
 _INTERNAL_BUFFER_LINE_RE = re.compile(
     r"^(<(?:built-in|command line|scratch space)>)\n\d+\n(\d+)$",
     re.MULTILINE,
@@ -562,6 +560,78 @@ def is_external_source_path(path: Optional[str]) -> bool:
     return path.startswith(_EXTERNAL_SOURCE_PREFIXES) or path in _INTERNAL_SOURCE_PATHS
 
 
+def data_record_is_external_source(lines: list[str], data_start: int) -> bool:
+    """Return true when a data record was expanded from non-test source."""
+    source_info_start = data_start + 3
+    expansion = parse_source_range(lines, source_info_start)
+    if expansion is None:
+        return False
+    source_path, index = expansion
+    if index >= len(lines) or lines[index] not in {"0", "1"}:
+        return False
+
+    is_macro = lines[index] == "1"
+    index += 1
+    if is_macro:
+        spelling = parse_source_range(lines, index)
+        if spelling is None:
+            return False
+        source_path, index = spelling
+
+    if index >= len(lines) or lines[index] not in {"0", "1"}:
+        return False
+
+    is_system_header = lines[index] == "1"
+    is_test_source = source_path is not None and source_path.startswith(PATH_PLACEHOLDER)
+    return is_external_source_path(source_path) or (
+        source_path is not None and is_system_header and not is_test_source
+    )
+
+
+def next_data_record_start(lines: list[str], start: int) -> Optional[int]:
+    """Return the next output data-record marker after start."""
+    for index in range(start + 1, len(lines)):
+        line = lines[index]
+        if line.startswith("<") and line.endswith("Data>"):
+            return index
+    return None
+
+
+def normalize_unsigned_long_long_typedefs(output: str) -> str:
+    """
+    Normalize platform typedef spellings without collapsing real unsigned long long.
+
+    Some platform typedefs are backed by unsigned long long on one target and
+    unsigned long on another. Only the external typedef declaration shape is
+    normalized; standalone BuiltinTypeData records from test code keep their real
+    C/C++ type.
+    """
+    lines = output.split("\n")
+    changed = False
+
+    for index, line in enumerate(lines):
+        if (
+            line == "<BuiltinTypeData>"
+            and index + 10 < len(lines)
+            and lines[index + 2] == "BuiltinType"
+            and lines[index + 3] == "unsigned long long"
+            and lines[index + 9] == "ULongLong"
+            and lines[index + 10] == "unsigned long long"
+        ):
+            next_record = next_data_record_start(lines, index)
+            if (
+                next_record is not None
+                and lines[next_record] == "<TypedefNameDeclData>"
+                and data_record_is_external_source(lines, next_record)
+            ):
+                lines[index + 3] = "unsigned long"
+                lines[index + 9] = "ULong"
+                lines[index + 10] = "unsigned long"
+                changed = True
+
+    return "\n".join(lines) if changed else output
+
+
 def normalize_system_source_blocks(output: str) -> str:
     """Replace only source blocks whose extracted text comes from external headers."""
     lines = output.split("\n")
@@ -617,10 +687,8 @@ def normalize_static_output(output: str) -> str:
         output = normalize_plain_char_arrays(output)
     if "\nWIDE\n" in output or output.startswith("WIDE\n"):
         output = normalize_wide_string_literals(output)
-    if "unsigned long long" in output:
-        output = _UNSIGNED_LONG_LONG_LINE_RE.sub("unsigned long", output)
-    if "ULongLong" in output:
-        output = _ULONG_LONG_KIND_RE.sub("ULong", output)
+    if "unsigned long long" in output and "ULongLong" in output:
+        output = normalize_unsigned_long_long_typedefs(output)
     if "basic_string<char>" in output:
         output = output.replace("std::basic_string<char>", "std::string")
         output = output.replace("basic_string<char>", "string")
