@@ -103,6 +103,13 @@ def main():
     parser.add_argument("--platform", required=True, choices=["linux", "macos", "windows"])
     parser.add_argument("--staging", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--extra-include-dir",
+        action="append",
+        default=[],
+        type=Path,
+        help="Additional include root to copy into the archive and append to entrypoints.txt",
+    )
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
@@ -114,6 +121,14 @@ def main():
         return result.returncode
 
     include_dirs = parse_search_dirs(output)
+    for extra_dir in args.extra_include_dir:
+        extra_dir = extra_dir.resolve()
+        if not extra_dir.is_dir():
+            print(f"warning: extra include dir does not exist, skipping: {extra_dir}", file=sys.stderr)
+            continue
+        include_dirs.append(extra_dir)
+
+    include_dirs = [path for path in dict.fromkeys(include_dirs)]
     roots = minimal_roots(include_dirs)
     names = unique_names(roots, args.platform)
     entrypoints = make_entrypoints(include_dirs, roots, names)

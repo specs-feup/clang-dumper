@@ -66,11 +66,13 @@ jobs:
             feature-args: --enable-opencl --enable-cuda
             accelerator-packages: nvidia-cuda-toolkit ocl-icd-opencl-dev
             include-package: clang-dumper-linux-x64-includes.zip
+            expect-cuda-headers: true
           - arch: arm64
             runner: ubuntu-24.04-arm
             feature-args: ""
             accelerator-packages: ""
             include-package: clang-dumper-linux-arm64-includes.zip
+            expect-cuda-headers: false
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -88,6 +90,7 @@ jobs:
             clang-${LLVM_VERSION} \
             llvm-${LLVM_VERSION}-dev \
             libclang-${LLVM_VERSION}-dev \
+            libomp-${LLVM_VERSION}-dev \
             libpolly-${LLVM_VERSION}-dev \
             zlib1g-dev \
             libedit-dev \
@@ -160,6 +163,24 @@ jobs:
       - name: Package Linux includes
         run: scripts/package_linux_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
 
+      - name: Check Linux include package
+        run: |
+          python3 - <<'PY' "dist/${{ matrix.include-package }}" true "${{ matrix.expect-cuda-headers }}"
+          import sys, zipfile
+          archive_path, expect_openmp, expect_cuda = sys.argv[1], sys.argv[2] == "true", sys.argv[3] == "true"
+          with zipfile.ZipFile(archive_path) as archive:
+              names = archive.namelist()
+          checks = {
+              "omp.h": any(name.endswith("/omp.h") or name == "omp.h" for name in names),
+              "cuda_runtime.h": any(name.endswith("/cuda_runtime.h") or name == "cuda_runtime.h" for name in names),
+          }
+          if expect_openmp and not checks["omp.h"]:
+              raise SystemExit("include package is missing omp.h")
+          if expect_cuda and not checks["cuda_runtime.h"]:
+              raise SystemExit("include package is missing cuda_runtime.h")
+          print(checks)
+          PY
+
       - name: Upload tool
         uses: actions/upload-artifact@v7
         with:
@@ -196,11 +217,11 @@ jobs:
         include:
           - arch: x64
             runner: macos-15-intel
-            opencl-arg: --enable-opencl
+            feature-args: --enable-opencl
             include-package: clang-dumper-macos-x64-includes.zip
           - arch: arm64
             runner: macos-26
-            opencl-arg: ""
+            feature-args: ""
             include-package: clang-dumper-macos-arm64-includes.zip
     steps:
       - name: Checkout
@@ -214,10 +235,12 @@ jobs:
 
       - name: Install LLVM
         run: |
-          brew install llvm@${LLVM_VERSION} zstd
+          brew install llvm@${LLVM_VERSION} libomp zstd
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
+          LIBOMP_PREFIX="$(brew --prefix libomp)"
           CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
+          echo "LIBOMP_PREFIX=${LIBOMP_PREFIX}" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
           echo "CLANG_RESOURCE_DIR=${CLANG_RESOURCE_DIR}" >> "$GITHUB_ENV"
           echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
@@ -240,7 +263,7 @@ jobs:
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.opencl-arg }} \
+          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
             --baseline-platform macos-${{ matrix.arch }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
@@ -249,13 +272,15 @@ jobs:
             --extra-clang-arg="-nostdinc++" \
             --extra-clang-arg="-isystem" \
             --extra-clang-arg="${LLVM_PREFIX}/include/c++/v1" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LIBOMP_PREFIX}/include" \
             --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Test plugin
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.opencl-arg }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.feature-args }} \
             --baseline-platform macos-${{ matrix.arch }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
@@ -264,6 +289,8 @@ jobs:
             --extra-clang-arg="-nostdinc++" \
             --extra-clang-arg="-isystem" \
             --extra-clang-arg="${LLVM_PREFIX}/include/c++/v1" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LIBOMP_PREFIX}/include" \
             --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
 
       - name: Check tool runtime dependencies
@@ -283,6 +310,17 @@ jobs:
 
       - name: Package macOS includes
         run: scripts/package_macos_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
+      - name: Check macOS include package
+        run: |
+          python3 - <<'PY' "dist/${{ matrix.include-package }}"
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              names = archive.namelist()
+          if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
+              raise SystemExit("include package is missing omp.h")
+          print("omp.h found")
+          PY
 
       - name: Upload failed test outputs
         if: ${{ failure() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
@@ -403,6 +441,17 @@ jobs:
 
       - name: Package Windows includes
         run: scripts/package_windows_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
+      - name: Check Windows include package
+        run: |
+          python3 - <<'PY' "dist/${{ matrix.include-package }}"
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              names = archive.namelist()
+          if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
+              raise SystemExit("include package is missing omp.h")
+          print("omp.h found")
+          PY
 
       - name: Upload Windows tool
         uses: actions/upload-artifact@v7

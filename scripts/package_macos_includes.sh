@@ -23,8 +23,23 @@ case "$1" in
     ;;
 esac
 
+EXTRA_INCLUDE_ARGS=()
+add_extra_include_dir() {
+  local include_dir="$1"
+  if [[ -d "${include_dir}" ]]; then
+    EXTRA_INCLUDE_ARGS+=(--extra-include-dir "${include_dir}")
+  fi
+}
+
+if [[ -n "${LIBOMP_PREFIX:-}" ]]; then
+  add_extra_include_dir "${LIBOMP_PREFIX}/include"
+elif command -v brew >/dev/null 2>&1 && brew --prefix libomp >/dev/null 2>&1; then
+  add_extra_include_dir "$(brew --prefix libomp)/include"
+fi
+
 python3 "${ROOT_DIR}/scripts/package_includes.py" \
   --platform macos \
   --staging "${ROOT_DIR}/.deps/macos-includes-$1" \
   --output "${OUTPUT_ZIP}" \
+  "${EXTRA_INCLUDE_ARGS[@]}" \
   -- "${LLVM_PREFIX}/bin/clang++" -isysroot "${SDKROOT}" -E -x c++ - -v

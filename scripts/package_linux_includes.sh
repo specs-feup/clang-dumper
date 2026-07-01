@@ -23,8 +23,26 @@ case "$1" in
     ;;
 esac
 
+EXTRA_INCLUDE_ARGS=()
+add_extra_include_dir() {
+  local include_dir="$1"
+  if [[ -d "${include_dir}" ]]; then
+    EXTRA_INCLUDE_ARGS+=(--extra-include-dir "${include_dir}")
+  fi
+}
+
+while IFS= read -r include_dir; do
+  add_extra_include_dir "${include_dir}"
+done < <(find "/usr/lib/llvm-${LLVM_VERSION}" -path '*/include/omp.h' -printf '%h\n' 2>/dev/null | sort -u)
+
+add_extra_include_dir "/usr/local/cuda/include"
+if [[ -f /usr/include/cuda_runtime.h ]]; then
+  add_extra_include_dir "/usr/include"
+fi
+
 python3 "${ROOT_DIR}/scripts/package_includes.py" \
   --platform linux \
   --staging "${ROOT_DIR}/.deps/linux-includes-$1" \
   --output "${OUTPUT_ZIP}" \
+  "${EXTRA_INCLUDE_ARGS[@]}" \
   -- "clang++-${LLVM_VERSION}" -E -x c++ - -v
