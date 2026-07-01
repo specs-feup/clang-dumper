@@ -595,6 +595,73 @@ jobs:
             python3 -m zipfile -c ../../release-assets/clang-dumper-generated-enums.zip .
           )
 
+      - name: Generate release manifest
+        env:
+          LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          assets_dir = Path("release-assets")
+          manifest_name = "clang-dumper-release-manifest.json"
+          llvm_major = int(os.environ["LLVM_VERSION"])
+
+          patterns = [
+              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-plugin[.]so$"), "plugin"),
+              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-includes[.]zip$"), "includes"),
+              (re.compile(r"^clang-dumper-(linux|macos)-(.+)$"), "tool"),
+              (re.compile(r"^clang-dumper-windows-(.+?)[.]exe$"), "tool"),
+              (re.compile(r"^clang-dumper-windows-(.+?)-includes[.]zip$"), "includes"),
+          ]
+
+          def classify(filename):
+              if filename == "clang-dumper-generated-enums.zip":
+                  return "any", "any", "generated-enums"
+
+              for pattern, kind in patterns:
+                  match = pattern.match(filename)
+                  if not match:
+                      continue
+
+                  if filename.startswith("clang-dumper-windows-"):
+                      return "windows", match.group(1), kind
+
+                  return match.group(1), match.group(2), kind
+
+              raise ValueError(f"Unrecognized release asset filename: {filename}")
+
+          entries = []
+          for asset in sorted(assets_dir.iterdir()):
+              if not asset.is_file() or asset.name == manifest_name:
+                  continue
+
+              platform, arch, kind = classify(asset.name)
+              digest = hashlib.sha256(asset.read_bytes()).hexdigest()
+              entries.append(
+                  {
+                      "filename": asset.name,
+                      "platform": platform,
+                      "arch": arch,
+                      "kind": kind,
+                      "llvm_major": llvm_major,
+                      "sha256": digest,
+                  }
+              )
+
+          manifest = {
+              "schema_version": 1,
+              "assets": entries,
+          }
+          (assets_dir / manifest_name).write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
