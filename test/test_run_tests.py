@@ -6,7 +6,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from run_tests import normalize_captured_output, normalize_static_output, normalize_system_source_blocks
+from run_tests import (
+    normalize_captured_output,
+    normalize_static_output,
+    normalize_system_source_blocks,
+    unresolved_node_ids,
+)
 
 
 def source_record(
@@ -257,6 +262,41 @@ class NormalizeUnsignedLongLongTest(unittest.TestCase):
         self.assertIn("\nULong\n", normalized)
         self.assertNotIn("\nunsigned long long\n", normalized)
         self.assertNotIn("\nULongLong\n", normalized)
+
+
+class NodeClosureTest(unittest.TestCase):
+    def test_accepts_resolved_node_ids(self) -> None:
+        output = "\n".join(
+            [
+                "<TypedefNameDeclData>",
+                "ADDR_001",
+                "ADDR_002",
+                "<Id to Class Map>",
+                "ADDR_001",
+                "TypedefDecl",
+                "<Id to Class Map>",
+                "ADDR_002",
+                "BuiltinType",
+            ]
+        )
+
+        self.assertEqual(unresolved_node_ids(output), [])
+
+    def test_reports_unresolved_node_ids(self) -> None:
+        output = "\n".join(
+            [
+                "<TypedefNameDeclData>",
+                "ADDR_001",
+                "ADDR_002",
+                "<Top Level Attributes>",
+                "ADDR_003",
+                "<Id to Class Map>",
+                "ADDR_001",
+                "TypedefDecl",
+            ]
+        )
+
+        self.assertEqual(unresolved_node_ids(output), ["ADDR_002", "ADDR_003"])
 
 
 if __name__ == "__main__":

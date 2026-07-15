@@ -49,6 +49,9 @@ public:
   explicit ClangAstDumper(ASTContext *Context, int id,
                           int systemHeaderThreashold);
 
+  // Direct visits serialize referenced dependencies and must preserve graph
+  // closure. System-header depth is bounded by the addChild() entry points
+  // that perform structural descent.
   void VisitTypeTop(const Type *T);
   void VisitTypeTop(const QualType &T);
   void VisitStmtTop(const Stmt *Node);

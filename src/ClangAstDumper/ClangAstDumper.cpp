@@ -31,10 +31,6 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
     return;
   }
 
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
   // Check if QualType is the same as the underlying type
   if ((void *)T.getTypePtr() == T.getAsOpaquePtr()) {
 #ifdef VISIT_CHECK
@@ -80,10 +76,6 @@ void ClangAstDumper::VisitTypeTop(const Type *T) {
     return;
   }
 
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
 #ifdef VISIT_CHECK
   clava::dump(TOP_VISIT_START);
   clava::dump(clava::getId(T, id));
@@ -99,10 +91,6 @@ void ClangAstDumper::VisitTypeTop(const Type *T) {
 
 void ClangAstDumper::VisitStmtTop(const Stmt *Node) {
   if (Node == nullptr) {
-    return;
-  }
-
-  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -124,10 +112,6 @@ void ClangAstDumper::VisitDeclTop(const Decl *Node) {
     return;
   }
 
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
 #ifdef VISIT_CHECK
   clava::dump(TOP_VISIT_START);
   clava::dump(clava::getId(Node, id));
@@ -143,10 +127,6 @@ void ClangAstDumper::VisitDeclTop(const Decl *Node) {
 
 void ClangAstDumper::VisitAttrTop(const Attr *Node) {
   if (Node == nullptr) {
-    return;
-  }
-
-  if (isPastSystemHeaderThreshold()) {
     return;
   }
 

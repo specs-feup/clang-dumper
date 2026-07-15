@@ -39,6 +39,8 @@ class TestConfig:
     id: int = 0
     flags: list[str] = field(default_factory=list)
     requires: set[str] = field(default_factory=set)
+    validate_node_closure: bool = False
+    forbidden_exact_lines: set[str] = field(default_factory=set)
 
 
 # Helper to create simple test configs
@@ -46,18 +48,25 @@ def T(
     id: int = 0,
     flags: Optional[list[str]] = None,
     requires: Optional[set[str]] = None,
+    validate_node_closure: bool = False,
+    forbidden_exact_lines: Optional[set[str]] = None,
 ) -> TestConfig:
     """Shorthand for creating TestConfig instances."""
     return TestConfig(
         id=id,
         flags=flags or [],
         requires=requires or set(),
+        validate_node_closure=validate_node_closure,
+        forbidden_exact_lines=forbidden_exact_lines or set(),
     )
 
 
 # Test registry with per-test configuration
 # Every test file MUST have an entry here - no default fallback to catch typos
 # Use T() helper: T(id, flags=[...], requires={...})
+TEST_INPUTS_DIR = Path(__file__).resolve().parent / "inputs"
+
+
 TEST_REGISTRY: dict[str, TestConfig] = {
     "simple_function.cpp": T(42),
     "class_decl.cpp": T(17),
@@ -194,6 +203,11 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "sorted_id.h": T(flags=["-x", "c++"]),
     "streamAdd.cu": T(requires={"cuda"}),
     "strings.cpp": T(),
+    "system_header_threshold.cpp": T(
+        flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],
+        validate_node_closure=True,
+        forbidden_exact_lines={"threshold_nested"},
+    ),
     "struct.c": T(),
     "struct.cpp": T(),
     "struct2.c": T(),
@@ -926,6 +940,19 @@ def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[
     return errors
 
 
+def unresolved_node_ids(output: str) -> list[str]:
+    """Return normalized addresses that are used but have no node definition."""
+    lines = output.splitlines()
+    used_ids = set(re.findall(r"\bADDR_\d+\b", output))
+    defined_ids = {
+        lines[index + 1]
+        for index, line in enumerate(lines[:-1])
+        if line == "<Id to Class Map>"
+        and re.fullmatch(r"ADDR_\d+", lines[index + 1])
+    }
+    return sorted(used_ids - defined_ids)
+
+
 def run_tool_and_normalize(
     mode: Mode,
     path: str,
@@ -1130,6 +1157,20 @@ def run_single_test(
     if consistency_errors:
         return TestStatus.FAIL, "Address consistency errors:\n" + "\n".join(
             consistency_errors
+        )
+
+    if config.validate_node_closure:
+        unresolved_ids = unresolved_node_ids(normalized_output)
+        if unresolved_ids:
+            return TestStatus.FAIL, (
+                "Unresolved node IDs: " + ", ".join(unresolved_ids)
+            )
+
+    output_lines = set(normalized_output.splitlines())
+    present_forbidden_lines = sorted(config.forbidden_exact_lines & output_lines)
+    if present_forbidden_lines:
+        return TestStatus.FAIL, (
+            "Forbidden output lines: " + ", ".join(present_forbidden_lines)
         )
 
     if missing_expected:
