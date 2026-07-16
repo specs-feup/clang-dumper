@@ -41,6 +41,7 @@ class TestConfig:
     requires: set[str] = field(default_factory=set)
     validate_node_closure: bool = False
     forbidden_exact_lines: set[str] = field(default_factory=set)
+    system_header_threshold: Optional[int] = None
 
 
 # Helper to create simple test configs
@@ -50,6 +51,7 @@ def T(
     requires: Optional[set[str]] = None,
     validate_node_closure: bool = False,
     forbidden_exact_lines: Optional[set[str]] = None,
+    system_header_threshold: Optional[int] = None,
 ) -> TestConfig:
     """Shorthand for creating TestConfig instances."""
     return TestConfig(
@@ -58,6 +60,7 @@ def T(
         requires=requires or set(),
         validate_node_closure=validate_node_closure,
         forbidden_exact_lines=forbidden_exact_lines or set(),
+        system_header_threshold=system_header_threshold,
     )
 
 
@@ -207,6 +210,11 @@ TEST_REGISTRY: dict[str, TestConfig] = {
         flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],
         validate_node_closure=True,
         forbidden_exact_lines={"threshold_nested"},
+    ),
+    "system_header_threshold_option.cpp": T(
+        flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],
+        validate_node_closure=True,
+        system_header_threshold=-1,
     ),
     "struct.c": T(),
     "struct.cpp": T(),
@@ -1125,7 +1133,9 @@ def run_single_test(
         inputs_dir_str,
         clang_path,
         flags,
-        system_header_threshold,
+        config.system_header_threshold
+        if config.system_header_threshold is not None
+        else system_header_threshold,
     )
 
     if raw_output_dir is not None:
@@ -1299,9 +1309,9 @@ def main():
 
     # Resolve paths
     if args.test_dir:
-        test_dir = Path(args.test_dir)
+        test_dir = Path(args.test_dir).resolve()
     else:
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).resolve().parent
 
     inputs_dir = test_dir / "inputs"
     expected_dir = test_dir / "expected"

@@ -22,9 +22,6 @@ public:
     for (const auto &Arg : args) {
       if (Arg.find("-file-id=") == 0) {
         DumpResources::setRunId(std::stoi(Arg.substr(strlen("-file-id="))));
-      } else if (Arg.find("-system-threshold=") == 0) {
-        DumpResources::setSystemHeaderThreshold(
-            std::stoi(Arg.substr(strlen("-system-threshold="))));
       } else if (Arg.find("-system-header-threshold=") == 0) {
         DumpResources::setSystemHeaderThreshold(
             std::stoi(Arg.substr(strlen("-system-header-threshold="))));
