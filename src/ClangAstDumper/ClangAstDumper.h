@@ -27,7 +27,7 @@ private:
   ASTContext *Context;
   int id;
 
-  int systemHeaderThreshold = 2;
+  int systemHeaderThreshold = 0; // Overridden by the constructor.
   int currentSystemHeaderLevel = 0;
 
   std::set<const void *> seenTypes;
