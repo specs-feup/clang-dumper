@@ -970,7 +970,7 @@ def run_tool_and_normalize(
     inputs_dir_str: str,
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
-    system_header_threshold: Optional[int] = 0,
+    system_header_threshold: Optional[int] = 1,
 ) -> tuple[int, str, str, str, dict[str, list[str]]]:
     """
     Run the clang-dumper tool or plugin and normalize captured stderr.
@@ -983,6 +983,9 @@ def run_tool_and_normalize(
         inputs_dir_str: Pre-resolved inputs directory path for normalization
         clang_path: Path to clang executable (required for plugin mode)
         extra_flags: Additional compiler flags to pass
+        system_header_threshold: Positive system-header expansion threshold.
+            Level N is expanded and its immediate children are serialized as
+            boundary leaves. A non-positive value disables the threshold.
 
     Returns:
         tuple: (return_code, stdout, raw_stderr, normalized_stderr, address_mapping)
@@ -1080,7 +1083,7 @@ def run_single_test(
     enabled_features: set[str],
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
-    system_header_threshold: Optional[int] = 0,
+    system_header_threshold: Optional[int] = 1,
 ) -> tuple[str, str]:
     """
     Run a single test case.
@@ -1271,10 +1274,12 @@ def main():
     parser.add_argument(
         "--system-header-threshold",
         type=int,
-        default=0,
+        default=1,
         help=(
-            "Maximum system-header traversal depth for test output. "
-            "Use -1 for unlimited traversal."
+            "Positive system-header expansion threshold for test output "
+            "(default: 1). Level N is expanded and its immediate children "
+            "are serialized as boundary leaves; use 0 or a negative value "
+            "for unlimited traversal."
         ),
     )
     parser.add_argument(

@@ -282,6 +282,10 @@ void ClangAstDumper::emptyChildren(const void *pointer) {
 }
 
 bool ClangAstDumper::isPastSystemHeaderThreshold() const {
+  // The level is incremented while visiting a system-header node, and this
+  // predicate is checked at that node's outgoing child edges. Consequently,
+  // a positive threshold N serializes the node at level N + 1 but suppresses
+  // its children. Non-positive values disable structural thresholding.
   return systemHeaderThreshold > 0 &&
          currentSystemHeaderLevel > systemHeaderThreshold;
 }

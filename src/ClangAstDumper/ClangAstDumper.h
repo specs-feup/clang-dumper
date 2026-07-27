@@ -144,7 +144,8 @@ private:
   void visitChildren(clava::AttrNode attrNode, const Attr *A);
   void emptyChildren(const void *pointer);
 
-  // System header parsing threshold
+  // A positive N expands through system-header level N and serializes its
+  // immediate children as boundary leaves. Non-positive values are unlimited.
   bool isPastSystemHeaderThreshold() const;
 
   // Children visitors for Decls
