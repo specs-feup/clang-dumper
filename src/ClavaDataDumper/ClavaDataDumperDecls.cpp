@@ -401,7 +401,7 @@ void clava::ClavaDataDumper::DumpCXXMethodDeclData(const CXXMethodDecl *D) {
 
     if (D->isInstance()) {
         clava::dump(clava::getId(D->getThisType(), id));
-        clava::dump(clava::getId(D->getThisType()->getPointeeType(), id));
+        clava::dump(clava::getId(D->getFunctionObjectParameterType(), id));
     } else {
         clava::dump(clava::getId((const Type *)nullptr, id));
         clava::dump(clava::getId((const Type *)nullptr, id));

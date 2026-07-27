@@ -27,7 +27,7 @@ private:
   ASTContext *Context;
   int id;
 
-  int systemHeaderThreshold = 0;
+  int systemHeaderThreshold = 2;
   int currentSystemHeaderLevel = 0;
 
   std::set<const void *> seenTypes;

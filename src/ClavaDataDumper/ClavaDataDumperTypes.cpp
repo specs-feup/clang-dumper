@@ -8,9 +8,6 @@
 
 #include "llvm/ADT/STLForwardCompat.h"
 
-#include <bitset>
-#include <limits>
-
 const std::map<const std::string, clava::TypeNode> clava::TYPE_DATA_MAP = {
     {"BuiltinType", clava::TypeNode::BUILTIN_TYPE},
     {"PointerType", clava::TypeNode::POINTER_TYPE},

@@ -72,6 +72,7 @@ TEST_INPUTS_DIR = Path(__file__).resolve().parent / "inputs"
 
 TEST_REGISTRY: dict[str, TestConfig] = {
     "simple_function.cpp": T(42),
+    "source_locations.cpp": T(),
     "class_decl.cpp": T(17),
     "expressions.cpp": T(73),
     "2mm.c": T(requires={"posix"}),

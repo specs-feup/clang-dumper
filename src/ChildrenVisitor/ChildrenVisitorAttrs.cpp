@@ -4,7 +4,6 @@
 
 #include "../Clang/ClangNodes.h"
 #include "../ClangAstDumper/ClangAstDumper.h"
-#include "../Clava/ClavaDecl.h"
 
 #include <string>
 
@@ -48,6 +47,8 @@ void ClangAstDumper::VisitAlignedAttrChildren(
     // No hierarchy
 
     if (A->isAlignmentExpr()) {
+        // TODO: This required dependency must bypass structural thresholding
+        // until https://github.com/specs-feup/clang-dumper/issues/21 is fixed.
         const Expr *alignmentExpr = A->getAlignmentExpr();
         VisitStmtTop(alignmentExpr);
         children.push_back(clava::getId(alignmentExpr, id));

@@ -16,16 +16,22 @@ using namespace clang;
 
 namespace {
 
-SourceLocation removeTokenSplitExpansions(const SourceManager &SM,
-                                          SourceLocation loc) {
+SourceLocation resolveTokenSplitLocation(const SourceManager &SM,
+                                         SourceLocation loc) {
     while (loc.isMacroID()) {
+        unsigned offset = SM.getDecomposedLoc(loc).second;
         CharSourceRange expansionRange = SM.getImmediateExpansionRange(loc);
-        // Clang models split tokens as character-range expansions.
+
+        // Clang represents a split token (for example the two '>' characters
+        // in a nested template-id) with macro locations even though no C/C++
+        // macro was involved. Unlike real macro expansions, these mappings use
+        // a character range. Unwrap them while preserving the character offset.
         if (expansionRange.isTokenRange()) {
             break;
         }
 
-        SourceLocation expansionLoc = expansionRange.getBegin();
+        SourceLocation expansionLoc =
+            expansionRange.getBegin().getLocWithOffset(offset);
         if (expansionLoc.isInvalid() || expansionLoc == loc) {
             break;
         }
@@ -117,12 +123,16 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
 void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
                            SourceLocation end) {
     const SourceManager &SM = Context->getSourceManager();
-    begin = removeTokenSplitExpansions(SM, begin);
-    end = removeTokenSplitExpansions(SM, end);
+    begin = resolveTokenSplitLocation(SM, begin);
+    end = resolveTokenSplitLocation(SM, end);
 
-    // Original source range
-    clava::dumpSourceRange(Context, SM.getExpansionLoc(begin),
-                           SM.getExpansionLoc(end));
+    // Resolve the complete range into the source where it was expanded. This
+    // keeps function-like macro call boundaries and maps token splits back to
+    // the corresponding characters in the original file.
+    CharSourceRange expansionRange =
+        SM.getExpansionRange(SourceRange(begin, end));
+    clava::dumpSourceRange(Context, expansionRange.getBegin(),
+                           expansionRange.getEnd());
 
     // ISMACRO: Disable this when updating
     // If it is a macro

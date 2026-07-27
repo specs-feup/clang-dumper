@@ -6,7 +6,6 @@
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
-#include "clang/Lex/Lexer.h"
 #include "llvm/ADT/STLForwardCompat.h"
 
 #include <map>
