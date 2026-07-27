@@ -307,6 +307,11 @@ HEADERS: list[HeaderConfig] = [
                 class_name="PredefinedExpr",
             ),
             EnumConfig(
+                name="CharacterLiteralKind",
+                cpp_var_name="CHARACTER_LITERAL_KIND",
+                mapper=to_upper(),
+            ),
+            EnumConfig(
                 name="StringLiteralKind",
                 cpp_var_name="STRING_KIND",
                 mapper=to_upper(),

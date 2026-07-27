@@ -43,6 +43,7 @@ extern const std::string LINKAGE_LANGUAGE[];
 extern const std::string LAMBDA_CAPTURE_DEFAULT[];
 extern const std::string LAMBDA_CAPTURE_KIND[];
 extern const std::string PREDEFINED_ID_TYPE[];
+extern const std::string CHARACTER_LITERAL_KIND[];
 extern const std::string STRING_KIND[];
 extern const std::string TEMPLATE_NAME_KIND[];
 extern const std::string DESIGNATOR_KIND[];
