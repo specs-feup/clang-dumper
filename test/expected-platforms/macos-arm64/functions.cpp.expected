@@ -348,24 +348,116 @@ ADDR_015
 FunctionProtoType
 <Top Level Types>
 ADDR_015
+<Visited Children>
+ADDR_016
+0
+<FormatAttrData>
+ADDR_016
+FormatAttr
+<SYSTEM_INCLUDE>/_printf.h
+34
+43
+<SYSTEM_INCLUDE>/_printf.h
+34
+60
+1
+<SYSTEM_INCLUDE>/sys/cdefs.h
+430
+17
+<SYSTEM_INCLUDE>/sys/cdefs.h
+430
+60
+1
+Format
+0
+0
+0
+0
+printf
+1
+2
+<Id to Class Map>
+ADDR_016
+FormatAttr
 <Top Level Attributes>
 ADDR_016
+<Visited Children>
+ADDR_017
+0
+<AttributeData>
+ADDR_017
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+0
+0
+0
+<Id to Class Map>
+ADDR_017
+BuiltinAttr
 <Top Level Attributes>
 ADDR_017
 <Top Level Types>
 ADDR_015
+<Top Level Types>
+ADDR_014
 <Visited Children>
 ADDR_018
 0
-<FunctionDeclData>
+<ParmVarDeclData>
 ADDR_018
+ParmVarDecl
+<SYSTEM_INCLUDE>/_printf.h
+34
+13
+<SYSTEM_INCLUDE>/_printf.h
+34
+24
+0
+1
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_014
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_018
+ParmVarDecl
+<Visited Children>
+ADDR_019
+1
+ADDR_018
+<FunctionDeclData>
+ADDR_019
 FunctionDecl
 <SYSTEM_INCLUDE>/_printf.h
 34
 1
 <SYSTEM_INCLUDE>/_printf.h
 34
-43
+60
 1
 <SYSTEM_INCLUDE>/_printf.h
 34
@@ -400,17 +492,17 @@ None
 0
 0
 nullptr_decl
-ADDR_018
+ADDR_019
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_018
+ADDR_019
 FunctionDecl
 <Visited Children>
-ADDR_019
+ADDR_020
 0
 <DeclRefExprData>
-ADDR_019
+ADDR_020
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 5
@@ -424,15 +516,15 @@ ADDR_015
 0
 
 0
-ADDR_018
-<Id to Class Map>
 ADDR_019
+<Id to Class Map>
+ADDR_020
 DeclRefExpr
 <Visited Children>
-ADDR_020
+ADDR_021
 0
 <PointerTypeData>
-ADDR_020
+ADDR_021
 PointerType
 int (*)(const char *, ...)
 NONE
@@ -442,16 +534,16 @@ NONE
 nullptr_type
 ADDR_015
 <Id to Class Map>
-ADDR_020
+ADDR_021
 PointerType
 <Top Level Types>
-ADDR_020
+ADDR_021
 <Visited Children>
-ADDR_021
+ADDR_022
 1
-ADDR_019
+ADDR_020
 <ExprData>
-ADDR_021
+ADDR_022
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 5
@@ -459,18 +551,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_020
+ADDR_021
 0
 0
 0
 <Id to Class Map>
-ADDR_021
+ADDR_022
 ImplicitCastExpr
 <Visited Children>
-ADDR_022
+ADDR_023
 0
 <ConstantArrayTypeData>
-ADDR_022
+ADDR_023
 ConstantArrayType
 const char[18]
 NONE
@@ -483,15 +575,15 @@ Normal
 ADDR_013
 18
 <Id to Class Map>
-ADDR_022
+ADDR_023
 ConstantArrayType
 <Top Level Types>
-ADDR_022
-<Visited Children>
 ADDR_023
+<Visited Children>
+ADDR_024
 0
 <StringLiteralData>
-ADDR_023
+ADDR_024
 StringLiteral
 <TEST_DIR>/functions.cpp
 5
@@ -499,7 +591,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_022
+ADDR_023
 1
 0
 0
@@ -528,16 +620,16 @@ ORDINARY
 97
 10
 <Id to Class Map>
-ADDR_023
+ADDR_024
 StringLiteral
 <Top Level Types>
 ADDR_014
 <Visited Children>
-ADDR_024
+ADDR_025
 1
-ADDR_023
-<ExprData>
 ADDR_024
+<ExprData>
+ADDR_025
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 5
@@ -550,17 +642,17 @@ ADDR_014
 0
 0
 <Id to Class Map>
-ADDR_024
+ADDR_025
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_025
+ADDR_026
 2
-ADDR_021
-ADDR_024
-<CallExprData>
+ADDR_022
 ADDR_025
+<CallExprData>
+ADDR_026
 CallExpr
 <TEST_DIR>/functions.cpp
 5
@@ -574,17 +666,17 @@ ADDR_011
 0
 0
 0
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_025
+ADDR_026
 CallExpr
 <Top Level Types>
 ADDR_015
 <Visited Children>
-ADDR_026
+ADDR_027
 0
 <DeclRefExprData>
-ADDR_026
+ADDR_027
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 6
@@ -598,18 +690,18 @@ ADDR_015
 0
 
 0
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_026
+ADDR_027
 DeclRefExpr
 <Top Level Types>
-ADDR_020
+ADDR_021
 <Visited Children>
-ADDR_027
+ADDR_028
 1
-ADDR_026
-<ExprData>
 ADDR_027
+<ExprData>
+ADDR_028
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -617,18 +709,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_020
+ADDR_021
 0
 0
 0
 <Id to Class Map>
-ADDR_027
+ADDR_028
 ImplicitCastExpr
 <Visited Children>
-ADDR_028
+ADDR_029
 0
 <ConstantArrayTypeData>
-ADDR_028
+ADDR_029
 ConstantArrayType
 const char[13]
 NONE
@@ -641,15 +733,15 @@ Normal
 ADDR_013
 13
 <Id to Class Map>
-ADDR_028
+ADDR_029
 ConstantArrayType
 <Top Level Types>
-ADDR_028
-<Visited Children>
 ADDR_029
+<Visited Children>
+ADDR_030
 0
 <StringLiteralData>
-ADDR_029
+ADDR_030
 StringLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -657,7 +749,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_028
+ADDR_029
 1
 0
 0
@@ -681,16 +773,16 @@ ORDINARY
 102
 10
 <Id to Class Map>
-ADDR_029
+ADDR_030
 StringLiteral
 <Top Level Types>
 ADDR_014
 <Visited Children>
-ADDR_030
+ADDR_031
 1
-ADDR_029
-<ExprData>
 ADDR_030
+<ExprData>
+ADDR_031
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -703,15 +795,15 @@ ADDR_014
 0
 0
 <Id to Class Map>
-ADDR_030
+ADDR_031
 ImplicitCastExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_031
+ADDR_032
 0
 <DeclRefExprData>
-ADDR_031
+ADDR_032
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 6
@@ -727,16 +819,16 @@ ADDR_008
 0
 ADDR_010
 <Id to Class Map>
-ADDR_031
+ADDR_032
 DeclRefExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_032
+ADDR_033
 1
-ADDR_031
-<ExprData>
 ADDR_032
+<ExprData>
+ADDR_033
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -749,15 +841,15 @@ ADDR_008
 0
 0
 <Id to Class Map>
-ADDR_032
+ADDR_033
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_033
+ADDR_034
 0
 <IntegerLiteralData>
-ADDR_033
+ADDR_034
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -774,17 +866,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_033
+ADDR_034
 IntegerLiteral
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_034
+ADDR_035
 2
-ADDR_032
 ADDR_033
-<ExprData>
 ADDR_034
+<ExprData>
+ADDR_035
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 6
@@ -799,13 +891,13 @@ ADDR_005
 0
 0
 <Id to Class Map>
-ADDR_034
+ADDR_035
 ArraySubscriptExpr
 <Visited Children>
-ADDR_035
+ADDR_036
 0
 <PointerTypeData>
-ADDR_035
+ADDR_036
 PointerType
 const double *
 NONE
@@ -815,16 +907,16 @@ NONE
 nullptr_type
 ADDR_004
 <Id to Class Map>
-ADDR_035
+ADDR_036
 PointerType
 <Top Level Types>
-ADDR_035
+ADDR_036
 <Visited Children>
-ADDR_036
+ADDR_037
 1
-ADDR_034
+ADDR_035
 <ExprData>
-ADDR_036
+ADDR_037
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -834,20 +926,20 @@ ImplicitCastExpr
 29
 0
 0
-ADDR_035
+ADDR_036
 0
 0
 0
 <Id to Class Map>
-ADDR_036
+ADDR_037
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_037
+ADDR_038
 0
 <IntegerLiteralData>
-ADDR_037
+ADDR_038
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -864,17 +956,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_037
+ADDR_038
 IntegerLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_038
+ADDR_039
 2
-ADDR_036
 ADDR_037
-<ExprData>
 ADDR_038
+<ExprData>
+ADDR_039
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 6
@@ -889,16 +981,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_038
+ADDR_039
 ArraySubscriptExpr
 <Top Level Types>
 ADDR_003
 <Visited Children>
-ADDR_039
+ADDR_040
 1
-ADDR_038
-<ExprData>
 ADDR_039
+<ExprData>
+ADDR_040
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -913,15 +1005,15 @@ ADDR_003
 0
 0
 <Id to Class Map>
-ADDR_039
+ADDR_040
 ImplicitCastExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_040
+ADDR_041
 0
 <DeclRefExprData>
-ADDR_040
+ADDR_041
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 6
@@ -937,16 +1029,16 @@ ADDR_008
 0
 ADDR_010
 <Id to Class Map>
-ADDR_040
+ADDR_041
 DeclRefExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_041
+ADDR_042
 1
-ADDR_040
-<ExprData>
 ADDR_041
+<ExprData>
+ADDR_042
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -959,15 +1051,15 @@ ADDR_008
 0
 0
 <Id to Class Map>
-ADDR_041
+ADDR_042
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_042
+ADDR_043
 0
 <IntegerLiteralData>
-ADDR_042
+ADDR_043
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -984,17 +1076,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_042
+ADDR_043
 IntegerLiteral
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_043
+ADDR_044
 2
-ADDR_041
 ADDR_042
-<ExprData>
 ADDR_043
+<ExprData>
+ADDR_044
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1009,16 +1101,16 @@ ADDR_005
 0
 0
 <Id to Class Map>
-ADDR_043
+ADDR_044
 ArraySubscriptExpr
 <Top Level Types>
-ADDR_035
+ADDR_036
 <Visited Children>
-ADDR_044
+ADDR_045
 1
-ADDR_043
-<ExprData>
 ADDR_044
+<ExprData>
+ADDR_045
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1028,20 +1120,20 @@ ImplicitCastExpr
 38
 0
 0
-ADDR_035
+ADDR_036
 0
 0
 0
 <Id to Class Map>
-ADDR_044
+ADDR_045
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_045
+ADDR_046
 0
 <IntegerLiteralData>
-ADDR_045
+ADDR_046
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -1058,17 +1150,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 1
 <Id to Class Map>
-ADDR_045
+ADDR_046
 IntegerLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_046
+ADDR_047
 2
-ADDR_044
 ADDR_045
-<ExprData>
 ADDR_046
+<ExprData>
+ADDR_047
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1083,16 +1175,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_046
+ADDR_047
 ArraySubscriptExpr
 <Top Level Types>
 ADDR_003
 <Visited Children>
-ADDR_047
+ADDR_048
 1
-ADDR_046
-<ExprData>
 ADDR_047
+<ExprData>
+ADDR_048
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1107,15 +1199,15 @@ ADDR_003
 0
 0
 <Id to Class Map>
-ADDR_047
+ADDR_048
 ImplicitCastExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_048
+ADDR_049
 0
 <DeclRefExprData>
-ADDR_048
+ADDR_049
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1131,16 +1223,16 @@ ADDR_008
 0
 ADDR_010
 <Id to Class Map>
-ADDR_048
+ADDR_049
 DeclRefExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_049
+ADDR_050
 1
-ADDR_048
-<ExprData>
 ADDR_049
+<ExprData>
+ADDR_050
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1153,15 +1245,15 @@ ADDR_008
 0
 0
 <Id to Class Map>
-ADDR_049
+ADDR_050
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_050
+ADDR_051
 0
 <IntegerLiteralData>
-ADDR_050
+ADDR_051
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -1178,17 +1270,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_050
+ADDR_051
 IntegerLiteral
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_051
+ADDR_052
 2
-ADDR_049
 ADDR_050
-<ExprData>
 ADDR_051
+<ExprData>
+ADDR_052
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1203,16 +1295,16 @@ ADDR_005
 0
 0
 <Id to Class Map>
-ADDR_051
+ADDR_052
 ArraySubscriptExpr
 <Top Level Types>
-ADDR_035
+ADDR_036
 <Visited Children>
-ADDR_052
+ADDR_053
 1
-ADDR_051
-<ExprData>
 ADDR_052
+<ExprData>
+ADDR_053
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1222,20 +1314,20 @@ ImplicitCastExpr
 47
 0
 0
-ADDR_035
+ADDR_036
 0
 0
 0
 <Id to Class Map>
-ADDR_052
+ADDR_053
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_053
+ADDR_054
 0
 <IntegerLiteralData>
-ADDR_053
+ADDR_054
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 6
@@ -1252,17 +1344,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 2
 <Id to Class Map>
-ADDR_053
+ADDR_054
 IntegerLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_054
+ADDR_055
 2
-ADDR_052
 ADDR_053
-<ExprData>
 ADDR_054
+<ExprData>
+ADDR_055
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1277,16 +1369,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_054
+ADDR_055
 ArraySubscriptExpr
 <Top Level Types>
 ADDR_003
 <Visited Children>
-ADDR_055
+ADDR_056
 1
-ADDR_054
-<ExprData>
 ADDR_055
+<ExprData>
+ADDR_056
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1301,20 +1393,20 @@ ADDR_003
 0
 0
 <Id to Class Map>
-ADDR_055
+ADDR_056
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_056
+ADDR_057
 5
-ADDR_027
-ADDR_030
-ADDR_039
-ADDR_047
-ADDR_055
-<CallExprData>
+ADDR_028
+ADDR_031
+ADDR_040
+ADDR_048
 ADDR_056
+<CallExprData>
+ADDR_057
 CallExpr
 <TEST_DIR>/functions.cpp
 6
@@ -1328,17 +1420,17 @@ ADDR_011
 0
 0
 0
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_056
+ADDR_057
 CallExpr
 <Top Level Types>
 ADDR_015
 <Visited Children>
-ADDR_057
+ADDR_058
 0
 <DeclRefExprData>
-ADDR_057
+ADDR_058
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1352,18 +1444,18 @@ ADDR_015
 0
 
 0
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_057
+ADDR_058
 DeclRefExpr
 <Top Level Types>
-ADDR_020
+ADDR_021
 <Visited Children>
-ADDR_058
+ADDR_059
 1
-ADDR_057
-<ExprData>
 ADDR_058
+<ExprData>
+ADDR_059
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1371,20 +1463,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_020
+ADDR_021
 0
 0
 0
 <Id to Class Map>
-ADDR_058
+ADDR_059
 ImplicitCastExpr
 <Top Level Types>
-ADDR_028
+ADDR_029
 <Visited Children>
-ADDR_059
+ADDR_060
 0
 <StringLiteralData>
-ADDR_059
+ADDR_060
 StringLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1392,7 +1484,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_028
+ADDR_029
 1
 0
 0
@@ -1416,16 +1508,16 @@ ORDINARY
 102
 10
 <Id to Class Map>
-ADDR_059
+ADDR_060
 StringLiteral
 <Top Level Types>
 ADDR_014
 <Visited Children>
-ADDR_060
+ADDR_061
 1
-ADDR_059
-<ExprData>
 ADDR_060
+<ExprData>
+ADDR_061
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1438,15 +1530,15 @@ ADDR_014
 0
 0
 <Id to Class Map>
-ADDR_060
+ADDR_061
 ImplicitCastExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_061
+ADDR_062
 0
 <DeclRefExprData>
-ADDR_061
+ADDR_062
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1462,16 +1554,16 @@ ADDR_008
 0
 ADDR_010
 <Id to Class Map>
-ADDR_061
+ADDR_062
 DeclRefExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_062
+ADDR_063
 1
-ADDR_061
-<ExprData>
 ADDR_062
+<ExprData>
+ADDR_063
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1484,15 +1576,15 @@ ADDR_008
 0
 0
 <Id to Class Map>
-ADDR_062
+ADDR_063
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_063
+ADDR_064
 0
 <IntegerLiteralData>
-ADDR_063
+ADDR_064
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1509,17 +1601,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 1
 <Id to Class Map>
-ADDR_063
+ADDR_064
 IntegerLiteral
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_064
+ADDR_065
 2
-ADDR_062
 ADDR_063
-<ExprData>
 ADDR_064
+<ExprData>
+ADDR_065
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1534,16 +1626,16 @@ ADDR_005
 0
 0
 <Id to Class Map>
-ADDR_064
+ADDR_065
 ArraySubscriptExpr
 <Top Level Types>
-ADDR_035
+ADDR_036
 <Visited Children>
-ADDR_065
+ADDR_066
 1
-ADDR_064
-<ExprData>
 ADDR_065
+<ExprData>
+ADDR_066
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1553,20 +1645,20 @@ ImplicitCastExpr
 29
 0
 0
-ADDR_035
+ADDR_036
 0
 0
 0
 <Id to Class Map>
-ADDR_065
+ADDR_066
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_066
+ADDR_067
 0
 <IntegerLiteralData>
-ADDR_066
+ADDR_067
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1583,17 +1675,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_066
+ADDR_067
 IntegerLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_067
+ADDR_068
 2
-ADDR_065
 ADDR_066
-<ExprData>
 ADDR_067
+<ExprData>
+ADDR_068
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1608,16 +1700,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_067
+ADDR_068
 ArraySubscriptExpr
 <Top Level Types>
 ADDR_003
 <Visited Children>
-ADDR_068
+ADDR_069
 1
-ADDR_067
-<ExprData>
 ADDR_068
+<ExprData>
+ADDR_069
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1632,15 +1724,15 @@ ADDR_003
 0
 0
 <Id to Class Map>
-ADDR_068
+ADDR_069
 ImplicitCastExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_069
+ADDR_070
 0
 <DeclRefExprData>
-ADDR_069
+ADDR_070
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1656,16 +1748,16 @@ ADDR_008
 0
 ADDR_010
 <Id to Class Map>
-ADDR_069
+ADDR_070
 DeclRefExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_070
+ADDR_071
 1
-ADDR_069
-<ExprData>
 ADDR_070
+<ExprData>
+ADDR_071
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1678,15 +1770,15 @@ ADDR_008
 0
 0
 <Id to Class Map>
-ADDR_070
+ADDR_071
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_071
+ADDR_072
 0
 <IntegerLiteralData>
-ADDR_071
+ADDR_072
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1703,17 +1795,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 1
 <Id to Class Map>
-ADDR_071
+ADDR_072
 IntegerLiteral
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_072
+ADDR_073
 2
-ADDR_070
 ADDR_071
-<ExprData>
 ADDR_072
+<ExprData>
+ADDR_073
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1728,16 +1820,16 @@ ADDR_005
 0
 0
 <Id to Class Map>
-ADDR_072
+ADDR_073
 ArraySubscriptExpr
 <Top Level Types>
-ADDR_035
+ADDR_036
 <Visited Children>
-ADDR_073
+ADDR_074
 1
-ADDR_072
-<ExprData>
 ADDR_073
+<ExprData>
+ADDR_074
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1747,20 +1839,20 @@ ImplicitCastExpr
 38
 0
 0
-ADDR_035
+ADDR_036
 0
 0
 0
 <Id to Class Map>
-ADDR_073
+ADDR_074
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_074
+ADDR_075
 0
 <IntegerLiteralData>
-ADDR_074
+ADDR_075
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1777,17 +1869,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 1
 <Id to Class Map>
-ADDR_074
+ADDR_075
 IntegerLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_075
+ADDR_076
 2
-ADDR_073
 ADDR_074
-<ExprData>
 ADDR_075
+<ExprData>
+ADDR_076
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1802,16 +1894,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_075
+ADDR_076
 ArraySubscriptExpr
 <Top Level Types>
 ADDR_003
 <Visited Children>
-ADDR_076
+ADDR_077
 1
-ADDR_075
-<ExprData>
 ADDR_076
+<ExprData>
+ADDR_077
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1826,15 +1918,15 @@ ADDR_003
 0
 0
 <Id to Class Map>
-ADDR_076
+ADDR_077
 ImplicitCastExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_077
+ADDR_078
 0
 <DeclRefExprData>
-ADDR_077
+ADDR_078
 DeclRefExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1850,16 +1942,16 @@ ADDR_008
 0
 ADDR_010
 <Id to Class Map>
-ADDR_077
+ADDR_078
 DeclRefExpr
 <Top Level Types>
 ADDR_008
 <Visited Children>
-ADDR_078
+ADDR_079
 1
-ADDR_077
-<ExprData>
 ADDR_078
+<ExprData>
+ADDR_079
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1872,15 +1964,15 @@ ADDR_008
 0
 0
 <Id to Class Map>
-ADDR_078
+ADDR_079
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_079
+ADDR_080
 0
 <IntegerLiteralData>
-ADDR_079
+ADDR_080
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1897,17 +1989,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 1
 <Id to Class Map>
-ADDR_079
+ADDR_080
 IntegerLiteral
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_080
+ADDR_081
 2
-ADDR_078
 ADDR_079
-<ExprData>
 ADDR_080
+<ExprData>
+ADDR_081
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1922,16 +2014,16 @@ ADDR_005
 0
 0
 <Id to Class Map>
-ADDR_080
+ADDR_081
 ArraySubscriptExpr
 <Top Level Types>
-ADDR_035
+ADDR_036
 <Visited Children>
-ADDR_081
+ADDR_082
 1
-ADDR_080
-<ExprData>
 ADDR_081
+<ExprData>
+ADDR_082
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1941,20 +2033,20 @@ ImplicitCastExpr
 47
 0
 0
-ADDR_035
+ADDR_036
 0
 0
 0
 <Id to Class Map>
-ADDR_081
+ADDR_082
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_082
+ADDR_083
 0
 <IntegerLiteralData>
-ADDR_082
+ADDR_083
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 7
@@ -1971,17 +2063,17 @@ ADDR_011
 %CLAVA_SOURCE_END%
 2
 <Id to Class Map>
-ADDR_082
+ADDR_083
 IntegerLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_083
+ADDR_084
 2
-ADDR_081
 ADDR_082
-<ExprData>
 ADDR_083
+<ExprData>
+ADDR_084
 ArraySubscriptExpr
 <TEST_DIR>/functions.cpp
 7
@@ -1996,16 +2088,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_083
+ADDR_084
 ArraySubscriptExpr
 <Top Level Types>
 ADDR_003
 <Visited Children>
-ADDR_084
+ADDR_085
 1
-ADDR_083
-<ExprData>
 ADDR_084
+<ExprData>
+ADDR_085
 ImplicitCastExpr
 <TEST_DIR>/functions.cpp
 7
@@ -2020,20 +2112,20 @@ ADDR_003
 0
 0
 <Id to Class Map>
-ADDR_084
+ADDR_085
 ImplicitCastExpr
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_085
+ADDR_086
 5
-ADDR_058
-ADDR_060
-ADDR_068
-ADDR_076
-ADDR_084
-<CallExprData>
+ADDR_059
+ADDR_061
+ADDR_069
+ADDR_077
 ADDR_085
+<CallExprData>
+ADDR_086
 CallExpr
 <TEST_DIR>/functions.cpp
 7
@@ -2047,18 +2139,18 @@ ADDR_011
 0
 0
 0
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_085
+ADDR_086
 CallExpr
 <Visited Children>
-ADDR_086
+ADDR_087
 3
-ADDR_025
-ADDR_056
-ADDR_085
-<StmtData>
+ADDR_026
+ADDR_057
 ADDR_086
+<StmtData>
+ADDR_087
 CompoundStmt
 <TEST_DIR>/functions.cpp
 4
@@ -2069,13 +2161,13 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_086
+ADDR_087
 CompoundStmt
 <Visited Children>
 ADDR_001
 2
 ADDR_010
-ADDR_086
+ADDR_087
 <FunctionDeclData>
 ADDR_001
 FunctionDecl
@@ -2120,10 +2212,10 @@ FunctionDecl
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_087
+ADDR_088
 0
 <IntegerLiteralData>
-ADDR_087
+ADDR_088
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 3
@@ -2140,15 +2232,15 @@ ADDR_011
 %CLAVA_SOURCE_END%
 3
 <Id to Class Map>
-ADDR_087
+ADDR_088
 IntegerLiteral
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_088
+ADDR_089
 0
 <IntegerLiteralData>
-ADDR_088
+ADDR_089
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 3
@@ -2165,15 +2257,15 @@ ADDR_011
 %CLAVA_SOURCE_END%
 2
 <Id to Class Map>
-ADDR_088
+ADDR_089
 IntegerLiteral
 <Top Level Nodes>
-ADDR_089
-<Visited Children>
 ADDR_090
+<Visited Children>
+ADDR_091
 0
 <ConstantArrayTypeData>
-ADDR_090
+ADDR_091
 ConstantArrayType
 double[3]
 NONE
@@ -2186,13 +2278,13 @@ Normal
 ADDR_003
 3
 <Id to Class Map>
-ADDR_090
+ADDR_091
 ConstantArrayType
 <Visited Children>
-ADDR_091
+ADDR_092
 0
 <PointerTypeData>
-ADDR_091
+ADDR_092
 PointerType
 double (*)[3]
 NONE
@@ -2200,15 +2292,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_090
-<Id to Class Map>
 ADDR_091
+<Id to Class Map>
+ADDR_092
 PointerType
 <Visited Children>
-ADDR_092
+ADDR_093
 0
 <ArrayTypeData>
-ADDR_092
+ADDR_093
 IncompleteArrayType
 double[][3]
 NONE
@@ -2218,34 +2310,34 @@ NONE
 nullptr_type
 Normal
 0
-ADDR_090
+ADDR_091
 <Id to Class Map>
-ADDR_092
+ADDR_093
 IncompleteArrayType
 <Visited Children>
-ADDR_093
+ADDR_094
 0
 <DecayedTypeData>
-ADDR_093
+ADDR_094
 DecayedType
 double (*)[3]
 NONE
 0
 0
 0
-ADDR_091
+ADDR_092
+ADDR_093
+ADDR_092
 ADDR_092
 ADDR_091
-ADDR_091
-ADDR_090
 <Id to Class Map>
-ADDR_093
+ADDR_094
 DecayedType
 <Visited Children>
-ADDR_094
+ADDR_095
 0
 <FunctionProtoTypeData>
-ADDR_094
+ADDR_095
 FunctionProtoType
 void (double (*)[3])
 NONE
@@ -2264,24 +2356,24 @@ C
 ADDR_002
 1
 1
-ADDR_093
+ADDR_094
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_094
+ADDR_095
 FunctionProtoType
 <Top Level Types>
-ADDR_094
-<Top Level Types>
-ADDR_093
-<Visited Children>
 ADDR_095
+<Top Level Types>
+ADDR_094
+<Visited Children>
+ADDR_096
 0
 <ParmVarDeclData>
-ADDR_095
+ADDR_096
 ParmVarDecl
 <TEST_DIR>/functions.cpp
 10
@@ -2304,7 +2396,7 @@ A
 0
 None
 Default
-ADDR_093
+ADDR_094
 0
 None
 NONE
@@ -2316,13 +2408,13 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_095
+ADDR_096
 ParmVarDecl
 <Visited Children>
-ADDR_096
+ADDR_097
 0
 <StmtData>
-ADDR_096
+ADDR_097
 CompoundStmt
 <TEST_DIR>/functions.cpp
 11
@@ -2333,15 +2425,15 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_096
+ADDR_097
 CompoundStmt
 <Visited Children>
-ADDR_089
+ADDR_090
 2
-ADDR_095
 ADDR_096
+ADDR_097
 <FunctionDeclData>
-ADDR_089
+ADDR_090
 FunctionDecl
 <TEST_DIR>/functions.cpp
 10
@@ -2364,7 +2456,7 @@ foo_incomplete_array
 0
 External
 Default
-ADDR_094
+ADDR_095
 0
 0
 0
@@ -2375,19 +2467,19 @@ None
 0
 0
 nullptr_decl
-ADDR_089
+ADDR_090
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_089
+ADDR_090
 FunctionDecl
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_097
+ADDR_098
 0
 <IntegerLiteralData>
-ADDR_097
+ADDR_098
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 10
@@ -2404,15 +2496,15 @@ ADDR_011
 %CLAVA_SOURCE_END%
 3
 <Id to Class Map>
-ADDR_097
+ADDR_098
 IntegerLiteral
 <Top Level Nodes>
-ADDR_098
-<Visited Children>
 ADDR_099
+<Visited Children>
+ADDR_100
 0
 <FunctionProtoTypeData>
-ADDR_099
+ADDR_100
 FunctionProtoType
 int ()
 NONE
@@ -2437,17 +2529,17 @@ None
 None
 0
 <Id to Class Map>
-ADDR_099
+ADDR_100
 FunctionProtoType
 <Top Level Types>
-ADDR_099
+ADDR_100
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_100
+ADDR_101
 0
 <IntegerLiteralData>
-ADDR_100
+ADDR_101
 IntegerLiteral
 <TEST_DIR>/functions.cpp
 16
@@ -2464,14 +2556,14 @@ ADDR_011
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_100
+ADDR_101
 IntegerLiteral
 <Visited Children>
-ADDR_101
+ADDR_102
 1
-ADDR_100
-<StmtData>
 ADDR_101
+<StmtData>
+ADDR_102
 ReturnStmt
 <TEST_DIR>/functions.cpp
 16
@@ -2482,14 +2574,14 @@ ReturnStmt
 0
 0
 <Id to Class Map>
-ADDR_101
+ADDR_102
 ReturnStmt
 <Visited Children>
-ADDR_102
+ADDR_103
 1
-ADDR_101
-<StmtData>
 ADDR_102
+<StmtData>
+ADDR_103
 CompoundStmt
 <TEST_DIR>/functions.cpp
 14
@@ -2500,14 +2592,14 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_102
+ADDR_103
 CompoundStmt
 <Visited Children>
-ADDR_098
+ADDR_099
 1
-ADDR_102
+ADDR_103
 <FunctionDeclData>
-ADDR_098
+ADDR_099
 FunctionDecl
 <TEST_DIR>/functions.cpp
 14
@@ -2530,7 +2622,7 @@ main
 0
 External
 Default
-ADDR_099
+ADDR_100
 0
 0
 0
@@ -2541,9 +2633,9 @@ None
 0
 0
 nullptr_decl
-ADDR_098
+ADDR_099
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_098
+ADDR_099
 FunctionDecl

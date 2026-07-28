@@ -180,14 +180,301 @@ ADDR_005
 <Visited Children>
 ADDR_006
 0
-<CXXMethodDeclData>
+<StmtData>
 ADDR_006
+CompoundStmt
+<SYSTEM_INCLUDE>/c++/limits
+1760
+35
+<SYSTEM_INCLUDE>/c++/limits
+1760
+57
+0
+1
+<Id to Class Map>
+ADDR_006
+CompoundStmt
+<Visited Children>
+ADDR_007
+0
+<TagTypeData>
+ADDR_007
+RecordType
+std::numeric_limits<double>
+NONE
+0
+0
+0
+nullptr_type
+ADDR_008
+<Id to Class Map>
+ADDR_007
+RecordType
+<Visited Children>
+ADDR_009
+0
+<TemplateTypeParmTypeData>
+ADDR_009
+TemplateTypeParmType
+_Tp
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_010
+<Id to Class Map>
+ADDR_009
+TemplateTypeParmType
+<Visited Children>
+ADDR_010
+0
+<TemplateTypeParmDeclData>
+ADDR_010
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/limits
+318
+12
+<SYSTEM_INCLUDE>/c++/limits
+318
+21
+0
+1
+0
+0
+1
+0
+0
+0
+std::numeric_limits
+_Tp
+0
+1
+0
+None
+Default
+ADDR_009
+TYPENAME
+0
+nullptr_type
+<Id to Class Map>
+ADDR_010
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_011
+0
+<TypeData>
+ADDR_011
+InjectedClassNameType
+numeric_limits<_Tp>
+DEPENDENT
+0
+0
+0
+nullptr_type
+<Id to Class Map>
+ADDR_011
+InjectedClassNameType
+<Visited Children>
+ADDR_012
+0
+<CXXRecordDeclData>
+ADDR_012
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/limits
+209
+3
+<SYSTEM_INCLUDE>/c++/limits
+308
+3
+0
+1
+0
+0
+1
+0
+0
+0
+std
+__numeric_limits_base
+0
+0
+0
+External
+Default
+ADDR_013
+Struct
+1
+0
+0
+ADDR_012
+<Id to Class Map>
+ADDR_012
+CXXRecordDecl
+<Visited Children>
+ADDR_013
+0
+<TagTypeData>
+ADDR_013
+RecordType
+std::__numeric_limits_base
+NONE
+0
+0
+0
+nullptr_type
+ADDR_012
+<Id to Class Map>
+ADDR_013
+RecordType
+<Visited Children>
+ADDR_014
+0
+<ElaboratedTypeData>
+ADDR_014
+ElaboratedType
+__numeric_limits_base
+NONE
+0
+0
+0
+ADDR_013
+None
+
+ADDR_013
+<Id to Class Map>
+ADDR_014
+ElaboratedType
+<Visited Children>
+ADDR_015
+0
+<CXXRecordDeclData>
+ADDR_015
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/limits
+319
+5
+<SYSTEM_INCLUDE>/c++/limits
+365
+5
+0
+1
+0
+0
+0
+0
+0
+0
+std
+numeric_limits
+0
+0
+0
+External
+Default
+ADDR_011
+Struct
+1
+0
+1
+0
+0
+PUBLIC
+PUBLIC
+ADDR_014
+ADDR_015
+<Id to Class Map>
+ADDR_015
+CXXRecordDecl
+<Visited Children>
+ADDR_016
+0
+<TemplateDeclData>
+ADDR_016
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/limits
+318
+3
+<SYSTEM_INCLUDE>/c++/limits
+365
+5
+0
+1
+0
+0
+0
+0
+0
+0
+std
+numeric_limits
+0
+0
+0
+External
+Default
+1
+ADDR_010
+ADDR_015
+<Id to Class Map>
+ADDR_016
+ClassTemplateDecl
+<Visited Children>
+ADDR_008
+0
+<ClassTemplateSpecializationDeclData>
+ADDR_008
+ClassTemplateSpecializationDecl
+<SYSTEM_INCLUDE>/c++/limits
+1751
+3
+<SYSTEM_INCLUDE>/c++/limits
+1819
+5
+0
+1
+0
+0
+0
+0
+0
+0
+std
+numeric_limits
+0
+0
+0
+External
+Default
+ADDR_007
+Struct
+1
+0
+0
+ADDR_008
+ADDR_016
+ExplicitSpecialization
+1
+Type
+ADDR_002
+<Id to Class Map>
+ADDR_008
+ClassTemplateSpecializationDecl
+<Visited Children>
+ADDR_017
+1
+ADDR_006
+<CXXMethodDeclData>
+ADDR_017
 CXXMethodDecl
 <SYSTEM_INCLUDE>/c++/limits
-1752
+1759
 7
 <SYSTEM_INCLUDE>/c++/limits
-1753
+1760
 57
 0
 1
@@ -215,10 +502,10 @@ Static
 0
 0
 nullptr_decl
-ADDR_006
+ADDR_017
 nullptr_decl
 0
-ADDR_007
+ADDR_008
 0
 1
 0
@@ -232,13 +519,13 @@ nullptr_type
 1
 0
 <Id to Class Map>
-ADDR_006
+ADDR_017
 CXXMethodDecl
 <Visited Children>
-ADDR_008
+ADDR_018
 0
 <DeclRefExprData>
-ADDR_008
+ADDR_018
 DeclRefExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -254,15 +541,15 @@ ADDR_005
 0
 std::numeric_limits<double>::
 0
-ADDR_006
+ADDR_017
 <Id to Class Map>
-ADDR_008
+ADDR_018
 DeclRefExpr
 <Visited Children>
-ADDR_009
+ADDR_019
 0
 <PointerTypeData>
-ADDR_009
+ADDR_019
 PointerType
 double (*)() noexcept
 NONE
@@ -272,16 +559,16 @@ NONE
 nullptr_type
 ADDR_005
 <Id to Class Map>
-ADDR_009
+ADDR_019
 PointerType
 <Top Level Types>
-ADDR_009
+ADDR_019
 <Visited Children>
-ADDR_010
+ADDR_020
 1
-ADDR_008
+ADDR_018
 <ExprData>
-ADDR_010
+ADDR_020
 ImplicitCastExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -291,21 +578,21 @@ ImplicitCastExpr
 48
 0
 0
-ADDR_009
+ADDR_019
 0
 0
 0
 <Id to Class Map>
-ADDR_010
+ADDR_020
 ImplicitCastExpr
 <Top Level Types>
 ADDR_002
 <Visited Children>
-ADDR_011
+ADDR_021
 1
-ADDR_010
+ADDR_020
 <CallExprData>
-ADDR_011
+ADDR_021
 CallExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -319,14 +606,14 @@ ADDR_002
 0
 0
 0
-ADDR_006
+ADDR_017
 <Id to Class Map>
-ADDR_011
+ADDR_021
 CallExpr
 <Visited Children>
 ADDR_004
 1
-ADDR_011
+ADDR_021
 <VarDeclData>
 ADDR_004
 VarDecl

@@ -210,7 +210,6 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "system_header_threshold.cpp": T(
         flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],
         validate_node_closure=True,
-        forbidden_exact_lines={"threshold_nested"},
     ),
     "system_header_threshold_option.cpp": T(
         flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],

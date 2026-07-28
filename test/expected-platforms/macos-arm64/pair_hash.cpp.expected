@@ -408,8 +408,168 @@ ElaboratedType
 <Visited Children>
 ADDR_019
 0
-<TemplateDeclData>
+<TemplateTypeParmTypeData>
 ADDR_019
+TemplateTypeParmType
+_T1
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_020
+<Id to Class Map>
+ADDR_019
+TemplateTypeParmType
+<Visited Children>
+ADDR_020
+0
+<TemplateTypeParmDeclData>
+ADDR_020
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+79
+11
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+79
+17
+0
+1
+0
+0
+1
+0
+0
+0
+
+_T1
+0
+0
+0
+None
+Default
+ADDR_019
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_020
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_021
+0
+<TemplateTypeParmTypeData>
+ADDR_021
+TemplateTypeParmType
+_T2
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+1
+0
+ADDR_022
+<Id to Class Map>
+ADDR_021
+TemplateTypeParmType
+<Visited Children>
+ADDR_022
+0
+<TemplateTypeParmDeclData>
+ADDR_022
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+79
+22
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+79
+28
+0
+1
+0
+0
+1
+0
+0
+0
+
+_T2
+0
+0
+0
+None
+Default
+ADDR_021
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_022
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_023
+0
+<TypeData>
+ADDR_023
+InjectedClassNameType
+pair<type-parameter-0-0, type-parameter-0-1>
+DEPENDENT
+0
+0
+0
+nullptr_type
+<Id to Class Map>
+ADDR_023
+InjectedClassNameType
+<Visited Children>
+ADDR_024
+0
+<CXXRecordDeclData>
+ADDR_024
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+80
+1
+<SYSTEM_INCLUDE>/c++/__utility/pair.h
+504
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+pair
+0
+0
+0
+External
+Default
+ADDR_023
+Struct
+1
+0
+0
+ADDR_024
+<Id to Class Map>
+ADDR_024
+CXXRecordDecl
+<Visited Children>
+ADDR_025
+3
+ADDR_020
+ADDR_022
+ADDR_024
+<TemplateDeclData>
+ADDR_025
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__utility/pair.h
 79
@@ -434,16 +594,16 @@ External
 Default
 2
 ADDR_020
-ADDR_021
 ADDR_022
+ADDR_024
 <Id to Class Map>
-ADDR_019
+ADDR_025
 ClassTemplateDecl
 <Visited Children>
-ADDR_023
+ADDR_026
 0
 <TemplateSpecializationTypeData>
-ADDR_023
+ADDR_026
 TemplateSpecializationType
 pair<T, U>
 DEPENDENT
@@ -454,38 +614,38 @@ nullptr_type
 0
 nullptr_type
 pair
-ADDR_019
+ADDR_025
 2
 Type
 ADDR_007
 Type
 ADDR_009
 <Id to Class Map>
-ADDR_023
+ADDR_026
 TemplateSpecializationType
 <Visited Children>
-ADDR_024
+ADDR_027
 0
 <ElaboratedTypeData>
-ADDR_024
+ADDR_027
 ElaboratedType
 std::pair<T, U>
 DEPENDENT
 0
 0
 0
-ADDR_023
+ADDR_026
 None
 std::
-ADDR_023
+ADDR_026
 <Id to Class Map>
-ADDR_024
+ADDR_027
 ElaboratedType
 <Visited Children>
-ADDR_025
+ADDR_028
 0
 <QualTypeData>
-ADDR_025
+ADDR_028
 QualType
 const pair<T, U>
 DEPENDENT
@@ -497,35 +657,35 @@ nullptr_type
 CONST
 NONE
 0
-ADDR_023
+ADDR_026
 <Id to Class Map>
-ADDR_025
+ADDR_028
 QualType
 <Visited Children>
-ADDR_026
+ADDR_029
 0
 <QualTypeData>
-ADDR_026
+ADDR_029
 QualType
 const std::pair<T, U>
 DEPENDENT
 0
 0
 0
-ADDR_023
+ADDR_026
 1
 CONST
 NONE
 0
-ADDR_024
+ADDR_027
 <Id to Class Map>
-ADDR_026
+ADDR_029
 QualType
 <Visited Children>
-ADDR_027
+ADDR_030
 0
 <ReferenceTypeData>
-ADDR_027
+ADDR_030
 LValueReferenceType
 const std::pair<T, U> &
 DEPENDENT
@@ -533,15 +693,15 @@ DEPENDENT
 0
 0
 nullptr_type
-ADDR_026
+ADDR_029
 <Id to Class Map>
-ADDR_027
+ADDR_030
 LValueReferenceType
 <Visited Children>
-ADDR_028
+ADDR_031
 0
 <FunctionProtoTypeData>
-ADDR_028
+ADDR_031
 FunctionProtoType
 std::size_t (const std::pair<T, U> &) const
 DEPENDENT
@@ -560,24 +720,24 @@ C
 ADDR_018
 1
 1
-ADDR_027
+ADDR_030
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_028
+ADDR_031
 FunctionProtoType
 <Top Level Types>
-ADDR_028
+ADDR_031
 <Top Level Types>
-ADDR_027
+ADDR_030
 <Visited Children>
-ADDR_029
+ADDR_032
 0
 <ParmVarDeclData>
-ADDR_029
+ADDR_032
 ParmVarDecl
 <TEST_DIR>/pair_hash.h
 12
@@ -600,7 +760,7 @@ x
 0
 None
 Default
-ADDR_027
+ADDR_030
 0
 None
 NONE
@@ -612,13 +772,1077 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_029
+ADDR_032
 ParmVarDecl
 <Visited Children>
-ADDR_030
+ADDR_033
+0
+<TemplateTypeParmTypeData>
+ADDR_033
+TemplateTypeParmType
+_Tp
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_034
+<Id to Class Map>
+ADDR_033
+TemplateTypeParmType
+<Visited Children>
+ADDR_034
+0
+<TemplateTypeParmDeclData>
+ADDR_034
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
+1543
+11
+<SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
+1543
+17
+0
+1
+0
+0
+0
+0
+0
+0
+std::hash
+_Tp
+0
+1
+0
+None
+Default
+ADDR_033
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_034
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_035
+0
+<TemplateTypeParmDeclData>
+ADDR_035
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+509
+11
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+509
+17
+0
+1
+0
+0
+1
+0
+0
+0
+std::hash
+_Tp
+0
+1
+0
+None
+Default
+ADDR_036
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_035
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_036
+0
+<TemplateTypeParmTypeData>
+ADDR_036
+TemplateTypeParmType
+_Tp
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_035
+<Id to Class Map>
+ADDR_036
+TemplateTypeParmType
+<Visited Children>
+ADDR_037
+0
+<TemplateTypeParmTypeData>
+ADDR_037
+TemplateTypeParmType
+_Tp
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_038
+<Id to Class Map>
+ADDR_037
+TemplateTypeParmType
+<Visited Children>
+ADDR_038
+0
+<TemplateTypeParmDeclData>
+ADDR_038
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+11
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+17
+0
+1
+0
+0
+1
+0
+0
+0
+std::__enum_hash
+_Tp
+0
+1
+0
+None
+Default
+ADDR_037
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_038
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_039
+0
+<BuiltinTypeData>
+ADDR_039
+BuiltinType
+bool
+NONE
+0
+0
+0
+nullptr_type
+Bool
+bool
+<Id to Class Map>
+ADDR_039
+BuiltinType
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_040
+0
+<BuiltinTypeData>
+ADDR_040
+BuiltinType
+<dependent type>
+DEPENDENT
+0
+0
+0
+nullptr_type
+Dependent
+<dependent type>
+<Id to Class Map>
+ADDR_040
+BuiltinType
+<Top Level Types>
+ADDR_040
+<Visited Children>
+ADDR_041
+0
+<DependentScopeDeclRefExprData>
+ADDR_041
+DependentScopeDeclRefExpr
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+29
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+43
+0
+1
+ADDR_040
+1
+0
+0
+value
+is_enum<_Tp>::
+0
+0
+<Id to Class Map>
+ADDR_041
+DependentScopeDeclRefExpr
+<Visited Children>
+ADDR_042
+0
+<NonTypeTemplateParmDeclData>
+ADDR_042
+NonTypeTemplateParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+22
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+43
+0
+1
+0
+0
+0
+0
+0
+0
+
+
+0
+1
+0
+External
+Default
+ADDR_039
+0
+ADDR_041
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_042
+NonTypeTemplateParmDecl
+<Visited Children>
+ADDR_043
+0
+<TypeData>
+ADDR_043
+InjectedClassNameType
+__enum_hash<_Tp, >
+DEPENDENT
+0
+0
+0
+nullptr_type
+<Id to Class Map>
+ADDR_043
+InjectedClassNameType
+<Visited Children>
+ADDR_044
+0
+<TemplateTypeParmTypeData>
+ADDR_044
+TemplateTypeParmType
+type-parameter-0-0
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+nullptr_decl
+<Id to Class Map>
+ADDR_044
+TemplateTypeParmType
+<Visited Children>
+ADDR_045
+0
+<TemplateTypeParmTypeData>
+ADDR_045
+TemplateTypeParmType
+_Arg
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_046
+<Id to Class Map>
+ADDR_045
+TemplateTypeParmType
+<Visited Children>
+ADDR_046
+0
+<TemplateTypeParmDeclData>
+ADDR_046
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+45
+11
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+45
+17
+0
+1
+0
+0
+1
+0
+0
+0
+std
+_Arg
+0
+0
+0
+None
+Default
+ADDR_045
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_046
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_047
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_047
+SubstTemplateTypeParmType
+type-parameter-0-0
+DEPENDENT
+0
+0
+0
+ADDR_044
+ADDR_046
+ADDR_044
+<Id to Class Map>
+ADDR_047
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_048
+0
+<TemplateTypeParmTypeData>
+ADDR_048
+TemplateTypeParmType
+_Result
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+1
+0
+ADDR_049
+<Id to Class Map>
+ADDR_048
+TemplateTypeParmType
+<Visited Children>
+ADDR_049
+0
+<TemplateTypeParmDeclData>
+ADDR_049
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+45
+23
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+45
+29
+0
+1
+0
+0
+1
+0
+0
+0
+std
+_Result
+0
+0
+0
+None
+Default
+ADDR_048
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_049
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_050
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_050
+SubstTemplateTypeParmType
+unsigned long
+NONE
+0
+0
+0
+ADDR_011
+ADDR_049
+ADDR_011
+<Id to Class Map>
+ADDR_050
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_051
+0
+<TemplateTypeParmTypeData>
+ADDR_051
+TemplateTypeParmType
+_Arg
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+0
+0
+ADDR_052
+<Id to Class Map>
+ADDR_051
+TemplateTypeParmType
+<Visited Children>
+ADDR_052
+0
+<TemplateTypeParmDeclData>
+ADDR_052
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+30
+11
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+30
+17
+0
+1
+0
+0
+1
+0
+0
+0
+std::__unary_function_keep_layout_base
+_Arg
+0
+1
+0
+None
+Default
+ADDR_051
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_052
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_053
+0
+<TemplateTypeParmTypeData>
+ADDR_053
+TemplateTypeParmType
+_Result
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+1
+0
+ADDR_054
+<Id to Class Map>
+ADDR_053
+TemplateTypeParmType
+<Visited Children>
+ADDR_054
+0
+<TemplateTypeParmDeclData>
+ADDR_054
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+30
+23
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+30
+29
+0
+1
+0
+0
+1
+0
+0
+0
+std::__unary_function_keep_layout_base
+_Result
+0
+1
+0
+None
+Default
+ADDR_053
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_054
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_055
+0
+<TypeData>
+ADDR_055
+InjectedClassNameType
+__unary_function_keep_layout_base<_Arg, _Result>
+DEPENDENT
+0
+0
+0
+nullptr_type
+<Id to Class Map>
+ADDR_055
+InjectedClassNameType
+<Visited Children>
+ADDR_056
+0
+<CXXRecordDeclData>
+ADDR_056
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+31
+1
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+36
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+__unary_function_keep_layout_base
+0
+0
+0
+External
+Default
+ADDR_055
+Struct
+1
+0
+0
+ADDR_056
+<Id to Class Map>
+ADDR_056
+CXXRecordDecl
+<Visited Children>
+ADDR_057
 0
 <TemplateDeclData>
-ADDR_030
+ADDR_057
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+30
+1
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+36
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+__unary_function_keep_layout_base
+0
+0
+0
+External
+Default
+2
+ADDR_052
+ADDR_054
+ADDR_056
+<Id to Class Map>
+ADDR_057
+ClassTemplateDecl
+<Visited Children>
+ADDR_058
+0
+<TemplateSpecializationTypeData>
+ADDR_058
+TemplateSpecializationType
+__unary_function_keep_layout_base<type-parameter-0-0, unsigned long>
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+nullptr_type
+__unary_function_keep_layout_base
+ADDR_057
+2
+Type
+ADDR_047
+Type
+ADDR_050
+<Id to Class Map>
+ADDR_058
+TemplateSpecializationType
+<Visited Children>
+ADDR_059
+0
+<ElaboratedTypeData>
+ADDR_059
+ElaboratedType
+__unary_function_keep_layout_base<type-parameter-0-0, unsigned long>
+DEPENDENT
+0
+0
+0
+ADDR_058
+None
+
+ADDR_058
+<Id to Class Map>
+ADDR_059
+ElaboratedType
+<Visited Children>
+ADDR_060
+0
+<TypeData>
+ADDR_060
+UsingType
+size_t
+NONE
+0
+0
+0
+ADDR_016
+<Id to Class Map>
+ADDR_060
+UsingType
+<Visited Children>
+ADDR_061
+0
+<ElaboratedTypeData>
+ADDR_061
+ElaboratedType
+size_t
+NONE
+0
+0
+0
+ADDR_060
+None
+
+ADDR_060
+<Id to Class Map>
+ADDR_061
+ElaboratedType
+<Visited Children>
+ADDR_062
+0
+<TemplateSpecializationTypeData>
+ADDR_062
+TemplateSpecializationType
+__unary_function_keep_layout_base<_Arg, _Result>
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+nullptr_type
+__unary_function_keep_layout_base
+ADDR_057
+2
+Type
+ADDR_045
+Type
+ADDR_048
+<Id to Class Map>
+ADDR_062
+TemplateSpecializationType
+<Visited Children>
+ADDR_063
+0
+<ElaboratedTypeData>
+ADDR_063
+ElaboratedType
+__unary_function_keep_layout_base<_Arg, _Result>
+DEPENDENT
+0
+0
+0
+ADDR_062
+None
+
+ADDR_062
+<Id to Class Map>
+ADDR_063
+ElaboratedType
+<Visited Children>
+ADDR_064
+0
+<TypedefNameDeclData>
+ADDR_064
+TypeAliasDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+46
+1
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+46
+73
+0
+1
+0
+0
+0
+0
+0
+0
+std
+__unary_function
+0
+0
+0
+None
+Default
+nullptr_type
+ADDR_063
+<Id to Class Map>
+ADDR_064
+TypeAliasDecl
+<Visited Children>
+ADDR_065
+0
+<TemplateDeclData>
+ADDR_065
+TypeAliasTemplateDecl
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+45
+1
+<SYSTEM_INCLUDE>/c++/__functional/unary_function.h
+46
+73
+0
+1
+0
+0
+0
+0
+0
+0
+std
+__unary_function
+0
+0
+0
+External
+Default
+2
+ADDR_046
+ADDR_049
+ADDR_064
+<Id to Class Map>
+ADDR_065
+TypeAliasTemplateDecl
+<Visited Children>
+ADDR_066
+0
+<TemplateSpecializationTypeData>
+ADDR_066
+TemplateSpecializationType
+__unary_function<_Tp, size_t>
+DEPENDENT
+0
+0
+0
+ADDR_059
+1
+ADDR_059
+__unary_function
+ADDR_065
+2
+Type
+ADDR_037
+Type
+ADDR_061
+<Id to Class Map>
+ADDR_066
+TemplateSpecializationType
+<Visited Children>
+ADDR_067
+0
+<ElaboratedTypeData>
+ADDR_067
+ElaboratedType
+__unary_function<_Tp, size_t>
+DEPENDENT
+0
+0
+0
+ADDR_066
+None
+
+ADDR_066
+<Id to Class Map>
+ADDR_067
+ElaboratedType
+<Visited Children>
+ADDR_068
+0
+<CXXRecordDeclData>
+ADDR_068
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+496
+1
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+501
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+__enum_hash
+0
+0
+0
+External
+Default
+ADDR_043
+Struct
+1
+0
+1
+0
+0
+PUBLIC
+PUBLIC
+ADDR_067
+ADDR_068
+<Id to Class Map>
+ADDR_068
+CXXRecordDecl
+<Visited Children>
+ADDR_069
+0
+<TemplateDeclData>
+ADDR_069
+ClassTemplateDecl
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+495
+1
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+501
+1
+0
+1
+0
+0
+0
+0
+0
+0
+std
+__enum_hash
+0
+0
+0
+External
+Default
+2
+ADDR_038
+ADDR_042
+ADDR_068
+<Id to Class Map>
+ADDR_069
+ClassTemplateDecl
+<Visited Children>
+ADDR_070
+0
+<TemplateSpecializationTypeData>
+ADDR_070
+TemplateSpecializationType
+__enum_hash<_Tp>
+DEPENDENT
+0
+0
+0
+nullptr_type
+0
+nullptr_type
+__enum_hash
+ADDR_069
+1
+Type
+ADDR_036
+<Id to Class Map>
+ADDR_070
+TemplateSpecializationType
+<Visited Children>
+ADDR_071
+0
+<ElaboratedTypeData>
+ADDR_071
+ElaboratedType
+__enum_hash<_Tp>
+DEPENDENT
+0
+0
+0
+ADDR_070
+None
+
+ADDR_070
+<Id to Class Map>
+ADDR_071
+ElaboratedType
+<Visited Children>
+ADDR_072
+0
+<CXXRecordDeclData>
+ADDR_072
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+510
+1
+<SYSTEM_INCLUDE>/c++/__functional/hash.h
+510
+61
+0
+1
+0
+0
+0
+0
+0
+0
+std
+hash
+0
+0
+0
+External
+Default
+ADDR_073
+Struct
+1
+0
+1
+0
+0
+PUBLIC
+PUBLIC
+ADDR_071
+ADDR_072
+<Id to Class Map>
+ADDR_072
+CXXRecordDecl
+<Visited Children>
+ADDR_073
+0
+<TypeData>
+ADDR_073
+InjectedClassNameType
+hash<type-parameter-0-0>
+DEPENDENT
+0
+0
+0
+nullptr_type
+<Id to Class Map>
+ADDR_073
+InjectedClassNameType
+<Visited Children>
+ADDR_074
+0
+<CXXRecordDeclData>
+ADDR_074
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
+1544
+1
+<SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
+1544
+29
+0
+1
+0
+0
+0
+0
+0
+0
+std
+hash
+0
+0
+0
+External
+Default
+ADDR_073
+Struct
+0
+0
+1
+0
+0
+PUBLIC
+PUBLIC
+ADDR_071
+ADDR_072
+<Id to Class Map>
+ADDR_074
+CXXRecordDecl
+<Visited Children>
+ADDR_075
+2
+ADDR_034
+ADDR_074
+<TemplateDeclData>
+ADDR_075
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__memory/shared_ptr.h
 1543
@@ -642,16 +1866,16 @@ hash
 External
 Default
 1
-ADDR_031
-ADDR_032
+ADDR_034
+ADDR_074
 <Id to Class Map>
-ADDR_030
+ADDR_075
 ClassTemplateDecl
 <Visited Children>
-ADDR_033
+ADDR_076
 0
 <TemplateSpecializationTypeData>
-ADDR_033
+ADDR_076
 TemplateSpecializationType
 hash<T>
 DEPENDENT
@@ -662,38 +1886,38 @@ nullptr_type
 0
 nullptr_type
 hash
-ADDR_030
+ADDR_075
 1
 Type
 ADDR_007
 <Id to Class Map>
-ADDR_033
+ADDR_076
 TemplateSpecializationType
 <Visited Children>
-ADDR_034
+ADDR_077
 0
 <ElaboratedTypeData>
-ADDR_034
+ADDR_077
 ElaboratedType
 std::hash<T>
 DEPENDENT
 0
 0
 0
-ADDR_033
+ADDR_076
 None
 std::
-ADDR_033
+ADDR_076
 <Id to Class Map>
-ADDR_034
+ADDR_077
 ElaboratedType
 <Top Level Types>
-ADDR_034
+ADDR_077
 <Visited Children>
-ADDR_035
+ADDR_078
 0
 <ExprData>
-ADDR_035
+ADDR_078
 CXXUnresolvedConstructExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -703,20 +1927,20 @@ CXXUnresolvedConstructExpr
 24
 0
 0
-ADDR_034
+ADDR_077
 0
 0
 0
 <Id to Class Map>
-ADDR_035
+ADDR_078
 CXXUnresolvedConstructExpr
 <Top Level Types>
-ADDR_026
+ADDR_029
 <Visited Children>
-ADDR_036
+ADDR_079
 0
 <DeclRefExprData>
-ADDR_036
+ADDR_079
 DeclRefExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -724,41 +1948,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_026
+ADDR_029
 1
 0
 0
 
 0
-ADDR_029
+ADDR_032
 <Id to Class Map>
-ADDR_036
+ADDR_079
 DeclRefExpr
-<Visited Children>
-ADDR_037
-0
-<BuiltinTypeData>
-ADDR_037
-BuiltinType
-<dependent type>
-DEPENDENT
-0
-0
-0
-nullptr_type
-Dependent
-<dependent type>
-<Id to Class Map>
-ADDR_037
-BuiltinType
 <Top Level Types>
-ADDR_037
+ADDR_040
 <Visited Children>
-ADDR_038
+ADDR_080
 1
-ADDR_036
+ADDR_079
 <CXXDependentScopeMemberExprData>
-ADDR_038
+ADDR_080
 CXXDependentScopeMemberExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -768,7 +1975,7 @@ CXXDependentScopeMemberExpr
 28
 0
 0
-ADDR_037
+ADDR_040
 1
 0
 0
@@ -779,17 +1986,17 @@ first
 0
 0
 <Id to Class Map>
-ADDR_038
+ADDR_080
 CXXDependentScopeMemberExpr
 <Top Level Types>
-ADDR_037
+ADDR_040
 <Visited Children>
-ADDR_039
+ADDR_081
 2
-ADDR_035
-ADDR_038
+ADDR_078
+ADDR_080
 <CallExprData>
-ADDR_039
+ADDR_081
 CallExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -799,19 +2006,19 @@ CallExpr
 33
 0
 0
-ADDR_037
+ADDR_040
 0
 0
 0
 nullptr_decl
 <Id to Class Map>
-ADDR_039
+ADDR_081
 CallExpr
 <Visited Children>
-ADDR_040
+ADDR_082
 0
 <TemplateSpecializationTypeData>
-ADDR_040
+ADDR_082
 TemplateSpecializationType
 hash<U>
 DEPENDENT
@@ -822,38 +2029,38 @@ nullptr_type
 0
 nullptr_type
 hash
-ADDR_030
+ADDR_075
 1
 Type
 ADDR_009
 <Id to Class Map>
-ADDR_040
+ADDR_082
 TemplateSpecializationType
 <Visited Children>
-ADDR_041
+ADDR_083
 0
 <ElaboratedTypeData>
-ADDR_041
+ADDR_083
 ElaboratedType
 std::hash<U>
 DEPENDENT
 0
 0
 0
-ADDR_040
+ADDR_082
 None
 std::
-ADDR_040
+ADDR_082
 <Id to Class Map>
-ADDR_041
+ADDR_083
 ElaboratedType
 <Top Level Types>
-ADDR_041
+ADDR_083
 <Visited Children>
-ADDR_042
+ADDR_084
 0
 <ExprData>
-ADDR_042
+ADDR_084
 CXXUnresolvedConstructExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -863,20 +2070,20 @@ CXXUnresolvedConstructExpr
 50
 0
 0
-ADDR_041
+ADDR_083
 0
 0
 0
 <Id to Class Map>
-ADDR_042
+ADDR_084
 CXXUnresolvedConstructExpr
 <Top Level Types>
-ADDR_026
+ADDR_029
 <Visited Children>
-ADDR_043
+ADDR_085
 0
 <DeclRefExprData>
-ADDR_043
+ADDR_085
 DeclRefExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -884,24 +2091,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_026
+ADDR_029
 1
 0
 0
 
 0
-ADDR_029
+ADDR_032
 <Id to Class Map>
-ADDR_043
+ADDR_085
 DeclRefExpr
 <Top Level Types>
-ADDR_037
+ADDR_040
 <Visited Children>
-ADDR_044
+ADDR_086
 1
-ADDR_043
+ADDR_085
 <CXXDependentScopeMemberExprData>
-ADDR_044
+ADDR_086
 CXXDependentScopeMemberExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -911,7 +2118,7 @@ CXXDependentScopeMemberExpr
 54
 0
 0
-ADDR_037
+ADDR_040
 1
 0
 0
@@ -922,17 +2129,17 @@ second
 0
 0
 <Id to Class Map>
-ADDR_044
+ADDR_086
 CXXDependentScopeMemberExpr
 <Top Level Types>
-ADDR_037
+ADDR_040
 <Visited Children>
-ADDR_045
+ADDR_087
 2
-ADDR_042
-ADDR_044
+ADDR_084
+ADDR_086
 <CallExprData>
-ADDR_045
+ADDR_087
 CallExpr
 <TEST_DIR>/pair_hash.h
 14
@@ -942,23 +2149,23 @@ CallExpr
 60
 0
 0
-ADDR_037
+ADDR_040
 0
 0
 0
 nullptr_decl
 <Id to Class Map>
-ADDR_045
+ADDR_087
 CallExpr
 <Top Level Types>
-ADDR_037
+ADDR_040
 <Visited Children>
-ADDR_046
+ADDR_088
 2
-ADDR_039
-ADDR_045
+ADDR_081
+ADDR_087
 <BinaryOperatorData>
-ADDR_046
+ADDR_088
 BinaryOperator
 <TEST_DIR>/pair_hash.h
 14
@@ -968,20 +2175,20 @@ BinaryOperator
 60
 0
 0
-ADDR_037
+ADDR_040
 0
 0
 0
 Xor
 <Id to Class Map>
-ADDR_046
+ADDR_088
 BinaryOperator
 <Visited Children>
-ADDR_047
+ADDR_089
 1
-ADDR_046
+ADDR_088
 <StmtData>
-ADDR_047
+ADDR_089
 ReturnStmt
 <TEST_DIR>/pair_hash.h
 14
@@ -992,14 +2199,14 @@ ReturnStmt
 0
 0
 <Id to Class Map>
-ADDR_047
+ADDR_089
 ReturnStmt
 <Visited Children>
-ADDR_048
+ADDR_090
 1
-ADDR_047
+ADDR_089
 <StmtData>
-ADDR_048
+ADDR_090
 CompoundStmt
 <TEST_DIR>/pair_hash.h
 13
@@ -1010,13 +2217,13 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_048
+ADDR_090
 CompoundStmt
 <Visited Children>
-ADDR_049
+ADDR_091
 0
 <QualTypeData>
-ADDR_049
+ADDR_091
 QualType
 const A::PairHash
 NONE
@@ -1030,13 +2237,13 @@ NONE
 0
 ADDR_004
 <Id to Class Map>
-ADDR_049
+ADDR_091
 QualType
 <Visited Children>
-ADDR_050
+ADDR_092
 0
 <PointerTypeData>
-ADDR_050
+ADDR_092
 PointerType
 const A::PairHash *
 NONE
@@ -1044,17 +2251,17 @@ NONE
 0
 0
 nullptr_type
-ADDR_049
+ADDR_091
 <Id to Class Map>
-ADDR_050
+ADDR_092
 PointerType
 <Visited Children>
-ADDR_051
+ADDR_093
 2
-ADDR_029
-ADDR_048
+ADDR_032
+ADDR_090
 <CXXMethodDeclData>
-ADDR_051
+ADDR_093
 CXXMethodDecl
 <TEST_DIR>/pair_hash.h
 12
@@ -1077,7 +2284,7 @@ operator()
 1
 External
 Default
-ADDR_028
+ADDR_031
 0
 0
 1
@@ -1088,7 +2295,7 @@ None
 0
 0
 nullptr_decl
-ADDR_051
+ADDR_093
 nullptr_decl
 0
 ADDR_005
@@ -1100,21 +2307,21 @@ ADDR_005
 0
 0
 0
-ADDR_050
-ADDR_049
+ADDR_092
+ADDR_091
 1
 0
 <Id to Class Map>
-ADDR_051
+ADDR_093
 CXXMethodDecl
 <Visited Children>
-ADDR_052
+ADDR_094
 3
 ADDR_008
 ADDR_010
-ADDR_051
+ADDR_093
 <TemplateDeclData>
-ADDR_052
+ADDR_094
 FunctionTemplateDecl
 <TEST_DIR>/pair_hash.h
 11
@@ -1140,15 +2347,15 @@ Default
 2
 ADDR_008
 ADDR_010
-ADDR_051
+ADDR_093
 <Id to Class Map>
-ADDR_052
+ADDR_094
 FunctionTemplateDecl
 <Visited Children>
 ADDR_005
 2
 ADDR_006
-ADDR_052
+ADDR_094
 <CXXRecordDeclData>
 ADDR_005
 CXXRecordDecl
@@ -1221,12 +2428,12 @@ ADDR_001
 ADDR_001
 CXXRecordDecl
 <Top Level Nodes>
-ADDR_053
+ADDR_095
 <Visited Children>
-ADDR_054
+ADDR_096
 0
 <BuiltinTypeData>
-ADDR_054
+ADDR_096
 BuiltinType
 int
 NONE
@@ -1237,13 +2444,13 @@ nullptr_type
 Int
 int
 <Id to Class Map>
-ADDR_054
+ADDR_096
 BuiltinType
 <Visited Children>
-ADDR_055
+ADDR_097
 0
 <FunctionProtoTypeData>
-ADDR_055
+ADDR_097
 FunctionProtoType
 int ()
 NONE
@@ -1259,7 +2466,7 @@ nullptr_type
 0
 0
 C
-ADDR_054
+ADDR_096
 0
 0
 0
@@ -1268,17 +2475,17 @@ None
 None
 0
 <Id to Class Map>
-ADDR_055
+ADDR_097
 FunctionProtoType
 <Top Level Types>
-ADDR_055
+ADDR_097
 <Top Level Types>
-ADDR_054
+ADDR_096
 <Visited Children>
-ADDR_056
+ADDR_098
 0
 <IntegerLiteralData>
-ADDR_056
+ADDR_098
 IntegerLiteral
 <TEST_DIR>/pair_hash.cpp
 5
@@ -1286,7 +2493,7 @@ IntegerLiteral
 <end>
 0
 0
-ADDR_054
+ADDR_096
 0
 0
 0
@@ -1295,14 +2502,14 @@ ADDR_054
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_056
+ADDR_098
 IntegerLiteral
 <Visited Children>
-ADDR_057
+ADDR_099
 1
-ADDR_056
+ADDR_098
 <StmtData>
-ADDR_057
+ADDR_099
 ReturnStmt
 <TEST_DIR>/pair_hash.cpp
 5
@@ -1313,14 +2520,14 @@ ReturnStmt
 0
 0
 <Id to Class Map>
-ADDR_057
+ADDR_099
 ReturnStmt
 <Visited Children>
-ADDR_058
+ADDR_100
 1
-ADDR_057
+ADDR_099
 <StmtData>
-ADDR_058
+ADDR_100
 CompoundStmt
 <TEST_DIR>/pair_hash.cpp
 4
@@ -1331,14 +2538,14 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_058
+ADDR_100
 CompoundStmt
 <Visited Children>
-ADDR_053
+ADDR_095
 1
-ADDR_058
+ADDR_100
 <FunctionDeclData>
-ADDR_053
+ADDR_095
 FunctionDecl
 <TEST_DIR>/pair_hash.cpp
 4
@@ -1361,7 +2568,7 @@ main
 0
 External
 Default
-ADDR_055
+ADDR_097
 0
 0
 0
@@ -1372,9 +2579,9 @@ None
 0
 0
 nullptr_decl
-ADDR_053
+ADDR_095
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_053
+ADDR_095
 FunctionDecl
