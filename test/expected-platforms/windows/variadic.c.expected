@@ -378,17 +378,141 @@ ADDR_015
 BuiltinType
 <Top Level Types>
 ADDR_015
+<Visited Children>
+ADDR_016
+0
+<AttributeData>
+ADDR_016
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+0
+0
+0
+<Id to Class Map>
+ADDR_016
+BuiltinAttr
 <Top Level Attributes>
 ADDR_016
+<Visited Children>
+ADDR_017
+0
+<AttributeData>
+ADDR_017
+NoThrowAttr
+<SYSTEM_INCLUDE>/sec_api/stdio_s.h
+64
+5
+<end>
+0
+1
+NoThrow
+1
+0
+0
+0
+<Id to Class Map>
+ADDR_017
+NoThrowAttr
 <Top Level Attributes>
 ADDR_017
-<Top Level Types>
+<Visited Children>
 ADDR_018
+0
+<ReferenceTypeData>
+ADDR_018
+LValueReferenceType
+__builtin_va_list &
+NONE
+0
+0
+0
+nullptr_type
+ADDR_008
+<Id to Class Map>
+ADDR_018
+LValueReferenceType
 <Visited Children>
 ADDR_019
 0
-<FunctionDeclData>
+<FunctionProtoTypeData>
 ADDR_019
+FunctionProtoType
+void (__builtin_va_list &, ...)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_002
+1
+1
+ADDR_018
+0
+1
+None
+None
+0
+<Id to Class Map>
+ADDR_019
+FunctionProtoType
+<Top Level Types>
+ADDR_019
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_020
+0
+<ParmVarDeclData>
+ADDR_020
+ParmVarDecl
+<invalid>
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_018
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_020
+ParmVarDecl
+<Visited Children>
+ADDR_021
+1
+ADDR_020
+<FunctionDeclData>
+ADDR_021
 FunctionDecl
 <SYSTEM_INCLUDE>/sec_api/stdio_s.h
 64
@@ -411,7 +535,7 @@ __builtin_va_start
 0
 External
 Default
-ADDR_018
+ADDR_019
 0
 0
 0
@@ -422,17 +546,17 @@ Extern
 0
 0
 nullptr_decl
-ADDR_019
+ADDR_021
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_019
+ADDR_021
 FunctionDecl
 <Visited Children>
-ADDR_020
+ADDR_022
 0
 <DeclRefExprData>
-ADDR_020
+ADDR_022
 DeclRefExpr
 <TEST_DIR>/variadic.c
 6
@@ -446,63 +570,15 @@ ADDR_015
 0
 
 0
-ADDR_019
+ADDR_021
 <Id to Class Map>
-ADDR_020
+ADDR_022
 DeclRefExpr
 <Visited Children>
-ADDR_021
-0
-<ReferenceTypeData>
-ADDR_021
-LValueReferenceType
-__builtin_va_list &
-NONE
-0
-0
-0
-nullptr_type
-ADDR_008
-<Id to Class Map>
-ADDR_021
-LValueReferenceType
-<Visited Children>
-ADDR_018
-0
-<FunctionProtoTypeData>
-ADDR_018
-FunctionProtoType
-void (__builtin_va_list &, ...)
-NONE
-0
-0
-0
-nullptr_type
-0
-0
-0
-0
-0
-0
-0
-C
-ADDR_002
-1
-1
-ADDR_021
-0
-1
-None
-None
-0
-<Id to Class Map>
-ADDR_018
-FunctionProtoType
-<Visited Children>
-ADDR_022
+ADDR_023
 0
 <PointerTypeData>
-ADDR_022
+ADDR_023
 PointerType
 void (*)(__builtin_va_list &, ...)
 NONE
@@ -510,18 +586,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_022
+ADDR_023
 PointerType
 <Top Level Types>
-ADDR_022
+ADDR_023
 <Visited Children>
-ADDR_023
+ADDR_024
 1
-ADDR_020
+ADDR_022
 <ExprData>
-ADDR_023
+ADDR_024
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 6
@@ -529,20 +605,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_022
+ADDR_023
 0
 0
 0
 <Id to Class Map>
-ADDR_023
+ADDR_024
 ImplicitCastExpr
 <Top Level Types>
 ADDR_012
 <Visited Children>
-ADDR_024
+ADDR_025
 0
 <DeclRefExprData>
-ADDR_024
+ADDR_025
 DeclRefExpr
 <TEST_DIR>/variadic.c
 6
@@ -558,15 +634,15 @@ ADDR_012
 0
 ADDR_013
 <Id to Class Map>
-ADDR_024
+ADDR_025
 DeclRefExpr
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_025
+ADDR_026
 0
 <DeclRefExprData>
-ADDR_025
+ADDR_026
 DeclRefExpr
 <TEST_DIR>/variadic.c
 6
@@ -582,18 +658,18 @@ ADDR_004
 0
 ADDR_006
 <Id to Class Map>
-ADDR_025
+ADDR_026
 DeclRefExpr
 <Top Level Types>
 ADDR_002
 <Visited Children>
-ADDR_026
+ADDR_027
 3
-ADDR_023
 ADDR_024
 ADDR_025
-<CallExprData>
 ADDR_026
+<CallExprData>
+ADDR_027
 CallExpr
 <TEST_DIR>/variadic.c
 6
@@ -607,89 +683,58 @@ ADDR_002
 0
 0
 0
-ADDR_019
+ADDR_021
 <Id to Class Map>
-ADDR_026
+ADDR_027
 CallExpr
 <Top Level Types>
 ADDR_015
-<Top Level Attributes>
-ADDR_027
+<Visited Children>
+ADDR_028
+0
+<AttributeData>
+ADDR_028
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+0
+0
+0
+<Id to Class Map>
+ADDR_028
+BuiltinAttr
 <Top Level Attributes>
 ADDR_028
-<Top Level Types>
-ADDR_029
 <Visited Children>
-ADDR_030
+ADDR_029
 0
-<FunctionDeclData>
-ADDR_030
-FunctionDecl
+<AttributeData>
+ADDR_029
+NoThrowAttr
 <SYSTEM_INCLUDE>/sec_api/stdio_s.h
 66
 5
 <end>
 0
 1
+NoThrow
 1
-1
-1
 0
 0
-2
-ADDR_027
-ADDR_028
-
-__builtin_va_end
-0
-0
-0
-External
-Default
-ADDR_029
-0
-0
-0
-Extern
-0
-0
-0
-0
-0
-nullptr_decl
-ADDR_030
-nullptr_decl
 0
 <Id to Class Map>
-ADDR_030
-FunctionDecl
-<Visited Children>
-ADDR_031
-0
-<DeclRefExprData>
-ADDR_031
-DeclRefExpr
-<TEST_DIR>/variadic.c
-7
-4
-<end>
-0
-0
-ADDR_015
-0
-0
-0
-
-0
-ADDR_030
-<Id to Class Map>
-ADDR_031
-DeclRefExpr
-<Visited Children>
 ADDR_029
+NoThrowAttr
+<Top Level Attributes>
+ADDR_029
+<Visited Children>
+ADDR_030
 0
 <FunctionProtoTypeData>
-ADDR_029
+ADDR_030
 FunctionProtoType
 void (__builtin_va_list &)
 NONE
@@ -708,20 +753,127 @@ C
 ADDR_002
 1
 1
-ADDR_021
+ADDR_018
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_029
+ADDR_030
 FunctionProtoType
+<Top Level Types>
+ADDR_030
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_031
+0
+<ParmVarDeclData>
+ADDR_031
+ParmVarDecl
+<invalid>
+0
+0
+0
+0
+0
+0
+0
+0
+
+
+0
+0
+0
+None
+Default
+ADDR_018
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_031
+ParmVarDecl
 <Visited Children>
 ADDR_032
+1
+ADDR_031
+<FunctionDeclData>
+ADDR_032
+FunctionDecl
+<SYSTEM_INCLUDE>/sec_api/stdio_s.h
+66
+5
+<end>
+0
+1
+1
+1
+1
+0
+0
+2
+ADDR_028
+ADDR_029
+
+__builtin_va_end
+0
+0
+0
+External
+Default
+ADDR_030
+0
+0
+0
+Extern
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_032
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_032
+FunctionDecl
+<Visited Children>
+ADDR_033
+0
+<DeclRefExprData>
+ADDR_033
+DeclRefExpr
+<TEST_DIR>/variadic.c
+7
+4
+<end>
+0
+0
+ADDR_015
+0
+0
+0
+
+0
+ADDR_032
+<Id to Class Map>
+ADDR_033
+DeclRefExpr
+<Visited Children>
+ADDR_034
 0
 <PointerTypeData>
-ADDR_032
+ADDR_034
 PointerType
 void (*)(__builtin_va_list &)
 NONE
@@ -729,18 +881,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_029
+ADDR_030
 <Id to Class Map>
-ADDR_032
+ADDR_034
 PointerType
 <Top Level Types>
-ADDR_032
+ADDR_034
 <Visited Children>
-ADDR_033
+ADDR_035
 1
-ADDR_031
-<ExprData>
 ADDR_033
+<ExprData>
+ADDR_035
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 7
@@ -748,20 +900,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_032
+ADDR_034
 0
 0
 0
 <Id to Class Map>
-ADDR_033
+ADDR_035
 ImplicitCastExpr
 <Top Level Types>
 ADDR_012
 <Visited Children>
-ADDR_034
+ADDR_036
 0
 <DeclRefExprData>
-ADDR_034
+ADDR_036
 DeclRefExpr
 <TEST_DIR>/variadic.c
 7
@@ -777,17 +929,17 @@ ADDR_012
 0
 ADDR_013
 <Id to Class Map>
-ADDR_034
+ADDR_036
 DeclRefExpr
 <Top Level Types>
 ADDR_002
 <Visited Children>
-ADDR_035
+ADDR_037
 2
-ADDR_033
-ADDR_034
-<CallExprData>
 ADDR_035
+ADDR_036
+<CallExprData>
+ADDR_037
 CallExpr
 <TEST_DIR>/variadic.c
 7
@@ -801,15 +953,15 @@ ADDR_002
 0
 0
 0
-ADDR_030
+ADDR_032
 <Id to Class Map>
-ADDR_035
+ADDR_037
 CallExpr
 <Visited Children>
-ADDR_036
+ADDR_038
 0
 <BuiltinTypeData>
-ADDR_036
+ADDR_038
 BuiltinType
 int
 NONE
@@ -820,13 +972,13 @@ nullptr_type
 Int
 int
 <Id to Class Map>
-ADDR_036
+ADDR_038
 BuiltinType
 <Visited Children>
-ADDR_037
+ADDR_039
 0
 <QualTypeData>
-ADDR_037
+ADDR_039
 QualType
 const char
 NONE
@@ -840,13 +992,13 @@ NONE
 0
 ADDR_003
 <Id to Class Map>
-ADDR_037
+ADDR_039
 QualType
 <Visited Children>
-ADDR_038
+ADDR_040
 0
 <PointerTypeData>
-ADDR_038
+ADDR_040
 PointerType
 const char *
 NONE
@@ -854,15 +1006,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_037
+ADDR_039
 <Id to Class Map>
-ADDR_038
+ADDR_040
 PointerType
 <Visited Children>
-ADDR_039
+ADDR_041
 0
 <FunctionProtoTypeData>
-ADDR_039
+ADDR_041
 FunctionProtoType
 int (const char *, ...)
 NONE
@@ -878,33 +1030,259 @@ nullptr_type
 0
 0
 C
-ADDR_036
-1
-1
 ADDR_038
+1
+1
+ADDR_040
 0
 1
 None
 None
 0
 <Id to Class Map>
-ADDR_039
+ADDR_041
 FunctionProtoType
 <Top Level Types>
-ADDR_039
-<Top Level Attributes>
-ADDR_040
-<Top Level Attributes>
 ADDR_041
+<Visited Children>
+ADDR_042
+0
+<AttributeData>
+ADDR_042
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+1
+0
+0
+<Id to Class Map>
+ADDR_042
+BuiltinAttr
 <Top Level Attributes>
 ADDR_042
-<Top Level Types>
-ADDR_039
 <Visited Children>
 ADDR_043
 0
-<FunctionDeclData>
+<FormatAttrData>
 ADDR_043
+FormatAttr
+<SYSTEM_INCLUDE>/stdio.h
+449
+18
+<SYSTEM_INCLUDE>/stdio.h
+449
+57
+0
+1
+Format
+0
+0
+0
+0
+printf
+1
+2
+<Id to Class Map>
+ADDR_043
+FormatAttr
+<Top Level Attributes>
+ADDR_043
+<Visited Children>
+ADDR_044
+0
+<NonNullAttrData>
+ADDR_044
+NonNullAttr
+<SYSTEM_INCLUDE>/stdio.h
+449
+61
+<SYSTEM_INCLUDE>/stdio.h
+449
+85
+1
+<SYSTEM_INCLUDE>/_mingw.h
+174
+53
+<SYSTEM_INCLUDE>/_mingw.h
+174
+69
+1
+NonNull
+0
+0
+0
+0
+1
+1
+<Id to Class Map>
+ADDR_044
+NonNullAttr
+<Top Level Attributes>
+ADDR_044
+<Top Level Types>
+ADDR_041
+<Visited Children>
+ADDR_045
+0
+<AttributeData>
+ADDR_045
+BuiltinAttr
+<invalid>
+0
+0
+Builtin
+1
+0
+0
+0
+<Id to Class Map>
+ADDR_045
+BuiltinAttr
+<Top Level Attributes>
+ADDR_045
+<Visited Children>
+ADDR_046
+0
+<FormatAttrData>
+ADDR_046
+FormatAttr
+<SYSTEM_INCLUDE>/stdio.h
+450
+15
+<end>
+0
+1
+Format
+1
+0
+0
+0
+printf
+1
+2
+<Id to Class Map>
+ADDR_046
+FormatAttr
+<Top Level Attributes>
+ADDR_046
+<Top Level Types>
+ADDR_041
+<Visited Children>
+ADDR_047
+0
+<FunctionDeclData>
+ADDR_047
+FunctionDecl
+<SYSTEM_INCLUDE>/stdio.h
+450
+15
+<end>
+0
+1
+1
+1
+1
+0
+0
+2
+ADDR_045
+ADDR_046
+
+printf
+0
+0
+0
+External
+Default
+ADDR_041
+0
+0
+0
+Extern
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_047
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_047
+FunctionDecl
+<Visited Children>
+ADDR_048
+0
+<QualTypeData>
+ADDR_048
+QualType
+const char *restrict
+NONE
+0
+0
+0
+nullptr_type
+1
+RESTRICT_C99
+NONE
+0
+ADDR_040
+<Id to Class Map>
+ADDR_048
+QualType
+<Top Level Types>
+ADDR_048
+<Visited Children>
+ADDR_049
+0
+<ParmVarDeclData>
+ADDR_049
+ParmVarDecl
+<SYSTEM_INCLUDE>/stdio.h
+450
+22
+<SYSTEM_INCLUDE>/stdio.h
+450
+48
+0
+1
+0
+0
+0
+0
+0
+0
+
+_Format
+0
+0
+0
+None
+Default
+ADDR_048
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_049
+ParmVarDecl
+<Visited Children>
+ADDR_050
+1
+ADDR_049
+<FunctionDeclData>
+ADDR_050
 FunctionDecl
 <SYSTEM_INCLUDE>/stdio.h
 449
@@ -920,9 +1298,9 @@ FunctionDecl
 0
 0
 3
-ADDR_040
-ADDR_041
 ADDR_042
+ADDR_043
+ADDR_044
 
 printf
 0
@@ -930,7 +1308,7 @@ printf
 0
 External
 Default
-ADDR_039
+ADDR_041
 0
 0
 0
@@ -940,18 +1318,18 @@ None
 0
 0
 0
-ADDR_044
-ADDR_044
+ADDR_047
+ADDR_047
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_043
+ADDR_050
 FunctionDecl
 <Visited Children>
-ADDR_045
+ADDR_051
 0
 <DeclRefExprData>
-ADDR_045
+ADDR_051
 DeclRefExpr
 <TEST_DIR>/variadic.c
 8
@@ -959,21 +1337,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_039
+ADDR_041
 0
 0
 0
 
 0
-ADDR_043
+ADDR_050
 <Id to Class Map>
-ADDR_045
+ADDR_051
 DeclRefExpr
 <Visited Children>
-ADDR_046
+ADDR_052
 0
 <PointerTypeData>
-ADDR_046
+ADDR_052
 PointerType
 int (*)(const char *, ...)
 NONE
@@ -981,18 +1359,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_039
+ADDR_041
 <Id to Class Map>
-ADDR_046
+ADDR_052
 PointerType
 <Top Level Types>
-ADDR_046
+ADDR_052
 <Visited Children>
-ADDR_047
+ADDR_053
 1
-ADDR_045
+ADDR_051
 <ExprData>
-ADDR_047
+ADDR_053
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 8
@@ -1000,18 +1378,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_046
+ADDR_052
 0
 0
 0
 <Id to Class Map>
-ADDR_047
+ADDR_053
 ImplicitCastExpr
 <Visited Children>
-ADDR_048
+ADDR_054
 0
 <ConstantArrayTypeData>
-ADDR_048
+ADDR_054
 ConstantArrayType
 char[3]
 NONE
@@ -1024,15 +1402,15 @@ Normal
 ADDR_003
 3
 <Id to Class Map>
-ADDR_048
+ADDR_054
 ConstantArrayType
 <Top Level Types>
-ADDR_048
+ADDR_054
 <Visited Children>
-ADDR_049
+ADDR_055
 0
 <StringLiteralData>
-ADDR_049
+ADDR_055
 StringLiteral
 <TEST_DIR>/variadic.c
 8
@@ -1040,7 +1418,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_048
+ADDR_054
 1
 0
 0
@@ -1054,16 +1432,16 @@ ORDINARY
 37
 115
 <Id to Class Map>
-ADDR_049
+ADDR_055
 StringLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_050
+ADDR_056
 1
-ADDR_049
+ADDR_055
 <ExprData>
-ADDR_050
+ADDR_056
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 8
@@ -1076,16 +1454,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_050
+ADDR_056
 ImplicitCastExpr
 <Top Level Types>
-ADDR_038
+ADDR_040
 <Visited Children>
-ADDR_051
+ADDR_057
 1
-ADDR_050
+ADDR_056
 <ExprData>
-ADDR_051
+ADDR_057
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 8
@@ -1093,20 +1471,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_038
+ADDR_040
 0
 0
 0
 <Id to Class Map>
-ADDR_051
+ADDR_057
 ImplicitCastExpr
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_052
+ADDR_058
 0
 <DeclRefExprData>
-ADDR_052
+ADDR_058
 DeclRefExpr
 <TEST_DIR>/variadic.c
 8
@@ -1122,16 +1500,16 @@ ADDR_004
 0
 ADDR_006
 <Id to Class Map>
-ADDR_052
+ADDR_058
 DeclRefExpr
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_053
+ADDR_059
 1
-ADDR_052
+ADDR_058
 <ExprData>
-ADDR_053
+ADDR_059
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 8
@@ -1144,18 +1522,18 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_053
+ADDR_059
 ImplicitCastExpr
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_054
+ADDR_060
 3
-ADDR_047
-ADDR_051
 ADDR_053
+ADDR_057
+ADDR_059
 <CallExprData>
-ADDR_054
+ADDR_060
 CallExpr
 <TEST_DIR>/variadic.c
 8
@@ -1165,21 +1543,21 @@ CallExpr
 20
 0
 0
-ADDR_036
+ADDR_038
 0
 0
 0
-ADDR_043
+ADDR_050
 <Id to Class Map>
-ADDR_054
+ADDR_060
 CallExpr
 <Top Level Types>
 ADDR_012
 <Visited Children>
-ADDR_055
+ADDR_061
 0
 <VarDeclData>
-ADDR_055
+ADDR_061
 VarDecl
 <TEST_DIR>/variadic.c
 10
@@ -1213,14 +1591,14 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_055
+ADDR_061
 VarDecl
 <Visited Children>
-ADDR_056
+ADDR_062
 1
-ADDR_055
+ADDR_061
 <StmtData>
-ADDR_056
+ADDR_062
 DeclStmt
 <TEST_DIR>/variadic.c
 10
@@ -1231,22 +1609,24 @@ DeclStmt
 0
 0
 <Id to Class Map>
-ADDR_056
+ADDR_062
 DeclStmt
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Top Level Types>
 ADDR_012
 <Visited Children>
-ADDR_057
+ADDR_063
 0
 <DeclRefExprData>
-ADDR_057
+ADDR_063
 DeclRefExpr
 <TEST_DIR>/variadic.c
 11
 13
-<end>
+<TEST_DIR>/variadic.c
+11
+31
 1
 <TEST_DIR>/variadic.c
 11
@@ -1261,21 +1641,23 @@ ADDR_012
 0
 ADDR_013
 <Id to Class Map>
-ADDR_057
+ADDR_063
 DeclRefExpr
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_058
+ADDR_064
 1
-ADDR_057
+ADDR_063
 <ExprData>
-ADDR_058
+ADDR_064
 VAArgExpr
 <TEST_DIR>/variadic.c
 11
 13
-<end>
+<TEST_DIR>/variadic.c
+11
+31
 1
 <CLANG_INCLUDE>/__stdarg_va_arg.h
 20
@@ -1284,26 +1666,26 @@ VAArgExpr
 20
 51
 0
-ADDR_036
+ADDR_038
 0
 0
 0
 <Id to Class Map>
-ADDR_058
+ADDR_064
 VAArgExpr
 <Visited Children>
-ADDR_059
+ADDR_065
 1
-ADDR_058
+ADDR_064
 <VarDeclData>
-ADDR_059
+ADDR_065
 VarDecl
 <TEST_DIR>/variadic.c
 11
 2
 <TEST_DIR>/variadic.c
 11
-13
+31
 1
 <TEST_DIR>/variadic.c
 11
@@ -1325,7 +1707,7 @@ gain
 0
 None
 Default
-ADDR_036
+ADDR_038
 0
 None
 NONE
@@ -1336,14 +1718,14 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_059
+ADDR_065
 VarDecl
 <Visited Children>
-ADDR_060
+ADDR_066
 1
-ADDR_059
+ADDR_065
 <StmtData>
-ADDR_060
+ADDR_066
 DeclStmt
 <TEST_DIR>/variadic.c
 11
@@ -1354,19 +1736,19 @@ DeclStmt
 0
 0
 <Id to Class Map>
-ADDR_060
+ADDR_066
 DeclStmt
 <Visited Children>
-ADDR_061
+ADDR_067
 6
 ADDR_014
-ADDR_026
-ADDR_035
-ADDR_054
-ADDR_056
+ADDR_027
+ADDR_037
 ADDR_060
+ADDR_062
+ADDR_066
 <StmtData>
-ADDR_061
+ADDR_067
 CompoundStmt
 <TEST_DIR>/variadic.c
 4
@@ -1377,13 +1759,13 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_061
+ADDR_067
 CompoundStmt
 <Visited Children>
 ADDR_001
 2
 ADDR_006
-ADDR_061
+ADDR_067
 <FunctionDeclData>
 ADDR_001
 FunctionDecl
@@ -1426,12 +1808,12 @@ nullptr_decl
 ADDR_001
 FunctionDecl
 <Top Level Nodes>
-ADDR_062
+ADDR_068
 <Visited Children>
-ADDR_063
+ADDR_069
 0
 <FunctionTypeData>
-ADDR_063
+ADDR_069
 FunctionNoProtoType
 int ()
 NONE
@@ -1447,21 +1829,21 @@ nullptr_type
 0
 0
 C
-ADDR_036
+ADDR_038
 <Id to Class Map>
-ADDR_063
+ADDR_069
 FunctionNoProtoType
 <Top Level Types>
-ADDR_063
+ADDR_069
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_064
+ADDR_070
 0
 <IntegerLiteralData>
-ADDR_064
+ADDR_070
 IntegerLiteral
 <TEST_DIR>/variadic.c
 16
@@ -1469,7 +1851,7 @@ IntegerLiteral
 <end>
 0
 0
-ADDR_036
+ADDR_038
 0
 0
 0
@@ -1478,14 +1860,14 @@ ADDR_036
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_064
+ADDR_070
 IntegerLiteral
 <Visited Children>
-ADDR_065
+ADDR_071
 1
-ADDR_064
+ADDR_070
 <VarDeclData>
-ADDR_065
+ADDR_071
 VarDecl
 <TEST_DIR>/variadic.c
 16
@@ -1508,7 +1890,7 @@ a
 0
 None
 Default
-ADDR_036
+ADDR_038
 0
 None
 NONE
@@ -1519,14 +1901,14 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_065
+ADDR_071
 VarDecl
 <Visited Children>
-ADDR_066
+ADDR_072
 1
-ADDR_065
+ADDR_071
 <StmtData>
-ADDR_066
+ADDR_072
 DeclStmt
 <TEST_DIR>/variadic.c
 16
@@ -1537,15 +1919,15 @@ DeclStmt
 0
 0
 <Id to Class Map>
-ADDR_066
+ADDR_072
 DeclStmt
 <Top Level Types>
-ADDR_039
+ADDR_041
 <Visited Children>
-ADDR_067
+ADDR_073
 0
 <DeclRefExprData>
-ADDR_067
+ADDR_073
 DeclRefExpr
 <TEST_DIR>/variadic.c
 17
@@ -1553,24 +1935,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_039
+ADDR_041
 0
 0
 0
 
 0
-ADDR_043
+ADDR_050
 <Id to Class Map>
-ADDR_067
+ADDR_073
 DeclRefExpr
 <Top Level Types>
-ADDR_046
+ADDR_052
 <Visited Children>
-ADDR_068
+ADDR_074
 1
-ADDR_067
+ADDR_073
 <ExprData>
-ADDR_068
+ADDR_074
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 17
@@ -1578,18 +1960,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_046
+ADDR_052
 0
 0
 0
 <Id to Class Map>
-ADDR_068
+ADDR_074
 ImplicitCastExpr
 <Visited Children>
-ADDR_069
+ADDR_075
 0
 <ConstantArrayTypeData>
-ADDR_069
+ADDR_075
 ConstantArrayType
 char[11]
 NONE
@@ -1602,15 +1984,15 @@ Normal
 ADDR_003
 11
 <Id to Class Map>
-ADDR_069
+ADDR_075
 ConstantArrayType
 <Top Level Types>
-ADDR_069
+ADDR_075
 <Visited Children>
-ADDR_070
+ADDR_076
 0
 <StringLiteralData>
-ADDR_070
+ADDR_076
 StringLiteral
 <TEST_DIR>/variadic.c
 17
@@ -1618,7 +2000,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_069
+ADDR_075
 1
 0
 0
@@ -1640,16 +2022,16 @@ ORDINARY
 47
 110
 <Id to Class Map>
-ADDR_070
+ADDR_076
 StringLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_071
+ADDR_077
 1
-ADDR_070
+ADDR_076
 <ExprData>
-ADDR_071
+ADDR_077
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 17
@@ -1662,16 +2044,16 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_071
+ADDR_077
 ImplicitCastExpr
 <Top Level Types>
-ADDR_038
+ADDR_040
 <Visited Children>
-ADDR_072
+ADDR_078
 1
-ADDR_071
+ADDR_077
 <ExprData>
-ADDR_072
+ADDR_078
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 17
@@ -1679,20 +2061,20 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_038
+ADDR_040
 0
 0
 0
 <Id to Class Map>
-ADDR_072
+ADDR_078
 ImplicitCastExpr
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_073
+ADDR_079
 0
 <DeclRefExprData>
-ADDR_073
+ADDR_079
 DeclRefExpr
 <TEST_DIR>/variadic.c
 17
@@ -1700,24 +2082,24 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_036
+ADDR_038
 1
 0
 0
 
 0
-ADDR_065
+ADDR_071
 <Id to Class Map>
-ADDR_073
+ADDR_079
 DeclRefExpr
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_074
+ADDR_080
 1
-ADDR_073
+ADDR_079
 <ExprData>
-ADDR_074
+ADDR_080
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 17
@@ -1725,23 +2107,23 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_036
+ADDR_038
 0
 0
 0
 <Id to Class Map>
-ADDR_074
+ADDR_080
 ImplicitCastExpr
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_075
+ADDR_081
 3
-ADDR_068
-ADDR_072
 ADDR_074
+ADDR_078
+ADDR_080
 <CallExprData>
-ADDR_075
+ADDR_081
 CallExpr
 <TEST_DIR>/variadic.c
 17
@@ -1751,21 +2133,21 @@ CallExpr
 26
 0
 0
-ADDR_036
+ADDR_038
 0
 0
 0
-ADDR_043
+ADDR_050
 <Id to Class Map>
-ADDR_075
+ADDR_081
 CallExpr
 <Top Level Types>
 ADDR_005
 <Visited Children>
-ADDR_076
+ADDR_082
 0
 <DeclRefExprData>
-ADDR_076
+ADDR_082
 DeclRefExpr
 <TEST_DIR>/variadic.c
 18
@@ -1781,13 +2163,13 @@ ADDR_005
 0
 ADDR_001
 <Id to Class Map>
-ADDR_076
+ADDR_082
 DeclRefExpr
 <Visited Children>
-ADDR_077
+ADDR_083
 0
 <PointerTypeData>
-ADDR_077
+ADDR_083
 PointerType
 void (*)(char *, ...)
 NONE
@@ -1797,16 +2179,16 @@ NONE
 nullptr_type
 ADDR_005
 <Id to Class Map>
-ADDR_077
+ADDR_083
 PointerType
 <Top Level Types>
-ADDR_077
+ADDR_083
 <Visited Children>
-ADDR_078
+ADDR_084
 1
-ADDR_076
+ADDR_082
 <ExprData>
-ADDR_078
+ADDR_084
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 18
@@ -1814,18 +2196,18 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_077
+ADDR_083
 0
 0
 0
 <Id to Class Map>
-ADDR_078
+ADDR_084
 ImplicitCastExpr
 <Visited Children>
-ADDR_079
+ADDR_085
 0
 <ConstantArrayTypeData>
-ADDR_079
+ADDR_085
 ConstantArrayType
 char[7]
 NONE
@@ -1838,15 +2220,15 @@ Normal
 ADDR_003
 7
 <Id to Class Map>
-ADDR_079
+ADDR_085
 ConstantArrayType
 <Top Level Types>
-ADDR_079
+ADDR_085
 <Visited Children>
-ADDR_080
+ADDR_086
 0
 <StringLiteralData>
-ADDR_080
+ADDR_086
 StringLiteral
 <TEST_DIR>/variadic.c
 18
@@ -1854,7 +2236,7 @@ StringLiteral
 <end>
 0
 0
-ADDR_079
+ADDR_085
 1
 0
 0
@@ -1872,16 +2254,16 @@ ORDINARY
 47
 110
 <Id to Class Map>
-ADDR_080
+ADDR_086
 StringLiteral
 <Top Level Types>
 ADDR_004
 <Visited Children>
-ADDR_081
+ADDR_087
 1
-ADDR_080
+ADDR_086
 <ExprData>
-ADDR_081
+ADDR_087
 ImplicitCastExpr
 <TEST_DIR>/variadic.c
 18
@@ -1894,17 +2276,17 @@ ADDR_004
 0
 0
 <Id to Class Map>
-ADDR_081
+ADDR_087
 ImplicitCastExpr
 <Top Level Types>
 ADDR_002
 <Visited Children>
-ADDR_082
+ADDR_088
 2
-ADDR_078
-ADDR_081
+ADDR_084
+ADDR_087
 <CallExprData>
-ADDR_082
+ADDR_088
 CallExpr
 <TEST_DIR>/variadic.c
 18
@@ -1920,15 +2302,15 @@ ADDR_002
 0
 ADDR_001
 <Id to Class Map>
-ADDR_082
+ADDR_088
 CallExpr
 <Top Level Types>
-ADDR_036
+ADDR_038
 <Visited Children>
-ADDR_083
+ADDR_089
 0
 <IntegerLiteralData>
-ADDR_083
+ADDR_089
 IntegerLiteral
 <TEST_DIR>/variadic.c
 20
@@ -1936,7 +2318,7 @@ IntegerLiteral
 <end>
 0
 0
-ADDR_036
+ADDR_038
 0
 0
 0
@@ -1945,14 +2327,14 @@ ADDR_036
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_083
+ADDR_089
 IntegerLiteral
 <Visited Children>
-ADDR_084
+ADDR_090
 1
-ADDR_083
+ADDR_089
 <StmtData>
-ADDR_084
+ADDR_090
 ReturnStmt
 <TEST_DIR>/variadic.c
 20
@@ -1963,17 +2345,17 @@ ReturnStmt
 0
 0
 <Id to Class Map>
-ADDR_084
+ADDR_090
 ReturnStmt
 <Visited Children>
-ADDR_085
+ADDR_091
 4
-ADDR_066
-ADDR_075
-ADDR_082
-ADDR_084
+ADDR_072
+ADDR_081
+ADDR_088
+ADDR_090
 <StmtData>
-ADDR_085
+ADDR_091
 CompoundStmt
 <TEST_DIR>/variadic.c
 15
@@ -1984,14 +2366,14 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_085
+ADDR_091
 CompoundStmt
 <Visited Children>
-ADDR_062
+ADDR_068
 1
-ADDR_085
+ADDR_091
 <FunctionDeclData>
-ADDR_062
+ADDR_068
 FunctionDecl
 <TEST_DIR>/variadic.c
 15
@@ -2014,7 +2396,7 @@ main
 0
 External
 Default
-ADDR_063
+ADDR_069
 0
 0
 0
@@ -2025,9 +2407,9 @@ None
 0
 0
 nullptr_decl
-ADDR_062
+ADDR_068
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_062
+ADDR_068
 FunctionDecl
