@@ -49,6 +49,21 @@ build-win-x86_64/tool.exe
 The produced executables are statically linked against LLVM/Clang and the
 MinGW/LLVM runtime libraries. They should only import Windows system/UCRT DLLs.
 
+The MSYS2 package archives used by cross builds are pinned in
+`llvm-version.env` and retrieved from the
+[Windows builds SDKs](https://github.com/specs-feup/clang-dumper/releases/tag/windows-build-sdks)
+release. To add a new immutable SDK version, place its required archives in
+`.deps/msys2-sdk-downloads/`, update the package-version settings and
+`WINDOWS_SDK_ASSET` in `llvm-version.env`, then run:
+
+```sh
+scripts/create_windows_cross_sdk_bundle.sh
+```
+
+Copy the resulting SHA-256 into `WINDOWS_SDK_SHA256`, then publish with
+`scripts/publish_windows_cross_sdk_bundle.sh`. Existing asset names are never
+overwritten.
+
 ## Include Packages
 
 Release builds also publish include packages for each supported OS/architecture.

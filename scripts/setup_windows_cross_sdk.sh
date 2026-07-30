@@ -6,9 +6,30 @@ source "${ROOT_DIR}/scripts/load_llvm_version.sh"
 load_llvm_version "${ROOT_DIR}/llvm-version.env"
 
 DOWNLOAD_DIR="${ROOT_DIR}/.deps/msys2-sdk-downloads"
+SDK_BUNDLE_DIR="${ROOT_DIR}/.deps/windows-sdk-bundles"
 HOST_TOOLS_DIR="${ROOT_DIR}/.deps/host-tools"
 
-mkdir -p "${DOWNLOAD_DIR}" "${HOST_TOOLS_DIR}/bin"
+mkdir -p "${DOWNLOAD_DIR}" "${SDK_BUNDLE_DIR}" "${HOST_TOOLS_DIR}/bin"
+
+download_sdk_bundle() {
+  local bundle="${SDK_BUNDLE_DIR}/${WINDOWS_SDK_ASSET}"
+  local url="https://github.com/specs-feup/clang-dumper/releases/download/${WINDOWS_SDK_RELEASE_TAG}/${WINDOWS_SDK_ASSET}"
+
+  if [[ -z "${WINDOWS_SDK_SHA256}" ]]; then
+    echo "WINDOWS_SDK_SHA256 is required in llvm-version.env" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "${bundle}" ]]; then
+    curl -fL --retry 3 "${url}" -o "${bundle}"
+  fi
+  echo "${WINDOWS_SDK_SHA256}  ${bundle}" | sha256sum --check --status
+  tar -xf "${bundle}" -C "${DOWNLOAD_DIR}"
+  (
+    cd "${DOWNLOAD_DIR}"
+    sha256sum --check SHA256SUMS
+  )
+}
 
 fetch_extract() {
   local root="$1"
@@ -16,7 +37,11 @@ fetch_extract() {
   local file="${DOWNLOAD_DIR}/$(basename "${url}" | sed 's/%2B/+/g')"
   mkdir -p "${root}"
   if [[ ! -f "${file}" ]]; then
-    curl -fL "${url}" -o "${file}"
+    download_sdk_bundle
+  fi
+  if [[ ! -f "${file}" ]]; then
+    echo "Windows SDK bundle did not provide $(basename "${file}")" >&2
+    exit 1
   fi
   tar -I zstd -xf "${file}" -C "${root}"
 }

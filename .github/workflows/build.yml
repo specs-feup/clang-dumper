@@ -408,12 +408,6 @@ jobs:
             tar \
             zstd
 
-      - name: Cache Windows cross SDKs
-        uses: actions/cache@v5
-        with:
-          path: .deps
-          key: windows-cross-sdk-${{ hashFiles('llvm-version.env') }}-${{ matrix.arch }}-v2
-
       - name: Setup Windows cross SDKs
         run: scripts/setup_windows_cross_sdk.sh ${{ matrix.arch }}
 
