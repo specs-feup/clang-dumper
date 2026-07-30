@@ -1,57 +1,53 @@
-# toolchain-mingw.cmake
-
 set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_SYSTEM_PROCESSOR x86_64)  # Change to x86 if targeting 32-bit
 
-# Cross-compiler triplet
-set(CROSS_PREFIX x86_64-w64-mingw32 CACHE STRING "GNU triplet for the target")  # Change to i686-w64-mingw32 for 32-bit
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/read_llvm_version.cmake")
+clang_dumper_load_llvm_version("${CMAKE_CURRENT_LIST_DIR}/llvm-version.env")
 
-# Location of the MinGW/LLVM sysroot (bin/lib/include). Defaults to /usr/<triplet>
-set(MINGW_SYSROOT "" CACHE PATH "Root directory of the MinGW toolchain")
-if(NOT MINGW_SYSROOT)
-	if(DEFINED ENV{MINGW_BASEDIR} AND EXISTS "$ENV{MINGW_BASEDIR}")
-		set(MINGW_SYSROOT "$ENV{MINGW_BASEDIR}")
+set(CROSS_PREFIX x86_64-w64-mingw32 CACHE STRING "GNU triplet for the target")
+set(HOST_LLD_DIR "" CACHE PATH "Directory containing a Linux-host ld.lld for MinGW cross-linking")
+if(NOT DEFINED CMAKE_SYSTEM_PROCESSOR)
+	if(CROSS_PREFIX MATCHES "^(aarch64|arm64)-")
+		set(CMAKE_SYSTEM_PROCESSOR ARM64)
 	else()
-		set(MINGW_SYSROOT "/usr/${CROSS_PREFIX}")
+		set(CMAKE_SYSTEM_PROCESSOR x86_64)
 	endif()
 endif()
 
-set(_MINGW_BIN "${MINGW_SYSROOT}/bin")
-
-find_program(MINGW_C_COMPILER
-	NAMES ${CROSS_PREFIX}-clang ${CROSS_PREFIX}-gcc
-	HINTS "${_MINGW_BIN}"
-)
-if(NOT MINGW_C_COMPILER)
-	message(FATAL_ERROR "Could not find ${CROSS_PREFIX}-clang or -gcc under ${_MINGW_BIN}")
+set(MINGW_SYSROOT "" CACHE PATH "Root directory of the MinGW toolchain")
+if(NOT MINGW_SYSROOT)
+	set(MINGW_SYSROOT "/usr/${CROSS_PREFIX}")
 endif()
-set(CMAKE_C_COMPILER ${MINGW_C_COMPILER})
 
-find_program(MINGW_CXX_COMPILER
-	NAMES ${CROSS_PREFIX}-clang++ ${CROSS_PREFIX}-clang ${CROSS_PREFIX}-g++
-	HINTS "${_MINGW_BIN}"
-)
-if(NOT MINGW_CXX_COMPILER)
-	message(FATAL_ERROR "Could not find ${CROSS_PREFIX}-clang++/clang/g++ under ${_MINGW_BIN}")
+find_program(CMAKE_C_COMPILER NAMES clang-${CLANG_VERSION} clang REQUIRED)
+find_program(CMAKE_CXX_COMPILER NAMES clang++-${CLANG_VERSION} clang++ REQUIRED)
+
+set(CMAKE_C_COMPILER_TARGET "${CROSS_PREFIX}" CACHE STRING "" FORCE)
+set(CMAKE_CXX_COMPILER_TARGET "${CROSS_PREFIX}" CACHE STRING "" FORCE)
+set(_CLANG_MINGW_LINKER_FLAGS "")
+if(HOST_LLD_DIR)
+	set(_CLANG_MINGW_LINKER_FLAGS "-B${HOST_LLD_DIR} -fuse-ld=lld")
 endif()
-set(CMAKE_CXX_COMPILER ${MINGW_CXX_COMPILER})
+set(_CLANG_MINGW_COMPILE_FLAGS "-resource-dir=${MINGW_SYSROOT}/lib/clang/${CLANG_VERSION}")
+set(_CLANG_MINGW_RUNTIME_FLAGS "-rtlib=compiler-rt -unwindlib=libunwind")
+set(CMAKE_C_FLAGS_INIT "--target=${CROSS_PREFIX} --sysroot=${MINGW_SYSROOT} ${_CLANG_MINGW_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_INIT "--target=${CROSS_PREFIX} --sysroot=${MINGW_SYSROOT} ${_CLANG_MINGW_COMPILE_FLAGS} -stdlib=libc++")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "--target=${CROSS_PREFIX} --sysroot=${MINGW_SYSROOT} ${_CLANG_MINGW_LINKER_FLAGS} ${_CLANG_MINGW_COMPILE_FLAGS} ${_CLANG_MINGW_RUNTIME_FLAGS} -stdlib=libc++")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "${CMAKE_EXE_LINKER_FLAGS_INIT}")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "${CMAKE_EXE_LINKER_FLAGS_INIT}")
 
 find_program(MINGW_RC_COMPILER
-	NAMES llvm-rc ${CROSS_PREFIX}-windres
-	HINTS "${_MINGW_BIN}"
+	NAMES llvm-rc-${CLANG_VERSION} llvm-rc
 )
 if(MINGW_RC_COMPILER)
 	set(CMAKE_RC_COMPILER ${MINGW_RC_COMPILER})
 endif()
 
-# Tell CMake how to locate headers/libraries for the target sysroot
 set(CMAKE_FIND_ROOT_PATH
 	"${MINGW_SYSROOT}/${CROSS_PREFIX}"
 	"${MINGW_SYSROOT}/${CROSS_PREFIX}/lib"
 	"${MINGW_SYSROOT}"
 )
 
-# Prefer cross-compiled libraries over system libraries
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

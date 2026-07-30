@@ -27,7 +27,7 @@ private:
   ASTContext *Context;
   int id;
 
-  int systemHeaderThreshold = 2;
+  int systemHeaderThreshold = 0; // Overridden by the constructor.
   int currentSystemHeaderLevel = 0;
 
   std::set<const void *> seenTypes;
@@ -49,6 +49,9 @@ public:
   explicit ClangAstDumper(ASTContext *Context, int id,
                           int systemHeaderThreashold);
 
+  // Direct visits serialize referenced dependencies and must preserve graph
+  // closure. System-header depth is bounded by the addChild() entry points
+  // that perform structural descent.
   void VisitTypeTop(const Type *T);
   void VisitTypeTop(const QualType &T);
   void VisitStmtTop(const Stmt *Node);
@@ -140,6 +143,10 @@ private:
   void visitChildren(const QualType &T);
   void visitChildren(clava::AttrNode attrNode, const Attr *A);
   void emptyChildren(const void *pointer);
+
+  // A positive N expands through system-header level N and serializes its
+  // immediate children as boundary leaves. Non-positive values are unlimited.
+  bool isPastSystemHeaderThreshold() const;
 
   // Children visitors for Decls
   void VisitDeclChildren(const Decl *D, std::vector<std::string> &children);

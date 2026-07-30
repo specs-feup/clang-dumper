@@ -14,6 +14,41 @@
 
 using namespace clang;
 
+namespace {
+
+SourceLocation resolveTokenSplitLocation(const SourceManager &SM,
+                                         SourceLocation loc) {
+    while (loc.isMacroID()) {
+        unsigned offset = SM.getDecomposedLoc(loc).second;
+        CharSourceRange expansionRange = SM.getImmediateExpansionRange(loc);
+
+        // Clang represents a split token (for example the two '>' characters
+        // in a nested template-id) with macro locations even though no C/C++
+        // macro was involved. Unlike real macro expansions, these mappings use
+        // a character range. Unwrap them while preserving the character offset.
+        if (expansionRange.isTokenRange()) {
+            break;
+        }
+
+        SourceLocation expansionLoc =
+            expansionRange.getBegin().getLocWithOffset(offset);
+        if (expansionLoc.isInvalid() || expansionLoc == loc) {
+            break;
+        }
+
+        loc = expansionLoc;
+    }
+
+    return loc;
+}
+
+StringRef getLocationFilename(const SourceManager &SM, SourceLocation loc) {
+    StringRef filename = SM.getFilename(loc);
+    return filename.empty() ? SM.getBufferName(loc) : filename;
+}
+
+} // namespace
+
 const std::string clava::getClassName(const Decl *D) {
     const std::string kindName = D->getDeclKindName();
     return kindName + "Decl";
@@ -62,7 +97,7 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
     }
 
     // Dump start location
-    llvm::errs() << SM.getFilename(startSpellingLoc) << "\n";
+    llvm::errs() << getLocationFilename(SM, startSpellingLoc) << "\n";
     llvm::errs() << SM.getSpellingLineNumber(startSpellingLoc) << "\n";
     llvm::errs() << SM.getSpellingColumnNumber(startSpellingLoc) << "\n";
 
@@ -79,34 +114,25 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
         return;
     }
 
-    StringRef endFilename = SM.getFilename(endSpellingLoc);
-    if (endFilename.size() == 0) {
-        endFilename = SM.getFilename(startSpellingLoc);
-    }
-
-    unsigned int endLine = SM.getSpellingLineNumber(endSpellingLoc);
-    if (!endLine) {
-        endLine = SM.getSpellingLineNumber(startSpellingLoc);
-    }
-
-    unsigned int endCol = SM.getSpellingColumnNumber(endSpellingLoc);
-    if (!endCol) {
-        endCol = SM.getSpellingColumnNumber(startSpellingLoc);
-    }
-
     // Dump end location
-    llvm::errs() << endFilename << "\n";
-    llvm::errs() << endLine << "\n";
-    llvm::errs() << endCol << "\n";
+    llvm::errs() << getLocationFilename(SM, endSpellingLoc) << "\n";
+    llvm::errs() << SM.getSpellingLineNumber(endSpellingLoc) << "\n";
+    llvm::errs() << SM.getSpellingColumnNumber(endSpellingLoc) << "\n";
 }
 
 void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
                            SourceLocation end) {
+    const SourceManager &SM = Context->getSourceManager();
+    begin = resolveTokenSplitLocation(SM, begin);
+    end = resolveTokenSplitLocation(SM, end);
 
-    // Original source range
-    clava::dumpSourceRange(Context,
-                           Context->getSourceManager().getExpansionLoc(begin),
-                           Context->getSourceManager().getExpansionLoc(end));
+    // Resolve the complete range into the source where it was expanded. This
+    // keeps function-like macro call boundaries and maps token splits back to
+    // the corresponding characters in the original file.
+    CharSourceRange expansionRange =
+        SM.getExpansionRange(SourceRange(begin, end));
+    clava::dumpSourceRange(Context, expansionRange.getBegin(),
+                           expansionRange.getEnd());
 
     // ISMACRO: Disable this when updating
     // If it is a macro
@@ -116,9 +142,8 @@ void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
     // ISMACRO: Disable this when updating
     // Spelling location, if macro
     if (isMacro) {
-        clava::dumpSourceRange(
-            Context, Context->getSourceManager().getSpellingLoc(begin),
-            Context->getSourceManager().getSpellingLoc(end));
+        clava::dumpSourceRange(Context, SM.getSpellingLoc(begin),
+                               SM.getSpellingLoc(end));
     }
 
     // If is in system header

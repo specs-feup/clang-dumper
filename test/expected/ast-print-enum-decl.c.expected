@@ -33,15 +33,9 @@
 <Id-File Map>
 0
 <TEST_DIR>/ast-print-enum-decl.c
-<TEST_DIR>/ast-print-enum-decl.c:27:69: warning: 'T' is deprecated [-Wdeprecated-declarations]
-   27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
-      |                                                                     ^
 <TEST_DIR>/ast-print-enum-decl.c:27:52: note: 'T' has been explicitly marked deprecated here
    27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
       |                                                    ^
-<TEST_DIR>/ast-print-enum-decl.c:32:8: warning: 'T' is deprecated [-Wdeprecated-declarations]
-   32 |   enum T *p1; // expected-warning {{'T' is deprecated}}
-      |        ^
 <TEST_DIR>/ast-print-enum-decl.c:27:52: note: 'T' has been explicitly marked deprecated here
    27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
       |                                                    ^
@@ -597,9 +591,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_001
 FunctionDecl
-<TEST_DIR>/ast-print-enum-decl.c:46:40: warning: 'T' is deprecated [-Wdeprecated-declarations]
-   46 |   enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
-      |                                        ^
 <TEST_DIR>/ast-print-enum-decl.c:46:23: note: 'T' has been explicitly marked deprecated here
    46 |   enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
       |                       ^
@@ -1145,21 +1136,12 @@ nullptr_decl
 <Id to Class Map>
 ADDR_023
 FunctionDecl
-<TEST_DIR>/ast-print-enum-decl.c:54:40: warning: 'T' is deprecated [-Wdeprecated-declarations]
-   54 |   enum __attribute__((deprecated(""))) T *p0;
-      |                                        ^
 <TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
    54 |   enum __attribute__((deprecated(""))) T *p0;
       |                       ^
-<TEST_DIR>/ast-print-enum-decl.c:60:37: warning: 'T' is deprecated [-Wdeprecated-declarations]
-   60 |   enum __attribute__((aligned(16))) T { E0, E1 } *p1; // expected-warning {{'T' is deprecated}}
-      |                                     ^
 <TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
    54 |   enum __attribute__((deprecated(""))) T *p0;
       |                       ^
-<TEST_DIR>/ast-print-enum-decl.c:63:8: warning: 'T' is deprecated [-Wdeprecated-declarations]
-   63 |   enum T *p2; // expected-warning {{'T' is deprecated}}
-      |        ^
 <TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
    54 |   enum __attribute__((deprecated(""))) T *p0;
       |                       ^

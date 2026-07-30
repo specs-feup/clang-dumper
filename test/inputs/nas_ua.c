@@ -195,7 +195,7 @@ double alpha, dlmin, dtime;
 int nelt, ntot, nmor, nvertex;
 
 /* common /bench1/ */
-double x0, _y0, z0, time;
+double x0, _y0, z0, ua_time;
 
 // double arrays associated with collocation points
 /* common /colldp/ */
@@ -570,7 +570,7 @@ int main(int argc, char *argv[])
   setpcmo_pre();
 
   // refine initial mesh and do some preliminary work
-  time = 0.0;
+  ua_time = 0.0;
   mortar();
   prepwork();
   adaptation(&ifmortar, 0);
@@ -578,14 +578,14 @@ int main(int argc, char *argv[])
 
   timer_clear(1);
 
-  time = 0.0;
+  ua_time = 0.0;
   for (step = 0; step <= niter; step++)
   {
     if (step == 1)
     {
       // reset the solution and start the timer, keep track of total no elms
       r_init((double *)ta1, ntot, 0.0);
-      time = 0.0;
+      ua_time = 0.0;
       nelt_tot = 0.0;
       for (i = 1; i <= t_last; i++)
       {
@@ -653,7 +653,7 @@ int main(int argc, char *argv[])
     if (timeron) timer_stop(t_add2);
 
     // perform mesh adaptation
-    time = time + dtime;
+    ua_time = ua_time + dtime;
     if ((step != 0) && (step / fre * fre == step))
     {
       if (step != niter)
@@ -730,9 +730,9 @@ void adaptation(int *ifmortar, int step)
   if (timeron) timer_start(t_adaptation);
   *ifmortar = 0;
   // compute heat source center(x0,y0,z0)
-  x0 = X00 + VELX * time;
-  _y0 = Y00 + VELY * time;
-  z0 = Z00 + VELZ * time;
+  x0 = X00 + VELX * ua_time;
+  _y0 = Y00 + VELY * ua_time;
+  z0 = Z00 + VELZ * ua_time;
 
   // Search elements to be refined. Check with restrictions. Perform
   // refinement repeatedly until all desired refinements are done.
@@ -2013,9 +2013,9 @@ void convect(int ifmortar)
   alpha2     = alpha * alpha;
   dtime2     = dtime / 2.0;
   rdtime     = 1.0 / dtime;
-  subtime[0] = time;
-  subtime[1] = time + dtime2;
-  subtime[2] = time + dtime;
+  subtime[0] = ua_time;
+  subtime[1] = ua_time + dtime2;
+  subtime[2] = ua_time + dtime;
   for (substep = 0; substep < 3; substep++)
   {
     xx0[substep] = X00 + VELX * subtime[substep];
@@ -8877,6 +8877,4 @@ void print_results(char *name, char class, int n1, int n2, int n3, int niter,
           "--------------------------------------\n\n");
   */
 }
-
-
 

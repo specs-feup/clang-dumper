@@ -9,7 +9,7 @@ Extracts C++ enum definitions from Clang/LLVM headers and generates:
 Usage:
     python -m clang_enums <llvm_dir> <output_dir>
     
-    llvm_dir: Path to LLVM cmake directory (e.g., /usr/lib/llvm-18/lib/cmake/llvm)
+    llvm_dir: Path to LLVM cmake directory (e.g., /usr/lib/llvm-<version>/lib/cmake/llvm)
     output_dir: Directory to write generated files to
 """
 
@@ -47,6 +47,7 @@ def process_header(
     header_config: HeaderConfig,
     include_dir: Path,
     clang_executable: Path,
+    clang_args: list[str],
 ) -> ProcessedHeader:
     """
     Process a single header file: preprocess and extract all configured enums.
@@ -66,7 +67,7 @@ def process_header(
     errors: list[str] = []
     
     try:
-        content = preprocess_header(header_path, include_dir, clang_executable)
+        content = preprocess_header(header_path, include_dir, clang_executable, clang_args)
     except PreprocessorError as e:
         errors.append(str(e))
         return ProcessedHeader(header_name, extracted_enums, errors)
@@ -98,7 +99,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument(
         "llvm_dir",
         type=Path,
-        help="Path to LLVM cmake directory (e.g., /usr/lib/llvm-18/lib/cmake/llvm)",
+        help="Path to LLVM cmake directory (e.g., /usr/lib/llvm-<version>/lib/cmake/llvm)",
     )
     parser.add_argument(
         "output_dir",
@@ -115,6 +116,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         type=int,
         default=4,
         help="Number of parallel jobs (default: 4)",
+    )
+    parser.add_argument(
+        "--clang-executable",
+        type=Path,
+        help="clang++ executable to use for preprocessing LLVM headers",
+    )
+    parser.add_argument(
+        "--clang-arg",
+        action="append",
+        default=[],
+        help="Extra argument to pass to clang++ while preprocessing; may be repeated",
     )
     
     args = parser.parse_args(argv)
@@ -133,7 +145,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 1
     
     # Set up paths
-    clang_executable = get_clang_executable(llvm_dir)
+    clang_executable = args.clang_executable or get_clang_executable(llvm_dir)
     include_dir = get_include_dir(llvm_dir)
     
     if not clang_executable.exists():
@@ -147,6 +159,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     logger.info(f"Using LLVM directory: {llvm_dir}")
     logger.info(f"Using clang++: {clang_executable}")
     logger.info(f"Using include directory: {include_dir}")
+    if args.clang_arg:
+        logger.info(f"Using extra clang++ args: {' '.join(args.clang_arg)}")
     
     # Create output directories
     output_dir = args.output_dir.resolve()
@@ -164,7 +178,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     with ThreadPoolExecutor(max_workers=args.jobs) as executor:
         futures = {
             executor.submit(
-                process_header, header_config, include_dir, clang_executable
+                process_header, header_config, include_dir, clang_executable, args.clang_arg
             ): header_config
             for header_config in HEADERS
         }

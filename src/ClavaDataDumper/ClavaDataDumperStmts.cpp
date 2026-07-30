@@ -6,7 +6,7 @@
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
-#include "clang/Lex/Lexer.h"
+#include "llvm/ADT/STLForwardCompat.h"
 
 #include <map>
 
@@ -356,7 +356,8 @@ void clava::ClavaDataDumper::DumpCharacterLiteralData(
     DumpLiteralData(E);
 
     clava::dump(E->getValue());
-    clava::dump(clava::STRING_KIND[static_cast<int>(E->getKind())]);
+    clava::dump(clava::CHARACTER_LITERAL_KIND[llvm::to_underlying(
+        E->getKind())]);
 }
 
 void clava::ClavaDataDumper::DumpIntegerLiteralData(const IntegerLiteral *E) {
@@ -377,7 +378,7 @@ void clava::ClavaDataDumper::DumpFloatingLiteralData(const FloatingLiteral *E) {
 void clava::ClavaDataDumper::DumpStringLiteralData(const StringLiteral *E) {
     DumpLiteralData(E);
 
-    clava::dump(clava::STRING_KIND[static_cast<int>(E->getKind())]);
+    clava::dump(clava::STRING_KIND[llvm::to_underlying(E->getKind())]);
     clava::dump(E->getLength());
     clava::dump(E->getCharByteWidth());
 
@@ -517,7 +518,8 @@ void clava::ClavaDataDumper::DumpCXXConstructExprData(
     clava::dump(E->requiresZeroInitialization());
     clava::dump(E->isListInitialization());
     clava::dump(E->isStdInitListInitialization());
-    clava::dump(clava::CONSTRUCTION_KIND[static_cast<int>(E->getConstructionKind())]);
+    clava::dump(clava::CONSTRUCTION_KIND[llvm::to_underlying(
+        E->getConstructionKind())]);
     // Taken from here: http://codergears.com/Blog/?p=328
     clava::dump(
         E->isTemporaryObject(*Context, E->getConstructor()->getParent()));
@@ -650,7 +652,8 @@ void clava::ClavaDataDumper::DumpCXXNewExprData(const CXXNewExpr *E) {
     clava::dump(E->isGlobalNew());
     clava::dump(E->isArray());
     clava::dump(E->hasInitializer());
-    clava::dump(clava::NEW_INIT_STYLE[static_cast<int>(E->getInitializationStyle())]);
+    clava::dump(clava::NEW_INIT_STYLE[llvm::to_underlying(
+        E->getInitializationStyle())]);
     clava::dump(clava::getId(E->getInitializer(), id));
     clava::dump(clava::getId(E->getConstructExpr(), id));
     clava::dump(clava::getId(E->getArraySize(), id));
@@ -713,7 +716,8 @@ void clava::ClavaDataDumper::DumpLambdaExprData(const LambdaExpr *E) {
 void clava::ClavaDataDumper::DumpPredefinedExprData(const PredefinedExpr *E) {
     DumpExprData(E);
 
-    clava::dump(clava::PREDEFINED_ID_TYPE[static_cast<int>(E->getIdentKind())]);
+    clava::dump(clava::PREDEFINED_ID_TYPE[llvm::to_underlying(
+        E->getIdentKind())]);
 }
 
 void clava::ClavaDataDumper::DumpSizeOfPackExprData(const SizeOfPackExpr *E) {

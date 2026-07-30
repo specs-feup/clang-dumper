@@ -87,15 +87,9 @@ ADDR_001
 <Id to Class Map>
 ADDR_001
 CXXRecordDecl
-<TEST_DIR>/ast-print-record-decl.cpp:113:67: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-      |                                                                   ^
 <TEST_DIR>/ast-print-record-decl.cpp:113:50: note: 'T' has been explicitly marked deprecated here
   113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
       |                                                  ^
-<TEST_DIR>/ast-print-record-decl.cpp:118:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  118 |   KW T *p1; // expected-warning {{'T' is deprecated}}
-      |      ^
 <TEST_DIR>/ast-print-record-decl.cpp:113:50: note: 'T' has been explicitly marked deprecated here
   113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
       |                                                  ^
@@ -334,8 +328,8 @@ CXXRecordDecl
 115
 3
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 115
@@ -414,8 +408,8 @@ VarDecl
 115
 6
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 115
@@ -462,8 +456,8 @@ DeclStmt
 115
 8
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 115
@@ -521,8 +515,8 @@ VarDecl
 118
 9
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 118
@@ -568,8 +562,8 @@ DeclStmt
 118
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 118
@@ -1052,9 +1046,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_003
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:136:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:136:21: note: 'T' has been explicitly marked deprecated here
   136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
       |                     ^
@@ -1240,8 +1231,8 @@ CXXRecordDecl
 136
 55
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 136
@@ -1300,8 +1291,8 @@ CXXRecordDecl
 129
 35
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 129
@@ -1379,8 +1370,8 @@ VarDecl
 129
 38
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 129
@@ -1427,8 +1418,8 @@ DeclStmt
 129
 40
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 129
@@ -1486,8 +1477,8 @@ VarDecl
 136
 58
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 136
@@ -1534,8 +1525,8 @@ DeclStmt
 136
 60
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 136
@@ -1984,21 +1975,12 @@ nullptr_decl
 <Id to Class Map>
 ADDR_039
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:149:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  149 |   KW __attribute__((deprecated(""))) T *p0;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
   149 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:154:35: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  154 |   KW __attribute__((aligned(16))) T BASES { int i; } *p1; // expected-warning {{'T' is deprecated}}
-      |                                   ^
 <TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
   149 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:157:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  157 |   KW T *p2; // expected-warning {{'T' is deprecated}}
-      |      ^
 <TEST_DIR>/ast-print-record-decl.cpp:149:21: note: 'T' has been explicitly marked deprecated here
   149 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
@@ -2180,8 +2162,8 @@ CXXRecordDecl
 154
 52
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 154
@@ -2240,8 +2222,8 @@ CXXRecordDecl
 149
 38
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 149
@@ -2319,8 +2301,8 @@ VarDecl
 149
 41
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 149
@@ -2367,8 +2349,8 @@ DeclStmt
 149
 43
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 149
@@ -2426,8 +2408,8 @@ VarDecl
 154
 55
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 154
@@ -2474,8 +2456,8 @@ DeclStmt
 154
 57
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 154
@@ -2533,8 +2515,8 @@ VarDecl
 157
 9
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 157
@@ -2580,8 +2562,8 @@ DeclStmt
 157
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 157
@@ -3219,15 +3201,9 @@ nullptr_decl
 <Id to Class Map>
 ADDR_072
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:172:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  172 |   KW __attribute__((deprecated(""))) T *p0;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:172:21: note: 'T' has been explicitly marked deprecated here
   172 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:180:35: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  180 |   KW __attribute__((aligned(64))) T BASES { // expected-warning {{'T' is deprecated}}
-      |                                   ^
 <TEST_DIR>/ast-print-record-decl.cpp:172:21: note: 'T' has been explicitly marked deprecated here
   172 |   KW __attribute__((deprecated(""))) T *p0;
       |                     ^
@@ -3446,8 +3422,8 @@ FieldDecl
 182
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 182
@@ -3507,8 +3483,8 @@ CXXRecordDecl
 187
 35
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 187
@@ -3588,8 +3564,8 @@ FieldDecl
 187
 38
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 187
@@ -3631,8 +3607,8 @@ FieldDecl
 188
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 188
@@ -3675,8 +3651,8 @@ CXXRecordDecl
 189
 3
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 189
@@ -3735,8 +3711,8 @@ CXXRecordDecl
 172
 38
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 172
@@ -3814,8 +3790,8 @@ VarDecl
 172
 41
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 172
@@ -3862,8 +3838,8 @@ DeclStmt
 172
 43
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 172
@@ -3921,8 +3897,8 @@ VarDecl
 189
 6
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 189
@@ -3969,8 +3945,8 @@ DeclStmt
 189
 8
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 189
@@ -5195,15 +5171,9 @@ nullptr_decl
 <Id to Class Map>
 ADDR_116
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.cpp:217:38: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  217 |   KW __attribute__((deprecated(""))) T *p3;
-      |                                      ^
 <TEST_DIR>/ast-print-record-decl.cpp:217:21: note: 'T' has been explicitly marked deprecated here
   217 |   KW __attribute__((deprecated(""))) T *p3;
       |                     ^
-<TEST_DIR>/ast-print-record-decl.cpp:220:6: warning: 'T' is deprecated [-Wdeprecated-declarations]
-  220 |   KW T *p4; // expected-warning {{'T' is deprecated}}
-      |      ^
 <TEST_DIR>/ast-print-record-decl.cpp:217:21: note: 'T' has been explicitly marked deprecated here
   217 |   KW __attribute__((deprecated(""))) T *p3;
       |                     ^
@@ -5240,8 +5210,8 @@ CXXRecordDecl
 206
 6
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 206
@@ -5318,8 +5288,8 @@ VarDecl
 206
 9
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 206
@@ -5366,8 +5336,8 @@ DeclStmt
 206
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 206
@@ -5411,8 +5381,8 @@ CXXRecordDecl
 209
 33
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 209
@@ -5490,8 +5460,8 @@ VarDecl
 209
 36
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 209
@@ -5538,8 +5508,8 @@ DeclStmt
 209
 38
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 209
@@ -5597,8 +5567,8 @@ VarDecl
 212
 9
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 212
@@ -5644,8 +5614,8 @@ DeclStmt
 212
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 212
@@ -5713,8 +5683,8 @@ CXXRecordDecl
 217
 38
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 217
@@ -5793,8 +5763,8 @@ VarDecl
 217
 41
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 217
@@ -5841,8 +5811,8 @@ DeclStmt
 217
 43
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 217
@@ -5866,8 +5836,8 @@ VarDecl
 220
 9
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 220
@@ -5913,8 +5883,8 @@ DeclStmt
 220
 11
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 220
@@ -6061,8 +6031,8 @@ CXXRecordDecl
 231
 18
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 231
@@ -6104,8 +6074,8 @@ DeclStmt
 231
 19
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 231
@@ -6165,8 +6135,8 @@ FieldDecl
 235
 17
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 235
@@ -6205,8 +6175,8 @@ CXXRecordDecl
 235
 20
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 235
@@ -6248,8 +6218,8 @@ DeclStmt
 235
 21
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 235
@@ -6393,8 +6363,8 @@ CXXRecordDecl
 243
 18
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 243
@@ -6436,8 +6406,8 @@ DeclStmt
 243
 19
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 243
@@ -6513,8 +6483,8 @@ CXXRecordDecl
 247
 19
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 247
@@ -6705,8 +6675,8 @@ VarDecl
 247
 40
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 247
@@ -6753,8 +6723,8 @@ DeclStmt
 247
 41
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 247
@@ -6898,8 +6868,8 @@ CXXRecordDecl
 259
 18
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 259
@@ -6941,8 +6911,8 @@ DeclStmt
 259
 19
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 259
@@ -6980,8 +6950,8 @@ CXXRecordDecl
 262
 10
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 262
@@ -7039,8 +7009,8 @@ VarDecl
 262
 17
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 262
@@ -7087,8 +7057,8 @@ DeclStmt
 262
 18
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 262
@@ -7232,8 +7202,8 @@ CXXRecordDecl
 271
 34
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 271
@@ -7310,8 +7280,8 @@ VarDecl
 271
 37
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 271
@@ -7900,8 +7870,8 @@ CXXRecordDecl
 288
 1
 1
-
-455
+<built-in>
+<INTERNAL_BUFFER_LINE>
 12
 <TEST_DIR>/ast-print-record-decl.cpp
 288

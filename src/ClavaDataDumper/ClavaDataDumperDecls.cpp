@@ -6,6 +6,8 @@
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
+#include "llvm/ADT/STLForwardCompat.h"
+
 #include <map>
 #include <string>
 
@@ -213,7 +215,8 @@ void clava::ClavaDataDumper::DumpNamedDeclData(const NamedDecl *D) {
 
     clava::dump(D->isCXXClassMember());
     clava::dump(D->isCXXInstanceMember());
-    clava::dump(clava::LINKAGE[static_cast<int>(D->getFormalLinkage())]);
+    clava::dump(
+        clava::LINKAGE[llvm::to_underlying(D->getFormalLinkage())]);
     clava::dump(clava::VISIBILITY[D->getVisibility()]);
 }
 
@@ -237,7 +240,7 @@ void clava::ClavaDataDumper::DumpTagDeclData(const TagDecl *D) {
     // Hierarchy
     DumpTypeDeclData(D);
 
-    clava::dump(clava::TAG_KIND[static_cast<int>(D->getTagKind())]);
+    clava::dump(clava::TAG_KIND[llvm::to_underlying(D->getTagKind())]);
     clava::dump(D->isCompleteDefinition());
 }
 
@@ -398,7 +401,7 @@ void clava::ClavaDataDumper::DumpCXXMethodDeclData(const CXXMethodDecl *D) {
 
     if (D->isInstance()) {
         clava::dump(clava::getId(D->getThisType(), id));
-        clava::dump(clava::getId(D->getThisType()->getPointeeType(), id));
+        clava::dump(clava::getId(D->getFunctionObjectParameterType(), id));
     } else {
         clava::dump(clava::getId((const Type *)nullptr, id));
         clava::dump(clava::getId((const Type *)nullptr, id));
@@ -575,7 +578,9 @@ void clava::ClavaDataDumper::DumpLinkageSpecDeclData(const LinkageSpecDecl *D) {
     default:
         throw std::invalid_argument("ClangDataDumper::DumpLinkageSpecDeclData()"
                                     ":: Case not implemented, '" +
-                                    std::to_string(static_cast<int>(D->getLanguage())) + "'");
+                                    std::to_string(llvm::to_underlying(
+                                        D->getLanguage())) +
+                                    "'");
     }
 }
 

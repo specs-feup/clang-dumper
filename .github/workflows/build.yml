@@ -4,245 +4,659 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "v*.*.*"
   pull_request:
   workflow_dispatch:
 
 env:
   CMAKE_BUILD_TYPE: Release
-  LLVM_VERSION: 18
 
 jobs:
   generate-enums:
     name: Generate Enums
     runs-on: ubuntu-latest
+    outputs:
+      llvm-version: ${{ steps.llvm_version.outputs.llvm-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          sparse-checkout: clang_enums
+
+      - name: Load LLVM version
+        id: llvm_version
+        run: |
+          source llvm-version.env
+          echo "LLVM_VERSION=${LLVM_VERSION}" >> "$GITHUB_ENV"
+          echo "llvm-version=${LLVM_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Install LLVM
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            llvm-${{ env.LLVM_VERSION }}-dev \
-            libclang-${{ env.LLVM_VERSION }}-dev
+            llvm-${LLVM_VERSION}-dev \
+            libclang-${LLVM_VERSION}-dev
 
       - name: Generate enum files
         run: |
-          python3 -m clang_enums /usr/lib/llvm-${{ env.LLVM_VERSION }}/lib/cmake/llvm src/
+          rm -rf src/enums_cpp src/enums_java
+          python3 -m clang_enums /usr/lib/llvm-${LLVM_VERSION}/lib/cmake/llvm src/
 
       - name: Upload enum artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: generated-enums
           path: |
             src/enums_cpp/
             src/enums_java/
           retention-days: 1
+          if-no-files-found: error
 
-  build-linux:
-    name: Build Linux
+  linux:
+    name: Linux ${{ matrix.arch }}
     needs: generate-enums
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    env:
+      LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-24.04
+            feature-args: --enable-opencl --enable-cuda
+            accelerator-packages: nvidia-cuda-toolkit ocl-icd-opencl-dev
+            include-package: clang-dumper-linux-x64-includes.zip
+            expect-cuda-headers: true
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            feature-args: ""
+            accelerator-packages: ""
+            include-package: clang-dumper-linux-arm64-includes.zip
+            expect-cuda-headers: false
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !test/
 
       - name: Download enum artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: generated-enums
           path: src/
-
-      - name: Set compilers
-        run: |
-          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
 
       - name: Install LLVM and dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            clang-${{ env.LLVM_VERSION }} \
-            llvm-${{ env.LLVM_VERSION }}-dev \
-            libclang-${{ env.LLVM_VERSION }}-dev \
-            libpolly-${{ env.LLVM_VERSION }}-dev \
+            clang-${LLVM_VERSION} \
+            llvm-${LLVM_VERSION}-dev \
+            libclang-${LLVM_VERSION}-dev \
+            libomp-${LLVM_VERSION}-dev \
+            libpolly-${LLVM_VERSION}-dev \
             zlib1g-dev \
             libedit-dev \
-            libzstd-dev
+            libzstd-dev \
+            libxml2-dev
+          if [ -n "${{ matrix.accelerator-packages }}" ]; then
+            sudo apt-get install -y --no-install-recommends ${{ matrix.accelerator-packages }}
+          fi
 
       - name: Configure
         run: |
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DCMAKE_C_COMPILER=clang-${LLVM_VERSION} \
+            -DCMAKE_CXX_COMPILER=clang++-${LLVM_VERSION} \
             -DSKIP_ENUM_GENERATION=ON
 
-      - name: Build plugin & tool
-        run: cmake --build build --target plugin tool --parallel
+      - name: Build
+        run: cmake --build build --target tool plugin --parallel
 
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
+      - name: Test tool
+        id: test_tool
+        run: |
+          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
+            --baseline-platform linux-${{ matrix.arch }} \
+            --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
+            --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
+
+      - name: Test plugin
+        id: test_plugin
+        if: success() || (failure() && steps.test_tool.outcome == 'failure')
+        run: |
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} ${{ matrix.feature-args }} \
+            --baseline-platform linux-${{ matrix.arch }} \
+            --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
+            --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
+
+      - name: Upload failed test outputs
+        if: ${{ failure() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
+        uses: actions/upload-artifact@v7
         with:
-          name: linux-plugin
-          path: build/libplugin.so
+          name: failed-test-outputs-linux-${{ matrix.arch }}
+          path: test/failures/linux-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload raw test outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: raw-test-outputs-linux-${{ matrix.arch }}
+          path: test/raw-outputs/linux-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Check tool runtime dependencies
+        run: |
+          ldd build/tool
+          if ldd build/tool | grep -E 'lib(clang|LLVM)'; then
+            echo "tool still depends on LLVM/Clang dynamic libraries"
+            exit 1
+          fi
+
+      - name: Stage binaries
+        run: |
+          mkdir -p dist
+          cp build/tool dist/clang-dumper-linux-${{ matrix.arch }}
+          cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
+
+      - name: Package Linux includes
+        run: scripts/package_linux_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
+      - name: Check Linux include package
+        run: |
+          python3 - <<'PY' "dist/${{ matrix.include-package }}" true "${{ matrix.expect-cuda-headers }}"
+          import sys, zipfile
+          archive_path, expect_openmp, expect_cuda = sys.argv[1], sys.argv[2] == "true", sys.argv[3] == "true"
+          with zipfile.ZipFile(archive_path) as archive:
+              names = archive.namelist()
+          checks = {
+              "omp.h": any(name.endswith("/omp.h") or name == "omp.h" for name in names),
+              "cuda_runtime.h": any(name.endswith("/cuda_runtime.h") or name == "cuda_runtime.h" for name in names),
+          }
+          if expect_openmp and not checks["omp.h"]:
+              raise SystemExit("include package is missing omp.h")
+          if expect_cuda and not checks["cuda_runtime.h"]:
+              raise SystemExit("include package is missing cuda_runtime.h")
+          print(checks)
+          PY
+
+      - name: Upload tool
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-${{ matrix.arch }}-tool
+          path: dist/clang-dumper-linux-${{ matrix.arch }}
           retention-days: 1
           if-no-files-found: error
 
-      - name: Upload tool artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload plugin
+        uses: actions/upload-artifact@v7
         with:
-          name: linux-tool
-          path: build/tool
+          name: linux-${{ matrix.arch }}-plugin
+          path: dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
           retention-days: 1
           if-no-files-found: error
 
-  test-linux-plugin:
-    name: Test Linux - Plugin
-    needs: build-linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Upload Linux includes
+        uses: actions/upload-artifact@v7
         with:
-          name: linux-plugin
-          path: build/
+          name: linux-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
 
-      - name: Set compilers
-        run: |
-          echo "CC=clang-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ env.LLVM_VERSION }}" >> $GITHUB_ENV
-
-      - name: Install LLVM and dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang-${{ env.LLVM_VERSION }}
-
-      - name: Run tests
-        run: |
-          python3 ${{ github.workspace }}/test/run_tests.py --mode plugin --path ${{ github.workspace }}/build/libplugin.so --clang-path ${CC}
-
-  test-linux-tool:
-    name: Test Linux - Tool
-    needs: build-linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-tool
-          path: build/
-
-      - name: Run tests
-        run: |
-          chmod +x ${{ github.workspace }}/build/tool
-          python3 ${{ github.workspace }}/test/run_tests.py --mode tool --path ${{ github.workspace }}/build/tool
-
-  build-windows:
-    name: Build Windows
+  macos:
+    name: macOS ${{ matrix.arch }}
     needs: generate-enums
-    runs-on: windows-latest
+    runs-on: ${{ matrix.runner }}
     env:
-      LLVM_INSTALL_DIR: C:/llvm
+      LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: macos-15-intel
+            feature-args: --enable-opencl
+            include-package: clang-dumper-macos-x64-includes.zip
+          - arch: arm64
+            runner: macos-26
+            feature-args: ""
+            include-package: clang-dumper-macos-arm64-includes.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !test/
 
       - name: Download enum artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: generated-enums
           path: src/
 
-      - name: Download and extract LLVM prebuilt binaries
-        shell: pwsh
+      - name: Install LLVM
         run: |
-          $llvmUrl = "https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-pc-windows-msvc.tar.xz"
-          $archivePath = "$env:TEMP\llvm.tar.xz"
-          $extractPath = "$env:TEMP\llvm-extract"
-          
-          Write-Host "Downloading LLVM from $llvmUrl..."
-          Invoke-WebRequest -Uri $llvmUrl -OutFile $archivePath -UseBasicParsing
-          
-          Write-Host "Extracting LLVM..."
-          New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
-          
-          # Extract .tar.xz using tar (available on Windows)
-          tar -xf $archivePath -C $extractPath
-          
-          # Find the extracted folder and move to final location
-          $extractedFolder = Get-ChildItem -Path $extractPath -Directory | Select-Object -First 1
-          Write-Host "Extracted folder: $($extractedFolder.FullName)"
-          
-          # Move to final install location
-          if (Test-Path "${{ env.LLVM_INSTALL_DIR }}") {
-            Remove-Item -Recurse -Force "${{ env.LLVM_INSTALL_DIR }}"
-          }
-          Move-Item -Path $extractedFolder.FullName -Destination "${{ env.LLVM_INSTALL_DIR }}"
-          
-          Write-Host "LLVM installed to ${{ env.LLVM_INSTALL_DIR }}"
-          Get-ChildItem "${{ env.LLVM_INSTALL_DIR }}" | Select-Object Name
+          brew install llvm@${LLVM_VERSION} libomp zstd
+          LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
+          LIBOMP_PREFIX="$(brew --prefix libomp)"
+          CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
+          echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
+          echo "LIBOMP_PREFIX=${LIBOMP_PREFIX}" >> "$GITHUB_ENV"
+          echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
+          echo "CLANG_RESOURCE_DIR=${CLANG_RESOURCE_DIR}" >> "$GITHUB_ENV"
+          echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
 
-      - name: Configure CMake
-        shell: pwsh
+      - name: Configure
         run: |
-          cmake -S . -B build `
-            -G "Visual Studio 17 2022" `
-            -A x64 `
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
-            -DLLVM_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/llvm" `
-            -DClang_DIR="${{ env.LLVM_INSTALL_DIR }}/lib/cmake/clang" `
-            -DLLVM_INSTALL_DIR="${{ env.LLVM_INSTALL_DIR }}" `
-            -DUSE_MSVC_STATIC=ON `
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
+            -DCMAKE_CXX_COMPILER="${LLVM_PREFIX}/bin/clang++" \
+            -DCMAKE_OSX_SYSROOT="${SDKROOT}" \
+            -DLLVM_PREFIX="${LLVM_PREFIX}" \
+            -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
+            -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
             -DSKIP_ENUM_GENERATION=ON
 
-      - name: Build tool
-        shell: pwsh
-        run: |
-          cmake --build build --target tool --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+      - name: Build
+        run: cmake --build build --target tool plugin --parallel
 
-      - name: Upload tool artifact
-        uses: actions/upload-artifact@v4
+      - name: Test tool
+        id: test_tool
+        run: |
+          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
+            --baseline-platform macos-${{ matrix.arch }} \
+            --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
+            --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
+            --extra-clang-arg="-isysroot" \
+            --extra-clang-arg="${SDKROOT}" \
+            --extra-clang-arg="-nostdinc++" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LLVM_PREFIX}/include/c++/v1" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LIBOMP_PREFIX}/include" \
+            --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
+
+      - name: Test plugin
+        id: test_plugin
+        if: success() || (failure() && steps.test_tool.outcome == 'failure')
+        run: |
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.feature-args }} \
+            --baseline-platform macos-${{ matrix.arch }} \
+            --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
+            --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
+            --extra-clang-arg="-isysroot" \
+            --extra-clang-arg="${SDKROOT}" \
+            --extra-clang-arg="-nostdinc++" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LLVM_PREFIX}/include/c++/v1" \
+            --extra-clang-arg="-isystem" \
+            --extra-clang-arg="${LIBOMP_PREFIX}/include" \
+            --extra-clang-arg="-resource-dir=${CLANG_RESOURCE_DIR}"
+
+      - name: Check tool runtime dependencies
+        if: ${{ steps.test_tool.outcome == 'success' && steps.test_plugin.outcome == 'success' }}
+        run: |
+          otool -L build/tool
+          if otool -L build/tool | grep -E 'lib(clang|LLVM)'; then
+            echo "tool still depends on LLVM/Clang dynamic libraries"
+            exit 1
+          fi
+
+      - name: Stage binaries
+        run: |
+          mkdir -p dist
+          cp build/tool dist/clang-dumper-macos-${{ matrix.arch }}
+          cp build/libplugin.so dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
+
+      - name: Package macOS includes
+        run: scripts/package_macos_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
+      - name: Check macOS include package
+        run: |
+          python3 - <<'PY' "dist/${{ matrix.include-package }}"
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              names = archive.namelist()
+          if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
+              raise SystemExit("include package is missing omp.h")
+          print("omp.h found")
+          PY
+
+      - name: Upload failed test outputs
+        if: ${{ failure() && (steps.test_tool.outcome == 'failure' || steps.test_plugin.outcome == 'failure') }}
+        uses: actions/upload-artifact@v7
         with:
-          name: windows-tool
-          path: build/Release/tool.exe
+          name: failed-test-outputs-macos-${{ matrix.arch }}
+          path: test/failures/macos-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload raw test outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: raw-test-outputs-macos-${{ matrix.arch }}
+          path: test/raw-outputs/macos-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload tool
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-${{ matrix.arch }}-tool
+          path: dist/clang-dumper-macos-${{ matrix.arch }}
           retention-days: 1
           if-no-files-found: error
 
-  test-windows-tool:
-    name: Test Windows - Tool
-    needs: build-windows
-    runs-on: windows-latest
+      - name: Upload plugin
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-${{ matrix.arch }}-plugin
+          path: dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload macOS includes
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
+  windows-cross:
+    name: Windows ${{ matrix.arch }}
+    needs:
+      - generate-enums
+    runs-on: ubuntu-24.04
+    env:
+      LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            build-dir: build-win-arm64
+            output: clang-dumper-windows-arm64.exe
+            include-package: clang-dumper-windows-arm64-includes.zip
+          - arch: x86_64
+            build-dir: build-win-x86_64
+            output: clang-dumper-windows-x86_64.exe
+            include-package: clang-dumper-windows-x86_64-includes.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Download enum artifacts
+        uses: actions/download-artifact@v8
         with:
-          name: windows-tool
-          path: build/Release/
+          name: generated-enums
+          path: src/
 
-      - name: Run tests
-        shell: pwsh
+      - name: Install host tools
         run: |
-          $testScript = Join-Path $env:GITHUB_WORKSPACE "test/run_tests.py"
-          $toolPath   = Join-Path $env:GITHUB_WORKSPACE "build/Release/tool.exe"
-          python3 "$testScript" --mode tool --path "$toolPath"
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang-${LLVM_VERSION} \
+            lld-${LLVM_VERSION} \
+            llvm-${LLVM_VERSION} \
+            llvm-${LLVM_VERSION}-tools \
+            curl \
+            dpkg \
+            python3 \
+            rsync \
+            tar \
+            zstd
+
+      - name: Setup Windows cross SDKs
+        run: scripts/setup_windows_cross_sdk.sh ${{ matrix.arch }}
+
+      - name: Build Windows tool
+        run: |
+          CLANG_ENUMS_HOST_CLANG=clang++-${LLVM_VERSION} \
+          SKIP_ENUM_GENERATION=ON \
+            scripts/build_windows_cross.sh ${{ matrix.arch }}
+
+      - name: Check Windows tool binary
+        run: |
+          file ${{ matrix.build-dir }}/tool.exe
+
+          llvm-objdump-${LLVM_VERSION} -p ${{ matrix.build-dir }}/tool.exe | tee imports.txt
+
+          if grep -E 'DLL Name: .*(clang|LLVM|libc\+\+|libunwind|zstd|zlib|pthread).*\.dll' imports.txt; then
+            echo "Windows tool imports non-system runtime DLLs"
+            exit 1
+          fi
+
+      - name: Stage Windows tool
+        run: |
+          mkdir -p dist
+          cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
+
+      - name: Package Windows includes
+        run: scripts/package_windows_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+
+      - name: Check Windows include package
+        run: |
+          python3 - <<'PY' "dist/${{ matrix.include-package }}"
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              names = archive.namelist()
+          if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
+              raise SystemExit("include package is missing omp.h")
+          print("omp.h found")
+          PY
+
+      - name: Upload Windows tool
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-tool
+          path: dist/${{ matrix.output }}
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload Windows includes
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-includes
+          path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
+  windows-test:
+    name: Windows test ${{ matrix.arch }}
+    needs:
+      - windows-cross
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: windows-11-arm
+            artifact: windows-arm64-tool
+            executable: clang-dumper-windows-arm64.exe
+            include-package: clang-dumper-windows-arm64-includes.zip
+            triple: aarch64-w64-mingw32
+          - arch: x86_64
+            runner: windows-2025
+            artifact: windows-x86_64-tool
+            executable: clang-dumper-windows-x86_64.exe
+            include-package: clang-dumper-windows-x86_64-includes.zip
+            triple: x86_64-w64-mingw32
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download Windows tool
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/
+
+      - name: Download Windows includes
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-${{ matrix.arch }}-includes
+          path: dist/
+
+      - name: Test Windows tool
+        shell: bash
+        env:
+          PYTHONUTF8: "1"
+        run: |
+          python -m zipfile -e "dist/${{ matrix.include-package }}" windows-includes
+          INCLUDE_ROOT="$(pwd -W)/windows-includes"
+          INCLUDE_ARGS=(
+            --extra-clang-arg="--target=${{ matrix.triple }}"
+            --extra-clang-arg="-Wno-unused-command-line-argument"
+            --extra-clang-arg="-nostdinc"
+            --extra-clang-arg="-nostdinc++"
+          )
+
+          while IFS= read -r include_path; do
+            INCLUDE_ARGS+=(--extra-clang-arg="-isystem")
+            INCLUDE_ARGS+=(--extra-clang-arg "${INCLUDE_ROOT}/${include_path}")
+          done < windows-includes/entrypoints.txt
+
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
+            --baseline-platform windows-${{ matrix.arch }} \
+            --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
+            --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
+            "${INCLUDE_ARGS[@]}"
+
+      - name: Upload failed test outputs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: failed-test-outputs-windows-${{ matrix.arch }}
+          path: test/failures/windows-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Upload raw test outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: raw-test-outputs-windows-${{ matrix.arch }}
+          path: test/raw-outputs/windows-${{ matrix.arch }}/
+          retention-days: 1
+          if-no-files-found: ignore
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - generate-enums
+      - linux
+      - macos
+      - windows-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Linux release assets
+        uses: actions/download-artifact@v8
+        with:
+          pattern: linux-*
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download macOS release assets
+        uses: actions/download-artifact@v8
+        with:
+          pattern: macos-*
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download Windows release assets
+        uses: actions/download-artifact@v8
+        with:
+          pattern: windows-*
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download generated enums
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-enums
+          path: release-staging/generated-enums/
+
+      - name: Package generated enums for release
+        run: |
+          (
+            cd release-staging/generated-enums
+            python3 -m zipfile -c ../../release-assets/clang-dumper-generated-enums.zip .
+          )
+
+      - name: Generate release manifest
+        env:
+          LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          assets_dir = Path("release-assets")
+          manifest_name = "clang-dumper-release-manifest.json"
+          llvm_major = int(os.environ["LLVM_VERSION"])
+
+          patterns = [
+              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-plugin[.]so$"), "plugin"),
+              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-includes[.]zip$"), "includes"),
+              (re.compile(r"^clang-dumper-(linux|macos)-(.+)$"), "tool"),
+              (re.compile(r"^clang-dumper-windows-(.+?)[.]exe$"), "tool"),
+              (re.compile(r"^clang-dumper-windows-(.+?)-includes[.]zip$"), "includes"),
+          ]
+
+          def classify(filename):
+              if filename == "clang-dumper-generated-enums.zip":
+                  return "any", "any", "generated-enums"
+
+              for pattern, kind in patterns:
+                  match = pattern.match(filename)
+                  if not match:
+                      continue
+
+                  if filename.startswith("clang-dumper-windows-"):
+                      return "windows", match.group(1), kind
+
+                  return match.group(1), match.group(2), kind
+
+              raise ValueError(f"Unrecognized release asset filename: {filename}")
+
+          entries = []
+          for asset in sorted(assets_dir.iterdir()):
+              if not asset.is_file() or asset.name == manifest_name:
+                  continue
+
+              platform, arch, kind = classify(asset.name)
+              digest = hashlib.sha256(asset.read_bytes()).hexdigest()
+              entries.append(
+                  {
+                      "filename": asset.name,
+                      "platform": platform,
+                      "arch": arch,
+                      "kind": kind,
+                      "llvm_major": llvm_major,
+                      "sha256": digest,
+                  }
+              )
+
+          manifest = {
+              "schema_version": 1,
+              "assets": entries,
+          }
+          (assets_dir / manifest_name).write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*

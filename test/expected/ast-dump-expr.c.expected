@@ -33,15 +33,6 @@
 <Id-File Map>
 0
 <TEST_DIR>/ast-dump-expr.c
-<TEST_DIR>/ast-dump-expr.c:4:3: warning: left operand of comma operator has no effect [-Wunused-value]
-    4 |   1, 2, 3;
-      |   ^
-<TEST_DIR>/ast-dump-expr.c:4:6: warning: left operand of comma operator has no effect [-Wunused-value]
-    4 |   1, 2, 3;
-      |      ^
-<TEST_DIR>/ast-dump-expr.c:4:9: warning: expression result unused [-Wunused-value]
-    4 |   1, 2, 3;
-      |         ^
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
@@ -616,12 +607,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_011
 FunctionDecl
-<TEST_DIR>/ast-dump-expr.c:26:11: warning: expression result unused [-Wunused-value]
-   26 |   a ? 0 : 1;
-      |           ^
-<TEST_DIR>/ast-dump-expr.c:33:8: warning: expression result unused [-Wunused-value]
-   33 |   a ?: 0;
-      |        ^
 <Top Level Nodes>
 ADDR_022
 <Top Level Types>
@@ -976,68 +961,14 @@ nullptr_decl
 <Id to Class Map>
 ADDR_022
 FunctionDecl
-<TEST_DIR>/ast-dump-expr.c:85:5: warning: equality comparison result unused [-Wunused-comparison]
-   85 |   a == b;
-      |   ~~^~~~
 <TEST_DIR>/ast-dump-expr.c:85:5: note: use '=' to turn this equality comparison into an assignment
    85 |   a == b;
       |     ^~
       |     =
-<TEST_DIR>/ast-dump-expr.c:92:5: warning: inequality comparison result unused [-Wunused-comparison]
-   92 |   a != b;
-      |   ~~^~~~
 <TEST_DIR>/ast-dump-expr.c:92:5: note: use '|=' to turn this inequality comparison into an or-assignment
    92 |   a != b;
       |     ^~
       |     |=
-<TEST_DIR>/ast-dump-expr.c:100:5: warning: relational comparison result unused [-Wunused-comparison]
-  100 |   a < b;
-      |   ~~^~~
-<TEST_DIR>/ast-dump-expr.c:107:5: warning: relational comparison result unused [-Wunused-comparison]
-  107 |   a > b;
-      |   ~~^~~
-<TEST_DIR>/ast-dump-expr.c:114:5: warning: relational comparison result unused [-Wunused-comparison]
-  114 |   a <= b;
-      |   ~~^~~~
-<TEST_DIR>/ast-dump-expr.c:121:5: warning: relational comparison result unused [-Wunused-comparison]
-  121 |   a >= b;
-      |   ~~^~~~
-<TEST_DIR>/ast-dump-expr.c:48:5: warning: expression result unused [-Wunused-value]
-   48 |   a || b;
-      |   ~ ^  ~
-<TEST_DIR>/ast-dump-expr.c:55:5: warning: expression result unused [-Wunused-value]
-   55 |   a && b;
-      |   ~ ^  ~
-<TEST_DIR>/ast-dump-expr.c:63:5: warning: expression result unused [-Wunused-value]
-   63 |   a | b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:70:5: warning: expression result unused [-Wunused-value]
-   70 |   a ^ b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:77:5: warning: expression result unused [-Wunused-value]
-   77 |   a & b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:129:5: warning: expression result unused [-Wunused-value]
-  129 |   a << b;
-      |   ~ ^  ~
-<TEST_DIR>/ast-dump-expr.c:136:5: warning: expression result unused [-Wunused-value]
-  136 |   a >> b;
-      |   ~ ^  ~
-<TEST_DIR>/ast-dump-expr.c:144:5: warning: expression result unused [-Wunused-value]
-  144 |   a + b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:151:5: warning: expression result unused [-Wunused-value]
-  151 |   a - b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:159:5: warning: expression result unused [-Wunused-value]
-  159 |   a * b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:166:5: warning: expression result unused [-Wunused-value]
-  166 |   a / b;
-      |   ~ ^ ~
-<TEST_DIR>/ast-dump-expr.c:173:5: warning: expression result unused [-Wunused-value]
-  173 |   a % b;
-      |   ~ ^ ~
 <Top Level Nodes>
 ADDR_035
 <Visited Children>
@@ -3367,33 +3298,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_035
 FunctionDecl
-<TEST_DIR>/ast-dump-expr.c:183:3: warning: expression result unused [-Wunused-value]
-  183 |   (float)a;
-      |   ^      ~
-<TEST_DIR>/ast-dump-expr.c:190:3: warning: expression result unused [-Wunused-value]
-  190 |   -a;
-      |   ^~
-<TEST_DIR>/ast-dump-expr.c:195:3: warning: expression result unused [-Wunused-value]
-  195 |   +a;
-      |   ^~
-<TEST_DIR>/ast-dump-expr.c:200:3: warning: expression result unused [-Wunused-value]
-  200 |   &a;
-      |   ^~
-<TEST_DIR>/ast-dump-expr.c:204:3: warning: expression result unused [-Wunused-value]
-  204 |   *b;
-      |   ^~
-<TEST_DIR>/ast-dump-expr.c:210:3: warning: expression result unused [-Wunused-value]
-  210 |   !a;
-      |   ^~
-<TEST_DIR>/ast-dump-expr.c:215:3: warning: expression result unused [-Wunused-value]
-  215 |   sizeof a;
-      |   ^~~~~~~~
-<TEST_DIR>/ast-dump-expr.c:219:3: warning: expression result unused [-Wunused-value]
-  219 |   sizeof(int);
-      |   ^~~~~~~~~~~
-<TEST_DIR>/ast-dump-expr.c:222:3: warning: expression result unused [-Wunused-value]
-  222 |   _Alignof(int);
-      |   ^~~~~~~~~~~~~
 <Top Level Nodes>
 ADDR_130
 <Visited Children>
@@ -4276,21 +4180,6 @@ Struct
 <Id to Class Map>
 ADDR_160
 RecordDecl
-<TEST_DIR>/ast-dump-expr.c:232:6: warning: expression result unused [-Wunused-value]
-  232 |   a[0];
-      |   ~ ~^
-<TEST_DIR>/ast-dump-expr.c:250:5: warning: expression result unused [-Wunused-value]
-  250 |   b.a;
-      |   ~ ^
-<TEST_DIR>/ast-dump-expr.c:255:6: warning: expression result unused [-Wunused-value]
-  255 |   c->a;
-      |   ~  ^
-<TEST_DIR>/ast-dump-expr.c:263:3: warning: expression result unused [-Wunused-value]
-  263 |   (int [4]){1, 2, 3, 4, };
-      |   ^~~~~~~~~~~~~~~~~~~~~~~
-<TEST_DIR>/ast-dump-expr.c:272:3: warning: expression result unused [-Wunused-value]
-  272 |   (struct S){1};
-      |   ^~~~~~~~~~~~~
 <Top Level Nodes>
 ADDR_163
 <Visited Children>
@@ -5589,54 +5478,6 @@ ADDR_211
 <Id to Class Map>
 ADDR_208
 EnumDecl
-<TEST_DIR>/ast-dump-expr.c:282:3: warning: expression result unused [-Wunused-value]
-  282 |   a;
-      |   ^
-<TEST_DIR>/ast-dump-expr.c:286:3: warning: expression result unused [-Wunused-value]
-  286 |   'a';
-      |   ^~~
-<TEST_DIR>/ast-dump-expr.c:289:3: warning: expression result unused [-Wunused-value]
-  289 |   L'a';
-      |   ^~~~
-<TEST_DIR>/ast-dump-expr.c:292:3: warning: expression result unused [-Wunused-value]
-  292 |   "a";
-      |   ^~~
-<TEST_DIR>/ast-dump-expr.c:296:3: warning: expression result unused [-Wunused-value]
-  296 |   L"a";
-      |   ^~~~
-<TEST_DIR>/ast-dump-expr.c:300:3: warning: expression result unused [-Wunused-value]
-  300 |   u8"a";
-      |   ^~~~~
-<TEST_DIR>/ast-dump-expr.c:304:3: warning: expression result unused [-Wunused-value]
-  304 |   U"a";
-      |   ^~~~
-<TEST_DIR>/ast-dump-expr.c:308:3: warning: expression result unused [-Wunused-value]
-  308 |   u"a";
-      |   ^~~~
-<TEST_DIR>/ast-dump-expr.c:312:3: warning: expression result unused [-Wunused-value]
-  312 |   1;
-      |   ^
-<TEST_DIR>/ast-dump-expr.c:315:3: warning: expression result unused [-Wunused-value]
-  315 |   1u;
-      |   ^~
-<TEST_DIR>/ast-dump-expr.c:318:3: warning: expression result unused [-Wunused-value]
-  318 |   1ll;
-      |   ^~~
-<TEST_DIR>/ast-dump-expr.c:321:3: warning: expression result unused [-Wunused-value]
-  321 |   1.0;
-      |   ^~~
-<TEST_DIR>/ast-dump-expr.c:324:3: warning: expression result unused [-Wunused-value]
-  324 |   1.0f;
-      |   ^~~~
-<TEST_DIR>/ast-dump-expr.c:327:3: warning: expression result unused [-Wunused-value]
-  327 |   1.0l;
-      |   ^~~~
-<TEST_DIR>/ast-dump-expr.c:330:3: warning: expression result unused [-Wunused-value]
-  330 |   One;
-      |   ^~~
-<TEST_DIR>/ast-dump-expr.c:333:4: warning: expression result unused [-Wunused-value]
-  333 |   (a);
-      |    ^
 <Top Level Nodes>
 ADDR_212
 <Top Level Types>
@@ -5752,7 +5593,7 @@ ADDR_004
 'a'
 %CLAVA_SOURCE_END%
 97
-ORDINARY
+ASCII
 <Id to Class Map>
 ADDR_216
 CharacterLiteral
@@ -5927,12 +5768,8 @@ L"a"
 %CLAVA_SOURCE_END%
 WIDE
 1
-4
-4
-97
-0
-0
-0
+<WIDE_CHAR_WIDTH>
+<WIDE_STRING_BYTES>
 <Id to Class Map>
 ADDR_224
 StringLiteral

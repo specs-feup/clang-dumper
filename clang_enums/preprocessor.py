@@ -18,6 +18,7 @@ def preprocess_header(
     header_path: Path,
     include_dir: Path,
     clang_executable: Path,
+    clang_args: list[str] | None = None,
 ) -> str:
     """
     Preprocess a C++ header file using clang++ -E.
@@ -40,6 +41,7 @@ def preprocess_header(
         str(clang_executable),
         "-Wno-deprecated",
         "-E",  # Preprocess only
+        *(clang_args or []),
         str(header_path),
         "-isystem", str(include_dir),
     ]
@@ -76,7 +78,7 @@ def get_clang_executable(llvm_dir: Path) -> Path:
     Get the path to clang++ from the LLVM directory.
     
     The LLVM directory is expected to be the cmake config dir,
-    e.g., /usr/lib/llvm-18/lib/cmake/llvm
+    e.g., /usr/lib/llvm-<version>/lib/cmake/llvm
     
     Args:
         llvm_dir: Path to the LLVM cmake directory.

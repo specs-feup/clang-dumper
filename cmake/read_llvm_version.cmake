@@ -1,0 +1,32 @@
+function(clang_dumper_load_llvm_version manifest_path)
+    if(NOT EXISTS "${manifest_path}")
+        message(FATAL_ERROR "LLVM version manifest not found: ${manifest_path}")
+    endif()
+
+    file(READ "${manifest_path}" _clang_dumper_llvm_manifest)
+    string(REPLACE "\r\n" "\n" _clang_dumper_llvm_manifest "${_clang_dumper_llvm_manifest}")
+    string(REPLACE "\r" "\n" _clang_dumper_llvm_manifest "${_clang_dumper_llvm_manifest}")
+    string(REPLACE "\n" ";" _clang_dumper_llvm_lines "${_clang_dumper_llvm_manifest}")
+
+    foreach(_clang_dumper_llvm_line IN LISTS _clang_dumper_llvm_lines)
+        string(STRIP "${_clang_dumper_llvm_line}" _clang_dumper_llvm_line)
+        if(_clang_dumper_llvm_line STREQUAL "" OR _clang_dumper_llvm_line MATCHES "^#")
+            continue()
+        endif()
+        if(NOT _clang_dumper_llvm_line MATCHES "^([A-Za-z_][A-Za-z0-9_]*)=([^# ]+)$")
+            message(FATAL_ERROR "Invalid LLVM version manifest line: ${_clang_dumper_llvm_line}")
+        endif()
+        set("${CMAKE_MATCH_1}" "${CMAKE_MATCH_2}")
+        set("${CMAKE_MATCH_1}" "${CMAKE_MATCH_2}" PARENT_SCOPE)
+    endforeach()
+
+    if(NOT DEFINED LLVM_VERSION OR LLVM_VERSION STREQUAL "")
+        message(FATAL_ERROR "LLVM_VERSION must be set in ${manifest_path}")
+    endif()
+
+    if(DEFINED CLANG_VERSION AND NOT CLANG_VERSION STREQUAL "" AND NOT CLANG_VERSION STREQUAL LLVM_VERSION)
+        message(FATAL_ERROR "CLANG_VERSION=${CLANG_VERSION} conflicts with LLVM_VERSION=${LLVM_VERSION} from ${manifest_path}")
+    endif()
+
+    set(CLANG_VERSION "${LLVM_VERSION}" CACHE STRING "LLVM/Clang major version to use" FORCE)
+endfunction()

@@ -11,9 +11,6 @@
 
 #include "clang/Basic/SourceManager.h"
 
-#include <iostream>
-#include <sstream>
-
 #include <assert.h>
 
 // #define DEBUG
@@ -284,12 +281,19 @@ void ClangAstDumper::emptyChildren(const void *pointer) {
   dumpVisitedChildren(pointer, noChildren);
 }
 
+bool ClangAstDumper::isPastSystemHeaderThreshold() const {
+  // The level is incremented while visiting a system-header node, and this
+  // predicate is checked at that node's outgoing child edges. Consequently,
+  // a positive threshold N serializes the node at level N + 1 but suppresses
+  // its children. Non-positive values disable structural thresholding.
+  return systemHeaderThreshold > 0 &&
+         currentSystemHeaderLevel > systemHeaderThreshold;
+}
+
 const void ClangAstDumper::addChild(const Decl *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -335,9 +339,7 @@ const void ClangAstDumper::addChildren(DeclContext::decl_range decls,
 const void ClangAstDumper::addChild(const Stmt *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -364,9 +366,7 @@ const void ClangAstDumper::addChild(const Stmt *addr,
 const void ClangAstDumper::addChild(const Expr *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -393,9 +393,7 @@ const void ClangAstDumper::addChild(const Expr *addr,
 const void ClangAstDumper::addChild(const Type *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -422,9 +420,7 @@ const void ClangAstDumper::addChild(const Type *addr,
 const void ClangAstDumper::addChild(const QualType &addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 
@@ -447,9 +443,7 @@ const void ClangAstDumper::addChild(const QualType &addr,
 const void ClangAstDumper::addChild(const Attr *addr,
                                     std::vector<std::string> &children) {
 
-  // Do not add child if goes above system header threshold
-  if (systemHeaderThreshold > 0 &&
-      currentSystemHeaderLevel > systemHeaderThreshold) {
+  if (isPastSystemHeaderThreshold()) {
     return;
   }
 

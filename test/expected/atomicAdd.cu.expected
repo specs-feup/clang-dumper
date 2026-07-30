@@ -1,0 +1,5021 @@
+warning: argument unused during compilation: '--no-cuda-version-check' [-Wunused-command-line-argument]
+<Compiler Instance Data>
+<TEST_DIR>/atomicAdd.cu
+1
+0
+0
+0
+1
+1
+1
+1
+0
+0
+0
+1
+1
+1
+0
+0
+0
+1
+1
+0
+1
+8
+32
+64
+<LONG_DOUBLE_WIDTH>
+8
+16
+32
+<LONG_WIDTH>
+64
+<Id-File Map>
+0
+<TEST_DIR>/atomicAdd.cu
+<Includes>
+
+__clang_cuda_runtime_wrapper.h
+856
+0
+<Includes>
+<TEST_DIR>/atomicAdd.cu
+stdio.h
+1
+1
+<Top Level Nodes>
+ADDR_001
+<Visited Children>
+ADDR_002
+0
+<AttributeData>
+ADDR_002
+CUDAGlobalAttr
+<TEST_DIR>/atomicAdd.cu
+3
+1
+<end>
+1
+<SYSTEM_INCLUDE>/crt/host_defines.h
+214
+22
+<end>
+0
+CUDAGlobal
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_002
+CUDAGlobalAttr
+<Top Level Attributes>
+ADDR_002
+<Visited Children>
+ADDR_003
+0
+<BuiltinTypeData>
+ADDR_003
+BuiltinType
+void
+NONE
+0
+0
+0
+nullptr_type
+Void
+void
+<Id to Class Map>
+ADDR_003
+BuiltinType
+<Visited Children>
+ADDR_004
+0
+<BuiltinTypeData>
+ADDR_004
+BuiltinType
+int
+NONE
+0
+0
+0
+nullptr_type
+Int
+int
+<Id to Class Map>
+ADDR_004
+BuiltinType
+<Visited Children>
+ADDR_005
+0
+<PointerTypeData>
+ADDR_005
+PointerType
+int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_004
+<Id to Class Map>
+ADDR_005
+PointerType
+<Visited Children>
+ADDR_006
+0
+<FunctionProtoTypeData>
+ADDR_006
+FunctionProtoType
+void (int *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_003
+1
+1
+ADDR_005
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_006
+FunctionProtoType
+<Top Level Types>
+ADDR_006
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_007
+0
+<ParmVarDeclData>
+ADDR_007
+ParmVarDecl
+<TEST_DIR>/atomicAdd.cu
+3
+21
+<TEST_DIR>/atomicAdd.cu
+3
+26
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+None
+Default
+ADDR_005
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_007
+ParmVarDecl
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_008
+0
+<CXXRecordDeclData>
+ADDR_008
+CXXRecordDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+78
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+89
+1
+0
+1
+0
+0
+1
+0
+0
+0
+
+__cuda_builtin_blockDim_t
+0
+0
+0
+External
+Default
+ADDR_009
+Struct
+1
+0
+0
+ADDR_008
+<Id to Class Map>
+ADDR_008
+CXXRecordDecl
+<Visited Children>
+ADDR_009
+0
+<TagTypeData>
+ADDR_009
+RecordType
+__cuda_builtin_blockDim_t
+NONE
+0
+0
+0
+nullptr_type
+ADDR_008
+<Id to Class Map>
+ADDR_009
+RecordType
+<Visited Children>
+ADDR_010
+0
+<ElaboratedTypeData>
+ADDR_010
+ElaboratedType
+__cuda_builtin_blockDim_t
+NONE
+0
+0
+0
+ADDR_009
+None
+
+ADDR_009
+<Id to Class Map>
+ADDR_010
+ElaboratedType
+<Visited Children>
+ADDR_011
+0
+<QualTypeData>
+ADDR_011
+QualType
+const __cuda_builtin_blockDim_t
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_009
+<Id to Class Map>
+ADDR_011
+QualType
+<Visited Children>
+ADDR_012
+0
+<QualTypeData>
+ADDR_012
+QualType
+const __cuda_builtin_blockDim_t
+NONE
+0
+0
+0
+ADDR_009
+1
+CONST
+NONE
+0
+ADDR_010
+<Id to Class Map>
+ADDR_012
+QualType
+<Top Level Types>
+ADDR_012
+<Top Level Types>
+ADDR_012
+<Top Level Attributes>
+ADDR_013
+<Top Level Attributes>
+ADDR_014
+<Top Level Types>
+ADDR_012
+<Visited Children>
+ADDR_015
+0
+<VarDeclData>
+ADDR_015
+VarDecl
+<SYSTEM_INCLUDE>/curand_mtgp32_kernel.h
+123
+1
+<SYSTEM_INCLUDE>/curand_mtgp32_kernel.h
+123
+19
+0
+1
+0
+1
+1
+0
+0
+2
+ADDR_013
+ADDR_014
+
+blockDim
+0
+0
+0
+External
+Default
+ADDR_012
+1
+Extern
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_015
+VarDecl
+<Visited Children>
+ADDR_016
+0
+<DeclRefExprData>
+ADDR_016
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<end>
+0
+0
+ADDR_012
+1
+0
+0
+
+0
+ADDR_015
+<Id to Class Map>
+ADDR_016
+DeclRefExpr
+<Visited Children>
+ADDR_017
+1
+ADDR_016
+<ExprData>
+ADDR_017
+OpaqueValueExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<end>
+0
+0
+ADDR_012
+1
+0
+0
+<Id to Class Map>
+ADDR_017
+OpaqueValueExpr
+<Visited Children>
+ADDR_018
+0
+<BuiltinTypeData>
+ADDR_018
+BuiltinType
+<pseudo-object type>
+NONE
+0
+0
+0
+nullptr_type
+PseudoObject
+<pseudo-object type>
+<Id to Class Map>
+ADDR_018
+BuiltinType
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_019
+0
+<MSPropertyDeclData>
+ADDR_019
+MSPropertyDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+79
+3
+<end>
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+31
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+79
+25
+1
+0
+0
+0
+0
+0
+0
+__cuda_builtin_blockDim_t
+x
+0
+1
+1
+None
+Default
+ADDR_020
+0
+__fetch_builtin_x
+<NO_VALUE>
+<Id to Class Map>
+ADDR_019
+MSPropertyDecl
+<Visited Children>
+ADDR_021
+1
+ADDR_017
+<MSPropertyRefExprData>
+ADDR_021
+MSPropertyRefExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+23
+0
+0
+ADDR_018
+1
+0
+0
+ADDR_017
+ADDR_019
+0
+0
+<Id to Class Map>
+ADDR_021
+MSPropertyRefExpr
+<Visited Children>
+ADDR_020
+0
+<BuiltinTypeData>
+ADDR_020
+BuiltinType
+unsigned int
+NONE
+0
+0
+0
+nullptr_type
+UInt
+unsigned int
+<Id to Class Map>
+ADDR_020
+BuiltinType
+<Visited Children>
+ADDR_022
+0
+<FunctionProtoTypeData>
+ADDR_022
+FunctionProtoType
+unsigned int ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_020
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_022
+FunctionProtoType
+<Top Level Types>
+ADDR_022
+<Top Level Attributes>
+ADDR_023
+<Top Level Attributes>
+ADDR_024
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_025
+0
+<CXXMethodDeclData>
+ADDR_025
+CXXMethodDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+79
+3
+<end>
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+32
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+35
+3
+1
+0
+1
+1
+0
+0
+2
+ADDR_023
+ADDR_024
+__cuda_builtin_blockDim_t
+__fetch_builtin_x
+0
+1
+0
+External
+Default
+ADDR_022
+0
+0
+0
+Static
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_025
+nullptr_decl
+0
+ADDR_008
+0
+1
+0
+0
+0
+0
+0
+0
+nullptr_type
+nullptr_type
+1
+0
+<Id to Class Map>
+ADDR_025
+CXXMethodDecl
+<Visited Children>
+ADDR_026
+1
+ADDR_017
+<MemberExprData>
+ADDR_026
+MemberExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+23
+0
+0
+ADDR_022
+1
+0
+0
+0
+__fetch_builtin_x
+ADDR_025
+ADDR_025
+PUBLIC
+<Id to Class Map>
+ADDR_026
+MemberExpr
+<Visited Children>
+ADDR_027
+0
+<PointerTypeData>
+ADDR_027
+PointerType
+unsigned int (*)()
+NONE
+0
+0
+0
+nullptr_type
+ADDR_022
+<Id to Class Map>
+ADDR_027
+PointerType
+<Top Level Types>
+ADDR_027
+<Visited Children>
+ADDR_028
+1
+ADDR_026
+<ExprData>
+ADDR_028
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+23
+0
+0
+ADDR_027
+0
+0
+0
+<Id to Class Map>
+ADDR_028
+ImplicitCastExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_029
+1
+ADDR_028
+<CallExprData>
+ADDR_029
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+23
+0
+0
+ADDR_020
+0
+0
+0
+ADDR_025
+<Id to Class Map>
+ADDR_029
+CallExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_030
+3
+ADDR_021
+ADDR_017
+ADDR_029
+<PseudoObjectExprData>
+ADDR_030
+PseudoObjectExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+23
+0
+0
+ADDR_020
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_030
+PseudoObjectExpr
+<Visited Children>
+ADDR_031
+0
+<CXXRecordDeclData>
+ADDR_031
+CXXRecordDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+65
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+76
+1
+0
+1
+0
+0
+1
+0
+0
+0
+
+__cuda_builtin_blockIdx_t
+0
+0
+0
+External
+Default
+ADDR_032
+Struct
+1
+0
+0
+ADDR_031
+<Id to Class Map>
+ADDR_031
+CXXRecordDecl
+<Visited Children>
+ADDR_032
+0
+<TagTypeData>
+ADDR_032
+RecordType
+__cuda_builtin_blockIdx_t
+NONE
+0
+0
+0
+nullptr_type
+ADDR_031
+<Id to Class Map>
+ADDR_032
+RecordType
+<Visited Children>
+ADDR_033
+0
+<ElaboratedTypeData>
+ADDR_033
+ElaboratedType
+__cuda_builtin_blockIdx_t
+NONE
+0
+0
+0
+ADDR_032
+None
+
+ADDR_032
+<Id to Class Map>
+ADDR_033
+ElaboratedType
+<Visited Children>
+ADDR_034
+0
+<QualTypeData>
+ADDR_034
+QualType
+const __cuda_builtin_blockIdx_t
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_032
+<Id to Class Map>
+ADDR_034
+QualType
+<Visited Children>
+ADDR_035
+0
+<QualTypeData>
+ADDR_035
+QualType
+const __cuda_builtin_blockIdx_t
+NONE
+0
+0
+0
+ADDR_032
+1
+CONST
+NONE
+0
+ADDR_033
+<Id to Class Map>
+ADDR_035
+QualType
+<Top Level Types>
+ADDR_035
+<Top Level Types>
+ADDR_035
+<Top Level Attributes>
+ADDR_036
+<Top Level Attributes>
+ADDR_037
+<Top Level Types>
+ADDR_035
+<Visited Children>
+ADDR_038
+0
+<VarDeclData>
+ADDR_038
+VarDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+107
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+107
+46
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+105
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+107
+46
+1
+0
+1
+1
+0
+0
+2
+ADDR_036
+ADDR_037
+
+blockIdx
+0
+0
+0
+External
+Default
+ADDR_035
+1
+Extern
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_038
+VarDecl
+<Visited Children>
+ADDR_039
+0
+<DeclRefExprData>
+ADDR_039
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<end>
+0
+0
+ADDR_035
+1
+0
+0
+
+0
+ADDR_038
+<Id to Class Map>
+ADDR_039
+DeclRefExpr
+<Visited Children>
+ADDR_040
+1
+ADDR_039
+<ExprData>
+ADDR_040
+OpaqueValueExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<end>
+0
+0
+ADDR_035
+1
+0
+0
+<Id to Class Map>
+ADDR_040
+OpaqueValueExpr
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_041
+0
+<MSPropertyDeclData>
+ADDR_041
+MSPropertyDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+66
+3
+<end>
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+31
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+66
+25
+1
+0
+0
+0
+0
+0
+0
+__cuda_builtin_blockIdx_t
+x
+0
+1
+1
+None
+Default
+ADDR_020
+0
+__fetch_builtin_x
+<NO_VALUE>
+<Id to Class Map>
+ADDR_041
+MSPropertyDecl
+<Visited Children>
+ADDR_042
+1
+ADDR_040
+<MSPropertyRefExprData>
+ADDR_042
+MSPropertyRefExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<TEST_DIR>/atomicAdd.cu
+4
+36
+0
+0
+ADDR_018
+1
+0
+0
+ADDR_040
+ADDR_041
+0
+0
+<Id to Class Map>
+ADDR_042
+MSPropertyRefExpr
+<Top Level Types>
+ADDR_022
+<Top Level Attributes>
+ADDR_043
+<Top Level Attributes>
+ADDR_044
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_045
+0
+<CXXMethodDeclData>
+ADDR_045
+CXXMethodDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+66
+3
+<end>
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+32
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+35
+3
+1
+0
+1
+1
+0
+0
+2
+ADDR_043
+ADDR_044
+__cuda_builtin_blockIdx_t
+__fetch_builtin_x
+0
+1
+0
+External
+Default
+ADDR_022
+0
+0
+0
+Static
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_045
+nullptr_decl
+0
+ADDR_031
+0
+1
+0
+0
+0
+0
+0
+0
+nullptr_type
+nullptr_type
+1
+0
+<Id to Class Map>
+ADDR_045
+CXXMethodDecl
+<Visited Children>
+ADDR_046
+1
+ADDR_040
+<MemberExprData>
+ADDR_046
+MemberExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<TEST_DIR>/atomicAdd.cu
+4
+36
+0
+0
+ADDR_022
+1
+0
+0
+0
+__fetch_builtin_x
+ADDR_045
+ADDR_045
+PUBLIC
+<Id to Class Map>
+ADDR_046
+MemberExpr
+<Top Level Types>
+ADDR_027
+<Visited Children>
+ADDR_047
+1
+ADDR_046
+<ExprData>
+ADDR_047
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<TEST_DIR>/atomicAdd.cu
+4
+36
+0
+0
+ADDR_027
+0
+0
+0
+<Id to Class Map>
+ADDR_047
+ImplicitCastExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_048
+1
+ADDR_047
+<CallExprData>
+ADDR_048
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<TEST_DIR>/atomicAdd.cu
+4
+36
+0
+0
+ADDR_020
+0
+0
+0
+ADDR_045
+<Id to Class Map>
+ADDR_048
+CallExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_049
+3
+ADDR_042
+ADDR_040
+ADDR_048
+<PseudoObjectExprData>
+ADDR_049
+PseudoObjectExpr
+<TEST_DIR>/atomicAdd.cu
+4
+27
+<TEST_DIR>/atomicAdd.cu
+4
+36
+0
+0
+ADDR_020
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_049
+PseudoObjectExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_050
+2
+ADDR_030
+ADDR_049
+<BinaryOperatorData>
+ADDR_050
+BinaryOperator
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+36
+0
+0
+ADDR_020
+0
+0
+0
+Mul
+<Id to Class Map>
+ADDR_050
+BinaryOperator
+<Visited Children>
+ADDR_051
+0
+<CXXRecordDeclData>
+ADDR_051
+CXXRecordDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+52
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+63
+1
+0
+1
+0
+0
+1
+0
+0
+0
+
+__cuda_builtin_threadIdx_t
+0
+0
+0
+External
+Default
+ADDR_052
+Struct
+1
+0
+0
+ADDR_051
+<Id to Class Map>
+ADDR_051
+CXXRecordDecl
+<Visited Children>
+ADDR_052
+0
+<TagTypeData>
+ADDR_052
+RecordType
+__cuda_builtin_threadIdx_t
+NONE
+0
+0
+0
+nullptr_type
+ADDR_051
+<Id to Class Map>
+ADDR_052
+RecordType
+<Visited Children>
+ADDR_053
+0
+<ElaboratedTypeData>
+ADDR_053
+ElaboratedType
+__cuda_builtin_threadIdx_t
+NONE
+0
+0
+0
+ADDR_052
+None
+
+ADDR_052
+<Id to Class Map>
+ADDR_053
+ElaboratedType
+<Visited Children>
+ADDR_054
+0
+<QualTypeData>
+ADDR_054
+QualType
+const __cuda_builtin_threadIdx_t
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_052
+<Id to Class Map>
+ADDR_054
+QualType
+<Visited Children>
+ADDR_055
+0
+<QualTypeData>
+ADDR_055
+QualType
+const __cuda_builtin_threadIdx_t
+NONE
+0
+0
+0
+ADDR_052
+1
+CONST
+NONE
+0
+ADDR_053
+<Id to Class Map>
+ADDR_055
+QualType
+<Top Level Types>
+ADDR_055
+<Top Level Types>
+ADDR_055
+<Top Level Attributes>
+ADDR_056
+<Top Level Attributes>
+ADDR_057
+<Top Level Types>
+ADDR_055
+<Visited Children>
+ADDR_058
+0
+<VarDeclData>
+ADDR_058
+VarDecl
+<SYSTEM_INCLUDE>/curand_mtgp32_kernel.h
+124
+1
+<SYSTEM_INCLUDE>/curand_mtgp32_kernel.h
+124
+20
+0
+1
+0
+1
+1
+0
+0
+2
+ADDR_056
+ADDR_057
+
+threadIdx
+0
+0
+0
+External
+Default
+ADDR_055
+1
+Extern
+NONE
+0
+CINIT
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_058
+VarDecl
+<Visited Children>
+ADDR_059
+0
+<DeclRefExprData>
+ADDR_059
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<end>
+0
+0
+ADDR_055
+1
+0
+0
+
+0
+ADDR_058
+<Id to Class Map>
+ADDR_059
+DeclRefExpr
+<Visited Children>
+ADDR_060
+1
+ADDR_059
+<ExprData>
+ADDR_060
+OpaqueValueExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<end>
+0
+0
+ADDR_055
+1
+0
+0
+<Id to Class Map>
+ADDR_060
+OpaqueValueExpr
+<Top Level Types>
+ADDR_018
+<Visited Children>
+ADDR_061
+0
+<MSPropertyDeclData>
+ADDR_061
+MSPropertyDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+53
+3
+<end>
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+31
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+53
+25
+1
+0
+0
+0
+0
+0
+0
+__cuda_builtin_threadIdx_t
+x
+0
+1
+1
+None
+Default
+ADDR_020
+0
+__fetch_builtin_x
+<NO_VALUE>
+<Id to Class Map>
+ADDR_061
+MSPropertyDecl
+<Visited Children>
+ADDR_062
+1
+ADDR_060
+<MSPropertyRefExprData>
+ADDR_062
+MSPropertyRefExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_018
+1
+0
+0
+ADDR_060
+ADDR_061
+0
+0
+<Id to Class Map>
+ADDR_062
+MSPropertyRefExpr
+<Top Level Types>
+ADDR_022
+<Top Level Attributes>
+ADDR_063
+<Top Level Attributes>
+ADDR_064
+<Top Level Types>
+ADDR_022
+<Visited Children>
+ADDR_065
+0
+<CXXMethodDeclData>
+ADDR_065
+CXXMethodDecl
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+53
+3
+<end>
+1
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+32
+3
+<CLANG_INCLUDE>/__clang_cuda_builtin_vars.h
+35
+3
+1
+0
+1
+1
+0
+0
+2
+ADDR_063
+ADDR_064
+__cuda_builtin_threadIdx_t
+__fetch_builtin_x
+0
+1
+0
+External
+Default
+ADDR_022
+0
+0
+0
+Static
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_065
+nullptr_decl
+0
+ADDR_051
+0
+1
+0
+0
+0
+0
+0
+0
+nullptr_type
+nullptr_type
+1
+0
+<Id to Class Map>
+ADDR_065
+CXXMethodDecl
+<Visited Children>
+ADDR_066
+1
+ADDR_060
+<MemberExprData>
+ADDR_066
+MemberExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_022
+1
+0
+0
+0
+__fetch_builtin_x
+ADDR_065
+ADDR_065
+PUBLIC
+<Id to Class Map>
+ADDR_066
+MemberExpr
+<Top Level Types>
+ADDR_027
+<Visited Children>
+ADDR_067
+1
+ADDR_066
+<ExprData>
+ADDR_067
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_027
+0
+0
+0
+<Id to Class Map>
+ADDR_067
+ImplicitCastExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_068
+1
+ADDR_067
+<CallExprData>
+ADDR_068
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_020
+0
+0
+0
+ADDR_065
+<Id to Class Map>
+ADDR_068
+CallExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_069
+3
+ADDR_062
+ADDR_060
+ADDR_068
+<PseudoObjectExprData>
+ADDR_069
+PseudoObjectExpr
+<TEST_DIR>/atomicAdd.cu
+4
+40
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_020
+0
+0
+0
+1
+<Id to Class Map>
+ADDR_069
+PseudoObjectExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_070
+2
+ADDR_050
+ADDR_069
+<BinaryOperatorData>
+ADDR_070
+BinaryOperator
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_020
+0
+0
+0
+Add
+<Id to Class Map>
+ADDR_070
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_071
+1
+ADDR_070
+<ExprData>
+ADDR_071
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+4
+14
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_071
+ImplicitCastExpr
+<Visited Children>
+ADDR_072
+1
+ADDR_071
+<VarDeclData>
+ADDR_072
+VarDecl
+<TEST_DIR>/atomicAdd.cu
+4
+5
+<TEST_DIR>/atomicAdd.cu
+4
+50
+0
+0
+0
+1
+1
+0
+0
+0
+
+id
+0
+0
+0
+None
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_072
+VarDecl
+<Visited Children>
+ADDR_073
+1
+ADDR_072
+<StmtData>
+ADDR_073
+DeclStmt
+<TEST_DIR>/atomicAdd.cu
+4
+5
+<TEST_DIR>/atomicAdd.cu
+4
+51
+0
+0
+<Id to Class Map>
+ADDR_073
+DeclStmt
+<Top Level Types>
+ADDR_004
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_074
+0
+<DeclRefExprData>
+ADDR_074
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+5
+15
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_072
+<Id to Class Map>
+ADDR_074
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_075
+1
+ADDR_074
+<ExprData>
+ADDR_075
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+5
+15
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_075
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_076
+0
+<IntegerLiteralData>
+ADDR_076
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+5
+20
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+10
+%CLAVA_SOURCE_END%
+10
+<Id to Class Map>
+ADDR_076
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_077
+2
+ADDR_075
+ADDR_076
+<BinaryOperatorData>
+ADDR_077
+BinaryOperator
+<TEST_DIR>/atomicAdd.cu
+5
+15
+<TEST_DIR>/atomicAdd.cu
+5
+20
+0
+0
+ADDR_004
+0
+0
+0
+Rem
+<Id to Class Map>
+ADDR_077
+BinaryOperator
+<Visited Children>
+ADDR_078
+1
+ADDR_077
+<VarDeclData>
+ADDR_078
+VarDecl
+<TEST_DIR>/atomicAdd.cu
+5
+5
+<TEST_DIR>/atomicAdd.cu
+5
+20
+0
+0
+0
+1
+1
+0
+0
+0
+
+idx
+0
+0
+0
+None
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_078
+VarDecl
+<Visited Children>
+ADDR_079
+1
+ADDR_078
+<StmtData>
+ADDR_079
+DeclStmt
+<TEST_DIR>/atomicAdd.cu
+5
+5
+<TEST_DIR>/atomicAdd.cu
+5
+22
+0
+0
+<Id to Class Map>
+ADDR_079
+DeclStmt
+<Visited Children>
+ADDR_080
+0
+<FunctionProtoTypeData>
+ADDR_080
+FunctionProtoType
+int (int *, int)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+2
+2
+ADDR_005
+ADDR_004
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_080
+FunctionProtoType
+<Top Level Types>
+ADDR_080
+<Top Level Attributes>
+ADDR_081
+<Top Level Types>
+ADDR_080
+<Visited Children>
+ADDR_082
+0
+<FunctionDeclData>
+ADDR_082
+FunctionDecl
+<SYSTEM_INCLUDE>/device_atomic_functions.hpp
+75
+1
+<SYSTEM_INCLUDE>/device_atomic_functions.hpp
+78
+1
+1
+<SYSTEM_INCLUDE>/device_atomic_functions.hpp
+56
+42
+<SYSTEM_INCLUDE>/device_atomic_functions.hpp
+78
+1
+1
+0
+1
+1
+0
+0
+1
+ADDR_081
+
+atomicAdd
+0
+0
+0
+Internal
+Default
+ADDR_080
+0
+0
+0
+Static
+1
+0
+0
+0
+0
+ADDR_083
+ADDR_083
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_082
+FunctionDecl
+<Visited Children>
+ADDR_084
+0
+<DeclRefExprData>
+ADDR_084
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+7
+5
+<end>
+0
+0
+ADDR_080
+1
+0
+0
+
+0
+ADDR_082
+<Id to Class Map>
+ADDR_084
+DeclRefExpr
+<Visited Children>
+ADDR_085
+0
+<PointerTypeData>
+ADDR_085
+PointerType
+int (*)(int *, int)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_080
+<Id to Class Map>
+ADDR_085
+PointerType
+<Top Level Types>
+ADDR_085
+<Visited Children>
+ADDR_086
+1
+ADDR_084
+<ExprData>
+ADDR_086
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+7
+5
+<end>
+0
+0
+ADDR_085
+0
+0
+0
+<Id to Class Map>
+ADDR_086
+ImplicitCastExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_087
+0
+<DeclRefExprData>
+ADDR_087
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+7
+16
+<end>
+0
+0
+ADDR_005
+1
+0
+0
+
+0
+ADDR_007
+<Id to Class Map>
+ADDR_087
+DeclRefExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_088
+1
+ADDR_087
+<ExprData>
+ADDR_088
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+7
+16
+<end>
+0
+0
+ADDR_005
+0
+0
+0
+<Id to Class Map>
+ADDR_088
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_089
+0
+<DeclRefExprData>
+ADDR_089
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+7
+18
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_078
+<Id to Class Map>
+ADDR_089
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_090
+1
+ADDR_089
+<ExprData>
+ADDR_090
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+7
+18
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_090
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_091
+2
+ADDR_088
+ADDR_090
+<ExprData>
+ADDR_091
+ArraySubscriptExpr
+<TEST_DIR>/atomicAdd.cu
+7
+16
+<TEST_DIR>/atomicAdd.cu
+7
+21
+0
+0
+ADDR_004
+1
+0
+0
+<Id to Class Map>
+ADDR_091
+ArraySubscriptExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_092
+1
+ADDR_091
+<UnaryOperatorData>
+ADDR_092
+UnaryOperator
+<TEST_DIR>/atomicAdd.cu
+7
+15
+<TEST_DIR>/atomicAdd.cu
+7
+21
+0
+0
+ADDR_005
+0
+0
+0
+AddrOf
+PREFIX
+<Id to Class Map>
+ADDR_092
+UnaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_093
+0
+<IntegerLiteralData>
+ADDR_093
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+7
+24
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+10
+%CLAVA_SOURCE_END%
+10
+<Id to Class Map>
+ADDR_093
+IntegerLiteral
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_094
+3
+ADDR_086
+ADDR_092
+ADDR_093
+<CallExprData>
+ADDR_094
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+7
+5
+<TEST_DIR>/atomicAdd.cu
+7
+26
+0
+0
+ADDR_004
+0
+0
+0
+ADDR_082
+<Id to Class Map>
+ADDR_094
+CallExpr
+<Visited Children>
+ADDR_095
+3
+ADDR_073
+ADDR_079
+ADDR_094
+<StmtData>
+ADDR_095
+CompoundStmt
+<TEST_DIR>/atomicAdd.cu
+3
+28
+<TEST_DIR>/atomicAdd.cu
+8
+1
+0
+0
+<Id to Class Map>
+ADDR_095
+CompoundStmt
+<Visited Children>
+ADDR_001
+2
+ADDR_007
+ADDR_095
+<FunctionDeclData>
+ADDR_001
+FunctionDecl
+<TEST_DIR>/atomicAdd.cu
+3
+1
+<TEST_DIR>/atomicAdd.cu
+8
+1
+1
+<SYSTEM_INCLUDE>/crt/host_defines.h
+96
+9
+<TEST_DIR>/atomicAdd.cu
+8
+1
+0
+0
+0
+0
+0
+0
+1
+ADDR_002
+
+add
+0
+0
+0
+External
+Default
+ADDR_006
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_001
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_001
+FunctionDecl
+<Top Level Nodes>
+ADDR_096
+<Visited Children>
+ADDR_097
+0
+<FunctionProtoTypeData>
+ADDR_097
+FunctionProtoType
+int ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_097
+FunctionProtoType
+<Top Level Types>
+ADDR_097
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_098
+0
+<VarDeclData>
+ADDR_098
+VarDecl
+<TEST_DIR>/atomicAdd.cu
+11
+5
+<TEST_DIR>/atomicAdd.cu
+11
+10
+0
+0
+0
+1
+1
+0
+0
+0
+
+a
+0
+0
+0
+None
+Default
+ADDR_005
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_098
+VarDecl
+<Visited Children>
+ADDR_099
+1
+ADDR_098
+<StmtData>
+ADDR_099
+DeclStmt
+<TEST_DIR>/atomicAdd.cu
+11
+5
+<TEST_DIR>/atomicAdd.cu
+11
+11
+0
+0
+<Id to Class Map>
+ADDR_099
+DeclStmt
+<Visited Children>
+ADDR_100
+0
+<BuiltinTypeData>
+ADDR_100
+BuiltinType
+unsigned long
+NONE
+0
+0
+0
+nullptr_type
+ULong
+unsigned long
+<Id to Class Map>
+ADDR_100
+BuiltinType
+<Visited Children>
+ADDR_101
+0
+<TypedefNameDeclData>
+ADDR_101
+TypedefDecl
+<CLANG_INCLUDE>/__stddef_size_t.h
+18
+1
+<CLANG_INCLUDE>/__stddef_size_t.h
+18
+23
+0
+1
+0
+0
+1
+0
+0
+0
+
+size_t
+0
+0
+0
+None
+Default
+ADDR_102
+ADDR_100
+<Id to Class Map>
+ADDR_101
+TypedefDecl
+<Visited Children>
+ADDR_102
+0
+<TypedefTypeData>
+ADDR_102
+TypedefType
+size_t
+NONE
+0
+0
+0
+ADDR_100
+ADDR_101
+<Id to Class Map>
+ADDR_102
+TypedefType
+<Visited Children>
+ADDR_103
+0
+<ElaboratedTypeData>
+ADDR_103
+ElaboratedType
+size_t
+NONE
+0
+0
+0
+ADDR_102
+None
+
+ADDR_102
+<Id to Class Map>
+ADDR_103
+ElaboratedType
+<Top Level Types>
+ADDR_103
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_104
+0
+<IntegerLiteralData>
+ADDR_104
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+12
+19
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+10
+%CLAVA_SOURCE_END%
+10
+<Id to Class Map>
+ADDR_104
+IntegerLiteral
+<Top Level Types>
+ADDR_100
+<Visited Children>
+ADDR_105
+1
+ADDR_104
+<ExprData>
+ADDR_105
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+12
+19
+<end>
+0
+0
+ADDR_100
+0
+0
+0
+<Id to Class Map>
+ADDR_105
+ImplicitCastExpr
+<Top Level Types>
+ADDR_100
+<Visited Children>
+ADDR_106
+0
+<UnaryExprOrTypeTraitExprData>
+ADDR_106
+UnaryExprOrTypeTraitExpr
+<TEST_DIR>/atomicAdd.cu
+12
+24
+<TEST_DIR>/atomicAdd.cu
+12
+34
+0
+0
+ADDR_100
+0
+0
+0
+SizeOf
+1
+ADDR_004
+%CLAVA_SOURCE_BEGIN%
+sizeof(int)
+%CLAVA_SOURCE_END%
+<Id to Class Map>
+ADDR_106
+UnaryExprOrTypeTraitExpr
+<Top Level Types>
+ADDR_100
+<Visited Children>
+ADDR_107
+2
+ADDR_105
+ADDR_106
+<BinaryOperatorData>
+ADDR_107
+BinaryOperator
+<TEST_DIR>/atomicAdd.cu
+12
+19
+<TEST_DIR>/atomicAdd.cu
+12
+34
+0
+0
+ADDR_100
+0
+0
+0
+Mul
+<Id to Class Map>
+ADDR_107
+BinaryOperator
+<Visited Children>
+ADDR_108
+1
+ADDR_107
+<VarDeclData>
+ADDR_108
+VarDecl
+<TEST_DIR>/atomicAdd.cu
+12
+5
+<TEST_DIR>/atomicAdd.cu
+12
+34
+0
+0
+0
+1
+1
+0
+0
+0
+
+size
+0
+0
+0
+None
+Default
+ADDR_103
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_108
+VarDecl
+<Visited Children>
+ADDR_109
+1
+ADDR_108
+<StmtData>
+ADDR_109
+DeclStmt
+<TEST_DIR>/atomicAdd.cu
+12
+5
+<TEST_DIR>/atomicAdd.cu
+12
+35
+0
+0
+<Id to Class Map>
+ADDR_109
+DeclStmt
+<Visited Children>
+ADDR_110
+0
+<EnumDeclData>
+ADDR_110
+EnumDecl
+<SYSTEM_INCLUDE>/driver_types.h
+202
+1
+<SYSTEM_INCLUDE>/driver_types.h
+1088
+1
+0
+1
+0
+0
+0
+0
+0
+0
+
+cudaError
+0
+0
+0
+External
+Default
+ADDR_111
+Enum
+1
+NO_SCOPE
+ADDR_020
+<Id to Class Map>
+ADDR_110
+EnumDecl
+<Visited Children>
+ADDR_111
+0
+<TagTypeData>
+ADDR_111
+EnumType
+cudaError
+NONE
+0
+0
+0
+nullptr_type
+ADDR_110
+<Id to Class Map>
+ADDR_111
+EnumType
+<Visited Children>
+ADDR_112
+0
+<ElaboratedTypeData>
+ADDR_112
+ElaboratedType
+enum cudaError
+NONE
+0
+0
+0
+ADDR_111
+Enum
+
+ADDR_111
+<Id to Class Map>
+ADDR_112
+ElaboratedType
+<Visited Children>
+ADDR_113
+0
+<TypedefNameDeclData>
+ADDR_113
+TypedefDecl
+<SYSTEM_INCLUDE>/driver_types.h
+2780
+1
+<SYSTEM_INCLUDE>/driver_types.h
+2780
+43
+0
+1
+0
+0
+1
+0
+0
+0
+
+cudaError_t
+0
+0
+0
+None
+Default
+ADDR_114
+ADDR_112
+<Id to Class Map>
+ADDR_113
+TypedefDecl
+<Visited Children>
+ADDR_114
+0
+<TypedefTypeData>
+ADDR_114
+TypedefType
+cudaError_t
+NONE
+0
+0
+0
+ADDR_112
+ADDR_113
+<Id to Class Map>
+ADDR_114
+TypedefType
+<Visited Children>
+ADDR_115
+0
+<ElaboratedTypeData>
+ADDR_115
+ElaboratedType
+cudaError_t
+NONE
+0
+0
+0
+ADDR_114
+None
+
+ADDR_114
+<Id to Class Map>
+ADDR_115
+ElaboratedType
+<Visited Children>
+ADDR_116
+0
+<TemplateTypeParmDeclData>
+ADDR_116
+TemplateTypeParmDecl
+<SYSTEM_INCLUDE>/cuda_runtime.h
+628
+10
+<SYSTEM_INCLUDE>/cuda_runtime.h
+628
+16
+0
+1
+0
+0
+1
+0
+0
+0
+
+T
+0
+0
+0
+None
+Default
+ADDR_117
+CLASS
+0
+nullptr_type
+<Id to Class Map>
+ADDR_116
+TemplateTypeParmDecl
+<Visited Children>
+ADDR_118
+0
+<SubstTemplateTypeParmTypeData>
+ADDR_118
+SubstTemplateTypeParmType
+int
+NONE
+0
+0
+0
+ADDR_004
+ADDR_116
+ADDR_004
+<Id to Class Map>
+ADDR_118
+SubstTemplateTypeParmType
+<Visited Children>
+ADDR_119
+0
+<PointerTypeData>
+ADDR_119
+PointerType
+int *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_118
+<Id to Class Map>
+ADDR_119
+PointerType
+<Visited Children>
+ADDR_120
+0
+<PointerTypeData>
+ADDR_120
+PointerType
+int **
+NONE
+0
+0
+0
+nullptr_type
+ADDR_119
+<Id to Class Map>
+ADDR_120
+PointerType
+<Visited Children>
+ADDR_121
+0
+<FunctionProtoTypeData>
+ADDR_121
+FunctionProtoType
+cudaError_t (int **, size_t, unsigned int)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_115
+3
+3
+ADDR_120
+ADDR_103
+ADDR_020
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_121
+FunctionProtoType
+<Top Level Types>
+ADDR_121
+<Top Level Attributes>
+ADDR_122
+<Top Level Types>
+ADDR_121
+<Visited Children>
+ADDR_123
+0
+<FunctionDeclData>
+ADDR_123
+FunctionDecl
+<SYSTEM_INCLUDE>/cuda_runtime.h
+629
+1
+<SYSTEM_INCLUDE>/cuda_runtime.h
+636
+1
+0
+1
+0
+1
+1
+0
+0
+1
+ADDR_122
+
+cudaMallocManaged
+0
+0
+0
+Internal
+Default
+ADDR_121
+0
+0
+3
+Static
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_123
+ADDR_124
+1
+Type
+ADDR_004
+<Id to Class Map>
+ADDR_123
+FunctionDecl
+<Visited Children>
+ADDR_125
+0
+<DeclRefExprData>
+ADDR_125
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+14
+5
+<end>
+0
+0
+ADDR_121
+1
+0
+0
+
+0
+ADDR_123
+<Id to Class Map>
+ADDR_125
+DeclRefExpr
+<Visited Children>
+ADDR_126
+0
+<PointerTypeData>
+ADDR_126
+PointerType
+cudaError_t (*)(int **, size_t, unsigned int)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_121
+<Id to Class Map>
+ADDR_126
+PointerType
+<Top Level Types>
+ADDR_126
+<Visited Children>
+ADDR_127
+1
+ADDR_125
+<ExprData>
+ADDR_127
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+14
+5
+<end>
+0
+0
+ADDR_126
+0
+0
+0
+<Id to Class Map>
+ADDR_127
+ImplicitCastExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_128
+0
+<DeclRefExprData>
+ADDR_128
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+14
+24
+<end>
+0
+0
+ADDR_005
+1
+0
+0
+
+0
+ADDR_098
+<Id to Class Map>
+ADDR_128
+DeclRefExpr
+<Visited Children>
+ADDR_129
+0
+<PointerTypeData>
+ADDR_129
+PointerType
+int **
+NONE
+0
+0
+0
+nullptr_type
+ADDR_005
+<Id to Class Map>
+ADDR_129
+PointerType
+<Top Level Types>
+ADDR_129
+<Visited Children>
+ADDR_130
+1
+ADDR_128
+<UnaryOperatorData>
+ADDR_130
+UnaryOperator
+<TEST_DIR>/atomicAdd.cu
+14
+23
+<TEST_DIR>/atomicAdd.cu
+14
+24
+0
+0
+ADDR_129
+0
+0
+0
+AddrOf
+PREFIX
+<Id to Class Map>
+ADDR_130
+UnaryOperator
+<Top Level Types>
+ADDR_103
+<Visited Children>
+ADDR_131
+0
+<DeclRefExprData>
+ADDR_131
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+14
+27
+<end>
+0
+0
+ADDR_103
+1
+0
+0
+
+0
+ADDR_108
+<Id to Class Map>
+ADDR_131
+DeclRefExpr
+<Top Level Types>
+ADDR_103
+<Visited Children>
+ADDR_132
+1
+ADDR_131
+<ExprData>
+ADDR_132
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+14
+27
+<end>
+0
+0
+ADDR_103
+0
+0
+0
+<Id to Class Map>
+ADDR_132
+ImplicitCastExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_133
+0
+<ExprData>
+ADDR_133
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_020
+0
+0
+1
+<Id to Class Map>
+ADDR_133
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_115
+<Visited Children>
+ADDR_134
+4
+ADDR_127
+ADDR_130
+ADDR_132
+ADDR_133
+<CallExprData>
+ADDR_134
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+14
+5
+<TEST_DIR>/atomicAdd.cu
+14
+31
+0
+0
+ADDR_115
+0
+0
+0
+ADDR_123
+<Id to Class Map>
+ADDR_134
+CallExpr
+<Top Level Types>
+ADDR_006
+<Visited Children>
+ADDR_135
+0
+<DeclRefExprData>
+ADDR_135
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+16
+5
+<end>
+0
+0
+ADDR_006
+1
+0
+0
+
+0
+ADDR_001
+<Id to Class Map>
+ADDR_135
+DeclRefExpr
+<Visited Children>
+ADDR_136
+0
+<PointerTypeData>
+ADDR_136
+PointerType
+void (*)(int *)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_006
+<Id to Class Map>
+ADDR_136
+PointerType
+<Top Level Types>
+ADDR_136
+<Visited Children>
+ADDR_137
+1
+ADDR_135
+<ExprData>
+ADDR_137
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+5
+<end>
+0
+0
+ADDR_136
+0
+0
+0
+<Id to Class Map>
+ADDR_137
+ImplicitCastExpr
+<Visited Children>
+ADDR_138
+0
+<CXXRecordDeclData>
+ADDR_138
+CXXRecordDecl
+<SYSTEM_INCLUDE>/vector_types.h
+418
+1
+<SYSTEM_INCLUDE>/vector_types.h
+432
+1
+0
+1
+0
+0
+1
+0
+0
+0
+
+dim3
+0
+0
+0
+External
+Default
+ADDR_139
+Struct
+1
+0
+0
+ADDR_138
+<Id to Class Map>
+ADDR_138
+CXXRecordDecl
+<Visited Children>
+ADDR_139
+0
+<TagTypeData>
+ADDR_139
+RecordType
+dim3
+NONE
+0
+0
+0
+nullptr_type
+ADDR_138
+<Id to Class Map>
+ADDR_139
+RecordType
+<Visited Children>
+ADDR_140
+0
+<ElaboratedTypeData>
+ADDR_140
+ElaboratedType
+struct dim3
+NONE
+0
+0
+0
+ADDR_139
+Struct
+
+ADDR_139
+<Id to Class Map>
+ADDR_140
+ElaboratedType
+<Visited Children>
+ADDR_141
+0
+<TypedefNameDeclData>
+ADDR_141
+TypedefDecl
+<SYSTEM_INCLUDE>/vector_types.h
+434
+1
+<SYSTEM_INCLUDE>/vector_types.h
+434
+40
+0
+1
+0
+0
+1
+0
+0
+0
+
+dim3
+0
+0
+0
+None
+Default
+ADDR_142
+ADDR_140
+<Id to Class Map>
+ADDR_141
+TypedefDecl
+<Visited Children>
+ADDR_142
+0
+<TypedefTypeData>
+ADDR_142
+TypedefType
+dim3
+NONE
+0
+0
+0
+ADDR_140
+ADDR_141
+<Id to Class Map>
+ADDR_142
+TypedefType
+<Visited Children>
+ADDR_143
+0
+<ElaboratedTypeData>
+ADDR_143
+ElaboratedType
+dim3
+NONE
+0
+0
+0
+ADDR_142
+None
+
+ADDR_142
+<Id to Class Map>
+ADDR_143
+ElaboratedType
+<Visited Children>
+ADDR_144
+0
+<PointerTypeData>
+ADDR_144
+PointerType
+void *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_003
+<Id to Class Map>
+ADDR_144
+PointerType
+<Visited Children>
+ADDR_145
+0
+<FunctionProtoTypeData>
+ADDR_145
+FunctionProtoType
+unsigned int (dim3, dim3, size_t, void *)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_020
+4
+4
+ADDR_143
+ADDR_143
+ADDR_103
+ADDR_144
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_145
+FunctionProtoType
+<Top Level Types>
+ADDR_145
+<Top Level Types>
+ADDR_145
+<Visited Children>
+ADDR_146
+0
+<FunctionDeclData>
+ADDR_146
+FunctionDecl
+<CLANG_INCLUDE>/__clang_cuda_runtime_wrapper.h
+497
+12
+<CLANG_INCLUDE>/__clang_cuda_runtime_wrapper.h
+499
+65
+0
+1
+0
+1
+1
+0
+0
+0
+
+__cudaPushCallConfiguration
+0
+0
+0
+External
+Default
+ADDR_145
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_146
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_146
+FunctionDecl
+<Visited Children>
+ADDR_147
+0
+<DeclRefExprData>
+ADDR_147
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+16
+8
+<end>
+0
+0
+ADDR_145
+1
+0
+0
+
+0
+ADDR_146
+<Id to Class Map>
+ADDR_147
+DeclRefExpr
+<Visited Children>
+ADDR_148
+0
+<PointerTypeData>
+ADDR_148
+PointerType
+unsigned int (*)(dim3, dim3, size_t, void *)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_145
+<Id to Class Map>
+ADDR_148
+PointerType
+<Top Level Types>
+ADDR_148
+<Visited Children>
+ADDR_149
+1
+ADDR_147
+<ExprData>
+ADDR_149
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+8
+<end>
+0
+0
+ADDR_148
+0
+0
+0
+<Id to Class Map>
+ADDR_149
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_150
+0
+<IntegerLiteralData>
+ADDR_150
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+16
+11
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+10
+%CLAVA_SOURCE_END%
+10
+<Id to Class Map>
+ADDR_150
+IntegerLiteral
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_151
+1
+ADDR_150
+<ExprData>
+ADDR_151
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+11
+<end>
+0
+0
+ADDR_020
+0
+0
+0
+<Id to Class Map>
+ADDR_151
+ImplicitCastExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_152
+0
+<ExprData>
+ADDR_152
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_020
+0
+0
+1
+<Id to Class Map>
+ADDR_152
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_153
+0
+<ExprData>
+ADDR_153
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_020
+0
+0
+1
+<Id to Class Map>
+ADDR_153
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_143
+<Top Level Attributes>
+ADDR_154
+<Top Level Attributes>
+ADDR_155
+<Top Level Types>
+ADDR_156
+<Visited Children>
+ADDR_157
+0
+<CXXConstructorDeclData>
+ADDR_157
+CXXConstructorDecl
+<SYSTEM_INCLUDE>/vector_types.h
+423
+5
+<SYSTEM_INCLUDE>/vector_types.h
+423
+126
+1
+<SYSTEM_INCLUDE>/crt/host_defines.h
+96
+9
+<SYSTEM_INCLUDE>/vector_types.h
+423
+126
+1
+0
+1
+1
+0
+0
+2
+ADDR_154
+ADDR_155
+dim3
+dim3
+3
+1
+1
+External
+Default
+ADDR_156
+0
+1
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_157
+nullptr_decl
+0
+ADDR_138
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_158
+ADDR_139
+1
+0
+3
+ANY_MEMBER_INITIALIZER
+ADDR_159
+ADDR_160
+0
+1
+ANY_MEMBER_INITIALIZER
+ADDR_161
+ADDR_162
+0
+1
+ANY_MEMBER_INITIALIZER
+ADDR_163
+ADDR_164
+0
+1
+1
+0
+ResolvedFalse
+nullptr_expr
+0
+<Id to Class Map>
+ADDR_157
+CXXConstructorDecl
+<Visited Children>
+ADDR_165
+3
+ADDR_151
+ADDR_152
+ADDR_153
+<CXXConstructExprData>
+ADDR_165
+CXXConstructExpr
+<TEST_DIR>/atomicAdd.cu
+16
+11
+<end>
+0
+0
+ADDR_143
+0
+0
+0
+0
+0
+0
+0
+Complete
+1
+ADDR_157
+<Id to Class Map>
+ADDR_165
+CXXConstructExpr
+<Top Level Types>
+ADDR_143
+<Visited Children>
+ADDR_166
+1
+ADDR_165
+<ExprData>
+ADDR_166
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+11
+<end>
+0
+0
+ADDR_143
+0
+0
+0
+<Id to Class Map>
+ADDR_166
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_167
+0
+<IntegerLiteralData>
+ADDR_167
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+16
+14
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+1024
+%CLAVA_SOURCE_END%
+1024
+<Id to Class Map>
+ADDR_167
+IntegerLiteral
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_168
+1
+ADDR_167
+<ExprData>
+ADDR_168
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+14
+<end>
+0
+0
+ADDR_020
+0
+0
+0
+<Id to Class Map>
+ADDR_168
+ImplicitCastExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_169
+0
+<ExprData>
+ADDR_169
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_020
+0
+0
+1
+<Id to Class Map>
+ADDR_169
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_170
+0
+<ExprData>
+ADDR_170
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_020
+0
+0
+1
+<Id to Class Map>
+ADDR_170
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_143
+<Visited Children>
+ADDR_171
+3
+ADDR_168
+ADDR_169
+ADDR_170
+<CXXConstructExprData>
+ADDR_171
+CXXConstructExpr
+<TEST_DIR>/atomicAdd.cu
+16
+14
+<end>
+0
+0
+ADDR_143
+0
+0
+0
+0
+0
+0
+0
+Complete
+1
+ADDR_157
+<Id to Class Map>
+ADDR_171
+CXXConstructExpr
+<Top Level Types>
+ADDR_143
+<Visited Children>
+ADDR_172
+1
+ADDR_171
+<ExprData>
+ADDR_172
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+14
+<end>
+0
+0
+ADDR_143
+0
+0
+0
+<Id to Class Map>
+ADDR_172
+ImplicitCastExpr
+<Top Level Types>
+ADDR_103
+<Visited Children>
+ADDR_173
+0
+<ExprData>
+ADDR_173
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_103
+0
+0
+1
+<Id to Class Map>
+ADDR_173
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_144
+<Visited Children>
+ADDR_174
+0
+<ExprData>
+ADDR_174
+CXXDefaultArgExpr
+<invalid>
+0
+0
+ADDR_144
+0
+0
+1
+<Id to Class Map>
+ADDR_174
+CXXDefaultArgExpr
+<Top Level Types>
+ADDR_020
+<Visited Children>
+ADDR_175
+5
+ADDR_149
+ADDR_166
+ADDR_172
+ADDR_173
+ADDR_174
+<CallExprData>
+ADDR_175
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+16
+8
+<TEST_DIR>/atomicAdd.cu
+16
+18
+0
+0
+ADDR_020
+0
+0
+0
+ADDR_146
+<Id to Class Map>
+ADDR_175
+CallExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_176
+0
+<DeclRefExprData>
+ADDR_176
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+16
+22
+<end>
+0
+0
+ADDR_005
+1
+0
+0
+
+0
+ADDR_098
+<Id to Class Map>
+ADDR_176
+DeclRefExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_177
+1
+ADDR_176
+<ExprData>
+ADDR_177
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+16
+22
+<end>
+0
+0
+ADDR_005
+0
+0
+0
+<Id to Class Map>
+ADDR_177
+ImplicitCastExpr
+<Top Level Types>
+ADDR_003
+<Visited Children>
+ADDR_178
+3
+ADDR_137
+ADDR_175
+ADDR_177
+<ExprData>
+ADDR_178
+CUDAKernelCallExpr
+<TEST_DIR>/atomicAdd.cu
+16
+5
+<TEST_DIR>/atomicAdd.cu
+16
+23
+0
+0
+ADDR_003
+0
+0
+0
+<Id to Class Map>
+ADDR_178
+CUDAKernelCallExpr
+<Visited Children>
+ADDR_179
+0
+<FunctionProtoTypeData>
+ADDR_179
+FunctionProtoType
+cudaError_t ()
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_115
+0
+0
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_179
+FunctionProtoType
+<Top Level Types>
+ADDR_179
+<Top Level Attributes>
+ADDR_180
+<Top Level Types>
+ADDR_179
+<Visited Children>
+ADDR_181
+0
+<FunctionDeclData>
+ADDR_181
+FunctionDecl
+<SYSTEM_INCLUDE>/cuda_runtime_api.h
+333
+1
+<SYSTEM_INCLUDE>/cuda_runtime_api.h
+333
+84
+0
+1
+0
+1
+1
+0
+0
+1
+ADDR_180
+
+cudaDeviceSynchronize
+0
+0
+0
+External
+Default
+ADDR_179
+0
+0
+0
+Extern
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_181
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_181
+FunctionDecl
+<Visited Children>
+ADDR_182
+0
+<DeclRefExprData>
+ADDR_182
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+17
+5
+<end>
+0
+0
+ADDR_179
+1
+0
+0
+
+0
+ADDR_181
+<Id to Class Map>
+ADDR_182
+DeclRefExpr
+<Visited Children>
+ADDR_183
+0
+<PointerTypeData>
+ADDR_183
+PointerType
+cudaError_t (*)()
+NONE
+0
+0
+0
+nullptr_type
+ADDR_179
+<Id to Class Map>
+ADDR_183
+PointerType
+<Top Level Types>
+ADDR_183
+<Visited Children>
+ADDR_184
+1
+ADDR_182
+<ExprData>
+ADDR_184
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+17
+5
+<end>
+0
+0
+ADDR_183
+0
+0
+0
+<Id to Class Map>
+ADDR_184
+ImplicitCastExpr
+<Top Level Types>
+ADDR_115
+<Visited Children>
+ADDR_185
+1
+ADDR_184
+<CallExprData>
+ADDR_185
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+17
+5
+<TEST_DIR>/atomicAdd.cu
+17
+27
+0
+0
+ADDR_115
+0
+0
+0
+ADDR_181
+<Id to Class Map>
+ADDR_185
+CallExpr
+<Top Level Types>
+ADDR_004
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_186
+0
+<IntegerLiteralData>
+ADDR_186
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+19
+18
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+0
+%CLAVA_SOURCE_END%
+0
+<Id to Class Map>
+ADDR_186
+IntegerLiteral
+<Visited Children>
+ADDR_187
+1
+ADDR_186
+<VarDeclData>
+ADDR_187
+VarDecl
+<TEST_DIR>/atomicAdd.cu
+19
+10
+<TEST_DIR>/atomicAdd.cu
+19
+18
+0
+0
+0
+1
+1
+0
+0
+0
+
+i
+0
+0
+0
+None
+Default
+ADDR_004
+0
+None
+NONE
+0
+CINIT
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_187
+VarDecl
+<Visited Children>
+ADDR_188
+1
+ADDR_187
+<StmtData>
+ADDR_188
+DeclStmt
+<TEST_DIR>/atomicAdd.cu
+19
+10
+<TEST_DIR>/atomicAdd.cu
+19
+19
+0
+0
+<Id to Class Map>
+ADDR_188
+DeclStmt
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_189
+0
+<DeclRefExprData>
+ADDR_189
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+19
+21
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_187
+<Id to Class Map>
+ADDR_189
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_190
+1
+ADDR_189
+<ExprData>
+ADDR_190
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+19
+21
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_190
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_191
+0
+<IntegerLiteralData>
+ADDR_191
+IntegerLiteral
+<TEST_DIR>/atomicAdd.cu
+19
+25
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+%CLAVA_SOURCE_BEGIN%
+10
+%CLAVA_SOURCE_END%
+10
+<Id to Class Map>
+ADDR_191
+IntegerLiteral
+<Visited Children>
+ADDR_192
+0
+<BuiltinTypeData>
+ADDR_192
+BuiltinType
+bool
+NONE
+0
+0
+0
+nullptr_type
+Bool
+bool
+<Id to Class Map>
+ADDR_192
+BuiltinType
+<Top Level Types>
+ADDR_192
+<Visited Children>
+ADDR_193
+2
+ADDR_190
+ADDR_191
+<BinaryOperatorData>
+ADDR_193
+BinaryOperator
+<TEST_DIR>/atomicAdd.cu
+19
+21
+<TEST_DIR>/atomicAdd.cu
+19
+25
+0
+0
+ADDR_192
+0
+0
+0
+LT
+<Id to Class Map>
+ADDR_193
+BinaryOperator
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_194
+0
+<DeclRefExprData>
+ADDR_194
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+19
+29
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_187
+<Id to Class Map>
+ADDR_194
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_195
+1
+ADDR_194
+<UnaryOperatorData>
+ADDR_195
+UnaryOperator
+<TEST_DIR>/atomicAdd.cu
+19
+29
+<TEST_DIR>/atomicAdd.cu
+19
+30
+0
+0
+ADDR_004
+0
+0
+0
+PostInc
+POSTFIX
+<Id to Class Map>
+ADDR_195
+UnaryOperator
+<Visited Children>
+ADDR_196
+0
+<BuiltinTypeData>
+ADDR_196
+BuiltinType
+char
+NONE
+0
+0
+0
+nullptr_type
+Char_S
+char
+<Id to Class Map>
+ADDR_196
+BuiltinType
+<Visited Children>
+ADDR_197
+0
+<QualTypeData>
+ADDR_197
+QualType
+const char
+NONE
+0
+0
+0
+nullptr_type
+1
+CONST
+NONE
+0
+ADDR_196
+<Id to Class Map>
+ADDR_197
+QualType
+<Visited Children>
+ADDR_198
+0
+<PointerTypeData>
+ADDR_198
+PointerType
+const char *
+NONE
+0
+0
+0
+nullptr_type
+ADDR_197
+<Id to Class Map>
+ADDR_198
+PointerType
+<Visited Children>
+ADDR_199
+0
+<QualTypeData>
+ADDR_199
+QualType
+const char *__restrict
+NONE
+0
+0
+0
+nullptr_type
+1
+RESTRICT
+NONE
+0
+ADDR_198
+<Id to Class Map>
+ADDR_199
+QualType
+<Visited Children>
+ADDR_200
+0
+<FunctionProtoTypeData>
+ADDR_200
+FunctionProtoType
+int (const char *__restrict, ...)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_004
+1
+1
+ADDR_199
+0
+1
+None
+None
+0
+<Id to Class Map>
+ADDR_200
+FunctionProtoType
+<Top Level Types>
+ADDR_200
+<Top Level Attributes>
+ADDR_201
+<Top Level Attributes>
+ADDR_202
+<Top Level Types>
+ADDR_200
+<Visited Children>
+ADDR_203
+0
+<FunctionDeclData>
+ADDR_203
+FunctionDecl
+<SYSTEM_INCLUDE>/stdio.h
+363
+1
+<SYSTEM_INCLUDE>/stdio.h
+363
+56
+0
+1
+0
+1
+1
+0
+0
+2
+ADDR_201
+ADDR_202
+
+printf
+0
+0
+0
+External
+Default
+ADDR_200
+0
+0
+0
+Extern
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_203
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_203
+FunctionDecl
+<Visited Children>
+ADDR_204
+0
+<DeclRefExprData>
+ADDR_204
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+20
+9
+<end>
+0
+0
+ADDR_200
+1
+0
+0
+
+0
+ADDR_203
+<Id to Class Map>
+ADDR_204
+DeclRefExpr
+<Visited Children>
+ADDR_205
+0
+<PointerTypeData>
+ADDR_205
+PointerType
+int (*)(const char *__restrict, ...)
+NONE
+0
+0
+0
+nullptr_type
+ADDR_200
+<Id to Class Map>
+ADDR_205
+PointerType
+<Top Level Types>
+ADDR_205
+<Visited Children>
+ADDR_206
+1
+ADDR_204
+<ExprData>
+ADDR_206
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+20
+9
+<end>
+0
+0
+ADDR_205
+0
+0
+0
+<Id to Class Map>
+ADDR_206
+ImplicitCastExpr
+<Visited Children>
+ADDR_207
+0
+<ConstantArrayTypeData>
+ADDR_207
+ConstantArrayType
+const char[4]
+NONE
+0
+0
+0
+nullptr_type
+Normal
+0
+ADDR_197
+4
+<Id to Class Map>
+ADDR_207
+ConstantArrayType
+<Top Level Types>
+ADDR_207
+<Visited Children>
+ADDR_208
+0
+<StringLiteralData>
+ADDR_208
+StringLiteral
+<TEST_DIR>/atomicAdd.cu
+20
+16
+<end>
+0
+0
+ADDR_207
+1
+0
+0
+%CLAVA_SOURCE_BEGIN%
+"%d "
+%CLAVA_SOURCE_END%
+ORDINARY
+3
+1
+3
+37
+100
+32
+<Id to Class Map>
+ADDR_208
+StringLiteral
+<Top Level Types>
+ADDR_198
+<Visited Children>
+ADDR_209
+1
+ADDR_208
+<ExprData>
+ADDR_209
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+20
+16
+<end>
+0
+0
+ADDR_198
+0
+0
+0
+<Id to Class Map>
+ADDR_209
+ImplicitCastExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_210
+0
+<DeclRefExprData>
+ADDR_210
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+20
+23
+<end>
+0
+0
+ADDR_005
+1
+0
+0
+
+0
+ADDR_098
+<Id to Class Map>
+ADDR_210
+DeclRefExpr
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_211
+1
+ADDR_210
+<ExprData>
+ADDR_211
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+20
+23
+<end>
+0
+0
+ADDR_005
+0
+0
+0
+<Id to Class Map>
+ADDR_211
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_212
+0
+<DeclRefExprData>
+ADDR_212
+DeclRefExpr
+<TEST_DIR>/atomicAdd.cu
+20
+25
+<end>
+0
+0
+ADDR_004
+1
+0
+0
+
+0
+ADDR_187
+<Id to Class Map>
+ADDR_212
+DeclRefExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_213
+1
+ADDR_212
+<ExprData>
+ADDR_213
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+20
+25
+<end>
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_213
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_214
+2
+ADDR_211
+ADDR_213
+<ExprData>
+ADDR_214
+ArraySubscriptExpr
+<TEST_DIR>/atomicAdd.cu
+20
+23
+<TEST_DIR>/atomicAdd.cu
+20
+26
+0
+0
+ADDR_004
+1
+0
+0
+<Id to Class Map>
+ADDR_214
+ArraySubscriptExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_215
+1
+ADDR_214
+<ExprData>
+ADDR_215
+ImplicitCastExpr
+<TEST_DIR>/atomicAdd.cu
+20
+23
+<TEST_DIR>/atomicAdd.cu
+20
+26
+0
+0
+ADDR_004
+0
+0
+0
+<Id to Class Map>
+ADDR_215
+ImplicitCastExpr
+<Top Level Types>
+ADDR_004
+<Visited Children>
+ADDR_216
+3
+ADDR_206
+ADDR_209
+ADDR_215
+<CallExprData>
+ADDR_216
+CallExpr
+<TEST_DIR>/atomicAdd.cu
+20
+9
+<TEST_DIR>/atomicAdd.cu
+20
+27
+0
+0
+ADDR_004
+0
+0
+0
+ADDR_203
+<Id to Class Map>
+ADDR_216
+CallExpr
+<Visited Children>
+ADDR_217
+5
+ADDR_188
+ADDR_193
+ADDR_195
+ADDR_216
+nullptr_decl
+<StmtData>
+ADDR_217
+ForStmt
+<TEST_DIR>/atomicAdd.cu
+19
+5
+<TEST_DIR>/atomicAdd.cu
+20
+27
+0
+0
+<Id to Class Map>
+ADDR_217
+ForStmt
+<Visited Children>
+ADDR_218
+6
+ADDR_099
+ADDR_109
+ADDR_134
+ADDR_178
+ADDR_185
+ADDR_217
+<StmtData>
+ADDR_218
+CompoundStmt
+<TEST_DIR>/atomicAdd.cu
+10
+11
+<TEST_DIR>/atomicAdd.cu
+22
+1
+0
+0
+<Id to Class Map>
+ADDR_218
+CompoundStmt
+<Visited Children>
+ADDR_096
+1
+ADDR_218
+<FunctionDeclData>
+ADDR_096
+FunctionDecl
+<TEST_DIR>/atomicAdd.cu
+10
+1
+<TEST_DIR>/atomicAdd.cu
+22
+1
+0
+0
+0
+0
+0
+0
+0
+0
+
+main
+0
+0
+0
+External
+Default
+ADDR_097
+0
+0
+0
+None
+0
+0
+0
+0
+0
+nullptr_decl
+ADDR_096
+nullptr_decl
+0
+<Id to Class Map>
+ADDR_096
+FunctionDecl
