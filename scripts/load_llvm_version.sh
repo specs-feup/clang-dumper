@@ -16,6 +16,7 @@ load_llvm_version() {
   : "${LLVM_RELEASE:?LLVM_RELEASE is required in ${manifest}}"
   : "${MSYS2_LLVM_PACKAGE_RELEASE:?MSYS2_LLVM_PACKAGE_RELEASE is required in ${manifest}}"
   : "${MSYS2_MINGW_PACKAGE_RELEASE:?MSYS2_MINGW_PACKAGE_RELEASE is required in ${manifest}}"
+  : "${MSYS2_OPENMP_RELEASE:?MSYS2_OPENMP_RELEASE is required in ${manifest}}"
   : "${MSYS2_ZLIB_NG_RELEASE:?MSYS2_ZLIB_NG_RELEASE is required in ${manifest}}"
   : "${MSYS2_ZSTD_RELEASE:?MSYS2_ZSTD_RELEASE is required in ${manifest}}"
   : "${WINDOWS_SDK_RELEASE_TAG:?WINDOWS_SDK_RELEASE_TAG is required in ${manifest}}"
