@@ -63,16 +63,14 @@ jobs:
         include:
           - arch: x64
             runner: ubuntu-24.04
-            feature-args: --enable-opencl --enable-cuda
-            accelerator-packages: nvidia-cuda-toolkit ocl-icd-opencl-dev
+            feature-args: --enable-opencl
+            accelerator-packages: ocl-icd-opencl-dev
             include-package: clang-dumper-linux-x64-includes.zip
-            expect-cuda-headers: true
           - arch: arm64
             runner: ubuntu-24.04-arm
             feature-args: ""
             accelerator-packages: ""
             include-package: clang-dumper-linux-arm64-includes.zip
-            expect-cuda-headers: false
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -165,20 +163,14 @@ jobs:
 
       - name: Check Linux include package
         run: |
-          python3 - <<'PY' "dist/${{ matrix.include-package }}" true "${{ matrix.expect-cuda-headers }}"
+          python3 - <<'PY' "dist/${{ matrix.include-package }}"
           import sys, zipfile
-          archive_path, expect_openmp, expect_cuda = sys.argv[1], sys.argv[2] == "true", sys.argv[3] == "true"
+          archive_path = sys.argv[1]
           with zipfile.ZipFile(archive_path) as archive:
               names = archive.namelist()
-          checks = {
-              "omp.h": any(name.endswith("/omp.h") or name == "omp.h" for name in names),
-              "cuda_runtime.h": any(name.endswith("/cuda_runtime.h") or name == "cuda_runtime.h" for name in names),
-          }
-          if expect_openmp and not checks["omp.h"]:
+          if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
               raise SystemExit("include package is missing omp.h")
-          if expect_cuda and not checks["cuda_runtime.h"]:
-              raise SystemExit("include package is missing cuda_runtime.h")
-          print(checks)
+          print({"omp.h": True})
           PY
 
       - name: Upload tool

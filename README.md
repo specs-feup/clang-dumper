@@ -71,10 +71,7 @@ The packages contain the minimal copied include roots plus an `entrypoints.txt`
 file. Consumers should pass each path listed in `entrypoints.txt`, in order, as
 an include root relative to the archive root.
 
-When available in the build environment, accelerator/runtime headers are folded
-into the same package and listed in `entrypoints.txt`. CI currently verifies
-OpenMP headers in all platform packages and CUDA runtime headers in the Linux
-x64 package.
+OpenMP headers are included when available.
 
 ```sh
 scripts/package_linux_includes.sh x64 dist/clang-dumper-linux-x64-includes.zip
