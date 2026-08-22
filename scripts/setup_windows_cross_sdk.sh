@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/scripts/load_llvm_version.sh"
 load_llvm_version "${ROOT_DIR}/llvm-version.env"
+source "${ROOT_DIR}/scripts/windows_sdk_packages.sh"
 
 DOWNLOAD_DIR="${ROOT_DIR}/.deps/msys2-sdk-downloads"
 SDK_BUNDLE_DIR="${ROOT_DIR}/.deps/windows-sdk-bundles"
@@ -72,32 +73,11 @@ setup_msys2_sdk() {
   local triplet="$2"
   local root="${ROOT_DIR}/.deps/msys2-${repo}-${CLANG_VERSION}"
   local base="https://repo.msys2.org/mingw/${repo}"
-  local llvm_packages=(
-    llvm
-    llvm-libs
-    clang
-    clang-libs
-    clang-tools-extra
-    compiler-rt
-    libc%2B%2B
-    libunwind
-    lld
-  )
-  local mingw_packages=(
-    headers-git
-    crt-git
-    winpthreads-git
-  )
 
-  for package in "${llvm_packages[@]}"; do
-    fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-${package}-${LLVM_RELEASE}-${MSYS2_LLVM_PACKAGE_RELEASE}-any.pkg.tar.zst"
-  done
-  for package in "${mingw_packages[@]}"; do
-    fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-${package}-${MSYS2_MINGW_PACKAGE_RELEASE}-any.pkg.tar.zst"
-  done
-  fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-zlib-ng-compat-${MSYS2_ZLIB_NG_RELEASE}-any.pkg.tar.zst"
-  fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-zstd-${MSYS2_ZSTD_RELEASE}-any.pkg.tar.zst"
-  fetch_extract "${root}" "${base}/mingw-w64-clang-${triplet}-openmp-${MSYS2_OPENMP_RELEASE}-any.pkg.tar.zst"
+  while IFS= read -r archive; do
+    # '+' is URL-encoded in download URLs and decoded again by fetch_extract
+    fetch_extract "${root}" "${base}/${archive//'+'/%2B}"
+  done < <(msys2_sdk_archives "${triplet}")
 }
 
 if [[ $# -eq 0 ]]; then
