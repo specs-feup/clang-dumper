@@ -376,8 +376,11 @@ const void ClangAstDumper::addChild(const Attr *addr,
                    [this](const Attr *A) { VisitAttrTop(A); });
 };
 
-void ClangAstDumper::VisitTemplateArgument(
-    const TemplateArgument &templateArg) {
+// Shared implementation of VisitTemplateArgument() and
+// VisitTemplateArgChildren(). They differ in a single point: whether
+// argument packs are expanded into their elements.
+void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
+                                           bool expandPacks) {
   switch (templateArg.getKind()) {
   case TemplateArgument::ArgKind::Type:
     VisitTypeTop(templateArg.getAsType());
@@ -386,7 +389,14 @@ void ClangAstDumper::VisitTemplateArgument(
     VisitStmtTop(templateArg.getAsExpr());
     break;
   case TemplateArgument::ArgKind::Pack:
-    // Do nothing
+    if (expandPacks) {
+      for (auto currentArg = templateArg.pack_begin(),
+                endArg = templateArg.pack_end();
+           currentArg != endArg; ++currentArg) {
+        visitTemplateArgument(*currentArg, expandPacks);
+      }
+    }
+    // Non-expanding visitors ignore packs
     break;
   case TemplateArgument::ArgKind::Integral:
     // Do nothing
@@ -396,9 +406,19 @@ void ClangAstDumper::VisitTemplateArgument(
     break;
   default:
     throw std::invalid_argument(
-        "ClangAstDumper::VisitTemplateArgument(): Case not implemented, '" +
+        "ClangAstDumper::visitTemplateArgument(): Case not implemented, '" +
         clava::TEMPLATE_ARG_KIND[templateArg.getKind()] + "'");
   }
+};
+
+void ClangAstDumper::VisitTemplateArgument(
+    const TemplateArgument &templateArg) {
+  visitTemplateArgument(templateArg, /*expandPacks=*/false);
+};
+
+void ClangAstDumper::VisitTemplateArgChildren(
+    const TemplateArgument &templateArg) {
+  visitTemplateArgument(templateArg, /*expandPacks=*/true);
 };
 
 void ClangAstDumper::VisitTemplateName(const TemplateName &templateName) {
@@ -417,7 +437,7 @@ void ClangAstDumper::VisitTemplateName(const TemplateName &templateName) {
     break;
   default:
     throw std::invalid_argument(
-        "ClangAstDumper::VisitTemplateArgument(): TemplateName case not "
+        "ClangAstDumper::VisitTemplateName(): TemplateName case not "
         "implemented, '" +
         clava::TEMPLATE_NAME_KIND[templateName.getKind()] + "'");
   }

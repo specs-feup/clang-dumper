@@ -316,6 +316,16 @@ private:
                                 std::vector<std::string> &children);
   void VisitTemplateArgument(const TemplateArgument &templateArg);
   void VisitTemplateName(const TemplateName &templateArg);
+  // Same as VisitTemplateArgument, but expands argument packs into their
+  // elements.
+  void VisitTemplateArgChildren(const TemplateArgument &arg);
+
+private:
+  // Shared implementation of VisitTemplateArgument/VisitTemplateArgChildren
+  void visitTemplateArgument(const TemplateArgument &templateArg,
+                             bool expandPacks);
+
+public:
 
   // Dumpers of other kinds of information
   void dumpIdToClassMap(const void *pointer, std::string className);
@@ -381,8 +391,6 @@ private:
                                 std::vector<std::string> &visitedChildren);
 
   // Children visitors for other types of classes
-  void VisitTemplateArgChildren(const TemplateArgument &arg);
-  void VisitTemplateNameChildren(const TemplateName &templateName);
   void VisitNestedNameSpecifierChildren(NestedNameSpecifier *qualifier);
 
   /* Utility methods for DECLS */
