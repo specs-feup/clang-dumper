@@ -53,27 +53,6 @@ PrintNodesTypesRelationsVisitor::PrintNodesTypesRelationsVisitor(
     ASTContext *Context, int id, ClangAstDumper dumper)
     : Context(Context), id(id), dumper(dumper){};
 
-static std::string stmt2str(clang::Stmt *d, clang::SourceManager *sm,
-                            clang::LangOptions lopt) {
-    clang::SourceLocation b(d->getBeginLoc()), _e(d->getEndLoc());
-    clang::SourceLocation e(
-        clang::Lexer::getLocForEndOfToken(_e, 0, *sm, lopt));
-    return std::string(sm->getCharacterData(b),
-                       sm->getCharacterData(e) - sm->getCharacterData(b));
-}
-
-static std::string loc2str(SourceLocation locStart, SourceLocation locEnd,
-                           ASTContext *Context) {
-    clang::SourceManager *sm = &Context->getSourceManager();
-    clang::LangOptions lopt = Context->getLangOpts();
-
-    clang::SourceLocation b(locStart), _e(locEnd);
-    clang::SourceLocation e(
-        clang::Lexer::getLocForEndOfToken(_e, 0, *sm, lopt));
-    return std::string(sm->getCharacterData(b),
-                       sm->getCharacterData(e) - sm->getCharacterData(b));
-}
-
 bool PrintNodesTypesRelationsVisitor::VisitCXXConstructExpr(
     CXXConstructExpr *D) {
 

@@ -10,7 +10,6 @@
 
 using namespace clang;
 
-// #define OLD_OUTPUT
 
 void ClangAstDumper::visitChildrenAndData(const Type *T) {
   // Visit children
@@ -60,12 +59,6 @@ bool ClangAstDumper::dumpType(const QualType &type) {
   // A TypeDumper is created for each context,
   // no need to use id to disambiguate
   seenTypes.insert((void *)typeAddr);
-
-#ifdef OLD_OUTPUT
-  llvm::errs() << "TYPE_BEGIN\n";
-  type.dump();
-  llvm::errs() << "TYPE_END\n";
-#endif
 
   return false;
 }

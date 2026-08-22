@@ -104,8 +104,6 @@ public:
    * Utility methods
    */
 
-  std::string loc2str(SourceLocation locStart, SourceLocation locEnd);
-
   std::string toBoolString(int value);
   const Type *getTypePtr(QualType T, std::string source);
 
@@ -396,9 +394,6 @@ public:
   /* Utility methods for DECLS */
   void dumpNumberTemplateParameters(const Decl *D,
                                     const TemplateParameterList *TPL);
-
-  void dumpSourceRange(std::string id, SourceLocation startLoc,
-                       SourceLocation endLoc);
 
   // These methods return true if the node had been already visited
 
