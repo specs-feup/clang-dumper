@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
@@ -51,7 +52,8 @@ const std::map<std::string, clava::ClavaDataDumper::TypeDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Type *T) {
-  auto it = TYPE_DATA_DUMPERS.find(clava::getClassName(T));
+  const std::string classname = clava::getClassName(T);
+  auto it = TYPE_DATA_DUMPERS.find(classname);
   const char *dataName =
       it != TYPE_DATA_DUMPERS.end() ? it->second.dataName : "Type";
 
@@ -63,6 +65,7 @@ void clava::ClavaDataDumper::dump(const Type *T) {
   if (it != TYPE_DATA_DUMPERS.end()) {
     it->second.dump(*this, T);
   } else {
+    clava::recordHandlerFallback("type data", classname);
     // Default: plain Type data
     DumpTypeData(T);
   }

@@ -6,6 +6,7 @@
 // http://eli.thegreenplace.net/
 //------------------------------------------------------------------------------
 #include "ClangAst.h"
+#include "../Clava/HandlerCoverage.h"
 #include "../ClangAstDumper/ClangAstDumperConstants.h"
 #include "ClangNodes.h"
 
@@ -29,6 +30,11 @@ using namespace clang;
 static llvm::cl::OptionCategory ToolingSampleCategory("Tooling Sample");
 
 static constexpr const char *const PREFIX = "COUNTER";
+
+static llvm::cl::opt<bool> HandlerCoverageReport(
+    "handler-coverage-report",
+    llvm::cl::desc("Report class names that used fallback dump handling"),
+    llvm::cl::init(false));
 
 /* DumpAstVisitor implementation */
 
@@ -377,9 +383,15 @@ void DumpResources::init(int runId, int systemLevelThreshold) {
         "consumer_order.txt", std::ofstream::out | std::ofstream::trunc);
     DumpResources::types_with_templates.open(
         "types_with_templates.txt", std::ofstream::out | std::ofstream::trunc);
+
+    if (HandlerCoverageReport) {
+        clava::enableHandlerCoverageReport();
+    }
 }
 
 void DumpResources::finish() {
+    clava::reportHandlerCoverage();
+
     DumpResources::is_temporary.close();
     DumpResources::omp.close();
     DumpResources::enum_integer_type.close();

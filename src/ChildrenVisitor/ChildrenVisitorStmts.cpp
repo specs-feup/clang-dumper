@@ -6,6 +6,7 @@
 #include "../ClangAstDumper/ClangAstDumper.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../Clava/ClavaConstants.h"
+#include "../Clava/HandlerCoverage.h"
 
 #include <string>
 
@@ -87,12 +88,14 @@ const std::map<std::string, ClangAstDumper::ExprChildrenFn>
 };
 
 void ClangAstDumper::visitChildren(const Stmt *S) {
-    auto it = STMT_CHILDREN_VISITORS.find(clava::getClassName(S));
+    const std::string classname = clava::getClassName(S);
+    auto it = STMT_CHILDREN_VISITORS.find(classname);
 
     std::vector<std::string> visitedChildren;
     if (it != STMT_CHILDREN_VISITORS.end()) {
         it->second(*this, S, visitedChildren);
     } else {
+        clava::recordHandlerFallback("stmt children", classname);
         VisitStmtChildren(S, visitedChildren);
     }
 
@@ -100,12 +103,14 @@ void ClangAstDumper::visitChildren(const Stmt *S) {
 }
 
 void ClangAstDumper::visitChildren(const Expr *E) {
-    auto it = EXPR_CHILDREN_VISITORS.find(clava::getClassName(E));
+    const std::string classname = clava::getClassName(E);
+    auto it = EXPR_CHILDREN_VISITORS.find(classname);
 
     std::vector<std::string> visitedChildren;
     if (it != EXPR_CHILDREN_VISITORS.end()) {
         it->second(*this, E, visitedChildren);
     } else {
+        clava::recordHandlerFallback("expr children", classname);
         VisitExprChildren(E, visitedChildren);
     }
 

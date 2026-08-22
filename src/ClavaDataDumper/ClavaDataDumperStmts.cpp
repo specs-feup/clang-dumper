@@ -9,6 +9,7 @@
 #include "llvm/ADT/STLForwardCompat.h"
 
 #include <map>
+#include "../Clava/HandlerCoverage.h"
 
 // Data dumper selected directly by class name. Most entries dump with a
 // method named after their own class; entries whose data section differs use
@@ -87,7 +88,8 @@ const std::map<std::string, clava::ClavaDataDumper::ExprDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Stmt *S) {
-    auto it = STMT_DATA_DUMPERS.find(clava::getClassName(S));
+    const std::string classname = clava::getClassName(S);
+    auto it = STMT_DATA_DUMPERS.find(classname);
     const char *dataName =
         it != STMT_DATA_DUMPERS.end() ? it->second.dataName : "Stmt";
 
@@ -99,13 +101,15 @@ void clava::ClavaDataDumper::dump(const Stmt *S) {
     if (it != STMT_DATA_DUMPERS.end()) {
         it->second.dump(*this, S);
     } else {
+        clava::recordHandlerFallback("stmt data", classname);
         // Default: plain Stmt data
         DumpStmtData(S);
     }
 }
 
 void clava::ClavaDataDumper::dump(const Expr *E) {
-    auto it = EXPR_DATA_DUMPERS.find(clava::getClassName(E));
+    const std::string classname = clava::getClassName(E);
+    auto it = EXPR_DATA_DUMPERS.find(classname);
     const char *dataName =
         it != EXPR_DATA_DUMPERS.end() ? it->second.dataName : "Expr";
 
@@ -117,6 +121,7 @@ void clava::ClavaDataDumper::dump(const Expr *E) {
     if (it != EXPR_DATA_DUMPERS.end()) {
         it->second.dump(*this, E);
     } else {
+        clava::recordHandlerFallback("expr data", classname);
         // Default: plain Expr data
         DumpExprData(static_cast<const Expr *>(E));
     }

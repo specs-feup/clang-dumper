@@ -9,6 +9,7 @@
 #include "llvm/ADT/STLForwardCompat.h"
 
 #include <map>
+#include "../Clava/HandlerCoverage.h"
 #include <string>
 
 // Data dumper selected directly by class name. Most entries dump with a
@@ -67,7 +68,8 @@ const std::map<std::string, clava::ClavaDataDumper::DeclDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Decl *D) {
-    auto it = DECL_DATA_DUMPERS.find(clava::getClassName(D));
+    const std::string classname = clava::getClassName(D);
+    auto it = DECL_DATA_DUMPERS.find(classname);
     const char *dataName =
         it != DECL_DATA_DUMPERS.end() ? it->second.dataName : "Decl";
 
@@ -79,6 +81,7 @@ void clava::ClavaDataDumper::dump(const Decl *D) {
     if (it != DECL_DATA_DUMPERS.end()) {
         it->second.dump(*this, D);
     } else {
+        clava::recordHandlerFallback("decl data", classname);
         // Default: plain Decl data
         DumpDeclData(D);
     }

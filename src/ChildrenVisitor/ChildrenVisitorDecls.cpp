@@ -5,6 +5,7 @@
 #include "../Clang/ClangNodes.h"
 #include "../ClangAstDumper/ClangAstDumper.h"
 #include "../Clava/ClavaConstants.h"
+#include "../Clava/HandlerCoverage.h"
 
 #include <string>
 
@@ -62,12 +63,14 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
 };
 
 void ClangAstDumper::visitChildren(const Decl *D) {
-    auto it = DECL_CHILDREN_VISITORS.find(clava::getClassName(D));
+    const std::string classname = clava::getClassName(D);
+    auto it = DECL_CHILDREN_VISITORS.find(classname);
 
     std::vector<std::string> visitedChildren;
     if (it != DECL_CHILDREN_VISITORS.end()) {
         it->second(*this, D, visitedChildren);
     } else {
+        clava::recordHandlerFallback("decl children", classname);
         VisitDeclChildren(D, visitedChildren);
     }
 

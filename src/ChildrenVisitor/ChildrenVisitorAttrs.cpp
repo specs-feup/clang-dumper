@@ -4,6 +4,7 @@
 
 #include "../Clang/ClangNodes.h"
 #include "../ClangAstDumper/ClangAstDumper.h"
+#include "../Clava/HandlerCoverage.h"
 
 #include <string>
 
@@ -19,11 +20,14 @@ const std::map<std::string, ClangAstDumper::AttrChildrenFn>
 };
 
 void ClangAstDumper::visitChildren(const Attr *A) {
-    auto it = ATTR_CHILDREN_VISITORS.find(clava::getClassName(A));
+    const std::string classname = clava::getClassName(A);
+    auto it = ATTR_CHILDREN_VISITORS.find(classname);
 
     std::vector<std::string> visitedChildren;
     if (it != ATTR_CHILDREN_VISITORS.end()) {
         it->second(*this, A, visitedChildren);
+    } else {
+        clava::recordHandlerFallback("attr children", classname);
     }
     // By default, attributes have no children to visit
 

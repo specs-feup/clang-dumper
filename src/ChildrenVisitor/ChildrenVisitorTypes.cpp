@@ -5,6 +5,7 @@
 #include "../ClangAstDumper/ClangAstDumper.h"
 
 #include <string>
+#include "../Clava/HandlerCoverage.h"
 
 // Selects the children visitor by class name. Several classes can share one
 // visitor (e.g. EnumType and RecordType use the TagType visitor).
@@ -55,12 +56,14 @@ const std::map<std::string, ClangAstDumper::TypeChildrenFn>
 };
 
 void ClangAstDumper::visitChildren(const Type *T) {
-    auto it = TYPE_CHILDREN_VISITORS.find(clava::getClassName(T));
+    const std::string classname = clava::getClassName(T);
+    auto it = TYPE_CHILDREN_VISITORS.find(classname);
 
     std::vector<std::string> visitedChildren;
     if (it != TYPE_CHILDREN_VISITORS.end()) {
         it->second(*this, T, visitedChildren);
     } else {
+        clava::recordHandlerFallback("type children", classname);
         VisitTypeChildren(T, visitedChildren);
     }
 
