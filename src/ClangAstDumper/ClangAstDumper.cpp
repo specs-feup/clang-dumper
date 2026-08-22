@@ -505,6 +505,7 @@ void ClangAstDumper::VisitTemplateName(const TemplateName &templateName) {
     VisitDeclTop(templateName.getAsSubstTemplateTemplateParm()->getParameter());
     VisitTemplateName(
         templateName.getAsSubstTemplateTemplateParm()->getReplacement());
+    break;
   default:
     throw std::invalid_argument(
         "ClangAstDumper::VisitTemplateArgument(): TemplateName case not "
