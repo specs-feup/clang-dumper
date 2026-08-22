@@ -216,6 +216,7 @@ add_custom_target(clang_enums DEPENDS "${ENUMS_AGGREGATED_SRC}")
 set(SOURCE_FILES
     src/Clang/ClangAst.cpp
     src/Clang/ClangNodes.cpp
+    src/Clang/ResourceDir.cpp
     src/ClangEnums/ClangEnums.cpp
     src/TypeMarker/TypeMarker.cpp
     src/Clava/ClavaConstants.cpp
