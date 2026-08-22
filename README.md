@@ -35,8 +35,8 @@ Windows builds are produced from Linux only. The Windows plugin is not built.
 ```sh
 scripts/setup_windows_cross_sdk.sh
 scripts/build_windows_cross.sh
-scripts/package_windows_includes.sh arm64 dist/clang-dumper-windows-arm64-includes.zip
-scripts/package_windows_includes.sh x86_64 dist/clang-dumper-windows-x86_64-includes.zip
+scripts/package_includes.sh windows arm64 dist/clang-dumper-windows-arm64-includes.zip
+scripts/package_includes.sh windows x86_64 dist/clang-dumper-windows-x86_64-includes.zip
 ```
 
 The scripts build:
@@ -74,14 +74,14 @@ an include root relative to the archive root.
 OpenMP headers are included when available.
 
 ```sh
-scripts/package_linux_includes.sh x64 dist/clang-dumper-linux-x64-includes.zip
-scripts/package_linux_includes.sh arm64 dist/clang-dumper-linux-arm64-includes.zip
+scripts/package_includes.sh linux x64 dist/clang-dumper-linux-x64-includes.zip
+scripts/package_includes.sh linux arm64 dist/clang-dumper-linux-arm64-includes.zip
 
-scripts/package_macos_includes.sh x64 dist/clang-dumper-macos-x64-includes.zip
-scripts/package_macos_includes.sh arm64 dist/clang-dumper-macos-arm64-includes.zip
+scripts/package_includes.sh macos x64 dist/clang-dumper-macos-x64-includes.zip
+scripts/package_includes.sh macos arm64 dist/clang-dumper-macos-arm64-includes.zip
 
-scripts/package_windows_includes.sh arm64 dist/clang-dumper-windows-arm64-includes.zip
-scripts/package_windows_includes.sh x86_64 dist/clang-dumper-windows-x86_64-includes.zip
+scripts/package_includes.sh windows arm64 dist/clang-dumper-windows-arm64-includes.zip
+scripts/package_includes.sh windows x86_64 dist/clang-dumper-windows-x86_64-includes.zip
 ```
 
 # Creating 'include' packages
