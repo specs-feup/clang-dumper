@@ -290,31 +290,41 @@ bool ClangAstDumper::isPastSystemHeaderThreshold() const {
          currentSystemHeaderLevel > systemHeaderThreshold;
 }
 
-const void ClangAstDumper::addChild(const Decl *addr,
-                                    std::vector<std::string> &children) {
-
+// Common implementation for all addChild() overloads: the only difference
+// between them is which Top-level visit function serializes the node.
+template <typename T, typename F>
+void ClangAstDumper::addChildInternal(const T *addr,
+                                      std::vector<std::string> &children,
+                                      F &&visitTop) {
   if (isPastSystemHeaderThreshold()) {
     return;
   }
 
   std::string clavaId = clava::getId(addr, id);
 
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_START);
-    clava::dump(clavaId);
-  }
-#endif
-
-  VisitDeclTop(addr);
+  visitTop(addr);
   children.push_back(clavaId);
+}
 
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_END);
-    clava::dump(clavaId);
+// Overload for QualType, which is passed by value/reference instead of pointer.
+template <typename F>
+void ClangAstDumper::addChildInternal(const QualType &addr,
+                                      std::vector<std::string> &children,
+                                      F &&visitTop) {
+  if (isPastSystemHeaderThreshold()) {
+    return;
   }
-#endif
+
+  std::string clavaId = clava::getId(addr, id);
+
+  visitTop(addr);
+  children.push_back(clavaId);
+}
+
+const void ClangAstDumper::addChild(const Decl *addr,
+                                    std::vector<std::string> &children) {
+  addChildInternal(addr, children,
+                   [this](const Decl *D) { VisitDeclTop(D); });
 };
 
 const void ClangAstDumper::addChildren(DeclContext::decl_range decls,
@@ -338,133 +348,32 @@ const void ClangAstDumper::addChildren(DeclContext::decl_range decls,
 
 const void ClangAstDumper::addChild(const Stmt *addr,
                                     std::vector<std::string> &children) {
-
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
-  std::string clavaId = clava::getId(addr, id);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_START);
-    clava::dump(clavaId);
-  }
-#endif
-
-  VisitStmtTop(addr);
-  children.push_back(clavaId);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_END);
-    clava::dump(clavaId);
-  }
-#endif
+  addChildInternal(addr, children,
+                   [this](const Stmt *S) { VisitStmtTop(S); });
 };
 
 const void ClangAstDumper::addChild(const Expr *addr,
                                     std::vector<std::string> &children) {
-
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
-  std::string clavaId = clava::getId(addr, id);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_START);
-    clava::dump(clavaId);
-  }
-#endif
-
-  VisitStmtTop(addr);
-  children.push_back(clavaId);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_END);
-    clava::dump(clavaId);
-  }
-#endif
+  addChildInternal(addr, children,
+                   [this](const Expr *E) { VisitStmtTop(E); });
 };
 
 const void ClangAstDumper::addChild(const Type *addr,
                                     std::vector<std::string> &children) {
-
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
-  std::string clavaId = clava::getId(addr, id);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_START);
-    clava::dump(clavaId);
-  }
-#endif
-
-  VisitTypeTop(addr);
-  children.push_back(clavaId);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_END);
-    clava::dump(clavaId);
-  }
-#endif
+  addChildInternal(addr, children,
+                   [this](const Type *T) { VisitTypeTop(T); });
 };
 
 const void ClangAstDumper::addChild(const QualType &addr,
                                     std::vector<std::string> &children) {
-
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
-  std::string clavaId = clava::getId(addr, id);
-
-#ifdef VISIT_CHECK
-  clava::dump(VISIT_START);
-  clava::dump(clavaId);
-#endif
-
-  VisitTypeTop(addr);
-  children.push_back(clavaId);
-
-#ifdef VISIT_CHECK
-  clava::dump(VISIT_END);
-  clava::dump(clavaId);
-#endif
+  addChildInternal(addr, children,
+                   [this](const QualType &T) { VisitTypeTop(T); });
 };
 
 const void ClangAstDumper::addChild(const Attr *addr,
                                     std::vector<std::string> &children) {
-
-  if (isPastSystemHeaderThreshold()) {
-    return;
-  }
-
-  std::string clavaId = clava::getId(addr, id);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_START);
-    clava::dump(clavaId);
-  }
-#endif
-
-  VisitAttrTop(addr);
-  children.push_back(clavaId);
-
-#ifdef VISIT_CHECK
-  if (addr != nullptr) {
-    clava::dump(VISIT_END);
-    clava::dump(clavaId);
-  }
-#endif
+  addChildInternal(addr, children,
+                   [this](const Attr *A) { VisitAttrTop(A); });
 };
 
 void ClangAstDumper::VisitTemplateArgument(

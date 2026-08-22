@@ -120,6 +120,15 @@ public:
 private:
   void log(std::string name, const void *addr);
 
+  // Shared implementation for the addChild() overloads; visitTop serializes
+  // the node through the appropriate Top-level visit function.
+  template <typename T, typename F>
+  void addChildInternal(const T *addr, std::vector<std::string> &children,
+                        F &&visitTop);
+  template <typename F>
+  void addChildInternal(const QualType &addr,
+                        std::vector<std::string> &children, F &&visitTop);
+
   // Children and data
   void visitChildrenAndData(const Decl *D);
   void visitChildrenAndData(const Stmt *S);
