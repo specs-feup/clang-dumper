@@ -39,11 +39,25 @@ private:
 
   clava::ClavaDataDumper dataDumper;
 
-  static const std::map<const std::string, clava::DeclNode> DECL_CHILDREN_MAP;
-  static const std::map<const std::string, clava::StmtNode> STMT_CHILDREN_MAP;
-  static const std::map<const std::string, clava::StmtNode> EXPR_CHILDREN_MAP;
-  static const std::map<const std::string, clava::TypeNode> TYPE_CHILDREN_MAP;
-  static const std::map<const std::string, clava::AttrNode> ATTR_CHILDREN_MAP;
+  // Children visitors are selected directly by the node's class name, as
+  // reported on the wire format ("<Id to Class Map>" payloads). Adding a
+  // handler for a new/renamed Clang class means adding one table entry.
+  using DeclChildrenFn = void (*)(ClangAstDumper &, const Decl *,
+                                  std::vector<std::string> &);
+  using StmtChildrenFn = void (*)(ClangAstDumper &, const Stmt *,
+                                  std::vector<std::string> &);
+  using ExprChildrenFn = void (*)(ClangAstDumper &, const Expr *,
+                                  std::vector<std::string> &);
+  using TypeChildrenFn = void (*)(ClangAstDumper &, const Type *,
+                                  std::vector<std::string> &);
+  using AttrChildrenFn = void (*)(ClangAstDumper &, const Attr *,
+                                  std::vector<std::string> &);
+
+  static const std::map<std::string, DeclChildrenFn> DECL_CHILDREN_VISITORS;
+  static const std::map<std::string, StmtChildrenFn> STMT_CHILDREN_VISITORS;
+  static const std::map<std::string, ExprChildrenFn> EXPR_CHILDREN_VISITORS;
+  static const std::map<std::string, TypeChildrenFn> TYPE_CHILDREN_VISITORS;
+  static const std::map<std::string, AttrChildrenFn> ATTR_CHILDREN_VISITORS;
 
 public:
   explicit ClangAstDumper(ASTContext *Context, int id,
@@ -145,12 +159,7 @@ private:
   void visitChildren(const Expr *E);
   void visitChildren(const Type *T);
   void visitChildren(const Attr *A);
-
-  void visitChildren(clava::DeclNode declNode, const Decl *D);
-  void visitChildren(clava::StmtNode stmtNode, const Stmt *S);
-  void visitChildren(clava::TypeNode typeNode, const Type *T);
   void visitChildren(const QualType &T);
-  void visitChildren(clava::AttrNode attrNode, const Attr *A);
   void emptyChildren(const void *pointer);
 
   // A positive N expands through system-header level N and serializes its

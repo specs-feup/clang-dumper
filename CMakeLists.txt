@@ -218,8 +218,6 @@ set(SOURCE_FILES
     src/Clang/ClangNodes.cpp
     src/ClangEnums/ClangEnums.cpp
     src/TypeMarker/TypeMarker.cpp
-    src/Clava/ClavaConstants.cpp
-    src/Clava/ClavaDecl.cpp
     src/ClavaDataDumper/ClavaDataDumper.cpp
     src/ClavaDataDumper/ClavaDataDumperAttrs.cpp
     src/ClavaDataDumper/ClavaDataDumperDecls.cpp

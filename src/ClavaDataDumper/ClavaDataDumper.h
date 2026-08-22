@@ -7,7 +7,6 @@
 #define CLANGASTDUMPER_CLAVADATADUMPER_H
 
 #include "../Clava/ClavaConstants.h"
-#include "../Clava/ClavaDecl.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/Attr.h"
@@ -24,22 +23,43 @@ using namespace clang;
 namespace clava {
 
 /**
- * Maps what kind of Data dumper each node should use
- */
-extern const std::map<const std::string, clava::DeclNode> DECL_DATA_MAP;
-extern const std::map<const std::string, clava::StmtNode> STMT_DATA_MAP;
-extern const std::map<const std::string, clava::StmtNode> EXPR_DATA_MAP;
-extern const std::map<const std::string, clava::TypeNode> TYPE_DATA_MAP;
-extern const std::map<const std::string, clava::AttrNode> ATTR_DATA_MAP;
-
-/**
- * Dumps information about each node
+ * Dumps information about each node. Data dumper selection is table-driven:
+ * each table maps a Clang class name (as reported on the wire) to the data
+ * section name and the dump function for that class. Adding support for a
+ * new/renamed Clang class means adding one table entry.
  */
 class ClavaDataDumper {
 
   private:
     ASTContext *Context;
     const int id;
+
+    struct DeclDataEntry {
+        const char *dataName;
+        void (*dump)(ClavaDataDumper &, const Decl *);
+    };
+    struct StmtDataEntry {
+        const char *dataName;
+        void (*dump)(ClavaDataDumper &, const Stmt *);
+    };
+    struct ExprDataEntry {
+        const char *dataName;
+        void (*dump)(ClavaDataDumper &, const Expr *);
+    };
+    struct TypeDataEntry {
+        const char *dataName;
+        void (*dump)(ClavaDataDumper &, const Type *);
+    };
+    struct AttrDataEntry {
+        const char *dataName;
+        void (*dump)(ClavaDataDumper &, const Attr *);
+    };
+
+    static const std::map<std::string, DeclDataEntry> DECL_DATA_DUMPERS;
+    static const std::map<std::string, StmtDataEntry> STMT_DATA_DUMPERS;
+    static const std::map<std::string, ExprDataEntry> EXPR_DATA_DUMPERS;
+    static const std::map<std::string, TypeDataEntry> TYPE_DATA_DUMPERS;
+    static const std::map<std::string, AttrDataEntry> ATTR_DATA_DUMPERS;
 
   public:
     // Constructor
@@ -52,11 +72,6 @@ class ClavaDataDumper {
     void dump(const Type *T);
     void dump(const QualType &T);
     void dump(const Attr *A);
-
-    void dump(clava::DeclNode declNode, const Decl *D);
-    void dump(clava::StmtNode stmtNode, const Stmt *S);
-    void dump(clava::TypeNode typeNode, const Type *T);
-    void dump(clava::AttrNode attrNode, const Attr *A);
 
   private:
     // DECLS
@@ -185,11 +200,6 @@ class ClavaDataDumper {
     void DumpFormatAttrData(const FormatAttr *A);
     void DumpNonNullAttrData(const NonNullAttr *A);
     void DumpVisibilityAttrData(const VisibilityAttr *A);
-    const std::string getDataName(DeclNode node);
-    const std::string getDataName(StmtNode node);
-    const std::string getDataName(TypeNode node);
-    const std::string getDataName(AttrNode node);
-    const std::string getDataName(std::string nodeName);
 };
 
 } // namespace clava

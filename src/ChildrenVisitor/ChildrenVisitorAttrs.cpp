@@ -7,37 +7,25 @@
 
 #include <string>
 
-const std::map<const std::string, clava::AttrNode>
-    ClangAstDumper::ATTR_CHILDREN_MAP = {
-        {"AlignedAttr", clava::AttrNode::ALIGNED}
+#define ATTR_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
+  {#CLASS, [](ClangAstDumper &self, const Attr *A,                             \
+              std::vector<std::string> &children) {                            \
+    self.VISITOR(static_cast<const CLASS *>(A), children);                     \
+  }}
 
+const std::map<std::string, ClangAstDumper::AttrChildrenFn>
+    ClangAstDumper::ATTR_CHILDREN_VISITORS = {
+        ATTR_CHILDREN_ENTRY(AlignedAttr, VisitAlignedAttrChildren),
 };
 
 void ClangAstDumper::visitChildren(const Attr *A) {
-    // Get classname
-    const std::string classname = clava::getClassName(A);
-
-    // Get corresponding Attribute
-    clava::AttrNode attrNode = ATTR_CHILDREN_MAP.count(classname) == 1
-                                   ? ATTR_CHILDREN_MAP.find(classname)->second
-                                   : clava::AttrNode::ATTR;
-
-    visitChildren(attrNode, A);
-}
-
-void ClangAstDumper::visitChildren(clava::AttrNode attrNode, const Attr *A) {
+    auto it = ATTR_CHILDREN_VISITORS.find(clava::getClassName(A));
 
     std::vector<std::string> visitedChildren;
-
-    switch (attrNode) {
-    case clava::AttrNode::ALIGNED:
-        VisitAlignedAttrChildren(static_cast<const AlignedAttr *>(A),
-                                 visitedChildren);
-        break;
-    default:
-        // By default, do nothing
-        break;
+    if (it != ATTR_CHILDREN_VISITORS.end()) {
+        it->second(*this, A, visitedChildren);
     }
+    // By default, attributes have no children to visit
 
     dumpVisitedChildren(A, visitedChildren);
 }

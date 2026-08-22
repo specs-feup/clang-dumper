@@ -9,251 +9,107 @@
 
 #include <string>
 
-const std::map<const std::string, clava::StmtNode>
-    ClangAstDumper::STMT_CHILDREN_MAP = {
-        {"DeclStmt", clava::StmtNode::DECL_STMT},
-        {"IfStmt", clava::StmtNode::IF_STMT},
-        {"ForStmt", clava::StmtNode::FOR_STMT},
-        {"WhileStmt", clava::StmtNode::WHILE_STMT},
-        {"DoStmt", clava::StmtNode::DO_STMT},
-        {"CXXForRangeStmt", clava::StmtNode::CXX_FOR_RANGE_STMT},
-        {"CXXCatchStmt", clava::StmtNode::CXX_CATCH_STMT},
-        {"CXXTryStmt", clava::StmtNode::CXX_TRY_STMT},
-        {"CaseStmt", clava::StmtNode::CASE_STMT},
-        {"DefaultStmt", clava::StmtNode::DEFAULT_STMT},
-        {"GotoStmt", clava::StmtNode::GOTO_STMT},
-        {"LabelStmt", clava::StmtNode::LABEL_STMT},
-        {"AttributedStmt", clava::StmtNode::ATTRIBUTED_STMT},
-        {"CapturedStmt", clava::StmtNode::CAPTURED_STMT},
+// Selects the children visitor by class name. Several classes can share one
+// visitor (e.g. all named casts use the ExplicitCastExpr visitor).
+#define STMT_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
+  {#CLASS, [](ClangAstDumper &self, const Stmt *S,                             \
+              std::vector<std::string> &children) {                            \
+    self.VISITOR(static_cast<const CLASS *>(S), children);                     \
+  }}
+
+const std::map<std::string, ClangAstDumper::StmtChildrenFn>
+    ClangAstDumper::STMT_CHILDREN_VISITORS = {
+        STMT_CHILDREN_ENTRY(DeclStmt, VisitDeclStmtChildren),
+        STMT_CHILDREN_ENTRY(IfStmt, VisitIfStmtChildren),
+        STMT_CHILDREN_ENTRY(ForStmt, VisitForStmtChildren),
+        STMT_CHILDREN_ENTRY(WhileStmt, VisitWhileStmtChildren),
+        STMT_CHILDREN_ENTRY(DoStmt, VisitDoStmtChildren),
+        STMT_CHILDREN_ENTRY(CXXForRangeStmt, VisitCXXForRangeStmtChildren),
+        STMT_CHILDREN_ENTRY(CXXCatchStmt, VisitCXXCatchStmtChildren),
+        STMT_CHILDREN_ENTRY(CXXTryStmt, VisitCXXTryStmtChildren),
+        STMT_CHILDREN_ENTRY(CaseStmt, VisitCaseStmtChildren),
+        STMT_CHILDREN_ENTRY(DefaultStmt, VisitDefaultStmtChildren),
+        STMT_CHILDREN_ENTRY(GotoStmt, VisitGotoStmtChildren),
+        STMT_CHILDREN_ENTRY(LabelStmt, VisitLabelStmtChildren),
+        STMT_CHILDREN_ENTRY(AttributedStmt, VisitAttributedStmtChildren),
+        STMT_CHILDREN_ENTRY(CapturedStmt, VisitCapturedStmtChildren),
 };
 
-const std::map<const std::string, clava::StmtNode>
-    ClangAstDumper::EXPR_CHILDREN_MAP = {
-        {"InitListExpr", clava::StmtNode::INIT_LIST_EXPR},
-        {"DeclRefExpr", clava::StmtNode::DECL_REF_EXPR},
-        {"DependentScopeDeclRefExpr",
-         clava::StmtNode::DEPENDENT_SCOPE_DECL_REF_EXPR},
-        {"OffsetOfExpr", clava::StmtNode::OFFSET_OF_EXPR},
-        {"MemberExpr", clava::StmtNode::MEMBER_EXPR},
-        {"MaterializeTemporaryExpr",
-         clava::StmtNode::MATERIALIZE_TEMPORARY_EXPR},
-        {"UnresolvedLookupExpr", clava::StmtNode::OVERLOAD_EXPR},
-        {"UnresolvedMemberExpr", clava::StmtNode::OVERLOAD_EXPR},
-        {"CallExpr", clava::StmtNode::CALL_EXPR},
-        {"CXXMemberCallExpr", clava::StmtNode::CXX_MEMBER_CALL_EXPR},
-        {"CXXOperatorCallExpr", clava::StmtNode::CALL_EXPR},
-        {"UserDefinedLiteral", clava::StmtNode::CALL_EXPR},
-        {"CXXTypeidExpr", clava::StmtNode::CXX_TYPEID_EXPR},
-        {"CStyleCastExpr", clava::StmtNode::EXPLICIT_CAST_EXPR},
-        {"CXXConstCastExpr", clava::StmtNode::EXPLICIT_CAST_EXPR},
-        {"CXXReinterpretCastExpr", clava::StmtNode::EXPLICIT_CAST_EXPR},
-        {"CXXStaticCastExpr", clava::StmtNode::EXPLICIT_CAST_EXPR},
-        {"OpaqueValueExpr", clava::StmtNode::OPAQUE_VALUE_EXPR},
-        {"CXXNewExpr", clava::StmtNode::CXX_NEW_EXPR},
-        {"CXXDeleteExpr", clava::StmtNode::CXX_DELETE_EXPR},
-        {"LambdaExpr", clava::StmtNode::LAMBDA_EXPR},
-        {"SizeOfPackExpr", clava::StmtNode::SIZE_OF_PACK_EXPR},
-        {"UnaryExprOrTypeTraitExpr",
-         clava::StmtNode::UNARY_EXPR_OR_TYPE_TRAIT_EXPR},
-        {"DesignatedInitExpr", clava::StmtNode::DESIGNATED_INIT_EXPR},
-        {"CXXConstructExpr", clava::StmtNode::CXX_CONSTRUCT_EXPR},
-        {"CXXTemporaryObjectExpr", clava::StmtNode::CXX_TEMPORARY_OBJECT_EXPR},
-        {"CXXDependentScopeMemberExpr",
-         clava::StmtNode::CXX_DEPENDENT_SCOPE_MEMBER_EXPR},
-        {"CXXPseudoDestructorExpr",
-         clava::StmtNode::CXX_PSEUDO_DESTRUCTOR_EXPR},
-        {"MSPropertyRefExpr", clava::StmtNode::MS_PROPERTY_REF_EXPR},
+// Selects the children visitor by class name. Classes absent from this table
+// use the generic expression visitor (sub-statements plus type).
+#define EXPR_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
+  {#CLASS, [](ClangAstDumper &self, const Expr *E,                             \
+              std::vector<std::string> &children) {                            \
+    self.VISITOR(static_cast<const CLASS *>(E), children);                     \
+  }}
+
+const std::map<std::string, ClangAstDumper::ExprChildrenFn>
+    ClangAstDumper::EXPR_CHILDREN_VISITORS = {
+        EXPR_CHILDREN_ENTRY(InitListExpr, VisitInitListExprChildren),
+        EXPR_CHILDREN_ENTRY(DeclRefExpr, VisitDeclRefExprChildren),
+        EXPR_CHILDREN_ENTRY(DependentScopeDeclRefExpr,
+                            VisitDependentScopeDeclRefExprChildren),
+        EXPR_CHILDREN_ENTRY(OffsetOfExpr, VisitOffsetOfExprChildren),
+        EXPR_CHILDREN_ENTRY(MemberExpr, VisitMemberExprChildren),
+        EXPR_CHILDREN_ENTRY(MaterializeTemporaryExpr,
+                            VisitMaterializeTemporaryExprChildren),
+        EXPR_CHILDREN_ENTRY(UnresolvedLookupExpr, VisitOverloadExprChildren),
+        EXPR_CHILDREN_ENTRY(UnresolvedMemberExpr, VisitOverloadExprChildren),
+        EXPR_CHILDREN_ENTRY(CallExpr, VisitCallExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXMemberCallExpr,
+                            VisitCXXMemberCallExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXOperatorCallExpr, VisitCallExprChildren),
+        EXPR_CHILDREN_ENTRY(UserDefinedLiteral, VisitCallExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXTypeidExpr, VisitCXXTypeidExprChildren),
+        EXPR_CHILDREN_ENTRY(CStyleCastExpr, VisitExplicitCastExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXConstCastExpr, VisitExplicitCastExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXReinterpretCastExpr,
+                            VisitExplicitCastExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXStaticCastExpr, VisitExplicitCastExprChildren),
+        EXPR_CHILDREN_ENTRY(OpaqueValueExpr, VisitOpaqueValueExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXNewExpr, VisitCXXNewExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXDeleteExpr, VisitCXXDeleteExprChildren),
+        EXPR_CHILDREN_ENTRY(LambdaExpr, VisitLambdaExprChildren),
+        EXPR_CHILDREN_ENTRY(SizeOfPackExpr, VisitSizeOfPackExprChildren),
+        EXPR_CHILDREN_ENTRY(UnaryExprOrTypeTraitExpr,
+                            VisitUnaryExprOrTypeTraitExprChildren),
+        EXPR_CHILDREN_ENTRY(DesignatedInitExpr,
+                            VisitDesignatedInitExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXConstructExpr, VisitCXXConstructExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXTemporaryObjectExpr,
+                            VisitCXXTemporaryObjectExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXDependentScopeMemberExpr,
+                            VisitCXXDependentScopeMemberExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXPseudoDestructorExpr,
+                            VisitCXXPseudoDestructorExprChildren),
+        EXPR_CHILDREN_ENTRY(MSPropertyRefExpr,
+                            VisitMSPropertyRefExprChildren),
 };
 
 void ClangAstDumper::visitChildren(const Stmt *S) {
-    // Get classname
-    const std::string classname = clava::getClassName(S);
-
-    // Get corresponding StmtNode
-    clava::StmtNode stmtNode = STMT_CHILDREN_MAP.count(classname) == 1
-                                   ? STMT_CHILDREN_MAP.find(classname)->second
-                                   : clava::StmtNode::STMT;
-
-    visitChildren(stmtNode, S);
-}
-
-void ClangAstDumper::visitChildren(const Expr *E) {
-    // Get classname
-    const std::string classname = clava::getClassName(E);
-
-    // Get corresponding ExprNode
-    clava::StmtNode exprNode = EXPR_CHILDREN_MAP.count(classname) == 1
-                                   ? EXPR_CHILDREN_MAP.find(classname)->second
-                                   : clava::StmtNode::EXPR;
-
-    visitChildren(exprNode, E);
-}
-
-void ClangAstDumper::visitChildren(clava::StmtNode stmtNode, const Stmt *S) {
+    auto it = STMT_CHILDREN_VISITORS.find(clava::getClassName(S));
 
     std::vector<std::string> visitedChildren;
-
-    switch (stmtNode) {
-    case clava::StmtNode::STMT:
+    if (it != STMT_CHILDREN_VISITORS.end()) {
+        it->second(*this, S, visitedChildren);
+    } else {
         VisitStmtChildren(S, visitedChildren);
-        break;
-    case clava::StmtNode::DECL_STMT:
-        VisitDeclStmtChildren(static_cast<const DeclStmt *>(S),
-                              visitedChildren);
-        break;
-    case clava::StmtNode::IF_STMT:
-        VisitIfStmtChildren(static_cast<const IfStmt *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::FOR_STMT:
-        VisitForStmtChildren(static_cast<const ForStmt *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::WHILE_STMT:
-        VisitWhileStmtChildren(static_cast<const WhileStmt *>(S),
-                               visitedChildren);
-        break;
-    case clava::StmtNode::DO_STMT:
-        VisitDoStmtChildren(static_cast<const DoStmt *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::CXX_FOR_RANGE_STMT:
-        VisitCXXForRangeStmtChildren(static_cast<const CXXForRangeStmt *>(S),
-                                     visitedChildren);
-        break;
-    case clava::StmtNode::CXX_CATCH_STMT:
-        VisitCXXCatchStmtChildren(static_cast<const CXXCatchStmt *>(S),
-                                  visitedChildren);
-        break;
-    case clava::StmtNode::CXX_TRY_STMT:
-        VisitCXXTryStmtChildren(static_cast<const CXXTryStmt *>(S),
-                                visitedChildren);
-        break;
-    case clava::StmtNode::CASE_STMT:
-        VisitCaseStmtChildren(static_cast<const CaseStmt *>(S),
-                              visitedChildren);
-        break;
-    case clava::StmtNode::DEFAULT_STMT:
-        VisitDefaultStmtChildren(static_cast<const DefaultStmt *>(S),
-                                 visitedChildren);
-        break;
-    case clava::StmtNode::GOTO_STMT:
-        VisitGotoStmtChildren(static_cast<const GotoStmt *>(S),
-                              visitedChildren);
-        break;
-    case clava::StmtNode::LABEL_STMT:
-        VisitLabelStmtChildren(static_cast<const LabelStmt *>(S),
-                               visitedChildren);
-        break;
-    case clava::StmtNode::ATTRIBUTED_STMT:
-        VisitAttributedStmtChildren(static_cast<const AttributedStmt *>(S),
-                                    visitedChildren);
-        break;
-    case clava::StmtNode::CAPTURED_STMT:
-        VisitCapturedStmtChildren(static_cast<const CapturedStmt *>(S),
-                                  visitedChildren);
-        break;
-
-    case clava::StmtNode::EXPR:
-        VisitExprChildren(static_cast<const Expr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::INIT_LIST_EXPR:
-        VisitInitListExprChildren(static_cast<const InitListExpr *>(S),
-                                  visitedChildren);
-        break;
-    case clava::StmtNode::DECL_REF_EXPR:
-        VisitDeclRefExprChildren(static_cast<const DeclRefExpr *>(S),
-                                 visitedChildren);
-        break;
-    case clava::StmtNode::DEPENDENT_SCOPE_DECL_REF_EXPR:
-        VisitDependentScopeDeclRefExprChildren(
-            static_cast<const DependentScopeDeclRefExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::OFFSET_OF_EXPR:
-        VisitOffsetOfExprChildren(static_cast<const OffsetOfExpr *>(S),
-                                  visitedChildren);
-        break;
-    case clava::StmtNode::MEMBER_EXPR:
-        VisitMemberExprChildren(static_cast<const MemberExpr *>(S),
-                                visitedChildren);
-        break;
-    case clava::StmtNode::MATERIALIZE_TEMPORARY_EXPR:
-        VisitMaterializeTemporaryExprChildren(
-            static_cast<const MaterializeTemporaryExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::OVERLOAD_EXPR:
-        VisitOverloadExprChildren(static_cast<const OverloadExpr *>(S),
-                                  visitedChildren);
-        break;
-    case clava::StmtNode::CALL_EXPR:
-        VisitCallExprChildren(static_cast<const CallExpr *>(S),
-                              visitedChildren);
-        break;
-    case clava::StmtNode::CXX_MEMBER_CALL_EXPR:
-        VisitCXXMemberCallExprChildren(
-            static_cast<const CXXMemberCallExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::CXX_TYPEID_EXPR:
-        VisitCXXTypeidExprChildren(static_cast<const CXXTypeidExpr *>(S),
-                                   visitedChildren);
-        break;
-    case clava::StmtNode::EXPLICIT_CAST_EXPR:
-        VisitExplicitCastExprChildren(static_cast<const ExplicitCastExpr *>(S),
-                                      visitedChildren);
-        break;
-    case clava::StmtNode::OPAQUE_VALUE_EXPR:
-        VisitOpaqueValueExprChildren(static_cast<const OpaqueValueExpr *>(S),
-                                     visitedChildren);
-        break;
-    case clava::StmtNode::UNARY_EXPR_OR_TYPE_TRAIT_EXPR:
-        VisitUnaryExprOrTypeTraitExprChildren(
-            static_cast<const UnaryExprOrTypeTraitExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::CXX_NEW_EXPR:
-        VisitCXXNewExprChildren(static_cast<const CXXNewExpr *>(S),
-                                visitedChildren);
-        break;
-    case clava::StmtNode::CXX_DELETE_EXPR:
-        VisitCXXDeleteExprChildren(static_cast<const CXXDeleteExpr *>(S),
-                                   visitedChildren);
-        break;
-    case clava::StmtNode::LAMBDA_EXPR:
-        VisitLambdaExprChildren(static_cast<const LambdaExpr *>(S),
-                                visitedChildren);
-        break;
-    case clava::StmtNode::SIZE_OF_PACK_EXPR:
-        VisitSizeOfPackExprChildren(static_cast<const SizeOfPackExpr *>(S),
-                                    visitedChildren);
-        break;
-    case clava::StmtNode::DESIGNATED_INIT_EXPR:
-        VisitDesignatedInitExprChildren(
-            static_cast<const DesignatedInitExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::CXX_CONSTRUCT_EXPR:
-        VisitCXXConstructExprChildren(static_cast<const CXXConstructExpr *>(S),
-                                      visitedChildren);
-        break;
-    case clava::StmtNode::CXX_TEMPORARY_OBJECT_EXPR:
-        VisitCXXTemporaryObjectExprChildren(
-            static_cast<const CXXTemporaryObjectExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::CXX_DEPENDENT_SCOPE_MEMBER_EXPR:
-        VisitCXXDependentScopeMemberExprChildren(
-            static_cast<const CXXDependentScopeMemberExpr *>(S),
-            visitedChildren);
-        break;
-    case clava::StmtNode::CXX_PSEUDO_DESTRUCTOR_EXPR:
-        VisitCXXPseudoDestructorExprChildren(
-            static_cast<const CXXPseudoDestructorExpr *>(S), visitedChildren);
-        break;
-    case clava::StmtNode::MS_PROPERTY_REF_EXPR:
-        VisitMSPropertyRefExprChildren(
-            static_cast<const MSPropertyRefExpr *>(S), visitedChildren);
-        break;
-    default:
-        throw std::invalid_argument("ChildrenVisitorStmts::visitChildren("
-                                    "StmtNode): Case not implemented, '" +
-                                    clava::getName(stmtNode) + "'");
     }
 
     dumpVisitedChildren(S, visitedChildren);
+}
+
+void ClangAstDumper::visitChildren(const Expr *E) {
+    auto it = EXPR_CHILDREN_VISITORS.find(clava::getClassName(E));
+
+    std::vector<std::string> visitedChildren;
+    if (it != EXPR_CHILDREN_VISITORS.end()) {
+        it->second(*this, E, visitedChildren);
+    } else {
+        VisitExprChildren(E, visitedChildren);
+    }
+
+    dumpVisitedChildren(E, visitedChildren);
 }
 
 void ClangAstDumper::VisitStmtChildren(const Stmt *S,

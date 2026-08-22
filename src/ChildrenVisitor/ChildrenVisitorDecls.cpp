@@ -4,184 +4,71 @@
 
 #include "../Clang/ClangNodes.h"
 #include "../ClangAstDumper/ClangAstDumper.h"
-#include "../ClangEnums/ClangEnums.h"
 #include "../Clava/ClavaConstants.h"
 
 #include <string>
 
-const std::map<const std::string, clava::DeclNode>
-    ClangAstDumper::DECL_CHILDREN_MAP = {
-        {"CXXConstructorDecl", clava::DeclNode::CXX_CONSTRUCTOR_DECL},
-        {"CXXConversionDecl", clava::DeclNode::CXX_CONVERSION_DECL},
-        {"CXXDestructorDecl", clava::DeclNode::CXX_METHOD_DECL},
-        {"CXXMethodDecl", clava::DeclNode::CXX_METHOD_DECL},
-        {"EnumDecl", clava::DeclNode::ENUM_DECL},
-        {"RecordDecl", clava::DeclNode::RECORD_DECL},
-        {"CXXRecordDecl", clava::DeclNode::CXX_RECORD_DECL},
-        {"ClassTemplateSpecializationDecl",
-         clava::DeclNode::CLASS_TEMPLATE_SPECIALIZATION_DECL},
-        {"ClassTemplatePartialSpecializationDecl",
-         clava::DeclNode::CLASS_TEMPLATE_SPECIALIZATION_DECL},
-        {"FunctionDecl", clava::DeclNode::FUNCTION_DECL},
-        {"VarDecl", clava::DeclNode::VAR_DECL},
-        {"ParmVarDecl", clava::DeclNode::VAR_DECL},
-        {"TypeDecl", clava::DeclNode::TYPE_DECL},
-        {"FieldDecl", clava::DeclNode::FIELD_DECL},
-        {"ClassTemplateDecl", clava::DeclNode::TEMPLATE_DECL},
-        {"FunctionTemplateDecl", clava::DeclNode::TEMPLATE_DECL},
-        {"TypeAliasTemplateDecl", clava::DeclNode::TEMPLATE_DECL},
-        {"VarTemplateDecl", clava::DeclNode::TEMPLATE_DECL},
-        {"TemplateTemplateParmDecl",
-         clava::DeclNode::TEMPLATE_TEMPLATE_PARM_DECL},
-        {"TemplateTypeParmDecl", clava::DeclNode::TEMPLATE_TYPE_PARM_DECL},
-        {"EnumConstantDecl", clava::DeclNode::ENUM_CONSTANT_DECL},
-        {"TypeAliasDecl", clava::DeclNode::TYPEDEF_NAME_DECL},
-        {"TypedefDecl", clava::DeclNode::TYPEDEF_NAME_DECL},
-        {"UsingDirectiveDecl", clava::DeclNode::USING_DIRECTIVE_DECL},
-        {"NamespaceDecl", clava::DeclNode::NAMESPACE_DECL},
-        {"FriendDecl", clava::DeclNode::FRIEND_DECL},
-        {"NamespaceAliasDecl", clava::DeclNode::NAMESPACE_ALIAS_DECL},
-        {"LinkageSpecDecl", clava::DeclNode::LINKAGE_SPEC_DECL},
-        {"StaticAssertDecl", clava::DeclNode::STATIC_ASSERT_DECL},
-        {"NonTypeTemplateParmDecl",
-         clava::DeclNode::NON_TYPE_TEMPLATE_PARM_DECL},
-        // TODO: Check if needs more data to dump
-        {"VarTemplateSpecializationDecl", clava::DeclNode::VAR_DECL},
-        {"UsingDecl", clava::DeclNode::USING_DECL},
+// Selects the children visitor by class name. Entries whose visitor does not
+// match their own class use DECL_CHILDREN_ENTRY_AS with the visitor's section.
+#define DECL_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
+  {#CLASS, [](ClangAstDumper &self, const Decl *D,                             \
+              std::vector<std::string> &children) {                            \
+    self.VISITOR(static_cast<const CLASS *>(D), children);                     \
+  }}
 
+const std::map<std::string, ClangAstDumper::DeclChildrenFn>
+    ClangAstDumper::DECL_CHILDREN_VISITORS = {
+        DECL_CHILDREN_ENTRY(CXXConstructorDecl, VisitCXXConstructorDeclChildren),
+        DECL_CHILDREN_ENTRY(CXXConversionDecl, VisitCXXConversionDeclChildren),
+        DECL_CHILDREN_ENTRY(CXXDestructorDecl, VisitCXXMethodDeclChildren),
+        DECL_CHILDREN_ENTRY(CXXMethodDecl, VisitCXXMethodDeclChildren),
+        DECL_CHILDREN_ENTRY(EnumDecl, VisitEnumDeclChildren),
+        DECL_CHILDREN_ENTRY(RecordDecl, VisitRecordDeclChildren),
+        DECL_CHILDREN_ENTRY(CXXRecordDecl, VisitCXXRecordDeclChildren),
+        DECL_CHILDREN_ENTRY(ClassTemplateSpecializationDecl,
+                            VisitClassTemplateSpecializationDeclChildren),
+        DECL_CHILDREN_ENTRY(ClassTemplatePartialSpecializationDecl,
+                            VisitClassTemplateSpecializationDeclChildren),
+        DECL_CHILDREN_ENTRY(FunctionDecl, VisitFunctionDeclChildren),
+        DECL_CHILDREN_ENTRY(VarDecl, VisitVarDeclChildren),
+        DECL_CHILDREN_ENTRY(ParmVarDecl, VisitVarDeclChildren),
+        DECL_CHILDREN_ENTRY(TypeDecl, VisitTypeDeclChildren),
+        DECL_CHILDREN_ENTRY(FieldDecl, VisitFieldDeclChildren),
+        DECL_CHILDREN_ENTRY(ClassTemplateDecl, VisitTemplateDeclChildren),
+        DECL_CHILDREN_ENTRY(FunctionTemplateDecl, VisitTemplateDeclChildren),
+        DECL_CHILDREN_ENTRY(TypeAliasTemplateDecl, VisitTemplateDeclChildren),
+        DECL_CHILDREN_ENTRY(VarTemplateDecl, VisitTemplateDeclChildren),
+        DECL_CHILDREN_ENTRY(TemplateTemplateParmDecl,
+                            VisitTemplateTemplateParmDeclChildren),
+        DECL_CHILDREN_ENTRY(TemplateTypeParmDecl,
+                            VisitTemplateTypeParmDeclChildren),
+        DECL_CHILDREN_ENTRY(EnumConstantDecl, VisitEnumConstantDeclChildren),
+        DECL_CHILDREN_ENTRY(TypeAliasDecl, VisitTypedefNameDeclChildren),
+        DECL_CHILDREN_ENTRY(TypedefDecl, VisitTypedefNameDeclChildren),
+        DECL_CHILDREN_ENTRY(UsingDirectiveDecl,
+                            VisitUsingDirectiveDeclChildren),
+        DECL_CHILDREN_ENTRY(NamespaceDecl, VisitNamespaceDeclChildren),
+        DECL_CHILDREN_ENTRY(FriendDecl, VisitFriendDeclChildren),
+        DECL_CHILDREN_ENTRY(NamespaceAliasDecl,
+                            VisitNamespaceAliasDeclChildren),
+        DECL_CHILDREN_ENTRY(LinkageSpecDecl, VisitLinkageSpecDeclChildren),
+        DECL_CHILDREN_ENTRY(StaticAssertDecl, VisitStaticAssertDeclChildren),
+        DECL_CHILDREN_ENTRY(NonTypeTemplateParmDecl,
+                            VisitNonTypeTemplateParmDeclChildren),
+        // TODO: Check if needs more data to dump
+        DECL_CHILDREN_ENTRY(VarTemplateSpecializationDecl,
+                            VisitVarDeclChildren),
+        DECL_CHILDREN_ENTRY(UsingDecl, VisitUsingDeclChildren),
 };
 
 void ClangAstDumper::visitChildren(const Decl *D) {
-    // Get classname
-    const std::string classname = clava::getClassName(D);
-
-    // Get corresponding DeclNode
-    clava::DeclNode declNode = DECL_CHILDREN_MAP.count(classname) == 1
-                                   ? DECL_CHILDREN_MAP.find(classname)->second
-                                   : clava::DeclNode::DECL;
-
-    visitChildren(declNode, D);
-}
-
-void ClangAstDumper::visitChildren(clava::DeclNode declNode, const Decl *D) {
+    auto it = DECL_CHILDREN_VISITORS.find(clava::getClassName(D));
 
     std::vector<std::string> visitedChildren;
-
-    switch (declNode) {
-    case clava::DeclNode::DECL:
+    if (it != DECL_CHILDREN_VISITORS.end()) {
+        it->second(*this, D, visitedChildren);
+    } else {
         VisitDeclChildren(D, visitedChildren);
-        break;
-    case clava::DeclNode::NAMED_DECL:
-        VisitNamedDeclChildren(static_cast<const NamedDecl *>(D),
-                               visitedChildren);
-        break;
-    case clava::DeclNode::TYPE_DECL:
-        VisitTypeDeclChildren(static_cast<const TypeDecl *>(D),
-                              visitedChildren);
-        break;
-    case clava::DeclNode::TAG_DECL:
-        VisitTagDeclChildren(static_cast<const TagDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::ENUM_DECL:
-        VisitEnumDeclChildren(static_cast<const EnumDecl *>(D),
-                              visitedChildren);
-        break;
-    case clava::DeclNode::RECORD_DECL:
-        VisitRecordDeclChildren(static_cast<const RecordDecl *>(D),
-                                visitedChildren);
-        break;
-    case clava::DeclNode::VALUE_DECL:
-        VisitValueDeclChildren(static_cast<const ValueDecl *>(D),
-                               visitedChildren);
-        break;
-    case clava::DeclNode::FIELD_DECL:
-        VisitFieldDeclChildren(static_cast<const FieldDecl *>(D),
-                               visitedChildren);
-        break;
-    case clava::DeclNode::FUNCTION_DECL:
-        VisitFunctionDeclChildren(static_cast<const FunctionDecl *>(D),
-                                  visitedChildren);
-        break;
-    case clava::DeclNode::CXX_METHOD_DECL:
-        VisitCXXMethodDeclChildren(static_cast<const CXXMethodDecl *>(D),
-                                   visitedChildren);
-        break;
-    case clava::DeclNode::CXX_CONSTRUCTOR_DECL:
-        VisitCXXConstructorDeclChildren(
-            static_cast<const CXXConstructorDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::CXX_CONVERSION_DECL:
-        VisitCXXConversionDeclChildren(
-            static_cast<const CXXConversionDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::CXX_RECORD_DECL:
-        VisitCXXRecordDeclChildren(static_cast<const CXXRecordDecl *>(D),
-                                   visitedChildren);
-        break;
-    case clava::DeclNode::CLASS_TEMPLATE_SPECIALIZATION_DECL:
-        VisitClassTemplateSpecializationDeclChildren(
-            static_cast<const ClassTemplateSpecializationDecl *>(D),
-            visitedChildren);
-        break;
-    case clava::DeclNode::VAR_DECL:
-        VisitVarDeclChildren(static_cast<const VarDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::TEMPLATE_DECL:
-        VisitTemplateDeclChildren(static_cast<const TemplateDecl *>(D),
-                                  visitedChildren);
-        break;
-    case clava::DeclNode::TEMPLATE_TEMPLATE_PARM_DECL:
-        VisitTemplateTemplateParmDeclChildren(
-            static_cast<const TemplateTemplateParmDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::TEMPLATE_TYPE_PARM_DECL:
-        VisitTemplateTypeParmDeclChildren(
-            static_cast<const TemplateTypeParmDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::ENUM_CONSTANT_DECL:
-        VisitEnumConstantDeclChildren(static_cast<const EnumConstantDecl *>(D),
-                                      visitedChildren);
-        break;
-    case clava::DeclNode::TYPEDEF_NAME_DECL:
-        VisitTypedefNameDeclChildren(static_cast<const TypedefNameDecl *>(D),
-                                     visitedChildren);
-        break;
-    case clava::DeclNode::USING_DIRECTIVE_DECL:
-        VisitUsingDirectiveDeclChildren(
-            static_cast<const UsingDirectiveDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::NAMESPACE_DECL:
-        VisitNamespaceDeclChildren(static_cast<const NamespaceDecl *>(D),
-                                   visitedChildren);
-        break;
-    case clava::DeclNode::FRIEND_DECL:
-        VisitFriendDeclChildren(static_cast<const FriendDecl *>(D),
-                                visitedChildren);
-        break;
-    case clava::DeclNode::NAMESPACE_ALIAS_DECL:
-        VisitNamespaceAliasDeclChildren(
-            static_cast<const NamespaceAliasDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::LINKAGE_SPEC_DECL:
-        VisitLinkageSpecDeclChildren(static_cast<const LinkageSpecDecl *>(D),
-                                     visitedChildren);
-        break;
-    case clava::DeclNode::STATIC_ASSERT_DECL:
-        VisitStaticAssertDeclChildren(static_cast<const StaticAssertDecl *>(D),
-                                      visitedChildren);
-        break;
-    case clava::DeclNode::NON_TYPE_TEMPLATE_PARM_DECL:
-        VisitNonTypeTemplateParmDeclChildren(
-            static_cast<const NonTypeTemplateParmDecl *>(D), visitedChildren);
-        break;
-    case clava::DeclNode::USING_DECL:
-        VisitUsingDeclChildren(static_cast<const UsingDecl *>(D),
-                               visitedChildren);
-        break;
-    default:
-        throw std::invalid_argument(
-            "ChildrenVisitorDecls::visitChildren: Case not implemented, '" +
-            clava::getName(declNode) + "'");
     }
 
     dumpVisitedChildren(D, visitedChildren);
