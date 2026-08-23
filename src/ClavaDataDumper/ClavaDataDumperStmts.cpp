@@ -9,245 +9,121 @@
 #include "llvm/ADT/STLForwardCompat.h"
 
 #include <map>
+#include "../Clava/HandlerCoverage.h"
 
-const std::map<const std::string, clava::StmtNode> clava::STMT_DATA_MAP = {
-    {"LabelStmt", clava::StmtNode::LABEL_STMT},
-    {"GotoStmt", clava::StmtNode::GOTO_STMT},
-    {"AttributedStmt", clava::StmtNode::ATTRIBUTED_STMT},
-    {"GCCAsmStmt", clava::StmtNode::GCC_ASM_STMT},
-    {"MSAsmStmt", clava::StmtNode::MS_ASM_STMT},
+// Data dumper selected directly by class name. Most entries dump with a
+// method named after their own class; entries whose data section differs use
+// the *_AS variants.
+#define STMT_DATA_ENTRY(CLASS)                                                 \
+  {#CLASS, {#CLASS, [](clava::ClavaDataDumper &self, const Stmt *S) {          \
+    self.Dump##CLASS##Data(static_cast<const CLASS *>(S));                     \
+  }}}
 
+#define EXPR_DATA_ENTRY(CLASS)                                                 \
+  {#CLASS, {#CLASS, [](clava::ClavaDataDumper &self, const Expr *E) {          \
+    self.Dump##CLASS##Data(static_cast<const CLASS *>(E));                     \
+  }}}
+
+#define EXPR_DATA_ENTRY_AS(CLASS, SECTION)                                     \
+  {#CLASS, {#SECTION, [](clava::ClavaDataDumper &self, const Expr *E) {        \
+    self.Dump##SECTION##Data(static_cast<const CLASS *>(E));                   \
+  }}}
+
+const std::map<std::string, clava::ClavaDataDumper::StmtDataEntry>
+    clava::ClavaDataDumper::STMT_DATA_DUMPERS = {
+        STMT_DATA_ENTRY(LabelStmt),
+        STMT_DATA_ENTRY(GotoStmt),
+        STMT_DATA_ENTRY(AttributedStmt),
+        STMT_DATA_ENTRY(GCCAsmStmt),
+        STMT_DATA_ENTRY(MSAsmStmt),
 };
 
-const std::map<const std::string, clava::StmtNode> clava::EXPR_DATA_MAP = {
-    {"CharacterLiteral", clava::StmtNode::CHARACTER_LITERAL},
-    {"IntegerLiteral", clava::StmtNode::INTEGER_LITERAL},
-    {"FloatingLiteral", clava::StmtNode::FLOATING_LITERAL},
-    {"CastExpr", clava::StmtNode::CAST_EXPR},
-    {"CXXFunctionalCastExpr", clava::StmtNode::CAST_EXPR},
-    {"CStyleCastExpr", clava::StmtNode::EXPLICIT_CAST_EXPR},
-    {"CXXAddrspaceCastExpr", clava::StmtNode::CXX_NAMED_CAST_EXPR},
-    {"CXXConstCastExpr", clava::StmtNode::CXX_NAMED_CAST_EXPR},
-    {"CXXDynamicCastExpr", clava::StmtNode::CXX_NAMED_CAST_EXPR},
-    {"CXXReinterpretCastExpr", clava::StmtNode::CXX_NAMED_CAST_EXPR},
-    {"CXXStaticCastExpr", clava::StmtNode::CXX_NAMED_CAST_EXPR},
-    {"CXXBoolLiteralExpr", clava::StmtNode::CXX_BOOL_LITERAL_EXPR},
-    {"CompoundLiteralExpr", clava::StmtNode::COMPOUND_LITERAL_EXPR},
-    {"InitListExpr", clava::StmtNode::INIT_LIST_EXPR},
-    {"StringLiteral", clava::StmtNode::STRING_LITERAL},
-    {"DeclRefExpr", clava::StmtNode::DECL_REF_EXPR},
-    {"DependentScopeDeclRefExpr",
-     clava::StmtNode::DEPENDENT_SCOPE_DECL_REF_EXPR},
-    {"UnresolvedLookupExpr", clava::StmtNode::UNRESOLVED_LOOKUP_EXPR},
-    {"UnresolvedMemberExpr", clava::StmtNode::UNRESOLVED_MEMBER_EXPR},
-    {"CXXConstructExpr", clava::StmtNode::CXX_CONSTRUCT_EXPR},
-    {"CXXTemporaryObjectExpr", clava::StmtNode::CXX_TEMPORARY_OBJECT_EXPR},
-    {"MemberExpr", clava::StmtNode::MEMBER_EXPR},
-    {"MaterializeTemporaryExpr", clava::StmtNode::MATERIALIZE_TEMPORARY_EXPR},
-    {"BinaryOperator", clava::StmtNode::BINARY_OPERATOR},
-    {"UnaryOperator", clava::StmtNode::UNARY_OPERATOR},
-    {"CompoundAssignOperator", clava::StmtNode::BINARY_OPERATOR},
-    {"CallExpr", clava::StmtNode::CALL_EXPR},
-    {"CXXMemberCallExpr", clava::StmtNode::CXX_MEMBER_CALL_EXPR},
-    {"CXXOperatorCallExpr", clava::StmtNode::CALL_EXPR},
-    {"UserDefinedLiteral", clava::StmtNode::CALL_EXPR},
-    {"CXXTypeidExpr", clava::StmtNode::CXX_TYPEID_EXPR},
-    {"CXXDependentScopeMemberExpr",
-     clava::StmtNode::CXX_DEPENDENT_SCOPE_MEMBER_EXPR},
-    {"UnaryExprOrTypeTraitExpr",
-     clava::StmtNode::UNARY_EXPR_OR_TYPE_TRAIT_EXPR},
-    {"CXXNewExpr", clava::StmtNode::CXX_NEW_EXPR},
-    {"CXXDeleteExpr", clava::StmtNode::CXX_DELETE_EXPR},
-    {"OffsetOfExpr", clava::StmtNode::OFFSET_OF_EXPR},
-    {"LambdaExpr", clava::StmtNode::LAMBDA_EXPR},
-    {"PredefinedExpr", clava::StmtNode::PREDEFINED_EXPR},
-    {"SizeOfPackExpr", clava::StmtNode::SIZE_OF_PACK_EXPR},
-    {"ArrayInitLoopExpr", clava::StmtNode::ARRAY_INIT_LOOP_EXPR},
-    {"DesignatedInitExpr", clava::StmtNode::DESIGNATED_INIT_EXPR},
-    {"CXXNoexceptExpr", clava::StmtNode::CXX_NOEXCEPT_EXPR},
-    {"CXXPseudoDestructorExpr", clava::StmtNode::CXX_PSEUDO_DESTRUCTOR_EXPR},
-    {"PseudoObjectExpr", clava::StmtNode::PSEUDO_OBJECT_EXPR},
-    {"MSPropertyRefExpr", clava::StmtNode::MS_PROPERTY_REF_EXPR},
+const std::map<std::string, clava::ClavaDataDumper::ExprDataEntry>
+    clava::ClavaDataDumper::EXPR_DATA_DUMPERS = {
+        EXPR_DATA_ENTRY(CharacterLiteral),
+        EXPR_DATA_ENTRY(IntegerLiteral),
+        EXPR_DATA_ENTRY(FloatingLiteral),
+        EXPR_DATA_ENTRY(CastExpr),
+        EXPR_DATA_ENTRY_AS(CXXFunctionalCastExpr, CastExpr),
+        EXPR_DATA_ENTRY_AS(CStyleCastExpr, ExplicitCastExpr),
+        EXPR_DATA_ENTRY_AS(CXXAddrspaceCastExpr, CXXNamedCastExpr),
+        EXPR_DATA_ENTRY_AS(CXXConstCastExpr, CXXNamedCastExpr),
+        EXPR_DATA_ENTRY_AS(CXXDynamicCastExpr, CXXNamedCastExpr),
+        EXPR_DATA_ENTRY_AS(CXXReinterpretCastExpr, CXXNamedCastExpr),
+        EXPR_DATA_ENTRY_AS(CXXStaticCastExpr, CXXNamedCastExpr),
+        EXPR_DATA_ENTRY(CXXBoolLiteralExpr),
+        EXPR_DATA_ENTRY(CompoundLiteralExpr),
+        EXPR_DATA_ENTRY(InitListExpr),
+        EXPR_DATA_ENTRY(StringLiteral),
+        EXPR_DATA_ENTRY(DeclRefExpr),
+        EXPR_DATA_ENTRY(DependentScopeDeclRefExpr),
+        EXPR_DATA_ENTRY(UnresolvedLookupExpr),
+        EXPR_DATA_ENTRY(UnresolvedMemberExpr),
+        EXPR_DATA_ENTRY(CXXConstructExpr),
+        EXPR_DATA_ENTRY(CXXTemporaryObjectExpr),
+        EXPR_DATA_ENTRY(MemberExpr),
+        EXPR_DATA_ENTRY(MaterializeTemporaryExpr),
+        EXPR_DATA_ENTRY(BinaryOperator),
+        EXPR_DATA_ENTRY(UnaryOperator),
+        EXPR_DATA_ENTRY_AS(CompoundAssignOperator, BinaryOperator),
+        EXPR_DATA_ENTRY(CallExpr),
+        EXPR_DATA_ENTRY(CXXMemberCallExpr),
+        EXPR_DATA_ENTRY_AS(CXXOperatorCallExpr, CallExpr),
+        EXPR_DATA_ENTRY_AS(UserDefinedLiteral, CallExpr),
+        EXPR_DATA_ENTRY(CXXTypeidExpr),
+        EXPR_DATA_ENTRY(CXXDependentScopeMemberExpr),
+        EXPR_DATA_ENTRY(UnaryExprOrTypeTraitExpr),
+        EXPR_DATA_ENTRY(CXXNewExpr),
+        EXPR_DATA_ENTRY(CXXDeleteExpr),
+        EXPR_DATA_ENTRY(OffsetOfExpr),
+        EXPR_DATA_ENTRY(LambdaExpr),
+        EXPR_DATA_ENTRY(PredefinedExpr),
+        EXPR_DATA_ENTRY(SizeOfPackExpr),
+        EXPR_DATA_ENTRY(ArrayInitLoopExpr),
+        EXPR_DATA_ENTRY(DesignatedInitExpr),
+        EXPR_DATA_ENTRY(CXXNoexceptExpr),
+        EXPR_DATA_ENTRY(CXXPseudoDestructorExpr),
+        EXPR_DATA_ENTRY(PseudoObjectExpr),
+        EXPR_DATA_ENTRY(MSPropertyRefExpr),
 };
 
 void clava::ClavaDataDumper::dump(const Stmt *S) {
-
-    // Get classname
     const std::string classname = clava::getClassName(S);
+    auto it = STMT_DATA_DUMPERS.find(classname);
+    const char *dataName =
+        it != STMT_DATA_DUMPERS.end() ? it->second.dataName : "Stmt";
 
-    // Get corresponding StmtNode
-    StmtNode stmtNode = STMT_DATA_MAP.count(classname) == 1
-                            ? STMT_DATA_MAP.find(classname)->second
-                            : StmtNode::STMT;
-
-    dump(stmtNode, S);
-}
-
-void clava::ClavaDataDumper::dump(const Expr *E) {
-
-    // Get classname
-    const std::string classname = clava::getClassName(E);
-
-    // Get corresponding ExprNode
-    StmtNode exprNode = EXPR_DATA_MAP.count(classname) == 1
-                            ? EXPR_DATA_MAP.find(classname)->second
-                            : StmtNode::EXPR;
-
-    dump(exprNode, E);
-}
-
-void clava::ClavaDataDumper::dump(clava::StmtNode stmtNode, const Stmt *S) {
     // Dump header
-    llvm::errs() << getDataName(stmtNode) << "\n";
+    llvm::errs() << "<" << dataName << "Data>\n";
     llvm::errs() << clava::getId(S, id) << "\n";
     llvm::errs() << clava::getClassName(S) << "\n";
 
-    switch (stmtNode) {
-    case clava::StmtNode::STMT:
+    if (it != STMT_DATA_DUMPERS.end()) {
+        it->second.dump(*this, S);
+    } else {
+        clava::recordHandlerFallback("stmt data", classname);
+        // Default: plain Stmt data
         DumpStmtData(S);
-        break;
-    case clava::StmtNode::LABEL_STMT:
-        DumpLabelStmtData(static_cast<const LabelStmt *>(S));
-        break;
-    case clava::StmtNode::GOTO_STMT:
-        DumpGotoStmtData(static_cast<const GotoStmt *>(S));
-        break;
-    case clava::StmtNode::ATTRIBUTED_STMT:
-        DumpAttributedStmtData(static_cast<const AttributedStmt *>(S));
-        break;
-    case clava::StmtNode::GCC_ASM_STMT:
-        DumpGCCAsmStmtData(static_cast<const GCCAsmStmt *>(S));
-        break;
-    case clava::StmtNode::MS_ASM_STMT:
-        DumpMSAsmStmtData(static_cast<const MSAsmStmt *>(S));
-        break;
-    case clava::StmtNode::EXPR:
-        DumpExprData(static_cast<const Expr *>(S));
-        break;
-    case clava::StmtNode::CAST_EXPR:
-        DumpCastExprData(static_cast<const CastExpr *>(S));
-        break;
-    case clava::StmtNode ::CHARACTER_LITERAL:
-        DumpCharacterLiteralData(static_cast<const CharacterLiteral *>(S));
-        break;
-    case clava::StmtNode ::INTEGER_LITERAL:
-        DumpIntegerLiteralData(static_cast<const IntegerLiteral *>(S));
-        break;
-    case clava::StmtNode ::FLOATING_LITERAL:
-        DumpFloatingLiteralData(static_cast<const FloatingLiteral *>(S));
-        break;
-    case clava::StmtNode ::STRING_LITERAL:
-        DumpStringLiteralData(static_cast<const StringLiteral *>(S));
-        break;
-    case clava::StmtNode ::CXX_BOOL_LITERAL_EXPR:
-        DumpCXXBoolLiteralExprData(static_cast<const CXXBoolLiteralExpr *>(S));
-        break;
-    case clava::StmtNode ::COMPOUND_LITERAL_EXPR:
-        DumpCompoundLiteralExprData(
-            static_cast<const CompoundLiteralExpr *>(S));
-        break;
-    case clava::StmtNode ::INIT_LIST_EXPR:
-        DumpInitListExprData(static_cast<const InitListExpr *>(S));
-        break;
-    case clava::StmtNode ::DECL_REF_EXPR:
-        DumpDeclRefExprData(static_cast<const DeclRefExpr *>(S));
-        break;
-    case clava::StmtNode ::DEPENDENT_SCOPE_DECL_REF_EXPR:
-        DumpDependentScopeDeclRefExprData(
-            static_cast<const DependentScopeDeclRefExpr *>(S));
-        break;
-    case clava::StmtNode ::UNRESOLVED_MEMBER_EXPR:
-        DumpUnresolvedMemberExprData(
-            static_cast<const UnresolvedMemberExpr *>(S));
-        break;
-    case clava::StmtNode ::UNRESOLVED_LOOKUP_EXPR:
-        DumpUnresolvedLookupExprData(
-            static_cast<const UnresolvedLookupExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_CONSTRUCT_EXPR:
-        DumpCXXConstructExprData(static_cast<const CXXConstructExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_TEMPORARY_OBJECT_EXPR:
-        DumpCXXTemporaryObjectExprData(
-            static_cast<const CXXTemporaryObjectExpr *>(S));
-        break;
-    case clava::StmtNode ::MEMBER_EXPR:
-        DumpMemberExprData(static_cast<const MemberExpr *>(S));
-        break;
-    case clava::StmtNode ::MATERIALIZE_TEMPORARY_EXPR:
-        DumpMaterializeTemporaryExprData(
-            static_cast<const MaterializeTemporaryExpr *>(S));
-        break;
-    case clava::StmtNode ::BINARY_OPERATOR:
-        DumpBinaryOperatorData(static_cast<const BinaryOperator *>(S));
-        break;
-    case clava::StmtNode ::CALL_EXPR:
-        DumpCallExprData(static_cast<const CallExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_MEMBER_CALL_EXPR:
-        DumpCXXMemberCallExprData(static_cast<const CXXMemberCallExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_TYPEID_EXPR:
-        DumpCXXTypeidExprData(static_cast<const CXXTypeidExpr *>(S));
-        break;
-    case clava::StmtNode ::EXPLICIT_CAST_EXPR:
-        DumpExplicitCastExprData(static_cast<const ExplicitCastExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_NAMED_CAST_EXPR:
-        DumpCXXNamedCastExprData(static_cast<const CXXNamedCastExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_DEPENDENT_SCOPE_MEMBER_EXPR:
-        DumpCXXDependentScopeMemberExprData(
-            static_cast<const CXXDependentScopeMemberExpr *>(S));
-        break;
-    case clava::StmtNode ::UNARY_OPERATOR:
-        DumpUnaryOperatorData(static_cast<const UnaryOperator *>(S));
-        break;
-    case clava::StmtNode ::UNARY_EXPR_OR_TYPE_TRAIT_EXPR:
-        DumpUnaryExprOrTypeTraitExprData(
-            static_cast<const UnaryExprOrTypeTraitExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_NEW_EXPR:
-        DumpCXXNewExprData(static_cast<const CXXNewExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_DELETE_EXPR:
-        DumpCXXDeleteExprData(static_cast<const CXXDeleteExpr *>(S));
-        break;
-    case clava::StmtNode ::OFFSET_OF_EXPR:
-        DumpOffsetOfExprData(static_cast<const OffsetOfExpr *>(S));
-        break;
-    case clava::StmtNode ::LAMBDA_EXPR:
-        DumpLambdaExprData(static_cast<const LambdaExpr *>(S));
-        break;
-    case clava::StmtNode ::PREDEFINED_EXPR:
-        DumpPredefinedExprData(static_cast<const PredefinedExpr *>(S));
-        break;
-    case clava::StmtNode ::SIZE_OF_PACK_EXPR:
-        DumpSizeOfPackExprData(static_cast<const SizeOfPackExpr *>(S));
-        break;
-    case clava::StmtNode ::ARRAY_INIT_LOOP_EXPR:
-        DumpArrayInitLoopExprData(static_cast<const ArrayInitLoopExpr *>(S));
-        break;
-    case clava::StmtNode ::DESIGNATED_INIT_EXPR:
-        DumpDesignatedInitExprData(static_cast<const DesignatedInitExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_NOEXCEPT_EXPR:
-        DumpCXXNoexceptExprData(static_cast<const CXXNoexceptExpr *>(S));
-        break;
-    case clava::StmtNode ::CXX_PSEUDO_DESTRUCTOR_EXPR:
-        DumpCXXPseudoDestructorExprData(
-            static_cast<const CXXPseudoDestructorExpr *>(S));
-        break;
-    case clava::StmtNode ::PSEUDO_OBJECT_EXPR:
-        DumpPseudoObjectExprData(static_cast<const PseudoObjectExpr *>(S));
-        break;
-    case clava::StmtNode ::MS_PROPERTY_REF_EXPR:
-        DumpMSPropertyRefExprData(static_cast<const MSPropertyRefExpr *>(S));
-        break;
-    default:
-        throw std::invalid_argument(
-            "ClangDataDumper::dump(StmtNode): Case not implemented, '" +
-            getName(stmtNode) + "'");
+    }
+}
+
+void clava::ClavaDataDumper::dump(const Expr *E) {
+    const std::string classname = clava::getClassName(E);
+    auto it = EXPR_DATA_DUMPERS.find(classname);
+    const char *dataName =
+        it != EXPR_DATA_DUMPERS.end() ? it->second.dataName : "Expr";
+
+    // Dump header
+    llvm::errs() << "<" << dataName << "Data>\n";
+    llvm::errs() << clava::getId(E, id) << "\n";
+    llvm::errs() << clava::getClassName(E) << "\n";
+
+    if (it != EXPR_DATA_DUMPERS.end()) {
+        it->second.dump(*this, E);
+    } else {
+        clava::recordHandlerFallback("expr data", classname);
+        // Default: plain Expr data
+        DumpExprData(static_cast<const Expr *>(E));
     }
 }
 

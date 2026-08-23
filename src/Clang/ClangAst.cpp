@@ -6,6 +6,7 @@
 // http://eli.thegreenplace.net/
 //------------------------------------------------------------------------------
 #include "ClangAst.h"
+#include "../Clava/HandlerCoverage.h"
 #include "../ClangAstDumper/ClangAstDumperConstants.h"
 #include "ClangNodes.h"
 
@@ -30,6 +31,11 @@ static llvm::cl::OptionCategory ToolingSampleCategory("Tooling Sample");
 
 static constexpr const char *const PREFIX = "COUNTER";
 
+static llvm::cl::opt<bool> HandlerCoverageReport(
+    "handler-coverage-report",
+    llvm::cl::desc("Report class names that used fallback dump handling"),
+    llvm::cl::init(false));
+
 /* DumpAstVisitor implementation */
 
 bool DumpAstVisitor::TraverseDecl(Decl *D) {
@@ -52,27 +58,6 @@ bool DumpAstVisitor::TraverseDecl(Decl *D) {
 PrintNodesTypesRelationsVisitor::PrintNodesTypesRelationsVisitor(
     ASTContext *Context, int id, ClangAstDumper dumper)
     : Context(Context), id(id), dumper(dumper){};
-
-static std::string stmt2str(clang::Stmt *d, clang::SourceManager *sm,
-                            clang::LangOptions lopt) {
-    clang::SourceLocation b(d->getBeginLoc()), _e(d->getEndLoc());
-    clang::SourceLocation e(
-        clang::Lexer::getLocForEndOfToken(_e, 0, *sm, lopt));
-    return std::string(sm->getCharacterData(b),
-                       sm->getCharacterData(e) - sm->getCharacterData(b));
-}
-
-static std::string loc2str(SourceLocation locStart, SourceLocation locEnd,
-                           ASTContext *Context) {
-    clang::SourceManager *sm = &Context->getSourceManager();
-    clang::LangOptions lopt = Context->getLangOpts();
-
-    clang::SourceLocation b(locStart), _e(locEnd);
-    clang::SourceLocation e(
-        clang::Lexer::getLocForEndOfToken(_e, 0, *sm, lopt));
-    return std::string(sm->getCharacterData(b),
-                       sm->getCharacterData(e) - sm->getCharacterData(b));
-}
 
 bool PrintNodesTypesRelationsVisitor::VisitCXXConstructExpr(
     CXXConstructExpr *D) {
@@ -398,9 +383,15 @@ void DumpResources::init(int runId, int systemLevelThreshold) {
         "consumer_order.txt", std::ofstream::out | std::ofstream::trunc);
     DumpResources::types_with_templates.open(
         "types_with_templates.txt", std::ofstream::out | std::ofstream::trunc);
+
+    if (HandlerCoverageReport) {
+        clava::enableHandlerCoverageReport();
+    }
 }
 
 void DumpResources::finish() {
+    clava::reportHandlerCoverage();
+
     DumpResources::is_temporary.close();
     DumpResources::omp.close();
     DumpResources::enum_integer_type.close();

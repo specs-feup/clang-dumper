@@ -159,7 +159,7 @@ jobs:
           cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
 
       - name: Package Linux includes
-        run: scripts/package_linux_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+        run: scripts/package_includes.sh linux ${{ matrix.arch }} dist/${{ matrix.include-package }}
 
       - name: Check Linux include package
         run: |
@@ -301,7 +301,7 @@ jobs:
           cp build/libplugin.so dist/clang-dumper-macos-${{ matrix.arch }}-plugin.so
 
       - name: Package macOS includes
-        run: scripts/package_macos_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+        run: scripts/package_includes.sh macos ${{ matrix.arch }} dist/${{ matrix.include-package }}
 
       - name: Check macOS include package
         run: |
@@ -426,7 +426,7 @@ jobs:
           cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
 
       - name: Package Windows includes
-        run: scripts/package_windows_includes.sh ${{ matrix.arch }} dist/${{ matrix.include-package }}
+        run: scripts/package_includes.sh windows ${{ matrix.arch }} dist/${{ matrix.include-package }}
 
       - name: Check Windows include package
         run: |

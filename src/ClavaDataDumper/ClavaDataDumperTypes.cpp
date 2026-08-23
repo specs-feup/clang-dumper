@@ -3,146 +3,71 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
 #include "llvm/ADT/STLForwardCompat.h"
 
-const std::map<const std::string, clava::TypeNode> clava::TYPE_DATA_MAP = {
-    {"BuiltinType", clava::TypeNode::BUILTIN_TYPE},
-    {"PointerType", clava::TypeNode::POINTER_TYPE},
-    {"FunctionProtoType", clava::TypeNode::FUNCTION_PROTO_TYPE},
-    {"FunctionNoProtoType", clava::TypeNode::FUNCTION_TYPE},
-    {"ConstantArrayType", clava::TypeNode::CONSTANT_ARRAY_TYPE},
-    {"VariableArrayType", clava::TypeNode::VARIABLE_ARRAY_TYPE},
-    {"IncompleteArrayType", clava::TypeNode::ARRAY_TYPE},
-    {"DependentSizedArrayType", clava::TypeNode::DEPENDENT_SIZED_ARRAY_TYPE},
-    {"RecordType", clava::TypeNode::TAG_TYPE},
-    {"EnumType", clava::TypeNode::TAG_TYPE},
-    {"ElaboratedType", clava::TypeNode::ELABORATED_TYPE},
-    {"TemplateTypeParmType", clava::TypeNode::TEMPLATE_TYPE_PARM_TYPE},
-    {"TemplateSpecializationType",
-     clava::TypeNode::TEMPLATE_SPECIALIZATION_TYPE},
-    {"TypedefType", clava::TypeNode::TYPEDEF_TYPE},
-    {"DecayedType", clava::TypeNode::DECAYED_TYPE},
-    {"DecltypeType", clava::TypeNode::DECLTYPE_TYPE},
-    {"AutoType", clava::TypeNode::AUTO_TYPE},
-    {"LValueReferenceType", clava::TypeNode::REFERENCE_TYPE},
-    {"RValueReferenceType", clava::TypeNode::REFERENCE_TYPE},
-    {"TypeOfExprType", clava::TypeNode::TYPE_OF_EXPR_TYPE},
-    {"PackExpansionType", clava::TypeNode::PACK_EXPANSION_TYPE},
-    {"UnaryTransformType", clava::TypeNode::UNARY_TRANSFORM_TYPE},
-    {"AttributedType", clava::TypeNode::ATTRIBUTED_TYPE},
-    {"SubstTemplateTypeParmType",
-     clava::TypeNode::SUBST_TEMPLATE_TYPE_PARM_TYPE},
-    {"ComplexType", clava::TypeNode::COMPLEX_TYPE},
+// Data dumper selected directly by class name. Most entries dump with a
+// method named after their own class; entries whose data section differs use
+// TYPE_DATA_ENTRY_AS(CLASS, SECTION).
+#define TYPE_DATA_ENTRY(CLASS)                                                 \
+  {#CLASS, {#CLASS, [](clava::ClavaDataDumper &self, const Type *T) {          \
+    self.Dump##CLASS##Data(static_cast<const CLASS *>(T));                     \
+  }}}
+
+#define TYPE_DATA_ENTRY_AS(CLASS, SECTION)                                     \
+  {#CLASS, {#SECTION, [](clava::ClavaDataDumper &self, const Type *T) {        \
+    self.Dump##SECTION##Data(static_cast<const CLASS *>(T));                   \
+  }}}
+
+const std::map<std::string, clava::ClavaDataDumper::TypeDataEntry>
+    clava::ClavaDataDumper::TYPE_DATA_DUMPERS = {
+        TYPE_DATA_ENTRY(BuiltinType),
+        TYPE_DATA_ENTRY(PointerType),
+        TYPE_DATA_ENTRY(FunctionProtoType),
+        TYPE_DATA_ENTRY_AS(FunctionNoProtoType, FunctionType),
+        TYPE_DATA_ENTRY(ConstantArrayType),
+        TYPE_DATA_ENTRY(VariableArrayType),
+        TYPE_DATA_ENTRY_AS(IncompleteArrayType, ArrayType),
+        TYPE_DATA_ENTRY(DependentSizedArrayType),
+        TYPE_DATA_ENTRY_AS(RecordType, TagType),
+        TYPE_DATA_ENTRY_AS(EnumType, TagType),
+        TYPE_DATA_ENTRY(ElaboratedType),
+        TYPE_DATA_ENTRY(TemplateTypeParmType),
+        TYPE_DATA_ENTRY(TemplateSpecializationType),
+        TYPE_DATA_ENTRY(TypedefType),
+        TYPE_DATA_ENTRY(DecayedType),
+        TYPE_DATA_ENTRY(DecltypeType),
+        TYPE_DATA_ENTRY(AutoType),
+        TYPE_DATA_ENTRY_AS(LValueReferenceType, ReferenceType),
+        TYPE_DATA_ENTRY_AS(RValueReferenceType, ReferenceType),
+        TYPE_DATA_ENTRY(TypeOfExprType),
+        TYPE_DATA_ENTRY(PackExpansionType),
+        TYPE_DATA_ENTRY(UnaryTransformType),
+        TYPE_DATA_ENTRY(AttributedType),
+        TYPE_DATA_ENTRY(SubstTemplateTypeParmType),
+        TYPE_DATA_ENTRY(ComplexType),
 };
 
 void clava::ClavaDataDumper::dump(const Type *T) {
-
-  // Get classname
   const std::string classname = clava::getClassName(T);
+  auto it = TYPE_DATA_DUMPERS.find(classname);
+  const char *dataName =
+      it != TYPE_DATA_DUMPERS.end() ? it->second.dataName : "Type";
 
-  // Get corresponding TypeNode
-  TypeNode typeNode = TYPE_DATA_MAP.count(classname) == 1
-                          ? TYPE_DATA_MAP.find(classname)->second
-                          : TypeNode::TYPE;
-
-  dump(typeNode, T);
-}
-
-void clava::ClavaDataDumper::dump(clava::TypeNode typeNode, const Type *T) {
   // Dump header
-  llvm::errs() << getDataName(typeNode) << "\n";
+  llvm::errs() << "<" << dataName << "Data>\n";
   llvm::errs() << clava::getId(T, id) << "\n";
   llvm::errs() << clava::getClassName(T) << "\n";
 
-  switch (typeNode) {
-  case clava::TypeNode::TYPE:
+  if (it != TYPE_DATA_DUMPERS.end()) {
+    it->second.dump(*this, T);
+  } else {
+    clava::recordHandlerFallback("type data", classname);
+    // Default: plain Type data
     DumpTypeData(T);
-    break;
-  case clava::TypeNode::BUILTIN_TYPE:
-    DumpBuiltinTypeData(static_cast<const BuiltinType *>(T));
-    break;
-  case clava::TypeNode::POINTER_TYPE:
-    DumpPointerTypeData(static_cast<const PointerType *>(T));
-    break;
-  case clava::TypeNode::FUNCTION_TYPE:
-    DumpFunctionTypeData(static_cast<const FunctionType *>(T));
-    break;
-  case clava::TypeNode::FUNCTION_PROTO_TYPE:
-    DumpFunctionProtoTypeData(static_cast<const FunctionProtoType *>(T));
-    break;
-  case clava::TypeNode::ARRAY_TYPE:
-    DumpArrayTypeData(static_cast<const ArrayType *>(T));
-    break;
-  case clava::TypeNode::CONSTANT_ARRAY_TYPE:
-    DumpConstantArrayTypeData(static_cast<const ConstantArrayType *>(T));
-    break;
-  case clava::TypeNode::VARIABLE_ARRAY_TYPE:
-    DumpVariableArrayTypeData(static_cast<const VariableArrayType *>(T));
-    break;
-  case clava::TypeNode::DEPENDENT_SIZED_ARRAY_TYPE:
-    DumpDependentSizedArrayTypeData(
-        static_cast<const DependentSizedArrayType *>(T));
-    break;
-  case clava::TypeNode::TAG_TYPE:
-    DumpTagTypeData(static_cast<const TagType *>(T));
-    break;
-  case clava::TypeNode::TYPE_WITH_KEYWORD:
-    DumpTypeWithKeywordData(static_cast<const TypeWithKeyword *>(T));
-    break;
-  case clava::TypeNode::ELABORATED_TYPE:
-    DumpElaboratedTypeData(static_cast<const ElaboratedType *>(T));
-    break;
-  case clava::TypeNode::TEMPLATE_TYPE_PARM_TYPE:
-    DumpTemplateTypeParmTypeData(static_cast<const TemplateTypeParmType *>(T));
-    break;
-  case clava::TypeNode::TEMPLATE_SPECIALIZATION_TYPE:
-    DumpTemplateSpecializationTypeData(
-        static_cast<const TemplateSpecializationType *>(T));
-    break;
-  case clava::TypeNode::TYPEDEF_TYPE:
-    DumpTypedefTypeData(static_cast<const TypedefType *>(T));
-    break;
-  case clava::TypeNode::ADJUSTED_TYPE:
-    DumpAdjustedTypeData(static_cast<const AdjustedType *>(T));
-    break;
-  case clava::TypeNode::DECAYED_TYPE:
-    DumpDecayedTypeData(static_cast<const DecayedType *>(T));
-    break;
-  case clava::TypeNode::DECLTYPE_TYPE:
-    DumpDecltypeTypeData(static_cast<const DecltypeType *>(T));
-    break;
-  case clava::TypeNode::AUTO_TYPE:
-    DumpAutoTypeData(static_cast<const AutoType *>(T));
-    break;
-  case clava::TypeNode::REFERENCE_TYPE:
-    DumpReferenceTypeData(static_cast<const ReferenceType *>(T));
-    break;
-  case clava::TypeNode::PACK_EXPANSION_TYPE:
-    DumpPackExpansionTypeData(static_cast<const PackExpansionType *>(T));
-    break;
-  case clava::TypeNode::TYPE_OF_EXPR_TYPE:
-    DumpTypeOfExprTypeData(static_cast<const TypeOfExprType *>(T));
-    break;
-  case clava::TypeNode::ATTRIBUTED_TYPE:
-    DumpAttributedTypeData(static_cast<const AttributedType *>(T));
-    break;
-  case clava::TypeNode::UNARY_TRANSFORM_TYPE:
-    DumpUnaryTransformTypeData(static_cast<const UnaryTransformType *>(T));
-    break;
-  case clava::TypeNode::SUBST_TEMPLATE_TYPE_PARM_TYPE:
-    DumpSubstTemplateTypeParmTypeData(
-        static_cast<const SubstTemplateTypeParmType *>(T));
-    break;
-  case clava::TypeNode::COMPLEX_TYPE:
-    DumpComplexTypeData(static_cast<const ComplexType *>(T));
-    break;
-  default:
-    throw std::invalid_argument(
-        "ClangDataDumper::dump(TypeNode): Case not implemented, '" +
-        getName(typeNode) + "'");
   }
 }
 

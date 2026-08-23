@@ -3,64 +3,45 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
-#include "../Clava/ClavaConstants.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
 #include <map>
 
-const std::map<const std::string, clava::AttrNode> clava::ATTR_DATA_MAP = {
-    {"AlignedAttr", clava::AttrNode::ALIGNED},
-    {"OpenCLUnrollHintAttr", clava::AttrNode::OPENCL_UNROLL_HINT},
-    {"FormatAttr", clava::AttrNode::FORMAT},
-    {"NonNullAttr", clava::AttrNode::NON_NULL},
-    {"VisibilityAttr", clava::AttrNode::VISIBILITY},
+#define ATTR_DATA_ENTRY(CLASS)                                                 \
+  {#CLASS, {#CLASS, [](clava::ClavaDataDumper &self, const Attr *A) {          \
+    self.Dump##CLASS##Data(static_cast<const CLASS *>(A));                     \
+  }}}
 
+const std::map<std::string, clava::ClavaDataDumper::AttrDataEntry>
+    clava::ClavaDataDumper::ATTR_DATA_DUMPERS = {
+        ATTR_DATA_ENTRY(AlignedAttr),
+        ATTR_DATA_ENTRY(OpenCLUnrollHintAttr),
+        ATTR_DATA_ENTRY(FormatAttr),
+        ATTR_DATA_ENTRY(NonNullAttr),
+        ATTR_DATA_ENTRY(VisibilityAttr),
 };
 
 void clava::ClavaDataDumper::dump(const Attr *A) {
-
-    // Get classname
     const std::string classname = clava::getClassName(A);
+    auto it = ATTR_DATA_DUMPERS.find(classname);
+    // NOTE: the legacy section name for the generic attribute data was
+    // "<AttributeData>", not "<AttrData>".
+    const char *dataName =
+        it != ATTR_DATA_DUMPERS.end() ? it->second.dataName : "Attribute";
 
-    // Get corresponding AttrNode
-    AttrNode attrNode = ATTR_DATA_MAP.count(classname) == 1
-                            ? ATTR_DATA_MAP.find(classname)->second
-                            : AttrNode::ATTR;
-
-    dump(attrNode, A);
-}
-
-void clava::ClavaDataDumper::dump(clava::AttrNode attrNode, const Attr *A) {
     // Dump header
-    llvm::errs() << getDataName(attrNode) << "\n";
+    llvm::errs() << "<" << dataName << "Data>\n";
     llvm::errs() << clava::getId(A, id) << "\n";
     llvm::errs() << clava::getClassName(A) << "\n";
 
-    switch (attrNode) {
-    case clava::AttrNode::ATTR:
+    if (it != ATTR_DATA_DUMPERS.end()) {
+        it->second.dump(*this, A);
+    } else {
+        clava::recordHandlerFallback("attr data", classname);
+        // Default: plain Attr data
         DumpAttrData(A);
-        break;
-    case clava::AttrNode::ALIGNED:
-        DumpAlignedAttrData(static_cast<const AlignedAttr *>(A));
-        break;
-    case clava::AttrNode::OPENCL_UNROLL_HINT:
-        DumpOpenCLUnrollHintAttrData(
-            static_cast<const OpenCLUnrollHintAttr *>(A));
-        break;
-    case clava::AttrNode::FORMAT:
-        DumpFormatAttrData(static_cast<const FormatAttr *>(A));
-        break;
-    case clava::AttrNode::NON_NULL:
-        DumpNonNullAttrData(static_cast<const NonNullAttr *>(A));
-        break;
-    case clava::AttrNode::VISIBILITY:
-        DumpVisibilityAttrData(static_cast<const VisibilityAttr *>(A));
-        break;
-    default:
-        throw std::invalid_argument(
-            "ClangDataDumper::dump(DeclNode):: Case not implemented, '" +
-            getName(attrNode) + "'");
     }
 }
 

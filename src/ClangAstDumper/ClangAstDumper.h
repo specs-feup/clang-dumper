@@ -39,11 +39,25 @@ private:
 
   clava::ClavaDataDumper dataDumper;
 
-  static const std::map<const std::string, clava::DeclNode> DECL_CHILDREN_MAP;
-  static const std::map<const std::string, clava::StmtNode> STMT_CHILDREN_MAP;
-  static const std::map<const std::string, clava::StmtNode> EXPR_CHILDREN_MAP;
-  static const std::map<const std::string, clava::TypeNode> TYPE_CHILDREN_MAP;
-  static const std::map<const std::string, clava::AttrNode> ATTR_CHILDREN_MAP;
+  // Children visitors are selected directly by the node's class name, as
+  // reported on the wire format ("<Id to Class Map>" payloads). Adding a
+  // handler for a new/renamed Clang class means adding one table entry.
+  using DeclChildrenFn = void (*)(ClangAstDumper &, const Decl *,
+                                  std::vector<std::string> &);
+  using StmtChildrenFn = void (*)(ClangAstDumper &, const Stmt *,
+                                  std::vector<std::string> &);
+  using ExprChildrenFn = void (*)(ClangAstDumper &, const Expr *,
+                                  std::vector<std::string> &);
+  using TypeChildrenFn = void (*)(ClangAstDumper &, const Type *,
+                                  std::vector<std::string> &);
+  using AttrChildrenFn = void (*)(ClangAstDumper &, const Attr *,
+                                  std::vector<std::string> &);
+
+  static const std::map<std::string, DeclChildrenFn> DECL_CHILDREN_VISITORS;
+  static const std::map<std::string, StmtChildrenFn> STMT_CHILDREN_VISITORS;
+  static const std::map<std::string, ExprChildrenFn> EXPR_CHILDREN_VISITORS;
+  static const std::map<std::string, TypeChildrenFn> TYPE_CHILDREN_VISITORS;
+  static const std::map<std::string, AttrChildrenFn> ATTR_CHILDREN_VISITORS;
 
 public:
   explicit ClangAstDumper(ASTContext *Context, int id,
@@ -90,8 +104,6 @@ public:
    * Utility methods
    */
 
-  std::string loc2str(SourceLocation locStart, SourceLocation locEnd);
-
   std::string toBoolString(int value);
   const Type *getTypePtr(QualType T, std::string source);
 
@@ -120,6 +132,15 @@ public:
 private:
   void log(std::string name, const void *addr);
 
+  // Shared implementation for the addChild() overloads; visitTop serializes
+  // the node through the appropriate Top-level visit function.
+  template <typename T, typename F>
+  void addChildInternal(const T *addr, std::vector<std::string> &children,
+                        F &&visitTop);
+  template <typename F>
+  void addChildInternal(const QualType &addr,
+                        std::vector<std::string> &children, F &&visitTop);
+
   // Children and data
   void visitChildrenAndData(const Decl *D);
   void visitChildrenAndData(const Stmt *S);
@@ -136,12 +157,7 @@ private:
   void visitChildren(const Expr *E);
   void visitChildren(const Type *T);
   void visitChildren(const Attr *A);
-
-  void visitChildren(clava::DeclNode declNode, const Decl *D);
-  void visitChildren(clava::StmtNode stmtNode, const Stmt *S);
-  void visitChildren(clava::TypeNode typeNode, const Type *T);
   void visitChildren(const QualType &T);
-  void visitChildren(clava::AttrNode attrNode, const Attr *A);
   void emptyChildren(const void *pointer);
 
   // A positive N expands through system-header level N and serializes its
@@ -298,6 +314,16 @@ private:
                                 std::vector<std::string> &children);
   void VisitTemplateArgument(const TemplateArgument &templateArg);
   void VisitTemplateName(const TemplateName &templateArg);
+  // Same as VisitTemplateArgument, but expands argument packs into their
+  // elements.
+  void VisitTemplateArgChildren(const TemplateArgument &arg);
+
+private:
+  // Shared implementation of VisitTemplateArgument/VisitTemplateArgChildren
+  void visitTemplateArgument(const TemplateArgument &templateArg,
+                             bool expandPacks);
+
+public:
 
   // Dumpers of other kinds of information
   void dumpIdToClassMap(const void *pointer, std::string className);
@@ -363,16 +389,11 @@ private:
                                 std::vector<std::string> &visitedChildren);
 
   // Children visitors for other types of classes
-  void VisitTemplateArgChildren(const TemplateArgument &arg);
-  void VisitTemplateNameChildren(const TemplateName &templateName);
   void VisitNestedNameSpecifierChildren(NestedNameSpecifier *qualifier);
 
   /* Utility methods for DECLS */
   void dumpNumberTemplateParameters(const Decl *D,
                                     const TemplateParameterList *TPL);
-
-  void dumpSourceRange(std::string id, SourceLocation startLoc,
-                       SourceLocation endLoc);
 
   // These methods return true if the node had been already visited
 

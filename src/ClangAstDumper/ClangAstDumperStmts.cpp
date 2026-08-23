@@ -13,7 +13,6 @@
 
 using namespace clang;
 
-// #define OLD_OUTPUT
 
 void ClangAstDumper::visitChildrenAndData(const Stmt *S) {
   // Visit children
@@ -56,15 +55,6 @@ bool ClangAstDumper::dumpStmt(const Stmt *stmtAddr) {
   // A StmtDumper is created for each context,
   // no need to use id to disambiguate
   seenStmts.insert(stmtAddr);
-
-  std::ostringstream extendedId;
-  extendedId << stmtAddr << "_" << id;
-
-#ifdef OLD_OUTPUT
-  // Dump location
-  dumpSourceRange(extendedId.str(), stmtAddr->getBeginLoc(),
-                  stmtAddr->getEndLoc());
-#endif
 
   return false;
 }
