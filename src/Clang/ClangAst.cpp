@@ -59,22 +59,6 @@ PrintNodesTypesRelationsVisitor::PrintNodesTypesRelationsVisitor(
     ASTContext *Context, int id, ClangAstDumper dumper)
     : Context(Context), id(id), dumper(dumper){};
 
-bool PrintNodesTypesRelationsVisitor::VisitCXXConstructExpr(
-    CXXConstructExpr *D) {
-
-    FullSourceLoc fullLocation = Context->getFullLoc(D->getBeginLoc());
-    if (fullLocation.isValid() && !fullLocation.isInSystemHeader()) {
-
-        // Check if temporary object
-        if (D->isTemporaryObject(D->getConstructor()->getASTContext(),
-                                 D->getConstructor()->getParent())) {
-            DumpResources::is_temporary << D << "_" << id << "\n";
-        }
-    }
-
-    return true;
-}
-
 // Dump types for Expr, TypeDecl and ValueDecl, as well as the connection
 // between them
 bool PrintNodesTypesRelationsVisitor::VisitExpr(Expr *D) { return true; }
@@ -96,8 +80,7 @@ bool PrintNodesTypesRelationsVisitor::VisitTypedefNameDecl(TypedefNameDecl *D) {
 bool PrintNodesTypesRelationsVisitor::VisitEnumDecl(EnumDecl *D) {
     FullSourceLoc fullLocation = Context->getFullLoc(D->getBeginLoc());
     if (fullLocation.isValid() && !fullLocation.isInSystemHeader()) {
-        dumpNodeToType(DumpResources::enum_integer_type, D, D->getIntegerType(),
-                       false);
+        dumper.VisitTypeTop(D->getIntegerType());
     }
 
     return true;
@@ -134,66 +117,8 @@ bool PrintNodesTypesRelationsVisitor::VisitLambdaExpr(LambdaExpr *D) {
     return true;
 }
 
-void PrintNodesTypesRelationsVisitor::dumpNodeToType(std::ofstream &stream,
-                                                     void *nodeAddr,
-                                                     const QualType &type,
-                                                     bool checkDuplicates) {
-
-    // Opaque pointer, so that we can obtain the qualifiers
-    void *typeAddr = !type.isNull() ? type.getAsOpaquePtr() : nullptr;
-
-    if (checkDuplicates) {
-        if (seenNodes.count(nodeAddr) == 0) {
-            stream << nodeAddr << "_" << id << "->" << typeAddr << "_" << id
-                   << "\n";
-            seenNodes.insert(nodeAddr);
-        }
-    } else {
-        stream << nodeAddr << "_" << id << "->" << typeAddr << "_" << id
-               << "\n";
-    }
-
-    dumper.VisitTypeTop(type);
-}
-
-void PrintNodesTypesRelationsVisitor::dumpNodeToType(std::ofstream &stream,
-                                                     void *nodeAddr,
-                                                     const Type *typeAddr,
-                                                     bool checkDuplicates) {
-
-    if (!typeAddr) {
-        return;
-    }
-
-    if (checkDuplicates) {
-        if (seenNodes.count(nodeAddr) == 0) {
-            stream << nodeAddr << "_" << id << "->" << typeAddr << "_" << id
-                   << "\n";
-            seenNodes.insert(nodeAddr);
-        }
-    } else {
-        stream << nodeAddr << "_" << id << "->" << typeAddr << "_" << id
-               << "\n";
-    }
-
-    dumper.VisitTypeTop(typeAddr);
-}
-
 MyASTConsumer::MyASTConsumer(ASTContext *C, int id, ClangAstDumper dumper)
-    : id(id), topLevelDeclVisitor(C, id), printRelationsVisitor(C, id, dumper) {
-
-    std::ofstream consumer;
-    consumer.open("consumer_order.txt", std::ofstream::app);
-    consumer << "ASTConsumer built " << id << "\n";
-    consumer.close();
-}
-
-MyASTConsumer::~MyASTConsumer() {
-    std::ofstream consumer;
-    consumer.open("consumer_order.txt", std::ofstream::app);
-    consumer << "ASTConsumer destroyed " << id << "\n";
-    consumer.close();
-}
+    : id(id), topLevelDeclVisitor(C, id), printRelationsVisitor(C, id, dumper) {}
 
 // Override the method that gets called for each parsed top-level declaration.
 bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
@@ -341,11 +266,6 @@ void IncludeDumper::MacroExpands(const Token &MacroNameTok,
 // File instantiations
 std::ofstream DumpResources::includes;
 std::ofstream DumpResources::nodetypes;
-std::ofstream DumpResources::is_temporary;
-std::ofstream DumpResources::omp;
-std::ofstream DumpResources::enum_integer_type;
-std::ofstream DumpResources::consumer_order;
-std::ofstream DumpResources::types_with_templates;
 int DumpResources::runId;
 int DumpResources::systemHeaderThreshold;
 
@@ -373,17 +293,6 @@ void DumpResources::init(int runId, int systemLevelThreshold) {
     DumpResources::runId = runId;
     DumpResources::systemHeaderThreshold = systemLevelThreshold;
 
-    DumpResources::is_temporary.open("is_temporary.txt",
-                                     std::ofstream::out | std::ofstream::trunc);
-    DumpResources::omp.open("omp.txt",
-                            std::ofstream::out | std::ofstream::trunc);
-    DumpResources::enum_integer_type.open(
-        "enum_integer_type.txt", std::ofstream::out | std::ofstream::trunc);
-    DumpResources::consumer_order.open(
-        "consumer_order.txt", std::ofstream::out | std::ofstream::trunc);
-    DumpResources::types_with_templates.open(
-        "types_with_templates.txt", std::ofstream::out | std::ofstream::trunc);
-
     if (HandlerCoverageReport) {
         clava::enableHandlerCoverageReport();
     }
@@ -391,10 +300,4 @@ void DumpResources::init(int runId, int systemLevelThreshold) {
 
 void DumpResources::finish() {
     clava::reportHandlerCoverage();
-
-    DumpResources::is_temporary.close();
-    DumpResources::omp.close();
-    DumpResources::enum_integer_type.close();
-    DumpResources::consumer_order.close();
-    DumpResources::types_with_templates.close();
 }
