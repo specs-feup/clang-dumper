@@ -27,11 +27,6 @@ class DumpResources {
 
     static std::ofstream includes;
     static std::ofstream nodetypes;
-    static std::ofstream is_temporary;
-    static std::ofstream omp;
-    static std::ofstream enum_integer_type;
-    static std::ofstream consumer_order;
-    static std::ofstream types_with_templates;
     static int runId;
     static int systemHeaderThreshold;
 
@@ -102,12 +97,10 @@ class PrintNodesTypesRelationsVisitor
     ASTContext *Context;
     int id;
     ClangAstDumper dumper;
-    std::set<void *> seenNodes;
 
   public:
     explicit PrintNodesTypesRelationsVisitor(ASTContext *Context, int id,
                                              ClangAstDumper dumper);
-    bool VisitCXXConstructExpr(CXXConstructExpr *D);
     bool VisitExpr(Expr *D);
     bool VisitLambdaExpr(LambdaExpr *D);
     bool VisitTypeDecl(TypeDecl *D);
@@ -116,20 +109,6 @@ class PrintNodesTypesRelationsVisitor
     bool VisitValueDecl(ValueDecl *D);
     bool VisitDecl(Decl *D);
     bool VisitStmt(Stmt *D);
-
-    /**
-     * Dumps the information regaring a node and the corresponding type.
-     *
-     * @param nodeAddr
-     * @param typeAddr
-     * @param id
-     * @param seenTypes
-     */
-    void dumpNodeToType(std::ofstream &stream, void *nodeAddr,
-                        const Type *typeAddr, bool checkDuplicates = true);
-
-    void dumpNodeToType(std::ofstream &stream, void *nodeAddr,
-                        const QualType &type, bool checkDuplicates = true);
 };
 
 // Implementation of the ASTConsumer interface for reading an AST produced by
@@ -143,7 +122,6 @@ class MyASTConsumer : public ASTConsumer {
 
   public:
     MyASTConsumer(ASTContext *C, int id, ClangAstDumper dumper);
-    ~MyASTConsumer();
 
     bool HandleTopLevelDecl(DeclGroupRef DR) override;
 
