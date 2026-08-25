@@ -6,7 +6,7 @@
 
 #include "clang/AST/AST.h"
 
-TypeMarker::TypeMarker(int id, std::set<const Type *> &seenTypes)
+TypeMarker::TypeMarker(int id, llvm::SmallPtrSet<const Type *, 16> &seenTypes)
     : id(id), seenTypes(seenTypes){};
 
 void TypeMarker::markType(const Type *T) { seenTypes.insert(T); }

@@ -11,7 +11,7 @@
 #include "clang/AST/StmtVisitor.h"
 #include "clang/AST/TypeVisitor.h"
 
-#include <set>
+#include "llvm/ADT/SmallPtrSet.h"
 #include <string>
 #include <vector>
 
@@ -30,12 +30,13 @@ private:
   int systemHeaderThreshold = 0; // Overridden by the constructor.
   int currentSystemHeaderLevel = 0;
 
-  std::set<const void *> seenTypes;
-  std::set<const Stmt *> seenStmts;
-  std::set<const Decl *> seenDecls;
-  std::set<const Attr *> seenAttrs;
+  // Seen-node tracking: membership tests/insertions only, never iterated.
+  llvm::SmallPtrSet<const void *, 32> seenTypes;
+  llvm::SmallPtrSet<const Stmt *, 32> seenStmts;
+  llvm::SmallPtrSet<const Decl *, 32> seenDecls;
+  llvm::SmallPtrSet<const Attr *, 16> seenAttrs;
 
-  std::set<const CXXCtorInitializer *> seenInits;
+  llvm::SmallPtrSet<const CXXCtorInitializer *, 16> seenInits;
 
   clava::ClavaDataDumper dataDumper;
 

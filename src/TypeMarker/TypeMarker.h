@@ -7,7 +7,7 @@
 
 #include "clang/AST/TypeVisitor.h"
 
-#include <set>
+#include "llvm/ADT/SmallPtrSet.h"
 
 using namespace clang;
 
@@ -15,11 +15,12 @@ class TypeMarker : public clang::TypeVisitor<TypeMarker> {
 
   private:
     int id;
-    std::set<const Type *> &seenTypes;
+    // Seen-type tracking: membership tests/insertions only, never iterated.
+    llvm::SmallPtrSet<const Type *, 16> &seenTypes;
     void markType(const Type *T);
 
   public:
-    explicit TypeMarker(int id, std::set<const Type *> &seenTypes);
+    explicit TypeMarker(int id, llvm::SmallPtrSet<const Type *, 16> &seenTypes);
     void VisitType(const Type *T);
     void VisitTypedefType(const TypedefType *T);
 };
