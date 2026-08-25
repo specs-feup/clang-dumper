@@ -436,8 +436,8 @@ void clava::dump(const TemplateName &templateName, int id,
         break;
     default:
         throw std::invalid_argument(
-            "ClangNodes::dump(TemplateName&): TemplateName case in kind "
-            "'Template' not implemented, '" +
+            "ClangNodes::dump(TemplateName&): TemplateName case not "
+            "implemented, '" +
             clava::TEMPLATE_NAME_KIND[templateName.getKind()] + "'");
     }
 }

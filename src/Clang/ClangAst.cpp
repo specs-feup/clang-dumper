@@ -23,11 +23,27 @@
 #include <clang/Lex/Lexer.h>
 #include <clang/Lex/Preprocessor.h>
 
+#include <cstdlib>
+#include <exception>
 #include <fstream>
 
 using namespace clang;
 
 static llvm::cl::OptionCategory ToolingSampleCategory("Tooling Sample");
+
+namespace {
+
+[[noreturn]] void dumpFatalError(const Decl *D, const char *message) {
+    llvm::errs() << "ERROR " << clava::getClassName(D) << " " << message
+                 << "\n";
+    llvm::errs() << "Hint: rerun with -handler-coverage-report to list "
+                    "classes using fallback dump handling\n";
+    llvm::errs().flush();
+    llvm::outs().flush();
+    exit(1);
+}
+
+} // namespace
 
 static constexpr const char *const PREFIX = "COUNTER";
 
@@ -124,11 +140,23 @@ MyASTConsumer::MyASTConsumer(ASTContext *C, int id, ClangAstDumper dumper)
 bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
 
     for (auto *D : DR) {
-        topLevelDeclVisitor.TraverseDecl(D);
+        try {
+            topLevelDeclVisitor.TraverseDecl(D);
+        } catch (const std::exception &e) {
+            dumpFatalError(D, e.what());
+        } catch (...) {
+            dumpFatalError(D, "unknown error");
+        }
     }
 
     for (auto *D : DR) {
-        printRelationsVisitor.TraverseDecl(D);
+        try {
+            printRelationsVisitor.TraverseDecl(D);
+        } catch (const std::exception &e) {
+            dumpFatalError(D, e.what());
+        } catch (...) {
+            dumpFatalError(D, "unknown error");
+        }
     }
 
     return true;
