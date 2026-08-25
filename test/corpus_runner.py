@@ -86,6 +86,7 @@ PAIRED_FLAGS = {
     "-internal-isystem", "-internal-externc-isystem", "-resource-dir",
     "-aux-triple", "-main-file-name", "-target-feature", "-target-cpu",
     "-target-abi", "-mlink-builtin-bitcode", "-fdebug-default-version",
+    "-I", "-F",
 }
 TARGET_FLAG_ALLOWLIST_PREFIXES = (
     "-mcpu=", "-march=", "-mfpu=", "-mfloat-abi=", "-mvsx", "-maltivec",
@@ -98,9 +99,9 @@ TARGET_FLAG_ALLOWLIST_PREFIXES = (
 
 # Flags that only add declarations/search paths and are safe to merge in from
 # later %clang_cc1 RUN lines of the same test file.
-ADDITIVE_PREFIXES = ("-D", "-U", "-I", "-F")
+ADDITIVE_PREFIXES = ("-D", "-U")
 ADDITIVE_PAIRED = {"-include", "-imacros", "-idirafter", "-iquote",
-                   "-isystem"}
+                   "-isystem", "-I", "-F"}
 
 OUT_OF_SCOPE_PREFIXES = ("ObjC", "HLSL", "SYCL")
 
@@ -146,17 +147,24 @@ def extract_flags(text: str):
                     flags += ["-x", tokens[i]]
                     i += 1
                 continue
-            if tok in PAIRED_FLAGS:
-                if i < len(tokens):
-                    flags += [tok, tokens[i]]
-                    i += 1
-                continue
-            if tok.startswith(FLAG_ALLOWLIST_PREFIXES) or tok in FLAG_ALLOWLIST_EXACT:
-                flags.append(tok)
-                continue
-            if tok.startswith(TARGET_FLAG_ALLOWLIST_PREFIXES):
-                flags.append(tok)
-                continue
+            # Normalize `=`-joined target/triple flags so driver-mode
+            # translation applies (-std= is valid in both dialects as-is)
+            for p in ("-triple", "-target"):
+                if tok.startswith(p + "="):
+                    flags += [p, tok[len(p) + 1:]]
+                    break
+            else:
+                if tok in PAIRED_FLAGS:
+                    if i < len(tokens):
+                        flags += [tok, tokens[i]]
+                        i += 1
+                    continue
+                if tok.startswith(FLAG_ALLOWLIST_PREFIXES) or tok in FLAG_ALLOWLIST_EXACT:
+                    flags.append(tok)
+                    continue
+                if tok.startswith(TARGET_FLAG_ALLOWLIST_PREFIXES):
+                    flags.append(tok)
+                    continue
         return flags, lang
 
     flags, lang = to_flags(tokenize_cc1(base_cmd))
@@ -294,11 +302,32 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
         return "HARNESS_NO_JOB", {}, eff_std, dropped
     if "cannot find CUDA installation" in stderr or "--cuda-path" in stderr:
         return "ENV_SKIP_CUDA", {}, eff_std, dropped
+    if "amdgpu-arch" in stderr or "--rocm-path" in stderr \
+            or "ROCm device library" in stderr:
+        return "ENV_SKIP_GPU", {}, eff_std, dropped
     if proc.returncode == 0:
         result = "CLEAN"
     elif proc.returncode < 0:
         result = "CRASH"
     else:
+        # The corpus is written for %clang_cc1, whose defaults differ from
+        # the driver-mode invocation the dumper uses:
+        #  - the driver enables -fexceptions for C++, turning some warnings
+        #    into errors
+        #  - the driver auto-includes opencl-c.h for OpenCL sources (tests
+        #    that declare their own built-in types then conflict)
+        #  - triples whose backend archive the build filters out (non-host
+        #    architectures) cannot construct a TargetInfo
+        if "when exceptions are enabled" in stderr \
+                or "missing exception specification" in stderr \
+                or "unhandled_exception()" in stderr:
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped
+        if source.suffix.lower() == ".cl" and (
+                "opencl-c-base.h" in stderr or "redefinition" in stderr):
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped
+        if "unknown target triple 'unknown-" in stderr \
+                or "MS-style inline assembly is not available" in stderr:
+            return "HARNESS_TARGET_BACKEND", {}, eff_std, dropped
         result = "DUMP_FAIL"
 
     coverage = {}
