@@ -92,6 +92,7 @@ void clava::ClavaDataDumper::dump(const Stmt *S) {
     auto it = STMT_DATA_DUMPERS.find(classname);
     const char *dataName =
         it != STMT_DATA_DUMPERS.end() ? it->second.dataName : "Stmt";
+    clava::recordHandlerEncounter("stmt data", classname);
 
     // Dump header
     llvm::errs() << "<" << dataName << "Data>\n";
@@ -112,6 +113,7 @@ void clava::ClavaDataDumper::dump(const Expr *E) {
     auto it = EXPR_DATA_DUMPERS.find(classname);
     const char *dataName =
         it != EXPR_DATA_DUMPERS.end() ? it->second.dataName : "Expr";
+    clava::recordHandlerEncounter("expr data", classname);
 
     // Dump header
     llvm::errs() << "<" << dataName << "Data>\n";

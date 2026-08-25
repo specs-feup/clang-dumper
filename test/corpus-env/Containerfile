@@ -1,0 +1,43 @@
+# Hermetic environment for corpus_runner.py runs.
+#
+# Build:
+#   podman build -t clang-dumper-corpus -f test/corpus-env/Containerfile test/corpus-env
+#
+# Run (mount the repo and the sparse-checked-out corpus):
+#   podman run --rm -it \
+#     -v "$PWD:/repo" -v /tmp/opencode/llvm-corpus:/corpus \
+#     clang-dumper-corpus \
+#     python3 /repo/test/corpus_runner.py --tool /repo/build/tool \
+#       --corpus /corpus/clang/test --out /tmp/corpus-results
+#
+# The image pins exactly the LLVM version from llvm-version.env and ships the
+# OpenCL + OpenMP device headers, so OpenCL/OpenMP corpus files stop being
+# host-environment-dependent. CUDA remains unavailable here; those files are
+# bucketed as ENV_SKIP_CUDA.
+
+FROM ubuntu:24.04
+
+ARG LLVM_VERSION=18
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        wget gnupg lsb-release ca-certificates \
+    && wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor \
+        > /usr/share/keyrings/llvm-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/llvm-archive-keyring.gpg] http://apt.llvm.org/noble/ llvm-toolchain-$(lsb_release -cs)-${LLVM_VERSION} main" \
+        > /etc/apt/sources.list.d/llvm.list \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        clang-${LLVM_VERSION} \
+        libclang-${LLVM_VERSION}-dev \
+        llvm-${LLVM_VERSION}-dev \
+        libomp-${LLVM_VERSION}-dev \
+        libpolly-${LLVM_VERSION}-dev \
+        zlib1g-dev libzstd-dev libedit-dev libxml2-dev \
+        python3 cmake ninja-build git \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION} \
+    LLVM_VERSION=${LLVM_VERSION}
+
+WORKDIR /repo
+CMD ["/bin/bash"]

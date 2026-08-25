@@ -87,6 +87,12 @@ static llvm::cl::opt<bool> HandlerCoverageReport(
     llvm::cl::desc("Report class names that used fallback dump handling"),
     llvm::cl::init(false));
 
+static llvm::cl::opt<bool> HandlerCoverageAll(
+    "handler-coverage-all",
+    llvm::cl::desc("Report every class name encountered by each dispatch "
+                   "family, not only fallbacks"),
+    llvm::cl::init(false));
+
 /* DumpAstVisitor implementation */
 
 bool DumpAstVisitor::TraverseDecl(Decl *D) {
@@ -358,6 +364,9 @@ void DumpResources::init(int runId, int systemLevelThreshold) {
 
     if (HandlerCoverageReport) {
         clava::enableHandlerCoverageReport();
+    }
+    if (HandlerCoverageAll) {
+        clava::enableHandlerEncounterReport();
     }
 }
 

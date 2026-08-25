@@ -30,6 +30,7 @@ void clava::ClavaDataDumper::dump(const Attr *A) {
     // "<AttributeData>", not "<AttrData>".
     const char *dataName =
         it != ATTR_DATA_DUMPERS.end() ? it->second.dataName : "Attribute";
+    clava::recordHandlerEncounter("attr data", classname);
 
     // Dump header
     llvm::errs() << "<" << dataName << "Data>\n";
