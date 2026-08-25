@@ -334,7 +334,10 @@ void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
     VisitTemplateName(templateArg.getAsTemplateOrTemplatePattern());
     break;
   case TemplateArgument::ArgKind::StructuralValue:
-    VisitTypeTop(templateArg.getStructuralValueType().getTypePtr());
+    // Pass the QualType as-is: stripping qualifiers via getTypePtr() would
+    // visit the unqualified type while the serializer emits the qualified
+    // type's id, referencing a type never emitted.
+    VisitTypeTop(templateArg.getStructuralValueType());
     break;
   default:
     throw std::invalid_argument(
