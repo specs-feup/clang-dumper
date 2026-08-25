@@ -32,7 +32,13 @@ class EnumExtractor:
         r'enum\s+(?:class\s+)?(\w+)\s*(?::[^{]+)?\s*\{',
         re.MULTILINE
     )
-    
+
+    # Maximum parenthesis nesting depth tolerated in the attribute/specifier
+    # run between a class/struct keyword and its name (e.g.
+    # `class __attribute__((visibility("default"))) W {`). Real-world
+    # attributes nest far shallower than this.
+    MAX_ATTRIBUTE_PAREN_DEPTH = 4
+
     @classmethod
     def extract(
         cls,
@@ -106,37 +112,92 @@ class EnumExtractor:
         class_name: str,
     ) -> re.Match[str]:
         """
-        Find the first enum matching enum_pattern declared inside the body of
-        the named class, so extraction does not depend on global ordering.
+        Find the first enum matching enum_pattern declared directly inside the
+        body of the named class, so extraction does not depend on global
+        ordering. Enums declared inside nested classes/structs/enums are not
+        considered.
         """
         class_pattern = re.compile(
-            rf'\b(?:class|struct)\s+{re.escape(class_name)}\b[^;{{}}]*\{{',
+            rf'\b(?:class|struct)\s+(?:{cls._attribute_run()})?'
+            rf'{re.escape(class_name)}\b[^;{{}}]*\{{',
             re.MULTILINE
         )
+
+        unbalanced_body = False
 
         for class_match in class_pattern.finditer(content):
             body_start = class_match.end()
             body_end = cls._find_matching_brace(content, body_start - 1)
             if body_end is None:
+                unbalanced_body = True
                 continue
 
-            enum_match = enum_pattern.search(content, body_start, body_end)
-            if enum_match:
+            # Scan only this class body: skip over any nested {...} block
+            # (nested class/struct/enum) so enums declared there never match.
+            pos = body_start
+            while pos < body_end:
+                brace_pos = cls._find_outside_literal(content, '{', pos, body_end)
+                enum_match = enum_pattern.search(content, pos, body_end)
+
+                if enum_match is None:
+                    break
+
+                if brace_pos != -1 and brace_pos < enum_match.start():
+                    nested_end = cls._find_matching_brace(content, brace_pos)
+                    if nested_end is None:
+                        unbalanced_body = True
+                        break
+                    pos = nested_end + 1
+                    continue
+
                 return enum_match
 
+        if unbalanced_body:
+            raise ValueError(
+                f"Enum '{enum_name}' not found inside class '{class_name}': "
+                f"class body has unbalanced braces"
+            )
         raise ValueError(f"Enum '{enum_name}' not found inside class '{class_name}'")
+
+    @classmethod
+    def _attribute_run(cls) -> str:
+        """
+        Regex fragment matching a bounded run of attribute/specifier tokens
+        that may appear between a class/struct keyword and its name.
+
+        The run may contain parenthesized groups (e.g. GNU attributes) with
+        balanced parentheses up to MAX_ATTRIBUTE_PAREN_DEPTH, but no braces or
+        semicolons, so forward declarations can never match. The fragment is
+        written so each input character has exactly one way to be consumed,
+        avoiding catastrophic backtracking.
+        """
+        plain = r'[^;{}()]*'
+
+        def group(depth: int) -> str:
+            if depth == 0:
+                return rf'\({plain}\)'
+            return rf'\({plain}(?:{group(depth - 1)}{plain})*\)'
+
+        balanced = group(cls.MAX_ATTRIBUTE_PAREN_DEPTH)
+        return f'{plain}(?:{balanced}{plain})*'
 
     @classmethod
     def _find_matching_brace(cls, content: str, open_brace_pos: int) -> Optional[int]:
         """
         Return the position of the '}' matching the '{' at open_brace_pos,
-        handling nested braces (e.g., in initializers), or None if unbalanced.
+        handling nested braces (e.g., in initializers) and skipping string and
+        character literals so braces inside them do not affect matching,
+        or None if unbalanced.
         """
+        length = len(content)
         brace_count = 1
         pos = open_brace_pos + 1
 
-        while pos < len(content):
+        while pos < length:
             char = content[pos]
+            if char == '"' or char == "'":
+                pos = cls._skip_literal(content, pos)
+                continue
             if char == '{':
                 brace_count += 1
             elif char == '}':
@@ -146,6 +207,47 @@ class EnumExtractor:
             pos += 1
 
         return None
+
+    @staticmethod
+    def _find_outside_literal(content: str, char: str, start: int, end: int) -> int:
+        """
+        Return the index of the first occurrence of char in content[start:end]
+        that is not inside a string or character literal, or -1 if none.
+        """
+        length = len(content)
+        pos = start
+
+        while pos < end and pos < length:
+            current = content[pos]
+            if current == '"' or current == "'":
+                pos = EnumExtractor._skip_literal(content, pos)
+                continue
+            if current == char:
+                return pos
+            pos += 1
+
+        return -1
+
+    @staticmethod
+    def _skip_literal(content: str, start: int) -> int:
+        """
+        Return the index just past the string or character literal that opens
+        with the quote at start, honoring backslash escapes.
+        """
+        quote = content[start]
+        length = len(content)
+        pos = start + 1
+
+        while pos < length:
+            char = content[pos]
+            if char == '\\':
+                pos += 2
+            elif char == quote:
+                return pos + 1
+            else:
+                pos += 1
+
+        return pos
     
     @classmethod
     def _parse_enum_body(cls, body: str) -> list[str]:

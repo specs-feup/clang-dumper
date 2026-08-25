@@ -24,9 +24,79 @@ class AnchoredExtractionTest(unittest.TestCase):
         values = EnumExtractor.extract(self.HEADER, "Kind", class_name="Wrapper")
         self.assertEqual(values, ["A", "B", "C"])
 
-    def test_prefers_first_enum_in_class_body(self) -> None:
+    def test_global_occurrence_selects_third_definition(self) -> None:
         values = EnumExtractor.extract(self.HEADER, "Kind", occurrence=3)
         self.assertEqual(values, ["WRONG"])
+
+
+class NestedScopeTest(unittest.TestCase):
+    def test_skips_nested_class_declared_before_enum(self) -> None:
+        header = """
+        class Wrapper {
+            struct Inner { enum Kind { X, Y }; };
+            enum Kind { A, B };
+        };
+        """
+        values = EnumExtractor.extract(header, "Kind", class_name="Wrapper")
+        self.assertEqual(values, ["A", "B"])
+
+
+class LiteralBracesTest(unittest.TestCase):
+    def test_ignores_braces_inside_string_and_char_literals(self) -> None:
+        header = '''
+        class Holder {
+            const char* open = "{";
+            char close = '}';
+            char escaped = '\\"';
+            enum Mode { ON, OFF };
+        };
+        '''
+        values = EnumExtractor.extract(header, "Mode", class_name="Holder")
+        self.assertEqual(values, ["ON", "OFF"])
+
+
+class AnchorToleranceTest(unittest.TestCase):
+    def test_attributed_class_anchor(self) -> None:
+        header = (
+            'class __attribute__((visibility("default"))) W {\n'
+            "public:\n"
+            "    enum Kind { Q };\n"
+            "};\n"
+        )
+        values = EnumExtractor.extract(header, "Kind", class_name="W")
+        self.assertEqual(values, ["Q"])
+
+    def test_attributed_forward_declaration_does_not_match(self) -> None:
+        header = 'class __attribute__((visibility("default"))) W;\n'
+        with self.assertRaisesRegex(ValueError, "'Kind'.*'W'"):
+            EnumExtractor.extract(header, "Kind", class_name="W")
+
+    def test_inheritance_clause_anchor(self) -> None:
+        header = """
+        class Base { };
+        class Derived : public Base {
+            enum Kind { P, Q };
+        };
+        """
+        values = EnumExtractor.extract(header, "Kind", class_name="Derived")
+        self.assertEqual(values, ["P", "Q"])
+
+
+class ExplicitBaseTypeTest(unittest.TestCase):
+    def test_enum_with_explicit_base_type(self) -> None:
+        values = EnumExtractor.extract(
+            "enum Kind : unsigned char { LOW, HIGH };", "Kind"
+        )
+        self.assertEqual(values, ["LOW", "HIGH"])
+
+    def test_scoped_enum_with_explicit_base_type_in_class(self) -> None:
+        header = """
+        class Flags {
+            enum class Kind : unsigned char { R, W, X };
+        };
+        """
+        values = EnumExtractor.extract(header, "Kind", class_name="Flags")
+        self.assertEqual(values, ["R", "W", "X"])
 
 
 class PositionalFallbackTest(unittest.TestCase):
@@ -54,6 +124,11 @@ class LoudFailureTest(unittest.TestCase):
     def test_enum_outside_class_raises(self) -> None:
         with self.assertRaises(ValueError):
             EnumExtractor.extract("enum Kind { A };", "Kind", class_name="Wrapper")
+
+    def test_unbalanced_class_body_raises_specific_reason(self) -> None:
+        header = "class Wrapper { enum Kind { A };"
+        with self.assertRaisesRegex(ValueError, "unbalanced braces"):
+            EnumExtractor.extract(header, "Kind", class_name="Wrapper")
 
     def test_empty_enum_raises(self) -> None:
         with self.assertRaisesRegex(ValueError, "zero values"):
