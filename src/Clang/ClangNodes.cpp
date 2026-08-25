@@ -6,6 +6,7 @@
 #include "../ClangEnums/ClangEnums.h"
 
 #include "clang/AST/Attr.h"
+#include "clang/Basic/OperatorKinds.h"
 #include "clang/Basic/SourceManager.h"
 #include "clang/Lex/Lexer.h"
 
@@ -469,6 +470,24 @@ void clava::dump(const TemplateName &templateName, int id,
         clava::dump(
             templateName.getAsSubstTemplateTemplateParm()->getReplacement(), id,
             Context);
+        break;
+    case TemplateName::NameKind::UsingTemplate:
+        clava::dump(clava::getId(templateName.getAsUsingShadowDecl(), id));
+        break;
+    case TemplateName::NameKind::DependentTemplate:
+        // A dependent template name refers to no declaration; serialize the
+        // qualifier and the identifier spelling (or overloaded operator).
+        clava::dump(templateName.getAsDependentTemplateName()->getQualifier(),
+                    Context);
+        if (templateName.getAsDependentTemplateName()->isIdentifier()) {
+            clava::dump(templateName.getAsDependentTemplateName()
+                            ->getIdentifier()
+                            ->getName());
+        } else {
+            clava::dump(
+                clang::getOperatorSpelling(
+                    templateName.getAsDependentTemplateName()->getOperator()));
+        }
         break;
     default:
         throw std::invalid_argument(

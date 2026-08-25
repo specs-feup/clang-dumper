@@ -370,6 +370,13 @@ void ClangAstDumper::VisitTemplateName(const TemplateName &templateName) {
     VisitTemplateName(
         templateName.getAsSubstTemplateTemplateParm()->getReplacement());
     break;
+  case TemplateName::NameKind::UsingTemplate:
+    VisitDeclTop(templateName.getAsUsingShadowDecl());
+    break;
+  case TemplateName::NameKind::DependentTemplate:
+    // A dependent template name (e.g. `T::template apply`) refers to no
+    // declaration; there is nothing to visit.
+    break;
   default:
     throw std::invalid_argument(
         "ClangAstDumper::VisitTemplateName(): TemplateName case not "
