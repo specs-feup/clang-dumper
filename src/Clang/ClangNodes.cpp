@@ -10,6 +10,7 @@
 #include "clang/Lex/Lexer.h"
 
 #include <bitset>
+#include <cstdio>
 #include <iostream>
 
 using namespace clang;
@@ -157,10 +158,14 @@ void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
 }
 
 const std::string clava::getId(const void *addr, int id) {
-    std::stringstream ss;
-    ss << addr << "_" << id;
+    if (addr == nullptr) {
+        return "0_" + std::to_string(id);
+    }
 
-    return ss.str();
+    char buffer[64];
+    std::snprintf(buffer, sizeof(buffer), "%p_%d", addr, id);
+
+    return buffer;
 }
 
 const std::string clava::getId(const Decl *addr, int id) {
