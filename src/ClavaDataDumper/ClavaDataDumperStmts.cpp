@@ -563,6 +563,9 @@ void clava::ClavaDataDumper::DumpOffsetOfExprData(const OffsetOfExpr *E) {
         case OffsetOfNode::Kind::Identifier:
             clava::dump(node.getFieldName()->getName().str());
             break;
+        case OffsetOfNode::Kind::Base:
+            clava::dump(clava::getId(node.getBase()->getType(), id));
+            break;
         default:
             clava::throwNotImplemented(
                 "ClangDataDumper::DumpOffsetOfExprData()",
