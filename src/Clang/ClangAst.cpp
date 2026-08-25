@@ -23,9 +23,11 @@
 #include <clang/Lex/Lexer.h>
 #include <clang/Lex/Preprocessor.h>
 
+#include <cctype>
 #include <cstdlib>
 #include <exception>
 #include <fstream>
+#include <string>
 
 using namespace clang;
 
@@ -33,12 +35,45 @@ static llvm::cl::OptionCategory ToolingSampleCategory("Tooling Sample");
 
 namespace {
 
+constexpr size_t MAX_FATAL_ERROR_MESSAGE_LENGTH = 200;
+
+std::string sanitizeErrorMessage(const char *message) {
+    std::string sanitized;
+
+    if (message == nullptr) {
+        return sanitized;
+    }
+
+    bool lastWasSpace = true;
+    for (const char *cursor = message; *cursor != '\0'; ++cursor) {
+        if (sanitized.size() >= MAX_FATAL_ERROR_MESSAGE_LENGTH) {
+            break;
+        }
+
+        if (std::isspace(static_cast<unsigned char>(*cursor))) {
+            if (!lastWasSpace) {
+                sanitized += ' ';
+                lastWasSpace = true;
+            }
+        } else {
+            sanitized += *cursor;
+            lastWasSpace = false;
+        }
+    }
+
+    while (!sanitized.empty() && sanitized.back() == ' ') {
+        sanitized.pop_back();
+    }
+
+    return sanitized;
+}
+
 [[noreturn]] void dumpFatalError(const Decl *D, const char *message) {
-    llvm::errs() << "ERROR " << clava::getClassName(D) << " " << message
-                 << "\n";
-    llvm::errs() << "Hint: rerun with -handler-coverage-report to list "
-                    "classes using fallback dump handling\n";
+    llvm::errs() << "ERROR "
+                 << (D == nullptr ? "<unknown>" : clava::getClassName(D)) << " "
+                 << sanitizeErrorMessage(message) << "\n";
     llvm::errs().flush();
+    clava::reportHandlerCoverage();
     llvm::outs().flush();
     exit(1);
 }

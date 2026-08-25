@@ -11,6 +11,7 @@
 
 #include <bitset>
 #include <iostream>
+#include <string>
 
 using namespace clang;
 
@@ -560,11 +561,26 @@ void clava::throwNotImplemented(const std::string &source,
                                 const std::string &caseNotImplemented,
                                 ASTContext *Context, SourceLocation startLoc,
                                 SourceLocation endLoc) {
-    llvm::errs() << "Dumping source range of code that caused exception:\n";
-    clava::dumpSourceRange(Context, startLoc, endLoc);
+    const SourceManager &SM = Context->getSourceManager();
+
+    std::string locationInfo;
+    SourceLocation startSpellingLoc = SM.getSpellingLoc(startLoc);
+    if (startSpellingLoc.isValid()) {
+        locationInfo = " at " + getLocationFilename(SM, startSpellingLoc).str() +
+                       ":" + std::to_string(SM.getSpellingLineNumber(startSpellingLoc)) +
+                       ":" + std::to_string(SM.getSpellingColumnNumber(startSpellingLoc));
+    } else {
+        locationInfo = " at <invalid>";
+        SourceLocation endSpellingLoc = SM.getSpellingLoc(endLoc);
+        if (endSpellingLoc.isValid()) {
+            locationInfo = " at " + getLocationFilename(SM, endSpellingLoc).str() +
+                           ":" + std::to_string(SM.getSpellingLineNumber(endSpellingLoc)) +
+                           ":" + std::to_string(SM.getSpellingColumnNumber(endSpellingLoc));
+        }
+    }
+
     throw std::invalid_argument(source + ": Case not implemented, '" +
-                                caseNotImplemented +
-                                "', source range has been dumped");
+                                caseNotImplemented + "'" + locationInfo);
 }
 
 void clava::throwNotImplemented(const std::string &source,
