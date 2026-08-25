@@ -587,7 +587,12 @@ void clava::dump(const clang::DesignatedInitExpr::Designator *designator) {
     if (designator->isFieldDesignator()) {
         // Dump kind
         clava::dump(clava::DESIGNATOR_KIND[0]);
-        clava::dump(designator->getFieldName()->getName());
+        if (const IdentifierInfo *fieldName = designator->getFieldName()) {
+            clava::dump(fieldName->getName());
+        } else {
+            // Designators for anonymous struct/union members have no name
+            clava::dump("");
+        }
     } else if (designator->isArrayDesignator()) {
         // Dump kind
         clava::dump(clava::DESIGNATOR_KIND[1]);
