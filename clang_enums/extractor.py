@@ -34,19 +34,28 @@ class EnumExtractor:
     )
     
     @classmethod
-    def extract(cls, content: str, enum_name: str, occurrence: int = 1) -> list[str]:
+    def extract(
+        cls,
+        content: str,
+        enum_name: str,
+        occurrence: int = 1,
+        class_name: Optional[str] = None,
+    ) -> list[str]:
         """
         Extract enum values from preprocessed C++ content.
-        
+
         Args:
             content: The preprocessed C++ source code.
             enum_name: The name of the enum to extract.
-            occurrence: Which occurrence to extract (1-based). Useful when
-                       the same enum name appears multiple times in different scopes.
-        
+            occurrence: Which occurrence to extract (1-based). Only used when
+                       class_name is None. Useful when the same enum name appears
+                       multiple times in different scopes.
+            class_name: If set, anchor the search inside the body of this class
+                       instead of relying on a global occurrence position.
+
         Returns:
             List of enum value names.
-            
+
         Raises:
             ValueError: If the enum is not found or cannot be parsed.
         """
@@ -56,43 +65,87 @@ class EnumExtractor:
             rf'enum\s+(?:class\s+)?{re.escape(enum_name)}\s*(?::[^{{]+)?\s*\{{',
             re.MULTILINE
         )
-        
-        matches = list(pattern.finditer(content))
-        
-        if not matches:
-            raise ValueError(f"Enum '{enum_name}' not found in content")
-        
-        if occurrence > len(matches):
-            raise ValueError(
-                f"Requested occurrence {occurrence} of enum '{enum_name}', "
-                f"but only {len(matches)} found"
-            )
-        
-        # Get the specific occurrence (1-based index)
-        match = matches[occurrence - 1]
-        start_pos = match.end()  # Position after the '{'
-        
-        # Find the matching closing brace
-        # We need to handle nested braces (e.g., in initializers)
+
+        if class_name is not None:
+            match = cls._find_enum_in_class(content, pattern, enum_name, class_name)
+        else:
+            matches = list(pattern.finditer(content))
+
+            if not matches:
+                raise ValueError(f"Enum '{enum_name}' not found in content")
+
+            if occurrence > len(matches):
+                raise ValueError(
+                    f"Requested occurrence {occurrence} of enum '{enum_name}', "
+                    f"but only {len(matches)} found"
+                )
+
+            # Get the specific occurrence (1-based index)
+            match = matches[occurrence - 1]
+
+        body_start = match.end()  # Position after the '{'
+        body_end = cls._find_matching_brace(content, body_start - 1)
+
+        if body_end is None:
+            raise ValueError(f"Could not find closing brace for enum '{enum_name}'")
+
+        # Parse enum values
+        values = cls._parse_enum_body(content[body_start:body_end])
+
+        if not values:
+            raise ValueError(f"Enum '{enum_name}' extracted zero values")
+
+        return values
+
+    @classmethod
+    def _find_enum_in_class(
+        cls,
+        content: str,
+        enum_pattern: re.Pattern[str],
+        enum_name: str,
+        class_name: str,
+    ) -> re.Match[str]:
+        """
+        Find the first enum matching enum_pattern declared inside the body of
+        the named class, so extraction does not depend on global ordering.
+        """
+        class_pattern = re.compile(
+            rf'\b(?:class|struct)\s+{re.escape(class_name)}\b[^;{{}}]*\{{',
+            re.MULTILINE
+        )
+
+        for class_match in class_pattern.finditer(content):
+            body_start = class_match.end()
+            body_end = cls._find_matching_brace(content, body_start - 1)
+            if body_end is None:
+                continue
+
+            enum_match = enum_pattern.search(content, body_start, body_end)
+            if enum_match:
+                return enum_match
+
+        raise ValueError(f"Enum '{enum_name}' not found inside class '{class_name}'")
+
+    @classmethod
+    def _find_matching_brace(cls, content: str, open_brace_pos: int) -> Optional[int]:
+        """
+        Return the position of the '}' matching the '{' at open_brace_pos,
+        handling nested braces (e.g., in initializers), or None if unbalanced.
+        """
         brace_count = 1
-        pos = start_pos
-        
-        while pos < len(content) and brace_count > 0:
+        pos = open_brace_pos + 1
+
+        while pos < len(content):
             char = content[pos]
             if char == '{':
                 brace_count += 1
             elif char == '}':
                 brace_count -= 1
+                if brace_count == 0:
+                    return pos
             pos += 1
-        
-        if brace_count != 0:
-            raise ValueError(f"Could not find closing brace for enum '{enum_name}'")
-        
-        # Extract the content between braces
-        enum_body = content[start_pos:pos - 1]
-        
-        # Parse enum values
-        return cls._parse_enum_body(enum_body)
+
+        return None
     
     @classmethod
     def _parse_enum_body(cls, body: str) -> list[str]:
