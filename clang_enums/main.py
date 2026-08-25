@@ -78,13 +78,16 @@ def process_header(
                 content,
                 enum_config.name,
                 enum_config.occurrence,
+                enum_config.class_name,
             )
             extracted_enums.append((enum_config, values))
             logger.debug(
                 f"  Extracted {len(values)} values from '{enum_config.name}'"
             )
         except ValueError as e:
-            errors.append(f"Error extracting '{enum_config.name}': {e}")
+            errors.append(
+                f"Error extracting '{enum_config.name}' from {header_config.path}: {e}"
+            )
     
     return ProcessedHeader(header_name, extracted_enums, errors)
 

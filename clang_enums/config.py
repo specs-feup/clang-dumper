@@ -43,7 +43,7 @@ HEADERS: list[HeaderConfig] = [
                 name="Kind",
                 cpp_var_name="BUILTIN_KIND",
                 exclude={"LastKind"},
-                occurrence=3,
+                class_name="BuiltinType",
             ),
             EnumConfig(
                 name="RefQualifierKind",
@@ -299,12 +299,10 @@ HEADERS: list[HeaderConfig] = [
                 cpp_var_name="OFFSET_OF_NODE_KIND",
                 mapper=to_upper(),
                 class_name="OffsetOfNode",
-                occurrence=10,
             ),
             EnumConfig(
                 name="PredefinedIdentKind",
                 cpp_var_name="PREDEFINED_ID_TYPE",
-                class_name="PredefinedExpr",
             ),
             EnumConfig(
                 name="CharacterLiteralKind",
