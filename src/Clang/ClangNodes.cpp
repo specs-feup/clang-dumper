@@ -288,22 +288,14 @@ void clava::dump(const Qualifiers &qualifiers, ASTContext *Context) {
     }
 }
 
+namespace {
+
 /**
- * Taken from:
- * https://stackoverflow.com/questions/11083066/getting-the-source-behind-clangs-ast
- * @param Context
- * @param start
- * @param end
- * @return
+ * Builds the source text corresponding to the given source range, without
+ * emitting anything to llvm::errs().
  */
-const std::string clava::getSource(ASTContext *Context,
-                                   SourceRange sourceRange) {
-
-    // Mark beginning of source
-    clava::dump("%CLAVA_SOURCE_BEGIN%");
-
-    const SourceManager &sm = Context->getSourceManager();
-
+const std::string buildSourceText(const SourceManager &sm,
+                                  SourceRange sourceRange) {
     SourceLocation begin = sourceRange.getBegin();
     SourceLocation end = sourceRange.getEnd();
     if (begin.isMacroID()) {
@@ -322,14 +314,32 @@ const std::string clava::getSource(ASTContext *Context,
             .str();
     if (text.size() > 0 &&
         (text.at(text.size() - 1) == ',')) { // the text can be ""
-        std::string otherText =
-            Lexer::getSourceText(CharSourceRange::getCharRange(begin, end), sm,
-                                 LangOptions(), 0)
-                .str();
-        return otherText + "\n%CLAVA_SOURCE_END%";
+        return Lexer::getSourceText(CharSourceRange::getCharRange(begin, end),
+                                    sm, LangOptions(), 0)
+            .str();
     }
 
-    return text + "\n%CLAVA_SOURCE_END%";
+    return text;
+}
+} // namespace
+
+/**
+ * Taken from:
+ * https://stackoverflow.com/questions/11083066/getting-the-source-behind-clangs-ast
+ * @param Context
+ * @param start
+ * @param end
+ * @return
+ */
+const std::string clava::getSource(ASTContext *Context,
+                                   SourceRange sourceRange) {
+
+    // Mark beginning of source
+    clava::dump("%CLAVA_SOURCE_BEGIN%");
+
+    const SourceManager &sm = Context->getSourceManager();
+
+    return buildSourceText(sm, sourceRange) + "\n%CLAVA_SOURCE_END%";
 }
 
 void clava::dump(NestedNameSpecifier *qualifier, ASTContext *Context) {
@@ -586,8 +596,9 @@ void clava::throwNotImplemented(const std::string &source,
 void clava::throwNotImplemented(const std::string &source,
                                 const std::string &caseNotImplemented,
                                 ASTContext *Context, SourceRange range) {
+    const SourceManager &sm = Context->getSourceManager();
     throw std::invalid_argument(source + ": Case not implemented, '" +
                                 caseNotImplemented +
                                 "', source code that triggered the problem:\n" +
-                                clava::getSource(Context, range));
+                                buildSourceText(sm, range));
 }
