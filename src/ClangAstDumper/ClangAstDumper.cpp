@@ -324,6 +324,18 @@ void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
   case TemplateArgument::ArgKind::Template:
     VisitTemplateName(templateArg.getAsTemplate());
     break;
+  case TemplateArgument::ArgKind::Declaration:
+    VisitDeclTop(templateArg.getAsDecl());
+    break;
+  case TemplateArgument::ArgKind::NullPtr:
+    VisitTypeTop(templateArg.getNullPtrType().getTypePtr());
+    break;
+  case TemplateArgument::ArgKind::TemplateExpansion:
+    VisitTemplateName(templateArg.getAsTemplateOrTemplatePattern());
+    break;
+  case TemplateArgument::ArgKind::StructuralValue:
+    VisitTypeTop(templateArg.getStructuralValueType().getTypePtr());
+    break;
   default:
     throw std::invalid_argument(
         "ClangAstDumper::visitTemplateArgument(): Case not implemented, '" +

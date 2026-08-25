@@ -418,6 +418,26 @@ void clava::dump(const TemplateArgument &templateArg, int id,
     case TemplateArgument::ArgKind::Template:
         clava::dump(templateArg.getAsTemplate(), id, Context);
         break;
+    case TemplateArgument::ArgKind::Declaration:
+        clava::dump(clava::getId(templateArg.getAsDecl(), id));
+        break;
+    case TemplateArgument::ArgKind::NullPtr:
+        clava::dump(clava::getId(templateArg.getNullPtrType(), id));
+        break;
+    case TemplateArgument::ArgKind::TemplateExpansion:
+        clava::dump(
+            std::optional<unsigned>(templateArg.getNumTemplateExpansions())
+                .has_value()
+                ? std::to_string(*templateArg.getNumTemplateExpansions())
+                : "");
+        clava::dump(templateArg.getAsTemplateOrTemplatePattern(), id,
+                    Context);
+        break;
+    case TemplateArgument::ArgKind::StructuralValue:
+        // Only the structural value's type is serialized; the value payload
+        // itself can be added once consumers require it.
+        clava::dump(clava::getId(templateArg.getStructuralValueType(), id));
+        break;
 
     default:
         throw std::invalid_argument(
