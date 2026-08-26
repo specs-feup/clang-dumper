@@ -6,6 +6,7 @@
 #include "../ClangEnums/ClangEnums.h"
 
 #include "clang/AST/Attr.h"
+#include "clang/Basic/OperatorKinds.h"
 #include "clang/Basic/SourceManager.h"
 #include "clang/Lex/Lexer.h"
 
@@ -418,6 +419,26 @@ void clava::dump(const TemplateArgument &templateArg, int id,
     case TemplateArgument::ArgKind::Template:
         clava::dump(templateArg.getAsTemplate(), id, Context);
         break;
+    case TemplateArgument::ArgKind::Declaration:
+        clava::dump(clava::getId(templateArg.getAsDecl(), id));
+        break;
+    case TemplateArgument::ArgKind::NullPtr:
+        clava::dump(clava::getId(templateArg.getNullPtrType(), id));
+        break;
+    case TemplateArgument::ArgKind::TemplateExpansion:
+        clava::dump(
+            std::optional<unsigned>(templateArg.getNumTemplateExpansions())
+                .has_value()
+                ? std::to_string(*templateArg.getNumTemplateExpansions())
+                : "");
+        clava::dump(templateArg.getAsTemplateOrTemplatePattern(), id,
+                    Context);
+        break;
+    case TemplateArgument::ArgKind::StructuralValue:
+        // Only the structural value's type is serialized; the value payload
+        // itself can be added once consumers require it.
+        clava::dump(clava::getId(templateArg.getStructuralValueType(), id));
+        break;
 
     default:
         throw std::invalid_argument(
@@ -449,6 +470,24 @@ void clava::dump(const TemplateName &templateName, int id,
         clava::dump(
             templateName.getAsSubstTemplateTemplateParm()->getReplacement(), id,
             Context);
+        break;
+    case TemplateName::NameKind::UsingTemplate:
+        clava::dump(clava::getId(templateName.getAsUsingShadowDecl(), id));
+        break;
+    case TemplateName::NameKind::DependentTemplate:
+        // A dependent template name refers to no declaration; serialize the
+        // qualifier and the identifier spelling (or overloaded operator).
+        clava::dump(templateName.getAsDependentTemplateName()->getQualifier(),
+                    Context);
+        if (templateName.getAsDependentTemplateName()->isIdentifier()) {
+            clava::dump(templateName.getAsDependentTemplateName()
+                            ->getIdentifier()
+                            ->getName());
+        } else {
+            clava::dump(
+                clang::getOperatorSpelling(
+                    templateName.getAsDependentTemplateName()->getOperator()));
+        }
         break;
     default:
         throw std::invalid_argument(
@@ -548,7 +587,12 @@ void clava::dump(const clang::DesignatedInitExpr::Designator *designator) {
     if (designator->isFieldDesignator()) {
         // Dump kind
         clava::dump(clava::DESIGNATOR_KIND[0]);
-        clava::dump(designator->getFieldName()->getName());
+        if (const IdentifierInfo *fieldName = designator->getFieldName()) {
+            clava::dump(fieldName->getName());
+        } else {
+            // Designators for anonymous struct/union members have no name
+            clava::dump("");
+        }
     } else if (designator->isArrayDesignator()) {
         // Dump kind
         clava::dump(clava::DESIGNATOR_KIND[1]);

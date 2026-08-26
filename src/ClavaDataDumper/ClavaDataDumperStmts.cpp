@@ -559,8 +559,11 @@ void clava::ClavaDataDumper::DumpOffsetOfExprData(const OffsetOfExpr *E) {
             clava::dump(
                 clava::getId(E->getIndexExpr(node.getArrayExprIndex()), id));
             break;
-        case OffsetOfNode::Kind::Field:
+        case OffsetOfNode::Kind::Base:
+            clava::dump(clava::getId(node.getBase()->getType(), id));
+            break;
         case OffsetOfNode::Kind::Identifier:
+        case OffsetOfNode::Kind::Field:
             clava::dump(node.getFieldName()->getName().str());
             break;
         default:

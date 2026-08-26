@@ -3,6 +3,7 @@
 
 #include "Clang/ClangAst.h"
 #include "llvm/Support/InitLLVM.h"
+#include "llvm/Support/TargetSelect.h"
 
 
 // Globally defined, or parser might not catch it
@@ -15,6 +16,15 @@ static llvm::cl::opt<int> UserSystemHeaderThresholdOption(
 int main(int argc, const char *argv[]) {
 
   llvm::InitLLVM X(argc, argv);
+
+  // Register the native target's MC subsystem and asm parser. The build only
+  // links the host-arch backend archives, and nothing else triggers their
+  // registration: without this, plain parsing works but anything needing the
+  // MC layer (e.g. MS-style inline assembly) fails with
+  // "(no targets are registered)".
+  llvm::InitializeNativeTarget();
+  llvm::InitializeNativeTargetAsmPrinter();
+  llvm::InitializeNativeTargetAsmParser();
 
   // Errs is the main way we dump information, we tested if making it buffered
   // improved performance but could not detect a significant difference

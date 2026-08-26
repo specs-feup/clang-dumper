@@ -324,6 +324,21 @@ void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
   case TemplateArgument::ArgKind::Template:
     VisitTemplateName(templateArg.getAsTemplate());
     break;
+  case TemplateArgument::ArgKind::Declaration:
+    VisitDeclTop(templateArg.getAsDecl());
+    break;
+  case TemplateArgument::ArgKind::NullPtr:
+    VisitTypeTop(templateArg.getNullPtrType().getTypePtr());
+    break;
+  case TemplateArgument::ArgKind::TemplateExpansion:
+    VisitTemplateName(templateArg.getAsTemplateOrTemplatePattern());
+    break;
+  case TemplateArgument::ArgKind::StructuralValue:
+    // Pass the QualType as-is: stripping qualifiers via getTypePtr() would
+    // visit the unqualified type while the serializer emits the qualified
+    // type's id, referencing a type never emitted.
+    VisitTypeTop(templateArg.getStructuralValueType());
+    break;
   default:
     throw std::invalid_argument(
         "ClangAstDumper::visitTemplateArgument(): Case not implemented, '" +
@@ -354,6 +369,13 @@ void ClangAstDumper::VisitTemplateName(const TemplateName &templateName) {
     VisitDeclTop(templateName.getAsSubstTemplateTemplateParm()->getParameter());
     VisitTemplateName(
         templateName.getAsSubstTemplateTemplateParm()->getReplacement());
+    break;
+  case TemplateName::NameKind::UsingTemplate:
+    VisitDeclTop(templateName.getAsUsingShadowDecl());
+    break;
+  case TemplateName::NameKind::DependentTemplate:
+    // A dependent template name (e.g. `T::template apply`) refers to no
+    // declaration; there is nothing to visit.
     break;
   default:
     throw std::invalid_argument(

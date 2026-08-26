@@ -336,6 +336,11 @@ void ClangAstDumper::VisitOffsetOfExprChildren(
         case OffsetOfNode::Kind::Array:
             VisitStmtTop(E->getIndexExpr(node.getArrayExprIndex()));
             break;
+        case OffsetOfNode::Kind::Base:
+            // Indirection through a C++ base class: visit its type, matching
+            // how record-decl base specifiers are visited.
+            VisitTypeTop(node.getBase()->getType());
+            break;
         case OffsetOfNode::Kind::Identifier:
         case OffsetOfNode::Kind::Field:
             // Nothing to visit

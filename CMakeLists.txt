@@ -309,7 +309,11 @@ function(clang_dumper_filter_target_archives out_var backend_regex)
     foreach(lib IN LISTS ARGN)
         get_filename_component(libname "${lib}" NAME_WE)
         if(libname MATCHES "LLVM[A-Za-z0-9]+(CodeGen|AsmParser|Disassembler|Desc|Info|TargetMCA)$")
-            if(NOT libname MATCHES "${backend_regex}")
+            # Keep the generic MC disassembler: target Desc archives reference
+            # llvm::createMCRelocationInfo() defined in it, pulled in as soon
+            # as the native backend is initialized/registered by the tool.
+            # NOTE: NAME_WE yields "libLLVMMCDisassembler".
+            if(NOT libname MATCHES "${backend_regex}" AND NOT libname MATCHES "^lib?LLVMMCDisassembler$")
                 continue()
             endif()
         endif()
@@ -413,6 +417,21 @@ else()
         message(STATUS "Filtered LLVM target libs to host (${LLVM_HOST_TARGET} -> ${HOST_BACKEND_REGEX}).")
     else()
         message(STATUS "Unknown host target '${LLVM_HOST_TARGET}', keeping all LLVM target libs.")
+    endif()
+    # The native backend's Desc archive references llvm::createMCRelocationInfo()
+    # (pulled in by the tool's target registration); llvm-config does not emit
+    # LLVMMCDisassembler for our dependency set, so add it explicitly.
+    find_library(LLVMMCDisassembler_ARCHIVE
+        NAMES "LLVMMCDisassembler"
+        PATHS "${LLVM_LIBDIR}"
+        NO_DEFAULT_PATH
+    )
+    if(NOT LLVMMCDisassembler_ARCHIVE)
+        message(FATAL_ERROR "LLVMMCDisassembler archive not found in ${LLVM_LIBDIR}; required for target registration.")
+    endif()
+    list(FIND LLVM_LIBS_CLEAN "${LLVMMCDisassembler_ARCHIVE}" _mcdis_idx)
+    if(_mcdis_idx EQUAL -1)
+        list(APPEND LLVM_LIBS_CLEAN "${LLVMMCDisassembler_ARCHIVE}")
     endif()
     if(CLANG_ARCHIVES STREQUAL "")
         message(FATAL_ERROR "No Clang static archives (libclang*.a) found in ${LLVM_LIBDIR}; cannot build statically linked 'tool'. Install libclang static dev packages.")
