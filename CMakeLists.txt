@@ -312,7 +312,8 @@ function(clang_dumper_filter_target_archives out_var backend_regex)
             # Keep the generic MC disassembler: target Desc archives reference
             # llvm::createMCRelocationInfo() defined in it, pulled in as soon
             # as the native backend is initialized/registered by the tool.
-            if(NOT libname MATCHES "${backend_regex}" AND NOT libname STREQUAL "LLVMMCDisassembler")
+            # NOTE: NAME_WE yields "libLLVMMCDisassembler".
+            if(NOT libname MATCHES "${backend_regex}" AND NOT libname MATCHES "^lib?LLVMMCDisassembler$")
                 continue()
             endif()
         endif()
