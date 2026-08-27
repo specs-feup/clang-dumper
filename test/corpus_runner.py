@@ -168,6 +168,9 @@ def extract_jobs(text: str):
                     None,
                 )
                 if paired is not None:
+                    if paired == "-std":
+                        flags.append(tok)
+                        continue
                     flags += [paired, tok[len(paired) + 1:]]
                     continue
                 if tok in PAIRED_FLAGS:
@@ -201,6 +204,7 @@ def extract_jobs(text: str):
     return jobs, None
 
 
+CC1_ONLY_FLAGS = {"-faligned-alloc-unavailable"}
 CC1_ONLY_PAIRED_FLAGS = {
     "-mfpmath", "-target-feature", "-target-cpu", "-target-abi",
 }
@@ -217,6 +221,10 @@ def to_driver_flags(cc1_flags: list[str]) -> tuple[list[str], list[str]]:
         if f == "-triple" and i + 1 < len(cc1_flags):
             out += ["-target", cc1_flags[i + 1]]
             i += 2
+            continue
+        if f in CC1_ONLY_FLAGS:
+            out += ["-Xclang", f]
+            i += 1
             continue
         if f in CC1_ONLY_PAIRED_FLAGS:
             if i + 1 < len(cc1_flags):

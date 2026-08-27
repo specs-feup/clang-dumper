@@ -6,6 +6,7 @@ from corpus_runner import (
     extract_jobs,
     missing_requirements,
     parse_requires,
+    summarize_diagnostics,
     to_driver_flags,
 )
 
@@ -23,10 +24,10 @@ class CorpusRunnerTests(unittest.TestCase):
             jobs,
             [
                 CorpusJob(
-                    ["-std", "c++17", "-faligned-alloc-unavailable", "-DMACOS"],
+                    ["-std=c++17", "-faligned-alloc-unavailable", "-DMACOS"],
                     True,
                 ),
-                CorpusJob(["-std", "c++17", "-DNO_ERRORS"], False),
+                CorpusJob(["-std=c++17", "-DNO_ERRORS"], False),
             ],
         )
 
