@@ -52,23 +52,8 @@ const std::map<std::string, clava::ClavaDataDumper::TypeDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Type *T) {
-  const std::string classname = clava::getClassName(T);
-  auto it = TYPE_DATA_DUMPERS.find(classname);
-  const char *dataName =
-      it != TYPE_DATA_DUMPERS.end() ? it->second.dataName : "Type";
-
-  // Dump header
-  llvm::errs() << "<" << dataName << "Data>\n";
-  llvm::errs() << clava::getId(T, id) << "\n";
-  llvm::errs() << clava::getClassName(T) << "\n";
-
-  if (it != TYPE_DATA_DUMPERS.end()) {
-    it->second.dump(*this, T);
-  } else {
-    clava::recordHandlerFallback("type data", classname);
-    // Default: plain Type data
-    DumpTypeData(T);
-  }
+  dumpNode(T, clava::getClassName(T), TYPE_DATA_DUMPERS, "type data", "Type",
+           &ClavaDataDumper::DumpTypeData);
 }
 
 void clava::ClavaDataDumper::DumpTypeData(const Type *T) {

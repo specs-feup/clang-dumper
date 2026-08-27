@@ -97,43 +97,13 @@ void clava::ClavaDataDumper::dumpTemplateArguments(
 }
 
 void clava::ClavaDataDumper::dump(const Stmt *S) {
-    const std::string classname = clava::getClassName(S);
-    auto it = STMT_DATA_DUMPERS.find(classname);
-    const char *dataName =
-        it != STMT_DATA_DUMPERS.end() ? it->second.dataName : "Stmt";
-
-    // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(S, id) << "\n";
-    llvm::errs() << clava::getClassName(S) << "\n";
-
-    if (it != STMT_DATA_DUMPERS.end()) {
-        it->second.dump(*this, S);
-    } else {
-        clava::recordHandlerFallback("stmt data", classname);
-        // Default: plain Stmt data
-        DumpStmtData(S);
-    }
+    dumpNode(S, clava::getClassName(S), STMT_DATA_DUMPERS, "stmt data",
+             "Stmt", &ClavaDataDumper::DumpStmtData);
 }
 
 void clava::ClavaDataDumper::dump(const Expr *E) {
-    const std::string classname = clava::getClassName(E);
-    auto it = EXPR_DATA_DUMPERS.find(classname);
-    const char *dataName =
-        it != EXPR_DATA_DUMPERS.end() ? it->second.dataName : "Expr";
-
-    // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(E, id) << "\n";
-    llvm::errs() << clava::getClassName(E) << "\n";
-
-    if (it != EXPR_DATA_DUMPERS.end()) {
-        it->second.dump(*this, E);
-    } else {
-        clava::recordHandlerFallback("expr data", classname);
-        // Default: plain Expr data
-        DumpExprData(static_cast<const Expr *>(E));
-    }
+    dumpNode(E, clava::getClassName(E), EXPR_DATA_DUMPERS, "expr data",
+             "Expr", &ClavaDataDumper::DumpExprData);
 }
 
 // STMTS
