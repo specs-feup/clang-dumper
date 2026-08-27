@@ -1,6 +1,13 @@
 import unittest
 
-from corpus_runner import CorpusJob, aggregate_bucket, extract_jobs, to_driver_flags
+from corpus_runner import (
+    CorpusJob,
+    aggregate_bucket,
+    extract_jobs,
+    missing_requirements,
+    parse_requires,
+    to_driver_flags,
+)
 
 
 class CorpusRunnerTests(unittest.TestCase):
@@ -46,6 +53,18 @@ class CorpusRunnerTests(unittest.TestCase):
                 "-Xclang", "-target-abi", "-Xclang", "gnu",
                 "-Xclang", "-mfpmath", "-Xclang", "vfp",
             ],
+        )
+
+    def test_requires_supports_and_groups_and_or_alternatives(self):
+        requirements = parse_requires(
+            """// REQUIRES: x86-registered-target, posix
+// REQUIRES: aarch64-registered-target || arm-registered-target
+"""
+        )
+
+        self.assertEqual(
+            missing_requirements(requirements, {"x86-registered-target", "posix"}),
+            ["aarch64-registered-target || arm-registered-target"],
         )
 
 

@@ -41,6 +41,7 @@ Corpus fetch:
 
 import argparse
 import json
+import platform
 import re
 import subprocess
 import sys
@@ -56,6 +57,7 @@ HOST_UNSUPPORTED_MARKERS = {"windows", "darwin", "macos", "aix",
 
 RUN_RE = re.compile(r"//\s*RUN:\s*(.*)")
 UNSUPPORTED_RE = re.compile(r"^\s*UNSUPPORTED\s*:(.*)", re.MULTILINE)
+REQUIRES_RE = re.compile(r"^\s*//\s*REQUIRES\s*:\s*(.*)", re.MULTILINE)
 
 # Tokens from cc1 RUN lines that are safe/useful for plain parsing.
 FLAG_ALLOWLIST_PREFIXES = (
@@ -274,6 +276,44 @@ def parse_unsupported(text: str) -> set[str]:
     return {p.strip() for p in m.group(1).split(",") if p.strip()}
 
 
+def parse_requires(text: str) -> list[tuple[str, ...]]:
+    """Parse lit requirements as comma-separated AND groups with || options."""
+    requirements = []
+    for match in REQUIRES_RE.finditer(text):
+        for group in match.group(1).split(","):
+            alternatives = tuple(
+                option.strip()
+                for option in group.split("||")
+                if option.strip()
+            )
+            if alternatives:
+                requirements.append(alternatives)
+    return requirements
+
+
+def missing_requirements(
+    requirements: list[tuple[str, ...]], available_features: set[str]
+) -> list[str]:
+    return [
+        " || ".join(alternatives)
+        for alternatives in requirements
+        if not any(option in available_features for option in alternatives)
+    ]
+
+
+def default_features() -> set[str]:
+    """Return the lit features provided by the locally built native tool."""
+    features = {"posix"} if sys.platform != "win32" else set()
+    machine = platform.machine().lower()
+    if machine in {"x86_64", "amd64", "x86"}:
+        features.add("x86-registered-target")
+    elif machine in {"aarch64", "arm64"}:
+        features.add("aarch64-registered-target")
+    elif machine.startswith("arm"):
+        features.add("arm-registered-target")
+    return features
+
+
 def run_stage1(clang: str, source: Path, flags: list[str]):
     """Clang must accept its own file before we bother dumping it."""
     cmd = [clang, "-cc1", "-fsyntax-only"] + flags + [str(source)]
@@ -383,7 +423,7 @@ def aggregate_bucket(buckets: list[str]) -> str:
 
 
 def process_file(args):
-    tool, clang, path_str, resource_dir = args
+    tool, clang, path_str, resource_dir, available_features = args
     source = Path(path_str)
     try:
         text = source.read_text(errors="replace")
@@ -391,6 +431,11 @@ def process_file(args):
         return path_str, "SKIP_READ_ERROR", "", {}, {}
 
     unsupported = parse_unsupported(text)
+    requirements = parse_requires(text)
+    missing = missing_requirements(requirements, available_features)
+    if missing:
+        return path_str, "SKIP_MISSING_REQUIRES", \
+            f"missing lit feature(s): {', '.join(missing)}", {}, {}
 
     jobs, skip_reason = extract_jobs(text)
     if not jobs:
@@ -538,6 +583,10 @@ def main():
                         help="Path to llvm-project/clang/test")
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument(
+        "--feature", action="append", default=[],
+        help="Add a lit feature to the locally available feature set",
+    )
     parser.add_argument("--limit", type=int, default=0,
                         help="Only process the first N files (debugging)")
     parser.add_argument("--no-resource-dir", action="store_true",
@@ -555,6 +604,8 @@ def main():
         except Exception:
             resource_dir = ""
 
+    available_features = default_features() | set(args.feature)
+
     files = sorted(
         str(p) for p in args.corpus.rglob("*")
         if p.suffix.lower() in SOURCE_EXTS and p.is_file()
@@ -567,7 +618,9 @@ def main():
     results = {}
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         futures = [
-            pool.submit(process_file, (args.tool, args.clang, f, resource_dir))
+            pool.submit(process_file, (
+                args.tool, args.clang, f, resource_dir, available_features,
+            ))
             for f in files
         ]
         done = 0
