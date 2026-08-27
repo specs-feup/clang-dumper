@@ -88,7 +88,7 @@ PAIRED_FLAGS = {
     "-internal-isystem", "-internal-externc-isystem", "-resource-dir",
     "-aux-triple", "-main-file-name", "-target-feature", "-target-cpu",
     "-target-abi", "-mlink-builtin-bitcode", "-fdebug-default-version",
-    "-I", "-F",
+    "-I", "-F", "-mfpmath",
 }
 TARGET_FLAG_ALLOWLIST_PREFIXES = (
     "-mcpu=", "-march=", "-mfpu=", "-mfloat-abi=", "-mvsx", "-maltivec",
@@ -161,6 +161,13 @@ def extract_jobs(text: str):
                     flags += [p, tok[len(p) + 1:]]
                     break
             else:
+                paired = next(
+                    (p for p in PAIRED_FLAGS if tok.startswith(p + "=")),
+                    None,
+                )
+                if paired is not None:
+                    flags += [paired, tok[len(paired) + 1:]]
+                    continue
                 if tok in PAIRED_FLAGS:
                     if i < len(tokens):
                         flags += [tok, tokens[i]]
@@ -192,7 +199,9 @@ def extract_jobs(text: str):
     return jobs, None
 
 
-CC1_ONLY_PAIRED_FLAGS = {"-target-feature", "-target-cpu", "-target-abi"}
+CC1_ONLY_PAIRED_FLAGS = {
+    "-mfpmath", "-target-feature", "-target-cpu", "-target-abi",
+}
 
 
 def to_driver_flags(cc1_flags: list[str]) -> tuple[list[str], list[str]]:
@@ -208,8 +217,12 @@ def to_driver_flags(cc1_flags: list[str]) -> tuple[list[str], list[str]]:
             i += 2
             continue
         if f in CC1_ONLY_PAIRED_FLAGS:
-            dropped.append(f"{f} {cc1_flags[i+1]}" if i + 1 < len(cc1_flags) else f)
-            i += 2 if i + 1 < len(cc1_flags) else 1
+            if i + 1 < len(cc1_flags):
+                out += ["-Xclang", f, "-Xclang", cc1_flags[i + 1]]
+                i += 2
+            else:
+                dropped.append(f)
+                i += 1
             continue
         if f in ("-aux-triple", "-main-file-name", "-internal-isystem",
                  "-internal-externc-isystem"):
