@@ -45,6 +45,7 @@ import re
 import subprocess
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from dataclasses import dataclass
 from pathlib import Path
 
 SOURCE_EXTS = {".c", ".cpp", ".cc", ".cxx", ".cu", ".cl"}
@@ -74,7 +75,8 @@ FLAG_ALLOWLIST_PREFIXES = (
     "-fdouble-square-bracket-attributes", "-fcomplete-member-pointers",
     "-faligned-allocation", "-fnew-alignment=", "-fcoroutines-ts",
     "-fexperimental-library", "-fpreserve-vec3-type",
-    "-cl-std=", "-cl-fast-relaxed-math", "-cl-fp32-correctly-rounded-divide-sqrt",
+    "-faligned-alloc-unavailable", "-cl-std=", "-cl-fast-relaxed-math",
+    "-cl-fp32-correctly-rounded-divide-sqrt",
     "-cl-single-precision-constant", "-cl-mad-enable", "-cl-no-signed-zeros",
     "-cl-unsafe-math-optimizations", "-cl-denorms-", "-cl-no-stdinc",
 )
@@ -110,27 +112,31 @@ def node_in_scope(classname: str) -> bool:
     return not classname.startswith(OUT_OF_SCOPE_PREFIXES)
 
 
+@dataclass(frozen=True)
+class CorpusJob:
+    flags: list[str]
+    uses_verify: bool
+
+
 def tokenize_cc1(cmd: str):
     return cmd.split()
 
 
-def extract_flags(text: str):
-    """Extract parse-relevant flags from the %clang_cc1 RUN lines. The first
-    such line supplies mode/target/std flags; declaration-like flags (-D/-U/
-    -I/...) found in any later cc1 line are merged in additively."""
+def extract_jobs(text: str):
+    """Extract one independent job from each usable %clang_cc1 RUN line."""
     cc1_cmds = []
     for m in RUN_RE.finditer(text):
         if "%clang_cc1" in m.group(1):
             cc1_cmds.append(m.group(1))
     if not cc1_cmds:
-        return None, None, "SKIP_NO_CC1_RUN"
+        return [], "SKIP_NO_CC1_RUN"
 
     def usable(cmd):
         return not any(s in cmd for s in ("%t", "%T", "%@", "%python"))
 
-    base_cmd = next((c for c in cc1_cmds if usable(c)), None)
-    if base_cmd is None:
-        return None, None, "SKIP_NEEDS_LIT_SETUP"
+    usable_cmds = [cmd for cmd in cc1_cmds if usable(cmd)]
+    if not usable_cmds:
+        return [], "SKIP_NEEDS_LIT_SETUP"
 
     def to_flags(tokens):
         flags, lang, i = [], None, 0
@@ -139,7 +145,8 @@ def extract_flags(text: str):
             i += 1
             if tok.startswith("%") or tok == "-cc1":
                 continue
-            if tok == "-verify" or tok == "-verify-ignore-unexpected":
+            if tok == "-verify" or tok.startswith("-verify=") \
+                    or tok == "-verify-ignore-unexpected":
                 continue
             if tok == "-x":
                 if i < len(tokens):
@@ -167,32 +174,22 @@ def extract_flags(text: str):
                     continue
         return flags, lang
 
-    flags, lang = to_flags(tokenize_cc1(base_cmd))
-
-    present = set(flags)
-    for cmd in cc1_cmds:
-        if cmd == base_cmd or not usable(cmd):
-            continue
+    jobs = []
+    skipped_languages = []
+    for cmd in usable_cmds:
         tokens = tokenize_cc1(cmd)
-        i = 0
-        while i < len(tokens):
-            tok = tokens[i]
-            i += 1
-            if tok.startswith(ADDITIVE_PREFIXES):
-                if tok not in present:
-                    flags.append(tok)
-                    present.add(tok)
-            elif tok in ADDITIVE_PAIRED and i < len(tokens):
-                pair = (tok, tokens[i])
-                if pair not in present:
-                    flags += pair
-                    present.add(pair)
-                i += 1
+        flags, lang = to_flags(tokens)
+        if lang is not None and lang not in CLANG_LANGS:
+            skipped_languages.append(lang)
+            continue
+        uses_verify = any(tok == "-verify" or tok.startswith("-verify=")
+                          for tok in tokens)
+        jobs.append(CorpusJob(flags, uses_verify))
 
-    if lang is not None and lang not in CLANG_LANGS:
-        return None, None, f"SKIP_LANG_{lang}"
-    uses_verify = "-verify" in tokenize_cc1(base_cmd)
-    return flags, uses_verify, None
+    if not jobs:
+        lang = skipped_languages[0] if skipped_languages else "unknown"
+        return [], f"SKIP_LANG_{lang}"
+    return jobs, None
 
 
 CC1_ONLY_PAIRED_FLAGS = {"-target-feature", "-target-cpu", "-target-abi"}
@@ -348,6 +345,30 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
     return result, coverage, eff_std, dropped
 
 
+def aggregate_bucket(buckets: list[str]) -> str:
+    """Keep file-level reporting useful while preserving every job result."""
+    if not buckets:
+        return "SKIP_NO_JOBS"
+    for bucket in ("CRASH", "TIMEOUT", "DUMP_FAIL"):
+        if bucket in buckets:
+            return bucket
+    if "CLEAN" in buckets:
+        if all(bucket in {"CLEAN", "EXPECTED_ERR"} for bucket in buckets):
+            return "CLEAN"
+        return "PARTIAL"
+    if "HARNESS_TARGET_FLAGS" in buckets:
+        return "HARNESS_TARGET_FLAGS"
+    if "HARNESS_TARGET_BACKEND" in buckets:
+        return "HARNESS_TARGET_BACKEND"
+    if "HARNESS_CC1_DEFAULTS" in buckets:
+        return "HARNESS_CC1_DEFAULTS"
+    if "HARNESS_NO_JOB" in buckets:
+        return "HARNESS_NO_JOB"
+    if "EXPECTED_ERR" in buckets:
+        return "EXPECTED_ERR"
+    return buckets[0]
+
+
 def process_file(args):
     tool, clang, path_str, resource_dir = args
     source = Path(path_str)
@@ -358,34 +379,70 @@ def process_file(args):
 
     unsupported = parse_unsupported(text)
 
-    flags, uses_verify, skip_reason = extract_flags(text)
-    if flags is None:
+    jobs, skip_reason = extract_jobs(text)
+    if not jobs:
         return path_str, skip_reason, "", {}, {}
     if unsupported & HOST_UNSUPPORTED_MARKERS:
         return path_str, "SKIP_UNSUPPORTED_TARGET", "", {}, {}
 
-    stage1, reason = run_stage1(clang, source, flags)
-    if stage1 != "PARSE_OK":
-        bucket = "EXPECTED_ERR" if (uses_verify and stage1 == "PARSE_FAIL") \
-            else stage1
-        return path_str, bucket, reason, {}, {}
+    job_results = []
+    all_coverage = {}
+    for job_index, job in enumerate(jobs):
+        stage1, reason = run_stage1(clang, source, job.flags)
+        if stage1 != "PARSE_OK":
+            bucket = "EXPECTED_ERR" if (job.uses_verify
+                                         and stage1 == "PARSE_FAIL") \
+                else stage1
+            job_results.append({
+                "index": job_index,
+                "bucket": bucket,
+                "reason": reason,
+                "flags": job.flags,
+                "std": None,
+                "effective_std": None,
+                "coverage": {},
+            })
+            continue
 
-    result, coverage, eff_std, dropped = run_stage2(
-        tool, source, flags, resource_dir)
-    if result == "DUMP_FAIL" and dropped:
-        result = "HARNESS_TARGET_FLAGS"
-    std_key = None
-    for j, f in enumerate(flags):
-        if f == "-std" and j + 1 < len(flags):
-            std_key = flags[j + 1]
-        elif f.startswith("-std="):
-            std_key = f[5:]
-        elif f.startswith("-cl-std="):
-            std_key = f[8:]
-    return path_str, result, "", coverage, {
-        "flags": flags,
-        "std": std_key,
-        "effective_std": eff_std,
+        result, coverage, eff_std, dropped = run_stage2(
+            tool, source, job.flags, resource_dir)
+        if result == "DUMP_FAIL" and dropped:
+            result = "HARNESS_TARGET_FLAGS"
+        std_key = None
+        for j, f in enumerate(job.flags):
+            if f == "-std" and j + 1 < len(job.flags):
+                std_key = job.flags[j + 1]
+            elif f.startswith("-std="):
+                std_key = f[5:]
+            elif f.startswith("-cl-std="):
+                std_key = f[8:]
+        job_results.append({
+            "index": job_index,
+            "bucket": result,
+            "reason": "",
+            "flags": job.flags,
+            "std": std_key,
+            "effective_std": eff_std,
+            "coverage": coverage,
+        })
+        for family, classes in coverage.items():
+            all_coverage.setdefault(family, set()).update(classes)
+
+    for job in job_results:
+        job["coverage"] = {
+            family: sorted(classes)
+            for family, classes in job["coverage"].items()
+        }
+    buckets = [job["bucket"] for job in job_results]
+    reasons = sorted({job["reason"] for job in job_results if job["reason"]})
+    first = job_results[0]
+    return path_str, aggregate_bucket(buckets), "; ".join(reasons), {
+        family: sorted(classes) for family, classes in all_coverage.items()
+    }, {
+        "jobs": job_results,
+        "flags": first["flags"],
+        "std": first["std"],
+        "effective_std": first["effective_std"],
     }
 
 
@@ -512,22 +569,27 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
 
     buckets = {}
+    job_buckets = {}
     for r in results.values():
         buckets[r["bucket"]] = buckets.get(r["bucket"], 0) + 1
+        for job in r.get("jobs", []):
+            job_bucket = job["bucket"]
+            job_buckets[job_bucket] = job_buckets.get(job_bucket, 0) + 1
 
     encounters: dict[str, set] = {}
     std_matrix = {}
     default_std_counts = {}
     for path, r in results.items():
-        if r["bucket"] not in ("CLEAN", "DUMP_FAIL"):
-            continue
         for family, classes in r["coverage"].items():
             encounters.setdefault(family, set()).update(classes)
-        std = r.get("std") or r.get("effective_std") or "(unknown)"
-        entry = std_matrix.setdefault(std, {})
-        entry[r["bucket"]] = entry.get(r["bucket"], 0) + 1
-        if not r.get("std"):
-            default_std_counts[std] = default_std_counts.get(std, 0) + 1
+        for job in r.get("jobs", []):
+            if job["bucket"] not in ("CLEAN", "DUMP_FAIL"):
+                continue
+            std = job.get("std") or job.get("effective_std") or "(unknown)"
+            entry = std_matrix.setdefault(std, {})
+            entry[job["bucket"]] = entry.get(job["bucket"], 0) + 1
+            if not job.get("std"):
+                default_std_counts[std] = default_std_counts.get(std, 0) + 1
 
     inventory = load_inventory(args.corpus)
     uncovered_in, uncovered_out = {}, {}
@@ -541,6 +603,7 @@ def main():
 
     catalog = {
         "totals": buckets,
+        "job_totals": job_buckets,
         "files_processed": len(files),
         "driver_default_effective_std": dict(sorted(default_std_counts.items())),
         "per_std_matrix": dict(sorted(std_matrix.items())),
