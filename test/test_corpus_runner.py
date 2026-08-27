@@ -61,6 +61,21 @@ class CorpusRunnerTests(unittest.TestCase):
             ],
         )
 
+        flags, dropped = to_driver_flags([
+            "-internal-isystem", "/tmp/include",
+            "-fopenmp-is-target-device",
+            "-fopenmp-host-ir-file-path", "host.bc",
+        ])
+        self.assertEqual(dropped, [])
+        self.assertEqual(
+            flags,
+            [
+                "-Xclang", "-internal-isystem", "-Xclang", "/tmp/include",
+                "-Xclang", "-fopenmp-is-target-device",
+                "-Xclang", "-fopenmp-host-ir-file-path", "-Xclang", "host.bc",
+            ],
+        )
+
         flags, dropped = to_driver_flags(["-faligned-alloc-unavailable"])
         self.assertEqual(flags, ["-Xclang", "-faligned-alloc-unavailable"])
         self.assertEqual(dropped, [])
@@ -102,6 +117,14 @@ class CorpusRunnerTests(unittest.TestCase):
                 True,
             )],
         )
+
+    def test_extract_jobs_records_lit_expected_failures(self):
+        jobs, reason = extract_jobs(
+            "// RUN: not %clang_cc1 -std=c++11 %s\n"
+        )
+
+        self.assertIsNone(reason)
+        self.assertTrue(jobs[0].expects_failure)
 
     def test_inventory_parses_multiline_nodes_and_transitive_attributes(self):
         with TemporaryDirectory() as directory:

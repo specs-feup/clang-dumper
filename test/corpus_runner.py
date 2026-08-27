@@ -102,6 +102,7 @@ PAIRED_FLAGS = {
     "-internal-isystem", "-internal-externc-isystem", "-resource-dir",
     "-aux-triple", "-main-file-name", "-target-feature", "-target-cpu",
     "-target-abi", "-mlink-builtin-bitcode", "-fdebug-default-version",
+    "-fopenmp-host-ir-file-path",
     "-I", "-F", "-mfpmath",
 }
 TARGET_FLAG_ALLOWLIST_PREFIXES = (
@@ -124,6 +125,7 @@ def node_in_scope(classname: str) -> bool:
 class CorpusJob:
     flags: list[str]
     uses_verify: bool
+    expects_failure: bool = False
 
 
 def tokenize_cc1(cmd: str) -> list[str]:
@@ -216,7 +218,9 @@ def extract_jobs(text: str, test_dir: Path | None = None):
             continue
         uses_verify = any(tok == "-verify" or tok.startswith("-verify=")
                           for tok in tokens)
-        jobs.append(CorpusJob(flags, uses_verify))
+        clang_index = tokens.index("%clang_cc1")
+        expects_failure = "not" in tokens[:clang_index]
+        jobs.append(CorpusJob(flags, uses_verify, expects_failure))
 
     if not jobs:
         lang = skipped_languages[0] if skipped_languages else "unknown"
@@ -224,9 +228,14 @@ def extract_jobs(text: str, test_dir: Path | None = None):
     return jobs, None
 
 
-CC1_ONLY_FLAGS = {"-faligned-alloc-unavailable"}
+CC1_ONLY_FLAGS = {
+    "-faligned-alloc-unavailable",
+    "-fopenmp-is-target-device",
+}
 CC1_ONLY_PAIRED_FLAGS = {
     "-mfpmath", "-target-feature", "-target-cpu", "-target-abi",
+    "-fopenmp-host-ir-file-path", "-internal-isystem",
+    "-internal-externc-isystem",
 }
 
 
@@ -254,8 +263,7 @@ def to_driver_flags(cc1_flags: list[str]) -> tuple[list[str], list[str]]:
                 dropped.append(f)
                 i += 1
             continue
-        if f in ("-aux-triple", "-main-file-name", "-internal-isystem",
-                 "-internal-externc-isystem"):
+        if f in ("-aux-triple", "-main-file-name"):
             i += 2 if i + 1 < len(cc1_flags) else 1
             continue
         out.append(f)
@@ -434,8 +442,12 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
                      or "not available on" in stderr):
             return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
         if "unknown target triple 'unknown-" in stderr \
-                or "MS-style inline assembly is not available" in stderr:
+                or "MS-style inline assembly is not available" in stderr \
+                or "mismatching arch" in stderr:
             return "HARNESS_TARGET_BACKEND", {}, eff_std, dropped, reason
+        if ("unknown type name 'char16_t'" in stderr
+                or "unknown type name 'char32_t'" in stderr):
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
         result = "DUMP_FAIL"
 
     coverage = {}
@@ -506,14 +518,17 @@ def process_file(args):
     for job_index, job in enumerate(jobs):
         stage1, reason = run_stage1(clang, source, job.flags)
         if stage1 != "PARSE_OK":
-            bucket = "EXPECTED_ERR" if (job.uses_verify
-                                         and stage1 == "PARSE_FAIL") \
+            bucket = "EXPECTED_ERR" if (
+                (job.uses_verify or job.expects_failure)
+                and stage1 == "PARSE_FAIL"
+            ) \
                 else stage1
             job_results.append({
                 "index": job_index,
                 "bucket": bucket,
                 "reason": reason,
                 "flags": job.flags,
+                "expects_failure": job.expects_failure,
                 "std": None,
                 "effective_std": None,
                 "coverage": {},
@@ -522,6 +537,9 @@ def process_file(args):
 
         result, coverage, eff_std, dropped, stage2_reason = run_stage2(
             tool, source, job.flags, resource_dir)
+        if result == "DUMP_FAIL" and (
+                job.uses_verify or job.expects_failure):
+            result = "EXPECTED_ERR"
         std_key = None
         for j, f in enumerate(job.flags):
             if f == "-std" and j + 1 < len(job.flags):
@@ -535,6 +553,7 @@ def process_file(args):
             "bucket": result,
             "reason": stage2_reason if result != "CLEAN" else "",
             "flags": job.flags,
+            "expects_failure": job.expects_failure,
             "std": std_key,
             "effective_std": eff_std,
             "coverage": coverage,
