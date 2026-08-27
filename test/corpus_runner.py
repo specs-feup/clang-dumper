@@ -113,12 +113,6 @@ TARGET_FLAG_ALLOWLIST_PREFIXES = (
     "-mcmse", "-mrestrict", "-mxnack", "-msram-ecc", "-mno-dxp",
 )
 
-# Flags that only add declarations/search paths and are safe to merge in from
-# later %clang_cc1 RUN lines of the same test file.
-ADDITIVE_PREFIXES = ("-D", "-U")
-ADDITIVE_PAIRED = {"-include", "-imacros", "-idirafter", "-iquote",
-                   "-isystem", "-I", "-F"}
-
 OUT_OF_SCOPE_PREFIXES = ("ObjC", "HLSL", "SYCL")
 
 
@@ -570,15 +564,16 @@ def _parse_node_td(path: Path):
     """Parse a TableGen ASTNodes.td into {name: base}, plus abstract set."""
     nodes, abstract = {}, set()
     def_re = re.compile(
-        r"^\s*def\s+([A-Za-z0-9_]+)\s*:\s*\w*Node<\s*(\??)([A-Za-z0-9_]*)\s*(?:,\s*\d)?")
-    abs_re = re.compile(r"<[^<>]*,\s*1\s*>")
-    for line in path.read_text(errors="replace").splitlines():
-        m = def_re.match(line)
-        if m:
-            name, _, base = m.groups()
-            nodes[name] = base or None
-            if abs_re.search(line):
-                abstract.add(name)
+        r"^\s*def\s+([A-Za-z0-9_]+)\s*:\s*\w*Node<([^<>]*)>",
+        re.MULTILINE,
+    )
+    for m in def_re.finditer(path.read_text(errors="replace")):
+        name, arguments = m.groups()
+        arguments = [argument.strip() for argument in arguments.split(",")]
+        base = arguments[0]
+        nodes[name] = None if base == "?" else base
+        if arguments[-1] == "1":
+            abstract.add(name)
     return nodes, abstract
 
 
@@ -594,6 +589,46 @@ def _descendants(nodes: dict, root: str) -> tuple[set, set]:
     return members - {root}, members
 
 
+TABLEGEN_DECL_RE = re.compile(
+    r"^\s*(class|def)\s+([A-Za-z_][A-Za-z0-9_]*)[^:\n]*"
+    r"(?:\n\s*)*:\s*(.*?)(?=\{|;)",
+    re.MULTILINE | re.DOTALL,
+)
+TABLEGEN_BASE_RE = re.compile(r"(?:^|,)\s*([A-Za-z_][A-Za-z0-9_]*)")
+
+
+def _parse_tablegen_inheritance(path: Path) -> tuple[dict[str, set[str]], set[str]]:
+    """Return direct TableGen bases and concrete definitions from a .td file."""
+    parents: dict[str, set[str]] = {}
+    definitions = set()
+    for match in TABLEGEN_DECL_RE.finditer(path.read_text(errors="replace")):
+        kind, name, bases = match.groups()
+        parents[name] = {
+            base.group(1) for base in TABLEGEN_BASE_RE.finditer(bases)
+        }
+        if kind == "def":
+            definitions.add(name)
+    return parents, definitions
+
+
+def _descendants_of_many(
+    parents: dict[str, set[str]], root: str
+) -> set[str]:
+    members = {root}
+    changed = True
+    while changed:
+        changed = False
+        for name, bases in parents.items():
+            if name not in members and bases & members:
+                members.add(name)
+                changed = True
+    return members
+
+
+def _with_suffix(name: str, suffix: str) -> str:
+    return name if name.endswith(suffix) else name + suffix
+
+
 def load_inventory(corpus_root: Path):
     basic = corpus_root.parent / "include" / "clang" / "Basic"
     inv = {}
@@ -607,21 +642,25 @@ def load_inventory(corpus_root: Path):
     decl_nodes, decl_abs = _parse_node_td(basic / "DeclNodes.td")
     _, decl_all = _descendants(decl_nodes, "Decl")
     inv["decl data"] = sorted(
-        n + "Decl" for n in decl_all - {"Decl"} - decl_abs
+        _with_suffix(n, "Decl") for n in decl_all - {"Decl"} - decl_abs
     )
 
     type_nodes, type_abs = _parse_node_td(basic / "TypeNodes.td")
     _, type_all = _descendants(type_nodes, "Type")
-    inv["type data"] = sorted(type_all - {"Type"} - type_abs)
+    inv["type data"] = sorted(
+        _with_suffix(n, "Type") for n in type_all - {"Type"} - type_abs
+    )
 
-    attrs = []
     attr_p = basic / "Attr.td"
     if attr_p.exists():
-        for line in attr_p.read_text(errors="replace").splitlines():
-            m = re.match(r"^def\s+([A-Za-z0-9_]+)\s*:\s*Attr\b", line)
-            if m:
-                attrs.append(m.group(1) + "Attr")
-    inv["attr data"] = attrs
+        attr_parents, attr_defs = _parse_tablegen_inheritance(attr_p)
+        attr_all = _descendants_of_many(attr_parents, "Attr")
+        inv["attr data"] = sorted(
+            _with_suffix(name, "Attr")
+            for name in attr_defs & attr_all
+        )
+    else:
+        inv["attr data"] = []
     return inv
 
 
