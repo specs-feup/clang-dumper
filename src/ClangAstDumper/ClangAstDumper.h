@@ -154,6 +154,8 @@ private:
   void visitChildren(const Type *T);
   void visitChildren(const Attr *A);
   void visitChildren(const QualType &T);
+  void visitTemplateArguments(const TemplateArgumentLoc *templateArgs,
+                              unsigned count);
   // A positive N expands through system-header level N and serializes its
   // immediate children as boundary leaves. Non-positive values are unlimited.
   bool isPastSystemHeaderThreshold() const;

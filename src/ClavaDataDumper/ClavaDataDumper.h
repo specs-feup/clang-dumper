@@ -74,6 +74,14 @@ class ClavaDataDumper {
     void dump(const Attr *A);
 
   private:
+    void dumpTemplateArguments(const TemplateArgumentLoc *templateArgs,
+                               unsigned count);
+
+    void dumpVariableSizeArrayTypeData(const ArrayType *T,
+                                       const Expr *sizeExpr);
+    void dumpExprTypeData(const Type *T, bool isSugared,
+                          const Expr *underlyingExpr);
+
     // DECLS
     void DumpDeclData(const Decl *D);
     void DumpNamedDeclData(const NamedDecl *D);

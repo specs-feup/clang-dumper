@@ -87,6 +87,15 @@ const std::map<std::string, clava::ClavaDataDumper::ExprDataEntry>
         EXPR_DATA_ENTRY(MSPropertyRefExpr),
 };
 
+void clava::ClavaDataDumper::dumpTemplateArguments(
+    const TemplateArgumentLoc *templateArgs, unsigned count) {
+    clava::dump(count);
+
+    for (unsigned i = 0; i < count; ++i) {
+        clava::dump((templateArgs + i)->getArgument(), id, Context);
+    }
+}
+
 void clava::ClavaDataDumper::dump(const Stmt *S) {
     const std::string classname = clava::getClassName(S);
     auto it = STMT_DATA_DUMPERS.find(classname);
@@ -298,16 +307,8 @@ void clava::ClavaDataDumper::DumpDeclRefExprData(const DeclRefExpr *E) {
     // Dump qualifier
     clava::dump(E->getQualifier(), Context);
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }
@@ -326,16 +327,8 @@ void clava::ClavaDataDumper::DumpDependentScopeDeclRefExprData(
 
     clava::dump(E->hasTemplateKeyword());
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }
@@ -358,16 +351,8 @@ void clava::ClavaDataDumper::DumpOverloadExprData(const OverloadExpr *E) {
         clava::dump(clava::getId(*currentDecl, id));
     }
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }
@@ -481,16 +466,8 @@ void clava::ClavaDataDumper::DumpCXXDependentScopeMemberExprData(
     clava::dump(E->getQualifier(), Context);
     clava::dump(E->hasTemplateKeyword());
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }

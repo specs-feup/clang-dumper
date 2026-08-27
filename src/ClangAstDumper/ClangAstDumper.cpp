@@ -184,6 +184,13 @@ void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
   llvm::errs() << clava::getId(attr, id) << "\n";
 }
 
+void ClangAstDumper::visitTemplateArguments(
+    const TemplateArgumentLoc *templateArgs, unsigned count) {
+  for (unsigned i = 0; i < count; ++i) {
+    VisitTemplateArgument((templateArgs + i)->getArgument());
+  }
+}
+
 bool ClangAstDumper::isPastSystemHeaderThreshold() const {
   // The level is incremented while visiting a system-header node, and this
   // predicate is checked at that node's outgoing child edges. Consequently,
