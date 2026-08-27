@@ -6,9 +6,19 @@ Runs the dumper over Clang's own test-suite corpus (checked out at the LLVM
 version pinned in llvm-version.env) and classifies every file:
 
     SKIP_*            not runnable here (no cc1 RUN line, needs lit setup,
-                      non-C/C++ language, or UNSUPPORTED for this host)
+                      missing REQUIRES, non-C/C++ language, or UNSUPPORTED
+                      for this host)
+    PARTIAL            file has multiple RUN configurations with mixed
+                      results
     HARNESS_NO_JOB    lit-only flag combination the driver cannot turn into a
                       single compile job (not a dumper defect)
+    HARNESS_TARGET_FLAGS
+                      target flags that cannot be reproduced through the
+                      driver invocation
+    HARNESS_TARGET_BACKEND
+                      target backend unavailable in this build
+    HARNESS_CC1_DEFAULTS
+                      behavior differs because the tool uses driver defaults
     ENV_SKIP_CUDA     needs a CUDA installation this host does not have
     PARSE_FAIL        Clang itself rejects the file under its own flags
     EXPECTED_ERR      file uses -verify; its parse errors are intentional
@@ -43,6 +53,8 @@ import argparse
 import json
 import platform
 import re
+import shlex
+import signal
 import subprocess
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -120,11 +132,15 @@ class CorpusJob:
     uses_verify: bool
 
 
-def tokenize_cc1(cmd: str):
-    return cmd.split()
+def tokenize_cc1(cmd: str) -> list[str]:
+    try:
+        return shlex.split(cmd)
+    except ValueError:
+        # A malformed shell fragment should not discard the whole corpus file.
+        return cmd.split()
 
 
-def extract_jobs(text: str):
+def extract_jobs(text: str, test_dir: Path | None = None):
     """Extract one independent job from each usable %clang_cc1 RUN line."""
     cc1_cmds = []
     for m in RUN_RE.finditer(text):
@@ -186,10 +202,20 @@ def extract_jobs(text: str):
                     continue
         return flags, lang
 
+    def substitute_lit_path(token: str) -> str:
+        if test_dir is None:
+            return token
+        if token == "%S":
+            return str(test_dir)
+        if token.startswith("%S/"):
+            return str(test_dir / token[3:])
+        return token
+
     jobs = []
     skipped_languages = []
     for cmd in usable_cmds:
-        tokens = tokenize_cc1(cmd)
+        tokens = [substitute_lit_path(token)
+                  for token in tokenize_cc1(cmd)]
         flags, lang = to_flags(tokens)
         if lang is not None and lang not in CLANG_LANGS:
             skipped_languages.append(lang)
@@ -340,6 +366,22 @@ def run_stage1(clang: str, source: Path, flags: list[str]):
     return "PARSE_FAIL", reason.replace("\n", " ").replace("\r", "")
 
 
+def summarize_diagnostics(stderr_text: str) -> str:
+    """Keep the first useful compiler diagnostics without storing the dump."""
+    lines = [line.strip() for line in stderr_text.splitlines() if line.strip()]
+    diagnostics = [
+        line for line in lines
+        if re.search(r"\b(?:fatal )?error:", line)
+        or "Error while processing" in line
+        or "LLVM ERROR" in line
+        or "Segmentation fault" in line
+    ]
+    if not diagnostics:
+        return "no compiler diagnostic"
+    unique = list(dict.fromkeys(diagnostics))
+    return " | ".join(unique[:3])[:600]
+
+
 def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
     driver_flags, dropped = to_driver_flags(flags)
     if resource_dir:
@@ -352,19 +394,29 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
             stderr=subprocess.PIPE, timeout=30,
         )
     except subprocess.TimeoutExpired:
-        return "TIMEOUT", {}, None, dropped
+        reason = "dumper timed out after 30 seconds"
+        if dropped:
+            reason += f"; dropped cc1 flags: {' '.join(dropped)}"
+        return "TIMEOUT", {}, None, dropped, reason
     stderr = proc.stderr.decode(errors="replace")
     eff_std = infer_std_from_dump(stderr)
+    reason = summarize_diagnostics(stderr)
+    if proc.returncode < 0:
+        reason = f"terminated by {signal.Signals(-proc.returncode).name}: {reason}"
+    if dropped:
+        reason += f"; dropped cc1 flags: {' '.join(dropped)}"
 
     if "expected exactly one compiler job" in stderr:
-        return "HARNESS_NO_JOB", {}, eff_std, dropped
+        return "HARNESS_NO_JOB", {}, eff_std, dropped, reason
     if "cannot find CUDA installation" in stderr or "--cuda-path" in stderr:
-        return "ENV_SKIP_CUDA", {}, eff_std, dropped
+        return "ENV_SKIP_CUDA", {}, eff_std, dropped, reason
     if "amdgpu-arch" in stderr or "--rocm-path" in stderr \
             or "ROCm device library" in stderr:
-        return "ENV_SKIP_GPU", {}, eff_std, dropped
+        return "ENV_SKIP_GPU", {}, eff_std, dropped, reason
     if proc.returncode == 0:
         result = "CLEAN"
+    elif dropped:
+        result = "HARNESS_TARGET_FLAGS"
     elif proc.returncode < 0:
         result = "CRASH"
     else:
@@ -379,13 +431,17 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
         if "when exceptions are enabled" in stderr \
                 or "missing exception specification" in stderr \
                 or "unhandled_exception()" in stderr:
-            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
         if source.suffix.lower() == ".cl" and (
                 "opencl-c-base.h" in stderr or "redefinition" in stderr):
-            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
+        if "aligned allocation function" in stderr \
+                and ("only available on" in stderr
+                     or "not available on" in stderr):
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
         if "unknown target triple 'unknown-" in stderr \
                 or "MS-style inline assembly is not available" in stderr:
-            return "HARNESS_TARGET_BACKEND", {}, eff_std, dropped
+            return "HARNESS_TARGET_BACKEND", {}, eff_std, dropped, reason
         result = "DUMP_FAIL"
 
     coverage = {}
@@ -403,7 +459,7 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
             family, _, rest = stripped.partition(": ")
             if rest:
                 coverage[family] = rest.split()
-    return result, coverage, eff_std, dropped
+    return result, coverage, eff_std, dropped, reason
 
 
 def aggregate_bucket(buckets: list[str]) -> str:
@@ -445,7 +501,7 @@ def process_file(args):
         return path_str, "SKIP_MISSING_REQUIRES", \
             f"missing lit feature(s): {', '.join(missing)}", {}, {}
 
-    jobs, skip_reason = extract_jobs(text)
+    jobs, skip_reason = extract_jobs(text, source.parent.resolve())
     if not jobs:
         return path_str, skip_reason, "", {}, {}
     if unsupported & HOST_UNSUPPORTED_MARKERS:
@@ -470,10 +526,8 @@ def process_file(args):
             })
             continue
 
-        result, coverage, eff_std, dropped = run_stage2(
+        result, coverage, eff_std, dropped, stage2_reason = run_stage2(
             tool, source, job.flags, resource_dir)
-        if result == "DUMP_FAIL" and dropped:
-            result = "HARNESS_TARGET_FLAGS"
         std_key = None
         for j, f in enumerate(job.flags):
             if f == "-std" and j + 1 < len(job.flags):
@@ -485,7 +539,7 @@ def process_file(args):
         job_results.append({
             "index": job_index,
             "bucket": result,
-            "reason": "",
+            "reason": stage2_reason if result != "CLEAN" else "",
             "flags": job.flags,
             "std": std_key,
             "effective_std": eff_std,
@@ -502,7 +556,7 @@ def process_file(args):
     buckets = [job["bucket"] for job in job_results]
     reasons = sorted({job["reason"] for job in job_results if job["reason"]})
     first = job_results[0]
-    return path_str, aggregate_bucket(buckets), "; ".join(reasons), {
+    return path_str, aggregate_bucket(buckets), "; ".join(reasons[:3])[:1800], {
         family: sorted(classes) for family, classes in all_coverage.items()
     }, {
         "jobs": job_results,
@@ -685,15 +739,18 @@ def main():
         "uncovered_nodes_out_of_scope": uncovered_out,
         "encountered_nodes": {k: sorted(v) for k, v in encounters.items()},
         "crashes": [
-            {"file": p} for p, r in sorted(results.items())
+            {"file": p, "reason": r["reason"]}
+            for p, r in sorted(results.items())
             if r["bucket"] == "CRASH"
         ],
         "dump_failures": [
-            {"file": p} for p, r in sorted(results.items())
+            {"file": p, "reason": r["reason"]}
+            for p, r in sorted(results.items())
             if r["bucket"] == "DUMP_FAIL"
         ],
         "timeouts": [
-            {"file": p} for p, r in sorted(results.items())
+            {"file": p, "reason": r["reason"]}
+            for p, r in sorted(results.items())
             if r["bucket"] == "TIMEOUT"
         ],
     }
