@@ -36,8 +36,6 @@ private:
   llvm::SmallPtrSet<const Decl *, 32> seenDecls;
   llvm::SmallPtrSet<const Attr *, 16> seenAttrs;
 
-  llvm::SmallPtrSet<const CXXCtorInitializer *, 16> seenInits;
-
   clava::ClavaDataDumper dataDumper;
 
   // Children visitors are selected directly by the node's class name, as
@@ -105,9 +103,6 @@ public:
    * Utility methods
    */
 
-  std::string toBoolString(int value);
-  const Type *getTypePtr(QualType T, std::string source);
-
   void log(const Decl *D);
   void log(const Stmt *S);
   void log(const Type *T);
@@ -159,8 +154,6 @@ private:
   void visitChildren(const Type *T);
   void visitChildren(const Attr *A);
   void visitChildren(const QualType &T);
-  void emptyChildren(const void *pointer);
-
   // A positive N expands through system-header level N and serializes its
   // immediate children as boundary leaves. Non-positive values are unlimited.
   bool isPastSystemHeaderThreshold() const;
@@ -392,10 +385,6 @@ public:
   // Children visitors for other types of classes
   void VisitNestedNameSpecifierChildren(NestedNameSpecifier *qualifier);
 
-  /* Utility methods for DECLS */
-  void dumpNumberTemplateParameters(const Decl *D,
-                                    const TemplateParameterList *TPL);
-
   // These methods return true if the node had been already visited
 
   bool dumpType(const Type *typeAddr);
@@ -404,8 +393,6 @@ public:
   bool dumpDecl(const Decl *declAddr);
   bool dumpAttr(const Attr *attrAddr);
 
-  /* EXTRA */
-  void dumpCXXCtorInitializer(const CXXCtorInitializer *Init);
 };
 
 #endif // CLANGASTDUMPER_CLANGASTDUMPER_H

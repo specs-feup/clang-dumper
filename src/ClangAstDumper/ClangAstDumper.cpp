@@ -11,8 +11,6 @@
 
 #include "clang/Basic/SourceManager.h"
 
-#include <assert.h>
-
 // #define DEBUG
 
 // #define VISIT_CHECK
@@ -157,16 +155,6 @@ void ClangAstDumper::log(const Type *T) { log(clava::getClassName(T), T); }
 
 void ClangAstDumper::log(const Attr *A) { log(clava::getClassName(A), A); }
 
-std::string ClangAstDumper::toBoolString(int value) {
-  return value ? "true" : "false";
-}
-
-const Type *getTypePtr(QualType T, std::string source) {
-  assert(!T.isNull() && "Cannot retrieve a NULL type pointer");
-
-  return T.getTypePtr();
-}
-
 void ClangAstDumper::dumpVisitedChildren(const void *pointer,
                                          std::vector<std::string> children) {
   llvm::errs() << VISITED_CHILDREN << "\n";
@@ -194,11 +182,6 @@ void ClangAstDumper::dumpTopLevelType(const QualType &type) {
 void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
   llvm::errs() << TOP_LEVEL_ATTRIBUTES << "\n";
   llvm::errs() << clava::getId(attr, id) << "\n";
-}
-
-void ClangAstDumper::emptyChildren(const void *pointer) {
-  std::vector<std::string> noChildren;
-  dumpVisitedChildren(pointer, noChildren);
 }
 
 bool ClangAstDumper::isPastSystemHeaderThreshold() const {

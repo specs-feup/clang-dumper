@@ -540,19 +540,6 @@ static bool endsWith(const std::string &str, const std::string &suffix) {
            0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 }
 
-/**
- *  Taken from here:
- * https://stackoverflow.com/questions/874134/find-if-string-ends-with-another-string-in-c#874160
- *
- * @param str
- * @param prefix
- * @return
- */
-static bool startsWith(const std::string &str, const std::string &prefix) {
-    return str.size() >= prefix.size() &&
-           0 == str.compare(0, prefix.size(), prefix);
-}
-
 const std::string clava::getQualifiedPrefix(const NamedDecl *D) {
     const std::string qualifiedName = D->getQualifiedNameAsString();
     const std::string declName = D->getDeclName().getAsString();
