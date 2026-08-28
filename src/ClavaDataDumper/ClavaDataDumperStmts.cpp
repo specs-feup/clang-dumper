@@ -628,9 +628,25 @@ void clava::ClavaDataDumper::DumpDesignatedInitExprData(
     clava::dump(E->usesGNUSyntax());
 
     // Dump designators
-    clava::dump(E->size());
+    // Clang expands anonymous fields into unnamed, synthetic designators.
+    auto isSourceDesignator = [](const auto *designator) {
+        return !designator->isFieldDesignator() ||
+               designator->getFieldName() != nullptr;
+    };
+
+    unsigned int numDesignators = 0;
     for (unsigned int i = 0; i < E->size(); i++) {
-        clava::dump(E->getDesignator(i));
+        if (isSourceDesignator(E->getDesignator(i))) {
+            numDesignators++;
+        }
+    }
+
+    clava::dump(numDesignators);
+    for (unsigned int i = 0; i < E->size(); i++) {
+        auto *designator = E->getDesignator(i);
+        if (isSourceDesignator(designator)) {
+            clava::dump(designator);
+        }
     }
 }
 

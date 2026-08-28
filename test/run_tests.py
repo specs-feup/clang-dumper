@@ -132,6 +132,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "clava_issue29.cpp": T(),
     "clava_issue39.cpp": T(),
     "clava_issue40.cpp": T(),
+    "clava_issue48.c": T(),
     "comment.cpp": T(),
     "comment_include.cpp": T(),
     "compound_literal.c": T(),
