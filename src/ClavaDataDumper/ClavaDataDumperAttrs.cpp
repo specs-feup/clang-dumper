@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/DumpStream.h"
 #include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
@@ -32,9 +33,9 @@ void clava::ClavaDataDumper::dump(const Attr *A) {
         it != ATTR_DATA_DUMPERS.end() ? it->second.dataName : "Attribute";
 
     // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(A, id) << "\n";
-    llvm::errs() << clava::getClassName(A) << "\n";
+    clava::dumpStream() << "<" << dataName << "Data>\n";
+    clava::dumpStream() << clava::getId(A, id) << "\n";
+    clava::dumpStream() << clava::getClassName(A) << "\n";
 
     if (it != ATTR_DATA_DUMPERS.end()) {
         it->second.dump(*this, A);

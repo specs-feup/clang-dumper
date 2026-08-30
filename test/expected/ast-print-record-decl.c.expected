@@ -85,12 +85,6 @@ Struct
 <Id to Class Map>
 ADDR_001
 RecordDecl
-<TEST_DIR>/ast-print-record-decl.c:113:50: note: 'T' has been explicitly marked deprecated here
-  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-      |                                                  ^
-<TEST_DIR>/ast-print-record-decl.c:113:50: note: 'T' has been explicitly marked deprecated here
-  113 |   KW __attribute__((aligned(16))) __attribute__((deprecated(""))) T BASES {
-      |                                                  ^
 <Top Level Nodes>
 ADDR_003
 <Visited Children>
@@ -1035,9 +1029,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_003
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.c:136:21: note: 'T' has been explicitly marked deprecated here
-  136 |   KW __attribute__((deprecated(""))) T BASES { int i; } *p1;
-      |                     ^
 <Top Level Nodes>
 ADDR_039
 <Top Level Types>
@@ -1960,15 +1951,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_039
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.c:149:21: note: 'T' has been explicitly marked deprecated here
-  149 |   KW __attribute__((deprecated(""))) T *p0;
-      |                     ^
-<TEST_DIR>/ast-print-record-decl.c:149:21: note: 'T' has been explicitly marked deprecated here
-  149 |   KW __attribute__((deprecated(""))) T *p0;
-      |                     ^
-<TEST_DIR>/ast-print-record-decl.c:149:21: note: 'T' has been explicitly marked deprecated here
-  149 |   KW __attribute__((deprecated(""))) T *p0;
-      |                     ^
 <Top Level Nodes>
 ADDR_072
 <Top Level Types>
@@ -3182,12 +3164,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_072
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.c:172:21: note: 'T' has been explicitly marked deprecated here
-  172 |   KW __attribute__((deprecated(""))) T *p0;
-      |                     ^
-<TEST_DIR>/ast-print-record-decl.c:172:21: note: 'T' has been explicitly marked deprecated here
-  172 |   KW __attribute__((deprecated(""))) T *p0;
-      |                     ^
 <Top Level Nodes>
 ADDR_116
 <Top Level Types>
@@ -5200,12 +5176,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_116
 FunctionDecl
-<TEST_DIR>/ast-print-record-decl.c:217:21: note: 'T' has been explicitly marked deprecated here
-  217 |   KW __attribute__((deprecated(""))) T *p3;
-      |                     ^
-<TEST_DIR>/ast-print-record-decl.c:217:21: note: 'T' has been explicitly marked deprecated here
-  217 |   KW __attribute__((deprecated(""))) T *p3;
-      |                     ^
 <Top Level Nodes>
 ADDR_189
 <Top Level Types>
@@ -7597,4 +7567,3 @@ ADDR_006
 <Id to Class Map>
 ADDR_271
 IntegerLiteral
-10 warnings generated.

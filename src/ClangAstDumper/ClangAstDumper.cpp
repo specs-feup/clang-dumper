@@ -5,6 +5,7 @@
 #include "ClangAstDumper.h"
 #include "../Clang/ClangNodes.h"
 #include "../ClangEnums/ClangEnums.h"
+#include "../Clava/DumpStream.h"
 #include "ClangAstDumperConstants.h"
 
 #include "clang/Lex/Lexer.h"
@@ -169,31 +170,31 @@ const Type *getTypePtr(QualType T, std::string source) {
 
 void ClangAstDumper::dumpVisitedChildren(const void *pointer,
                                          std::vector<std::string> children) {
-  llvm::errs() << VISITED_CHILDREN << "\n";
+  clava::dumpStream() << VISITED_CHILDREN << "\n";
   // If node has children, pointer will not be null
-  llvm::errs() << clava::getId(pointer, id) << "\n";
-  llvm::errs() << children.size() << "\n";
+  clava::dumpStream() << clava::getId(pointer, id) << "\n";
+  clava::dumpStream() << children.size() << "\n";
 
   for (auto child : children) {
-    llvm::errs() << child << "\n";
+    clava::dumpStream() << child << "\n";
   }
 }
 
 void ClangAstDumper::dumpIdToClassMap(const void *pointer,
                                       std::string className) {
-  llvm::errs() << ID_TO_CLASS_MAP << "\n";
-  llvm::errs() << clava::getId(pointer, id) << "\n";
-  llvm::errs() << className << "\n";
+  clava::dumpStream() << ID_TO_CLASS_MAP << "\n";
+  clava::dumpStream() << clava::getId(pointer, id) << "\n";
+  clava::dumpStream() << className << "\n";
 }
 
 void ClangAstDumper::dumpTopLevelType(const QualType &type) {
-  llvm::errs() << TOP_LEVEL_TYPES << "\n";
+  clava::dumpStream() << TOP_LEVEL_TYPES << "\n";
   clava::dump(type, id);
 }
 
 void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
-  llvm::errs() << TOP_LEVEL_ATTRIBUTES << "\n";
-  llvm::errs() << clava::getId(attr, id) << "\n";
+  clava::dumpStream() << TOP_LEVEL_ATTRIBUTES << "\n";
+  clava::dumpStream() << clava::getId(attr, id) << "\n";
 }
 
 void ClangAstDumper::emptyChildren(const void *pointer) {

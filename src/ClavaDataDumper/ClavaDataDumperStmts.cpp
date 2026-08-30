@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/DumpStream.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
@@ -94,9 +95,9 @@ void clava::ClavaDataDumper::dump(const Stmt *S) {
         it != STMT_DATA_DUMPERS.end() ? it->second.dataName : "Stmt";
 
     // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(S, id) << "\n";
-    llvm::errs() << clava::getClassName(S) << "\n";
+    clava::dumpStream() << "<" << dataName << "Data>\n";
+    clava::dumpStream() << clava::getId(S, id) << "\n";
+    clava::dumpStream() << clava::getClassName(S) << "\n";
 
     if (it != STMT_DATA_DUMPERS.end()) {
         it->second.dump(*this, S);
@@ -114,9 +115,9 @@ void clava::ClavaDataDumper::dump(const Expr *E) {
         it != EXPR_DATA_DUMPERS.end() ? it->second.dataName : "Expr";
 
     // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(E, id) << "\n";
-    llvm::errs() << clava::getClassName(E) << "\n";
+    clava::dumpStream() << "<" << dataName << "Data>\n";
+    clava::dumpStream() << clava::getId(E, id) << "\n";
+    clava::dumpStream() << clava::getClassName(E) << "\n";
 
     if (it != EXPR_DATA_DUMPERS.end()) {
         it->second.dump(*this, E);

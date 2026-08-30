@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/DumpStream.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
@@ -74,9 +75,9 @@ void clava::ClavaDataDumper::dump(const Decl *D) {
         it != DECL_DATA_DUMPERS.end() ? it->second.dataName : "Decl";
 
     // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(D, id) << "\n";
-    llvm::errs() << clava::getClassName(D) << "\n";
+    clava::dumpStream() << "<" << dataName << "Data>\n";
+    clava::dumpStream() << clava::getId(D, id) << "\n";
+    clava::dumpStream() << clava::getClassName(D) << "\n";
 
     if (it != DECL_DATA_DUMPERS.end()) {
         it->second.dump(*this, D);

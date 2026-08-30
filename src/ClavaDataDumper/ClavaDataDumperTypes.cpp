@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/DumpStream.h"
 #include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
@@ -58,9 +59,9 @@ void clava::ClavaDataDumper::dump(const Type *T) {
       it != TYPE_DATA_DUMPERS.end() ? it->second.dataName : "Type";
 
   // Dump header
-  llvm::errs() << "<" << dataName << "Data>\n";
-  llvm::errs() << clava::getId(T, id) << "\n";
-  llvm::errs() << clava::getClassName(T) << "\n";
+  clava::dumpStream() << "<" << dataName << "Data>\n";
+  clava::dumpStream() << clava::getId(T, id) << "\n";
+  clava::dumpStream() << clava::getClassName(T) << "\n";
 
   if (it != TYPE_DATA_DUMPERS.end()) {
     it->second.dump(*this, T);
@@ -111,10 +112,10 @@ void clava::ClavaDataDumper::DumpTypeData(const Type *T,
 // QualType
 void clava::ClavaDataDumper::dump(const QualType &T) {
   // Dump header
-  llvm::errs() << "<QualTypeData>"
+  clava::dumpStream() << "<QualTypeData>"
                << "\n";
-  llvm::errs() << clava::getId(T, id) << "\n";
-  llvm::errs() << "QualType"
+  clava::dumpStream() << clava::getId(T, id) << "\n";
+  clava::dumpStream() << "QualType"
                << "\n";
 
   auto qualifiers = T.getQualifiers();

@@ -9,6 +9,7 @@
 #include "../Clava/HandlerCoverage.h"
 #include "../ClangAstDumper/ClangAstDumperConstants.h"
 #include "ClangNodes.h"
+#include "../Clava/DumpStream.h"
 
 #include <clang/AST/AST.h>
 #include <clang/AST/ASTConsumer.h>
@@ -73,6 +74,7 @@ std::string sanitizeErrorMessage(const char *message) {
                  << (D == nullptr ? "<unknown>" : clava::getClassName(D)) << " "
                  << sanitizeErrorMessage(message) << "\n";
     llvm::errs().flush();
+    clava::dumpStream().flush();
     clava::reportHandlerCoverage();
     llvm::outs().flush();
     exit(1);
@@ -99,8 +101,8 @@ bool DumpAstVisitor::TraverseDecl(Decl *D) {
         !fullLocation.isInSystemHeader()) {
 
         // Top-level Node
-        llvm::errs() << TOP_LEVEL_NODES << "\n";
-        llvm::errs() << D << "_" << id << "\n";
+        clava::dumpStream() << TOP_LEVEL_NODES << "\n";
+        clava::dumpStream() << D << "_" << id << "\n";
     }
 
     return false;
@@ -216,9 +218,9 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
     dumpCompilerInstanceData(CI, file);
 
     // Dump id->file data
-    llvm::errs() << ID_FILE_MAP << "\n";
-    llvm::errs() << counter << "\n";
-    llvm::errs() << file << "\n";
+    clava::dumpStream() << ID_FILE_MAP << "\n";
+    clava::dumpStream() << counter << "\n";
+    clava::dumpStream() << file << "\n";
 
     ASTContext *Context = &CI.getASTContext();
 
@@ -289,12 +291,12 @@ void IncludeDumper::InclusionDirective(
 
     if (!sm.isInSystemHeader(HashLoc)) {
         // Includes information in stream
-        llvm::errs() << INCLUDES << "\n";
+        clava::dumpStream() << INCLUDES << "\n";
         // Source
-        llvm::errs() << sm.getFilename(HashLoc).str() << "\n";
-        llvm::errs() << FileName.str() << "\n";
-        llvm::errs() << sm.getSpellingLineNumber(HashLoc) << "\n";
-        llvm::errs() << IsAngled << "\n";
+        clava::dumpStream() << sm.getFilename(HashLoc).str() << "\n";
+        clava::dumpStream() << FileName.str() << "\n";
+        clava::dumpStream() << sm.getSpellingLineNumber(HashLoc) << "\n";
+        clava::dumpStream() << IsAngled << "\n";
     }
 }
 
@@ -344,11 +346,8 @@ void DumpResources::writeCounter(int id) {
 
     // Output is processed with a line iterator, allows multiple-line processing
 
-    llvm::outs() << PREFIX << "\n";
-    llvm::outs() << id << "\n";
-
-    llvm::errs() << PREFIX << "\n";
-    llvm::errs() << id << "\n";
+    clava::dumpStream() << PREFIX << "\n";
+    clava::dumpStream() << id << "\n";
 }
 
 void DumpResources::init(int runId, int systemLevelThreshold) {

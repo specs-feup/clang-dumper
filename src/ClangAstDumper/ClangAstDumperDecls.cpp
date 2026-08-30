@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/DumpStream.h"
 #include "ClangAstDumper.h"
 #include "ClangAstDumperConstants.h"
 
@@ -38,11 +39,11 @@ void ClangAstDumper::dumpNumberTemplateParameters(
     }
   }
 
-  llvm::errs() << DUMP_NUMBER_TEMPLATE_PARAMETERS << "\n";
+  clava::dumpStream() << DUMP_NUMBER_TEMPLATE_PARAMETERS << "\n";
   // Dump id
-  llvm::errs() << D << "_" << id << "\n";
+  clava::dumpStream() << D << "_" << id << "\n";
   // Dump number
-  llvm::errs() << numberOfTemplateParameters << "\n";
+  clava::dumpStream() << numberOfTemplateParameters << "\n";
 }
 
 /*

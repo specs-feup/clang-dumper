@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -10,8 +13,92 @@ from run_tests import (
     normalize_captured_output,
     normalize_static_output,
     normalize_system_source_blocks,
+    strip_clang_diagnostics,
     unresolved_node_ids,
 )
+
+
+def clang_dumper_tool() -> Path:
+    configured_path = os.environ.get("CLANG_DUMPER_TOOL")
+    if configured_path:
+        return Path(configured_path)
+    return Path(__file__).resolve().parents[1] / "build" / "tool"
+
+
+@unittest.skipUnless(
+    clang_dumper_tool().is_file(),
+    "build/tool is required for stream separation integration tests",
+)
+class DumpStreamIntegrationTest(unittest.TestCase):
+    source = Path(__file__).parent / "inputs" / "simple_function.cpp"
+    throwing_source = Path(__file__).parent / "inputs" / "throw.cpp"
+
+    def run_tool(self, source: Path, output: Path | None = None) -> subprocess.CompletedProcess[str]:
+        command = [
+            str(clang_dumper_tool()),
+            "-id=42",
+            "-system-header-threshold=1",
+        ]
+        if output is not None:
+            command.append(f"-ast-dump-output={output}")
+        command.extend([str(source), "--"])
+        return subprocess.run(command, capture_output=True, text=True, check=False)
+
+    def test_file_output_is_byte_identical_to_legacy_protocol(self) -> None:
+        legacy = self.run_tool(self.source)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast.dump"
+            separated = self.run_tool(self.source, output)
+            self.assertEqual(separated.returncode, legacy.returncode)
+            self.assertEqual(separated.stdout, legacy.stdout)
+            legacy_dump, _ = normalize_captured_output(
+                legacy.stderr, str(self.source.parent.resolve())
+            )
+            separated_dump, _ = normalize_captured_output(
+                output.read_text(encoding="utf-8"), str(self.source.parent.resolve())
+            )
+            self.assertEqual(separated_dump, legacy_dump)
+            self.assertNotIn("<Compiler Instance Data>", separated.stderr)
+
+    def test_diagnostics_remain_on_stderr(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast dump with spaces.dump"
+            result = self.run_tool(self.throwing_source, output)
+            dump = output.read_text(encoding="utf-8")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("error:", result.stderr)
+            self.assertNotIn("<Compiler Instance Data>", result.stderr)
+            self.assertIn("<Compiler Instance Data>", dump)
+
+    def test_file_output_truncates_existing_contents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast.dump"
+            output.write_text("stale data\n", encoding="utf-8")
+            result = self.run_tool(self.source, output)
+            self.assertEqual(result.returncode, 0)
+            self.assertNotIn("stale data", output.read_text(encoding="utf-8"))
+
+    def test_bad_file_output_path_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "missing" / "ast.dump"
+            result = self.run_tool(self.source, output)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Cannot open AST dump output", result.stderr)
+
+
+class ClangDiagnosticFilteringTest(unittest.TestCase):
+    def test_removes_interleaved_diagnostics_without_touching_protocol(self) -> None:
+        output = """protocol before
+/tmp/input.c:3:4: warning: example warning
+    3 | bad();
+      | ^~~~~
+protocol after
+1 warning generated.
+"""
+        self.assertEqual(
+            "protocol before\nprotocol after\n",
+            strip_clang_diagnostics(output),
+        )
 
 
 def source_record(
