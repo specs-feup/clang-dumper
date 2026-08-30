@@ -13,10 +13,21 @@ namespace clava {
 
 namespace {
 bool enabled = false;
+bool encountersEnabled = false;
 std::map<std::string, std::set<std::string>> fallbacks;
+std::map<std::string, std::set<std::string>> encounters;
 } // namespace
 
 void enableHandlerCoverageReport() { enabled = true; }
+
+void enableHandlerEncounterReport() { encountersEnabled = true; }
+
+void recordHandlerEncounter(const char *family, const std::string &classname) {
+    if (!encountersEnabled) {
+        return;
+    }
+    encounters[family].insert(classname);
+}
 
 void recordHandlerFallback(const char *family, const std::string &classname) {
     if (!enabled) {
@@ -26,6 +37,20 @@ void recordHandlerFallback(const char *family, const std::string &classname) {
 }
 
 void reportHandlerCoverage() {
+    if (encountersEnabled) {
+        llvm::outs() << "[clang-dumper] handler encounters:\n";
+        if (encounters.empty()) {
+            llvm::outs() << "  (none)\n";
+        }
+        for (const auto &entry : encounters) {
+            llvm::outs() << "  " << entry.first << ":";
+            for (const auto &classname : entry.second) {
+                llvm::outs() << " " << classname;
+            }
+            llvm::outs() << "\n";
+        }
+    }
+
     if (!enabled) {
         return;
     }

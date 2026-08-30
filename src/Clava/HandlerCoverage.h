@@ -21,6 +21,14 @@ namespace clava {
  */
 void enableHandlerCoverageReport();
 
+/// Records every encountered `classname` in dispatch `family`, regardless of
+/// whether it used a dedicated or fallback handler. No-op unless encounter
+/// tracking is enabled.
+void recordHandlerEncounter(const char *family, const std::string &classname);
+
+/// Enables/disables encounter tracking (independent of fallback reporting).
+void enableHandlerEncounterReport();
+
 /// Records that `classname` used fallback handling in dispatch `family`.
 /// No-op unless coverage reporting is enabled.
 void recordHandlerFallback(const char *family, const std::string &classname);

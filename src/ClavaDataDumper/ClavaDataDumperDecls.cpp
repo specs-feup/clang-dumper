@@ -72,6 +72,7 @@ void clava::ClavaDataDumper::dump(const Decl *D) {
     auto it = DECL_DATA_DUMPERS.find(classname);
     const char *dataName =
         it != DECL_DATA_DUMPERS.end() ? it->second.dataName : "Decl";
+    clava::recordHandlerEncounter("decl data", classname);
 
     // Dump header
     llvm::errs() << "<" << dataName << "Data>\n";

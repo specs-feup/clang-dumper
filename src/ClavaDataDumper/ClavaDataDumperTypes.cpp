@@ -56,6 +56,7 @@ void clava::ClavaDataDumper::dump(const Type *T) {
   auto it = TYPE_DATA_DUMPERS.find(classname);
   const char *dataName =
       it != TYPE_DATA_DUMPERS.end() ? it->second.dataName : "Type";
+  clava::recordHandlerEncounter("type data", classname);
 
   // Dump header
   llvm::errs() << "<" << dataName << "Data>\n";
