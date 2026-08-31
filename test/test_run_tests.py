@@ -125,6 +125,22 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("Cannot open AST dump output", result.stderr)
 
+    def test_rejects_multiple_sources_for_one_output(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast.dump"
+            command = [
+                str(clang_dumper_tool()),
+                "-c",
+                str(self.source),
+                str(Path(__file__).parent / "inputs" / "includes.cpp"),
+                "-o",
+                str(output),
+                "--",
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("require exactly one source file", result.stderr)
+
     def test_writes_make_dependencies_for_ccache_depend_mode(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "ast dump.output"

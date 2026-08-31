@@ -169,6 +169,13 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
+  const auto &SourcePaths = (*OptionsParser).getSourcePathList();
+  if ((!AstDumpOutputOption.empty() || DependencyOption) &&
+      SourcePaths.size() != 1) {
+    llvm::errs() << "-o and -MD require exactly one source file\n";
+    return 1;
+  }
+
   if (DependencyOption && DependencyFileOption.empty()) {
     llvm::errs() << "-MD requires -MF <path>\n";
     return 1;
@@ -220,11 +227,11 @@ int main(int argc, const char *argv[]) {
   }
 
   clang::tooling::ClangTool Tool((*OptionsParser).getCompilations(),
-                                 (*OptionsParser).getSourcePathList());
+                                 SourcePaths);
 
   if (DependencyOption) {
     const std::string DependencyTarget = AstDumpOutputOption.empty()
-        ? (*OptionsParser).getSourcePathList().front()
+        ? SourcePaths.front()
         : AstDumpOutputOption.getValue();
     llvm::SmallVector<char> QuotedDependencyTarget;
     clang::quoteMakeTarget(DependencyTarget, QuotedDependencyTarget);

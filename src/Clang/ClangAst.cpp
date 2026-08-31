@@ -69,7 +69,7 @@ std::string sanitizeErrorMessage(const char *message) {
     return sanitized;
 }
 
-[[noreturn]] void dumpFatalError(const Decl *D, const char *message) {
+void dumpFatalError(const Decl *D, const char *message) {
     llvm::errs() << "ERROR "
                  << (D == nullptr ? "<unknown>" : clava::getClassName(D)) << " "
                  << sanitizeErrorMessage(message) << "\n";
@@ -77,7 +77,6 @@ std::string sanitizeErrorMessage(const char *message) {
     clava::dumpStream().flush();
     clava::reportHandlerCoverage();
     llvm::outs().flush();
-    exit(1);
 }
 
 } // namespace
@@ -181,8 +180,10 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             topLevelDeclVisitor.TraverseDecl(D);
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
+            return false;
         } catch (...) {
             dumpFatalError(D, "unknown error");
+            return false;
         }
     }
 
@@ -191,8 +192,10 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             printRelationsVisitor.TraverseDecl(D);
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
+            return false;
         } catch (...) {
             dumpFatalError(D, "unknown error");
+            return false;
         }
     }
 
