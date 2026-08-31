@@ -246,7 +246,7 @@ if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_dependencies(plugin clang_enums)
 endif()
 
-add_executable(tool ${SOURCE_FILES} src/tool.cpp)
+add_executable(tool ${SOURCE_FILES} src/tool.cpp src/Clava/ZstdStream.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
 add_dependencies(tool clang_enums)
 

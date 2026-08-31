@@ -1002,7 +1002,7 @@ def run_tool_and_normalize(
         cmd = [path, f"-id={test_id}"]
         if system_header_threshold is not None:
             cmd.append(f"-system-header-threshold={system_header_threshold}")
-        cmd += [f"-ast-dump-output={dump_path}", input_file, "--"] + flags
+        cmd += ["-c", input_file, "-o", str(dump_path), "--"] + flags
     else:
         # Plugin mode - invoke clang with the plugin loaded
         assert clang_path is not None, "clang_path required for plugin mode"

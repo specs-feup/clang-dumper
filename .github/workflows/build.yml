@@ -93,6 +93,8 @@ jobs:
             zlib1g-dev \
             libedit-dev \
             libzstd-dev \
+            zstd \
+            ccache \
             libxml2-dev
           if [ -n "${{ matrix.accelerator-packages }}" ]; then
             sudo apt-get install -y --no-install-recommends ${{ matrix.accelerator-packages }}
@@ -108,6 +110,9 @@ jobs:
 
       - name: Build
         run: cmake --build build --target tool plugin --parallel
+
+      - name: Test output streams
+        run: python3 test/test_run_tests.py
 
       - name: Test tool
         id: test_tool
@@ -227,7 +232,7 @@ jobs:
 
       - name: Install LLVM
         run: |
-          brew install llvm@${LLVM_VERSION} libomp zstd
+          brew install llvm@${LLVM_VERSION} libomp zstd ccache
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
           CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
@@ -251,6 +256,9 @@ jobs:
 
       - name: Build
         run: cmake --build build --target tool plugin --parallel
+
+      - name: Test output streams
+        run: python3 test/test_run_tests.py
 
       - name: Test tool
         id: test_tool

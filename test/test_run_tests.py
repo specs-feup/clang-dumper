@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -40,7 +41,7 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             "-system-header-threshold=1",
         ]
         if output is not None:
-            command.append(f"-ast-dump-output={output}")
+            command.extend(["-c", "-o", str(output)])
         command.extend([str(source), "--"])
         return subprocess.run(command, capture_output=True, text=True, check=False)
 
@@ -59,6 +60,45 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             )
             self.assertEqual(separated_dump, legacy_dump)
             self.assertNotIn("<Compiler Instance Data>", separated.stderr)
+
+    @unittest.skipUnless(shutil.which("zstd"), "zstd is required to verify compressed output")
+    def test_zstd_output_decompresses_to_equivalent_protocol(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            plain_output = Path(directory) / "ast.dump"
+            compressed_output = Path(directory) / "ast.dump.zst"
+
+            plain = self.run_tool(self.source, plain_output)
+            command = [
+                str(clang_dumper_tool()),
+                "-id=42",
+                "-system-header-threshold=1",
+                "-c",
+                "-o",
+                str(compressed_output),
+                "-ast-dump-compression=zstd",
+                str(self.source),
+                "--",
+            ]
+            compressed = subprocess.run(
+                command, capture_output=True, text=True, check=False
+            )
+            decompressed = subprocess.run(
+                ["zstd", "-q", "-d", "-c", str(compressed_output)],
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(plain.returncode, 0, plain.stderr)
+            self.assertEqual(compressed.returncode, 0, compressed.stderr)
+            self.assertEqual(decompressed.returncode, 0, decompressed.stderr)
+            source_root = str(self.source.parent.resolve())
+            plain_dump, _ = normalize_captured_output(
+                plain_output.read_text(encoding="utf-8"), source_root
+            )
+            compressed_dump, _ = normalize_captured_output(
+                decompressed.stdout.decode("utf-8"), source_root
+            )
+            self.assertEqual(compressed_dump, plain_dump)
 
     def test_diagnostics_remain_on_stderr(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -84,6 +124,109 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             result = self.run_tool(self.source, output)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("Cannot open AST dump output", result.stderr)
+
+    def test_writes_make_dependencies_for_ccache_depend_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast dump.output"
+            dependencies = Path(directory) / "ast dump.d"
+            command = [
+                str(clang_dumper_tool()),
+                "-c",
+                str(Path(__file__).parent / "inputs" / "includes.cpp"),
+                "-o",
+                str(output),
+                "-MD",
+                "-MF",
+                str(dependencies),
+                "-id=42",
+                "-system-header-threshold=1",
+                "--",
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            depfile = dependencies.read_text(encoding="utf-8")
+            self.assertIn(str(output).replace(" ", "\\ "), depfile)
+            self.assertIn("includes.cpp", depfile)
+            self.assertIn("includes.h", depfile)
+            self.assertIn("includes2.h", depfile)
+            self.assertIn("data1.dat", depfile)
+
+    def test_accepts_ccache_canonicalized_argument_order(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast.dump"
+            dependencies = Path(directory) / "ast.d"
+            command = [
+                str(clang_dumper_tool()),
+                "-MD",
+                "-MF",
+                str(dependencies),
+                "-id=42",
+                "-system-header-threshold=1",
+                "-std=c++17",
+                "-fcolor-diagnostics",
+                "-c",
+                "-o",
+                str(output),
+                "--",
+                str(self.source),
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(output.is_file())
+            self.assertTrue(dependencies.is_file())
+
+    @unittest.skipUnless(shutil.which("ccache"), "ccache is required for cache integration tests")
+    def test_ccache_restores_compressed_dump_without_rerunning_tool(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "ast.dump.zst"
+            dependencies = root / "ast.d"
+            environment = os.environ.copy()
+            environment.update(
+                CCACHE_DIR=str(root / "cache"),
+                CCACHE_COMPILERTYPE="clang",
+                CCACHE_DEPEND="true",
+                CCACHE_NOHASHDIR="true",
+                CCACHE_NOCOMPRESS="true",
+            )
+            command = [
+                "ccache",
+                str(clang_dumper_tool()),
+                "-c",
+                str(self.source),
+                "-id=42",
+                "-system-header-threshold=1",
+                "-o",
+                str(output),
+                "-ast-dump-compression=zstd",
+                "-MD",
+                "-MF",
+                str(dependencies),
+                "--",
+            ]
+
+            first = subprocess.run(
+                command, capture_output=True, text=True, check=False, env=environment
+            )
+            self.assertEqual(first.returncode, 0, first.stderr)
+            first_dump = output.read_bytes()
+            output.unlink()
+            dependencies.unlink()
+            second = subprocess.run(
+                command, capture_output=True, text=True, check=False, env=environment
+            )
+            stats = subprocess.run(
+                ["ccache", "--print-stats"],
+                capture_output=True,
+                text=True,
+                check=True,
+                env=environment,
+            ).stdout
+
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(output.read_bytes(), first_dump)
+            self.assertIn("direct_cache_hit\t1", stats)
+            self.assertIn("cache_miss\t1", stats)
 
 
 class ClangDiagnosticFilteringTest(unittest.TestCase):
