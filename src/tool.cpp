@@ -41,16 +41,56 @@ static llvm::cl::opt<std::string> AstDumpCompressionOption(
 
 
 /**
- * ccache canonicalizes a compiler invocation to put compiler flags before
- * `--` and the source after it. CommonOptionsParser uses the inverse layout:
- * tool flags and sources before `--`, compiler flags after it. Translate only
- * that unambiguous ccache shape and leave ordinary tool invocations untouched.
+ * Newer ccache versions canonicalize a compiler invocation to put compiler
+ * flags before `--` and the source after it. Older versions preserve the
+ * original layout but may inject a diagnostic-color flag before the tool
+ * arguments. CommonOptionsParser expects both kinds of compiler flag after
+ * `--`, so normalize the two ccache shapes.
  */
 static std::vector<std::string> normalizeCcacheArguments(
         int argc, const char *argv[]) {
-  if (argc < 3 || std::string(argv[argc - 2]) != "--" ||
-      llvm::StringRef(argv[argc - 1]).starts_with("-")) {
+  if (argc < 3) {
     return {};
+  }
+
+  if (std::string(argv[argc - 2]) != "--" ||
+      llvm::StringRef(argv[argc - 1]).starts_with("-")) {
+    int SeparatorIndex = -1;
+    for (int Index = 1; Index < argc; ++Index) {
+      if (std::string(argv[Index]) == "--") {
+        SeparatorIndex = Index;
+        break;
+      }
+    }
+
+    if (SeparatorIndex < 0) {
+      return {};
+    }
+
+    std::vector<std::string> ToolArguments{argv[0]};
+    std::vector<std::string> InjectedCompilerArguments;
+    for (int Index = 1; Index < SeparatorIndex; ++Index) {
+      const llvm::StringRef Argument = argv[Index];
+      if (Argument == "-fcolor-diagnostics" ||
+          Argument == "-fno-color-diagnostics" ||
+          Argument.starts_with("-fdiagnostics-color")) {
+        InjectedCompilerArguments.emplace_back(Argument);
+      } else {
+        ToolArguments.emplace_back(Argument);
+      }
+    }
+
+    if (InjectedCompilerArguments.empty()) {
+      return {};
+    }
+
+    ToolArguments.push_back("--");
+    for (int Index = SeparatorIndex + 1; Index < argc; ++Index) {
+      ToolArguments.emplace_back(argv[Index]);
+    }
+    ToolArguments.insert(ToolArguments.end(), InjectedCompilerArguments.begin(),
+                         InjectedCompilerArguments.end());
+    return ToolArguments;
   }
 
   std::vector<std::string> ToolArguments{argv[0]};

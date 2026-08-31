@@ -175,6 +175,25 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertTrue(output.is_file())
             self.assertTrue(dependencies.is_file())
 
+    def test_accepts_ccache_injected_color_flag_in_tool_arguments(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast.dump"
+            command = [
+                str(clang_dumper_tool()),
+                "-fcolor-diagnostics",
+                "-c",
+                str(self.source),
+                "-id=42",
+                "-system-header-threshold=1",
+                "-o",
+                str(output),
+                "--",
+                "-std=c++17",
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(output.is_file())
+
     @unittest.skipUnless(shutil.which("ccache"), "ccache is required for cache integration tests")
     def test_ccache_restores_compressed_dump_without_rerunning_tool(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
