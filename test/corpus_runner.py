@@ -6,19 +6,9 @@ Runs the dumper over Clang's own test-suite corpus (checked out at the LLVM
 version pinned in llvm-version.env) and classifies every file:
 
     SKIP_*            not runnable here (no cc1 RUN line, needs lit setup,
-                      missing REQUIRES, non-C/C++ language, or UNSUPPORTED
-                      for this host)
-    PARTIAL            file has multiple RUN configurations with mixed
-                      results
+                      non-C/C++ language, or UNSUPPORTED for this host)
     HARNESS_NO_JOB    lit-only flag combination the driver cannot turn into a
                       single compile job (not a dumper defect)
-    HARNESS_TARGET_FLAGS
-                      target flags that cannot be reproduced through the
-                      driver invocation
-    HARNESS_TARGET_BACKEND
-                      target backend unavailable in this build
-    HARNESS_CC1_DEFAULTS
-                      behavior differs because the tool uses driver defaults
     ENV_SKIP_CUDA     needs a CUDA installation this host does not have
     PARSE_FAIL        Clang itself rejects the file under its own flags
     EXPECTED_ERR      file uses -verify; its parse errors are intentional
@@ -51,14 +41,10 @@ Corpus fetch:
 
 import argparse
 import json
-import platform
 import re
-import shlex
-import signal
 import subprocess
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import dataclass
 from pathlib import Path
 
 SOURCE_EXTS = {".c", ".cpp", ".cc", ".cxx", ".cu", ".cl"}
@@ -69,7 +55,6 @@ HOST_UNSUPPORTED_MARKERS = {"windows", "darwin", "macos", "aix",
 
 RUN_RE = re.compile(r"//\s*RUN:\s*(.*)")
 UNSUPPORTED_RE = re.compile(r"^\s*UNSUPPORTED\s*:(.*)", re.MULTILINE)
-REQUIRES_RE = re.compile(r"^\s*//\s*REQUIRES\s*:\s*(.*)", re.MULTILINE)
 
 # Tokens from cc1 RUN lines that are safe/useful for plain parsing.
 FLAG_ALLOWLIST_PREFIXES = (
@@ -89,8 +74,7 @@ FLAG_ALLOWLIST_PREFIXES = (
     "-fdouble-square-bracket-attributes", "-fcomplete-member-pointers",
     "-faligned-allocation", "-fnew-alignment=", "-fcoroutines-ts",
     "-fexperimental-library", "-fpreserve-vec3-type",
-    "-faligned-alloc-unavailable", "-cl-std=", "-cl-fast-relaxed-math",
-    "-cl-fp32-correctly-rounded-divide-sqrt",
+    "-cl-std=", "-cl-fast-relaxed-math", "-cl-fp32-correctly-rounded-divide-sqrt",
     "-cl-single-precision-constant", "-cl-mad-enable", "-cl-no-signed-zeros",
     "-cl-unsafe-math-optimizations", "-cl-denorms-", "-cl-no-stdinc",
 )
@@ -102,8 +86,7 @@ PAIRED_FLAGS = {
     "-internal-isystem", "-internal-externc-isystem", "-resource-dir",
     "-aux-triple", "-main-file-name", "-target-feature", "-target-cpu",
     "-target-abi", "-mlink-builtin-bitcode", "-fdebug-default-version",
-    "-fopenmp-host-ir-file-path",
-    "-I", "-F", "-mfpmath",
+    "-I", "-F",
 }
 TARGET_FLAG_ALLOWLIST_PREFIXES = (
     "-mcpu=", "-march=", "-mfpu=", "-mfloat-abi=", "-mvsx", "-maltivec",
@@ -114,6 +97,12 @@ TARGET_FLAG_ALLOWLIST_PREFIXES = (
     "-mcmse", "-mrestrict", "-mxnack", "-msram-ecc", "-mno-dxp",
 )
 
+# Flags that only add declarations/search paths and are safe to merge in from
+# later %clang_cc1 RUN lines of the same test file.
+ADDITIVE_PREFIXES = ("-D", "-U")
+ADDITIVE_PAIRED = {"-include", "-imacros", "-idirafter", "-iquote",
+                   "-isystem", "-I", "-F"}
+
 OUT_OF_SCOPE_PREFIXES = ("ObjC", "HLSL", "SYCL")
 
 
@@ -121,36 +110,27 @@ def node_in_scope(classname: str) -> bool:
     return not classname.startswith(OUT_OF_SCOPE_PREFIXES)
 
 
-@dataclass(frozen=True)
-class CorpusJob:
-    flags: list[str]
-    uses_verify: bool
-    expects_failure: bool = False
+def tokenize_cc1(cmd: str):
+    return cmd.split()
 
 
-def tokenize_cc1(cmd: str) -> list[str]:
-    try:
-        return shlex.split(cmd)
-    except ValueError:
-        # A malformed shell fragment should not discard the whole corpus file.
-        return cmd.split()
-
-
-def extract_jobs(text: str, test_dir: Path | None = None):
-    """Extract one independent job from each usable %clang_cc1 RUN line."""
+def extract_flags(text: str):
+    """Extract parse-relevant flags from the %clang_cc1 RUN lines. The first
+    such line supplies mode/target/std flags; declaration-like flags (-D/-U/
+    -I/...) found in any later cc1 line are merged in additively."""
     cc1_cmds = []
     for m in RUN_RE.finditer(text):
         if "%clang_cc1" in m.group(1):
             cc1_cmds.append(m.group(1))
     if not cc1_cmds:
-        return [], "SKIP_NO_CC1_RUN"
+        return None, None, "SKIP_NO_CC1_RUN"
 
     def usable(cmd):
         return not any(s in cmd for s in ("%t", "%T", "%@", "%python"))
 
-    usable_cmds = [cmd for cmd in cc1_cmds if usable(cmd)]
-    if not usable_cmds:
-        return [], "SKIP_NEEDS_LIT_SETUP"
+    base_cmd = next((c for c in cc1_cmds if usable(c)), None)
+    if base_cmd is None:
+        return None, None, "SKIP_NEEDS_LIT_SETUP"
 
     def to_flags(tokens):
         flags, lang, i = [], None, 0
@@ -159,8 +139,7 @@ def extract_jobs(text: str, test_dir: Path | None = None):
             i += 1
             if tok.startswith("%") or tok == "-cc1":
                 continue
-            if tok == "-verify" or tok.startswith("-verify=") \
-                    or tok == "-verify-ignore-unexpected":
+            if tok == "-verify" or tok == "-verify-ignore-unexpected":
                 continue
             if tok == "-x":
                 if i < len(tokens):
@@ -175,16 +154,6 @@ def extract_jobs(text: str, test_dir: Path | None = None):
                     flags += [p, tok[len(p) + 1:]]
                     break
             else:
-                paired = next(
-                    (p for p in PAIRED_FLAGS if tok.startswith(p + "=")),
-                    None,
-                )
-                if paired is not None:
-                    if paired == "-std":
-                        flags.append(tok)
-                        continue
-                    flags += [paired, tok[len(paired) + 1:]]
-                    continue
                 if tok in PAIRED_FLAGS:
                     if i < len(tokens):
                         flags += [tok, tokens[i]]
@@ -198,45 +167,35 @@ def extract_jobs(text: str, test_dir: Path | None = None):
                     continue
         return flags, lang
 
-    def substitute_lit_path(token: str) -> str:
-        if test_dir is None:
-            return token
-        if token == "%S":
-            return str(test_dir)
-        if token.startswith("%S/"):
-            return str(test_dir / token[3:])
-        return token
+    flags, lang = to_flags(tokenize_cc1(base_cmd))
 
-    jobs = []
-    skipped_languages = []
-    for cmd in usable_cmds:
-        tokens = [substitute_lit_path(token)
-                  for token in tokenize_cc1(cmd)]
-        flags, lang = to_flags(tokens)
-        if lang is not None and lang not in CLANG_LANGS:
-            skipped_languages.append(lang)
+    present = set(flags)
+    for cmd in cc1_cmds:
+        if cmd == base_cmd or not usable(cmd):
             continue
-        uses_verify = any(tok == "-verify" or tok.startswith("-verify=")
-                          for tok in tokens)
-        clang_index = tokens.index("%clang_cc1")
-        expects_failure = "not" in tokens[:clang_index]
-        jobs.append(CorpusJob(flags, uses_verify, expects_failure))
+        tokens = tokenize_cc1(cmd)
+        i = 0
+        while i < len(tokens):
+            tok = tokens[i]
+            i += 1
+            if tok.startswith(ADDITIVE_PREFIXES):
+                if tok not in present:
+                    flags.append(tok)
+                    present.add(tok)
+            elif tok in ADDITIVE_PAIRED and i < len(tokens):
+                pair = (tok, tokens[i])
+                if pair not in present:
+                    flags += pair
+                    present.add(pair)
+                i += 1
 
-    if not jobs:
-        lang = skipped_languages[0] if skipped_languages else "unknown"
-        return [], f"SKIP_LANG_{lang}"
-    return jobs, None
+    if lang is not None and lang not in CLANG_LANGS:
+        return None, None, f"SKIP_LANG_{lang}"
+    uses_verify = "-verify" in tokenize_cc1(base_cmd)
+    return flags, uses_verify, None
 
 
-CC1_ONLY_FLAGS = {
-    "-faligned-alloc-unavailable",
-    "-fopenmp-is-target-device",
-}
-CC1_ONLY_PAIRED_FLAGS = {
-    "-mfpmath", "-target-feature", "-target-cpu", "-target-abi",
-    "-fopenmp-host-ir-file-path", "-internal-isystem",
-    "-internal-externc-isystem",
-}
+CC1_ONLY_PAIRED_FLAGS = {"-target-feature", "-target-cpu", "-target-abi"}
 
 
 def to_driver_flags(cc1_flags: list[str]) -> tuple[list[str], list[str]]:
@@ -251,19 +210,12 @@ def to_driver_flags(cc1_flags: list[str]) -> tuple[list[str], list[str]]:
             out += ["-target", cc1_flags[i + 1]]
             i += 2
             continue
-        if f in CC1_ONLY_FLAGS:
-            out += ["-Xclang", f]
-            i += 1
-            continue
         if f in CC1_ONLY_PAIRED_FLAGS:
-            if i + 1 < len(cc1_flags):
-                out += ["-Xclang", f, "-Xclang", cc1_flags[i + 1]]
-                i += 2
-            else:
-                dropped.append(f)
-                i += 1
+            dropped.append(f"{f} {cc1_flags[i+1]}" if i + 1 < len(cc1_flags) else f)
+            i += 2 if i + 1 < len(cc1_flags) else 1
             continue
-        if f in ("-aux-triple", "-main-file-name"):
+        if f in ("-aux-triple", "-main-file-name", "-internal-isystem",
+                 "-internal-externc-isystem"):
             i += 2 if i + 1 < len(cc1_flags) else 1
             continue
         out.append(f)
@@ -312,44 +264,6 @@ def parse_unsupported(text: str) -> set[str]:
     return {p.strip() for p in m.group(1).split(",") if p.strip()}
 
 
-def parse_requires(text: str) -> list[tuple[str, ...]]:
-    """Parse lit requirements as comma-separated AND groups with || options."""
-    requirements = []
-    for match in REQUIRES_RE.finditer(text):
-        for group in match.group(1).split(","):
-            alternatives = tuple(
-                option.strip()
-                for option in group.split("||")
-                if option.strip()
-            )
-            if alternatives:
-                requirements.append(alternatives)
-    return requirements
-
-
-def missing_requirements(
-    requirements: list[tuple[str, ...]], available_features: set[str]
-) -> list[str]:
-    return [
-        " || ".join(alternatives)
-        for alternatives in requirements
-        if not any(option in available_features for option in alternatives)
-    ]
-
-
-def default_features() -> set[str]:
-    """Return the lit features provided by the locally built native tool."""
-    features = {"posix"} if sys.platform != "win32" else set()
-    machine = platform.machine().lower()
-    if machine in {"x86_64", "amd64", "x86"}:
-        features.add("x86-registered-target")
-    elif machine in {"aarch64", "arm64"}:
-        features.add("aarch64-registered-target")
-    elif machine.startswith("arm"):
-        features.add("arm-registered-target")
-    return features
-
-
 def run_stage1(clang: str, source: Path, flags: list[str]):
     """Clang must accept its own file before we bother dumping it."""
     cmd = [clang, "-cc1", "-fsyntax-only"] + flags + [str(source)]
@@ -368,22 +282,6 @@ def run_stage1(clang: str, source: Path, flags: list[str]):
     return "PARSE_FAIL", reason.replace("\n", " ").replace("\r", "")
 
 
-def summarize_diagnostics(stderr_text: str) -> str:
-    """Keep the first useful compiler diagnostics without storing the dump."""
-    lines = [line.strip() for line in stderr_text.splitlines() if line.strip()]
-    diagnostics = [
-        line for line in lines
-        if re.search(r"\b(?:fatal )?error:", line)
-        or "Error while processing" in line
-        or "LLVM ERROR" in line
-        or "Segmentation fault" in line
-    ]
-    if not diagnostics:
-        return "no compiler diagnostic"
-    unique = list(dict.fromkeys(diagnostics))
-    return " | ".join(unique[:3])[:600]
-
-
 def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
     driver_flags, dropped = to_driver_flags(flags)
     if resource_dir:
@@ -396,29 +294,19 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
             stderr=subprocess.PIPE, timeout=30,
         )
     except subprocess.TimeoutExpired:
-        reason = "dumper timed out after 30 seconds"
-        if dropped:
-            reason += f"; dropped cc1 flags: {' '.join(dropped)}"
-        return "TIMEOUT", {}, None, dropped, reason
+        return "TIMEOUT", {}, None, dropped
     stderr = proc.stderr.decode(errors="replace")
     eff_std = infer_std_from_dump(stderr)
-    reason = summarize_diagnostics(stderr)
-    if proc.returncode < 0:
-        reason = f"terminated by {signal.Signals(-proc.returncode).name}: {reason}"
-    if dropped:
-        reason += f"; dropped cc1 flags: {' '.join(dropped)}"
 
     if "expected exactly one compiler job" in stderr:
-        return "HARNESS_NO_JOB", {}, eff_std, dropped, reason
+        return "HARNESS_NO_JOB", {}, eff_std, dropped
     if "cannot find CUDA installation" in stderr or "--cuda-path" in stderr:
-        return "ENV_SKIP_CUDA", {}, eff_std, dropped, reason
+        return "ENV_SKIP_CUDA", {}, eff_std, dropped
     if "amdgpu-arch" in stderr or "--rocm-path" in stderr \
             or "ROCm device library" in stderr:
-        return "ENV_SKIP_GPU", {}, eff_std, dropped, reason
+        return "ENV_SKIP_GPU", {}, eff_std, dropped
     if proc.returncode == 0:
         result = "CLEAN"
-    elif dropped:
-        result = "HARNESS_TARGET_FLAGS"
     elif proc.returncode < 0:
         result = "CRASH"
     else:
@@ -433,21 +321,13 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
         if "when exceptions are enabled" in stderr \
                 or "missing exception specification" in stderr \
                 or "unhandled_exception()" in stderr:
-            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped
         if source.suffix.lower() == ".cl" and (
                 "opencl-c-base.h" in stderr or "redefinition" in stderr):
-            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
-        if "aligned allocation function" in stderr \
-                and ("only available on" in stderr
-                     or "not available on" in stderr):
-            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
+            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped
         if "unknown target triple 'unknown-" in stderr \
-                or "MS-style inline assembly is not available" in stderr \
-                or "mismatching arch" in stderr:
-            return "HARNESS_TARGET_BACKEND", {}, eff_std, dropped, reason
-        if ("unknown type name 'char16_t'" in stderr
-                or "unknown type name 'char32_t'" in stderr):
-            return "HARNESS_CC1_DEFAULTS", {}, eff_std, dropped, reason
+                or "MS-style inline assembly is not available" in stderr:
+            return "HARNESS_TARGET_BACKEND", {}, eff_std, dropped
         result = "DUMP_FAIL"
 
     coverage = {}
@@ -465,35 +345,11 @@ def run_stage2(tool: str, source: Path, flags: list[str], resource_dir: str):
             family, _, rest = stripped.partition(": ")
             if rest:
                 coverage[family] = rest.split()
-    return result, coverage, eff_std, dropped, reason
-
-
-def aggregate_bucket(buckets: list[str]) -> str:
-    """Keep file-level reporting useful while preserving every job result."""
-    if not buckets:
-        return "SKIP_NO_JOBS"
-    for bucket in ("CRASH", "TIMEOUT", "DUMP_FAIL"):
-        if bucket in buckets:
-            return bucket
-    if "CLEAN" in buckets:
-        if all(bucket in {"CLEAN", "EXPECTED_ERR"} for bucket in buckets):
-            return "CLEAN"
-        return "PARTIAL"
-    if "HARNESS_TARGET_FLAGS" in buckets:
-        return "HARNESS_TARGET_FLAGS"
-    if "HARNESS_TARGET_BACKEND" in buckets:
-        return "HARNESS_TARGET_BACKEND"
-    if "HARNESS_CC1_DEFAULTS" in buckets:
-        return "HARNESS_CC1_DEFAULTS"
-    if "HARNESS_NO_JOB" in buckets:
-        return "HARNESS_NO_JOB"
-    if "EXPECTED_ERR" in buckets:
-        return "EXPECTED_ERR"
-    return buckets[0]
+    return result, coverage, eff_std, dropped
 
 
 def process_file(args):
-    tool, clang, path_str, resource_dir, available_features = args
+    tool, clang, path_str, resource_dir = args
     source = Path(path_str)
     try:
         text = source.read_text(errors="replace")
@@ -501,81 +357,35 @@ def process_file(args):
         return path_str, "SKIP_READ_ERROR", "", {}, {}
 
     unsupported = parse_unsupported(text)
-    requirements = parse_requires(text)
-    missing = missing_requirements(requirements, available_features)
-    if missing:
-        return path_str, "SKIP_MISSING_REQUIRES", \
-            f"missing lit feature(s): {', '.join(missing)}", {}, {}
 
-    jobs, skip_reason = extract_jobs(text, source.parent.resolve())
-    if not jobs:
+    flags, uses_verify, skip_reason = extract_flags(text)
+    if flags is None:
         return path_str, skip_reason, "", {}, {}
     if unsupported & HOST_UNSUPPORTED_MARKERS:
         return path_str, "SKIP_UNSUPPORTED_TARGET", "", {}, {}
 
-    job_results = []
-    all_coverage = {}
-    for job_index, job in enumerate(jobs):
-        stage1, reason = run_stage1(clang, source, job.flags)
-        if stage1 != "PARSE_OK":
-            bucket = "EXPECTED_ERR" if (
-                (job.uses_verify or job.expects_failure)
-                and stage1 == "PARSE_FAIL"
-            ) \
-                else stage1
-            job_results.append({
-                "index": job_index,
-                "bucket": bucket,
-                "reason": reason,
-                "flags": job.flags,
-                "expects_failure": job.expects_failure,
-                "std": None,
-                "effective_std": None,
-                "coverage": {},
-            })
-            continue
+    stage1, reason = run_stage1(clang, source, flags)
+    if stage1 != "PARSE_OK":
+        bucket = "EXPECTED_ERR" if (uses_verify and stage1 == "PARSE_FAIL") \
+            else stage1
+        return path_str, bucket, reason, {}, {}
 
-        result, coverage, eff_std, dropped, stage2_reason = run_stage2(
-            tool, source, job.flags, resource_dir)
-        if result == "DUMP_FAIL" and (
-                job.uses_verify or job.expects_failure):
-            result = "EXPECTED_ERR"
-        std_key = None
-        for j, f in enumerate(job.flags):
-            if f == "-std" and j + 1 < len(job.flags):
-                std_key = job.flags[j + 1]
-            elif f.startswith("-std="):
-                std_key = f[5:]
-            elif f.startswith("-cl-std="):
-                std_key = f[8:]
-        job_results.append({
-            "index": job_index,
-            "bucket": result,
-            "reason": stage2_reason if result != "CLEAN" else "",
-            "flags": job.flags,
-            "expects_failure": job.expects_failure,
-            "std": std_key,
-            "effective_std": eff_std,
-            "coverage": coverage,
-        })
-        for family, classes in coverage.items():
-            all_coverage.setdefault(family, set()).update(classes)
-
-    for job in job_results:
-        job["coverage"] = {
-            family: sorted(classes)
-            for family, classes in job["coverage"].items()
-        }
-    buckets = [job["bucket"] for job in job_results]
-    reasons = sorted({job["reason"] for job in job_results if job["reason"]})
-    first = job_results[0]
-    return path_str, aggregate_bucket(buckets), "; ".join(reasons[:3])[:1800], {
-        family: sorted(classes) for family, classes in all_coverage.items()
-    }, {
-        "jobs": job_results,
-        "flags": first["flags"],
-        "std": first["std"],
-        "effective_std": first["effective_std"],
+    result, coverage, eff_std, dropped = run_stage2(
+        tool, source, flags, resource_dir)
+    if result == "DUMP_FAIL" and dropped:
+        result = "HARNESS_TARGET_FLAGS"
+    std_key = None
+    for j, f in enumerate(flags):
+        if f == "-std" and j + 1 < len(flags):
+            std_key = flags[j + 1]
+        elif f.startswith("-std="):
+            std_key = f[5:]
+        elif f.startswith("-cl-std="):
+            std_key = f[8:]
+    return path_str, result, "", coverage, {
+        "flags": flags,
+        "std": std_key,
+        "effective_std": eff_std,
     }
 
 
@@ -583,16 +393,15 @@ def _parse_node_td(path: Path):
     """Parse a TableGen ASTNodes.td into {name: base}, plus abstract set."""
     nodes, abstract = {}, set()
     def_re = re.compile(
-        r"^\s*def\s+([A-Za-z0-9_]+)\s*:\s*\w*Node<([^<>]*)>",
-        re.MULTILINE,
-    )
-    for m in def_re.finditer(path.read_text(errors="replace")):
-        name, arguments = m.groups()
-        arguments = [argument.strip() for argument in arguments.split(",")]
-        base = arguments[0]
-        nodes[name] = None if base == "?" else base
-        if arguments[-1] == "1":
-            abstract.add(name)
+        r"^\s*def\s+([A-Za-z0-9_]+)\s*:\s*\w*Node<\s*(\??)([A-Za-z0-9_]*)\s*(?:,\s*\d)?")
+    abs_re = re.compile(r"<[^<>]*,\s*1\s*>")
+    for line in path.read_text(errors="replace").splitlines():
+        m = def_re.match(line)
+        if m:
+            name, _, base = m.groups()
+            nodes[name] = base or None
+            if abs_re.search(line):
+                abstract.add(name)
     return nodes, abstract
 
 
@@ -608,46 +417,6 @@ def _descendants(nodes: dict, root: str) -> tuple[set, set]:
     return members - {root}, members
 
 
-TABLEGEN_DECL_RE = re.compile(
-    r"^\s*(class|def)\s+([A-Za-z_][A-Za-z0-9_]*)[^:\n]*"
-    r"(?:\n\s*)*:\s*(.*?)(?=\{|;)",
-    re.MULTILINE | re.DOTALL,
-)
-TABLEGEN_BASE_RE = re.compile(r"(?:^|,)\s*([A-Za-z_][A-Za-z0-9_]*)")
-
-
-def _parse_tablegen_inheritance(path: Path) -> tuple[dict[str, set[str]], set[str]]:
-    """Return direct TableGen bases and concrete definitions from a .td file."""
-    parents: dict[str, set[str]] = {}
-    definitions = set()
-    for match in TABLEGEN_DECL_RE.finditer(path.read_text(errors="replace")):
-        kind, name, bases = match.groups()
-        parents[name] = {
-            base.group(1) for base in TABLEGEN_BASE_RE.finditer(bases)
-        }
-        if kind == "def":
-            definitions.add(name)
-    return parents, definitions
-
-
-def _descendants_of_many(
-    parents: dict[str, set[str]], root: str
-) -> set[str]:
-    members = {root}
-    changed = True
-    while changed:
-        changed = False
-        for name, bases in parents.items():
-            if name not in members and bases & members:
-                members.add(name)
-                changed = True
-    return members
-
-
-def _with_suffix(name: str, suffix: str) -> str:
-    return name if name.endswith(suffix) else name + suffix
-
-
 def load_inventory(corpus_root: Path):
     basic = corpus_root.parent / "include" / "clang" / "Basic"
     inv = {}
@@ -661,25 +430,21 @@ def load_inventory(corpus_root: Path):
     decl_nodes, decl_abs = _parse_node_td(basic / "DeclNodes.td")
     _, decl_all = _descendants(decl_nodes, "Decl")
     inv["decl data"] = sorted(
-        _with_suffix(n, "Decl") for n in decl_all - {"Decl"} - decl_abs
+        n + "Decl" for n in decl_all - {"Decl"} - decl_abs
     )
 
     type_nodes, type_abs = _parse_node_td(basic / "TypeNodes.td")
     _, type_all = _descendants(type_nodes, "Type")
-    inv["type data"] = sorted(
-        _with_suffix(n, "Type") for n in type_all - {"Type"} - type_abs
-    )
+    inv["type data"] = sorted(type_all - {"Type"} - type_abs)
 
+    attrs = []
     attr_p = basic / "Attr.td"
     if attr_p.exists():
-        attr_parents, attr_defs = _parse_tablegen_inheritance(attr_p)
-        attr_all = _descendants_of_many(attr_parents, "Attr")
-        inv["attr data"] = sorted(
-            _with_suffix(name, "Attr")
-            for name in attr_defs & attr_all
-        )
-    else:
-        inv["attr data"] = []
+        for line in attr_p.read_text(errors="replace").splitlines():
+            m = re.match(r"^def\s+([A-Za-z0-9_]+)\s*:\s*Attr\b", line)
+            if m:
+                attrs.append(m.group(1) + "Attr")
+    inv["attr data"] = attrs
     return inv
 
 
@@ -703,10 +468,6 @@ def main():
                         help="Path to llvm-project/clang/test")
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--jobs", type=int, default=8)
-    parser.add_argument(
-        "--feature", action="append", default=[],
-        help="Add a lit feature to the locally available feature set",
-    )
     parser.add_argument("--limit", type=int, default=0,
                         help="Only process the first N files (debugging)")
     parser.add_argument("--no-resource-dir", action="store_true",
@@ -724,8 +485,6 @@ def main():
         except Exception:
             resource_dir = ""
 
-    available_features = default_features() | set(args.feature)
-
     files = sorted(
         str(p) for p in args.corpus.rglob("*")
         if p.suffix.lower() in SOURCE_EXTS and p.is_file()
@@ -738,9 +497,7 @@ def main():
     results = {}
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         futures = [
-            pool.submit(process_file, (
-                args.tool, args.clang, f, resource_dir, available_features,
-            ))
+            pool.submit(process_file, (args.tool, args.clang, f, resource_dir))
             for f in files
         ]
         done = 0
@@ -755,27 +512,22 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
 
     buckets = {}
-    job_buckets = {}
     for r in results.values():
         buckets[r["bucket"]] = buckets.get(r["bucket"], 0) + 1
-        for job in r.get("jobs", []):
-            job_bucket = job["bucket"]
-            job_buckets[job_bucket] = job_buckets.get(job_bucket, 0) + 1
 
     encounters: dict[str, set] = {}
     std_matrix = {}
     default_std_counts = {}
     for path, r in results.items():
+        if r["bucket"] not in ("CLEAN", "DUMP_FAIL"):
+            continue
         for family, classes in r["coverage"].items():
             encounters.setdefault(family, set()).update(classes)
-        for job in r.get("jobs", []):
-            if job["bucket"] not in ("CLEAN", "DUMP_FAIL"):
-                continue
-            std = job.get("std") or job.get("effective_std") or "(unknown)"
-            entry = std_matrix.setdefault(std, {})
-            entry[job["bucket"]] = entry.get(job["bucket"], 0) + 1
-            if not job.get("std"):
-                default_std_counts[std] = default_std_counts.get(std, 0) + 1
+        std = r.get("std") or r.get("effective_std") or "(unknown)"
+        entry = std_matrix.setdefault(std, {})
+        entry[r["bucket"]] = entry.get(r["bucket"], 0) + 1
+        if not r.get("std"):
+            default_std_counts[std] = default_std_counts.get(std, 0) + 1
 
     inventory = load_inventory(args.corpus)
     uncovered_in, uncovered_out = {}, {}
@@ -789,7 +541,6 @@ def main():
 
     catalog = {
         "totals": buckets,
-        "job_totals": job_buckets,
         "files_processed": len(files),
         "driver_default_effective_std": dict(sorted(default_std_counts.items())),
         "per_std_matrix": dict(sorted(std_matrix.items())),
@@ -797,18 +548,15 @@ def main():
         "uncovered_nodes_out_of_scope": uncovered_out,
         "encountered_nodes": {k: sorted(v) for k, v in encounters.items()},
         "crashes": [
-            {"file": p, "reason": r["reason"]}
-            for p, r in sorted(results.items())
+            {"file": p} for p, r in sorted(results.items())
             if r["bucket"] == "CRASH"
         ],
         "dump_failures": [
-            {"file": p, "reason": r["reason"]}
-            for p, r in sorted(results.items())
+            {"file": p} for p, r in sorted(results.items())
             if r["bucket"] == "DUMP_FAIL"
         ],
         "timeouts": [
-            {"file": p, "reason": r["reason"]}
-            for p, r in sorted(results.items())
+            {"file": p} for p, r in sorted(results.items())
             if r["bucket"] == "TIMEOUT"
         ],
     }
