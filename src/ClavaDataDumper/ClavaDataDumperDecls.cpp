@@ -68,23 +68,8 @@ const std::map<std::string, clava::ClavaDataDumper::DeclDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Decl *D) {
-    const std::string classname = clava::getClassName(D);
-    auto it = DECL_DATA_DUMPERS.find(classname);
-    const char *dataName =
-        it != DECL_DATA_DUMPERS.end() ? it->second.dataName : "Decl";
-
-    // Dump header
-    llvm::errs() << "<" << dataName << "Data>\n";
-    llvm::errs() << clava::getId(D, id) << "\n";
-    llvm::errs() << clava::getClassName(D) << "\n";
-
-    if (it != DECL_DATA_DUMPERS.end()) {
-        it->second.dump(*this, D);
-    } else {
-        clava::recordHandlerFallback("decl data", classname);
-        // Default: plain Decl data
-        DumpDeclData(D);
-    }
+    dumpNode(D, clava::getClassName(D), DECL_DATA_DUMPERS, "decl data", "Decl",
+             &ClavaDataDumper::DumpDeclData);
 }
 
 void clava::ClavaDataDumper::DumpDeclData(const Decl *D) {

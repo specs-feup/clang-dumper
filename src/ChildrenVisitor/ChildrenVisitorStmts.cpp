@@ -302,11 +302,7 @@ void ClangAstDumper::VisitDeclRefExprChildren(
 
     VisitDeclTop(E->getDecl());
 
-    auto templateArgs = E->getTemplateArgs();
-    for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-        auto templateArg = templateArgs + i;
-        VisitTemplateArgument(templateArg->getArgument());
-    }
+    visitTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
 }
 
 void ClangAstDumper::VisitDependentScopeDeclRefExprChildren(
@@ -314,11 +310,7 @@ void ClangAstDumper::VisitDependentScopeDeclRefExprChildren(
     // Hierarchy
     VisitExprChildren(E, children);
 
-    auto templateArgs = E->getTemplateArgs();
-    for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-        auto templateArg = templateArgs + i;
-        VisitTemplateArgument(templateArg->getArgument());
-    }
+    visitTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
 }
 
 void ClangAstDumper::VisitOffsetOfExprChildren(
@@ -385,11 +377,7 @@ void ClangAstDumper::VisitOverloadExprChildren(
     }
 
     // Visit template arguments
-    auto templateArgs = E->getTemplateArgs();
-    for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-        auto templateArg = templateArgs + i;
-        VisitTemplateArgument(templateArg->getArgument());
-    }
+    visitTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
 }
 
 void ClangAstDumper::VisitCallExprChildren(const CallExpr *E,
@@ -510,11 +498,7 @@ void ClangAstDumper::VisitCXXDependentScopeMemberExprChildren(
     // Hierarchy
     VisitExprChildren(E, children);
 
-    auto templateArgs = E->getTemplateArgs();
-    for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-        auto templateArg = templateArgs + i;
-        VisitTemplateArgument(templateArg->getArgument());
-    }
+    visitTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
 }
 
 void ClangAstDumper::VisitCXXPseudoDestructorExprChildren(

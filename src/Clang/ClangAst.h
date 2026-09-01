@@ -10,6 +10,7 @@
 
 #include <clang/AST/AST.h>
 #include <clang/AST/RecursiveASTVisitor.h>
+#include <clang/Basic/SourceManager.h>
 #include <clang/Frontend/FrontendActions.h>
 
 #include "../ClangAstDumper/ClangAstDumper.h"
@@ -44,25 +45,18 @@ class DumpResources {
  */
 class IncludeDumper : public PPCallbacks {
   public:
-    IncludeDumper(CompilerInstance &compilerInstance);
+    explicit IncludeDumper(const SourceManager &sourceManager);
 
     virtual void InclusionDirective(
         SourceLocation HashLoc, const Token &IncludeTok, StringRef FileName,
         bool IsAngled, CharSourceRange FilenameRange, OptionalFileEntryRef File,
         StringRef SearchPath, StringRef RelativePath, const Module *Imported,
         SrcMgr::CharacteristicKind FileType) override;
-    virtual void MacroExpands(const Token &MacroNameTok,
-                              const MacroDefinition &MD, SourceRange Range,
-                              const MacroArgs *Args) override;
     virtual void PragmaDirective(SourceLocation Loc,
                                  PragmaIntroducerKind Introducer) override;
-    virtual void FileChanged(SourceLocation Loc, FileChangeReason Reason,
-                             SrcMgr::CharacteristicKind FileType,
-                             FileID PrevFID) override;
 
   private:
-    const CompilerInstance &compilerInstance;
-    const clang::SourceManager &sm;
+    const SourceManager &sourceManager;
 };
 
 // For each source file provided to the tool, a new FrontendAction is created.
@@ -71,23 +65,7 @@ class DumpAstAction : public ASTFrontendAction {
     virtual std::unique_ptr<ASTConsumer>
     CreateASTConsumer(CompilerInstance &CI, StringRef file) override;
 
-    void ExecuteAction() override;
-
     void dumpCompilerInstanceData(CompilerInstance &CI, StringRef file);
-};
-
-// By implementing RecursiveASTVisitor, we can specify which AST nodes
-// we're interested in by overriding relevant methods.
-class DumpAstVisitor : public RecursiveASTVisitor<DumpAstVisitor> {
-
-  public:
-    explicit DumpAstVisitor(ASTContext *Context, int id)
-        : Context(Context), id(id) {}
-    bool TraverseDecl(Decl *D);
-
-  private:
-    ASTContext *Context;
-    int id;
 };
 
 class PrintNodesTypesRelationsVisitor
@@ -95,18 +73,12 @@ class PrintNodesTypesRelationsVisitor
 
   private:
     ASTContext *Context;
-    int id;
     ClangAstDumper dumper;
 
   public:
     explicit PrintNodesTypesRelationsVisitor(ASTContext *Context, int id,
-                                             ClangAstDumper dumper);
-    bool VisitExpr(Expr *D);
-    bool VisitLambdaExpr(LambdaExpr *D);
-    bool VisitTypeDecl(TypeDecl *D);
-    bool VisitTypedefNameDecl(TypedefNameDecl *D);
+                                             int systemHeaderThreshold);
     bool VisitEnumDecl(EnumDecl *D);
-    bool VisitValueDecl(ValueDecl *D);
     bool VisitDecl(Decl *D);
     bool VisitStmt(Stmt *D);
 };
@@ -116,17 +88,13 @@ class PrintNodesTypesRelationsVisitor
 class MyASTConsumer : public ASTConsumer {
 
   private:
+    ASTContext *Context;
     int id;
-    DumpAstVisitor topLevelDeclVisitor;
     PrintNodesTypesRelationsVisitor printRelationsVisitor;
 
   public:
-    MyASTConsumer(ASTContext *C, int id, ClangAstDumper dumper);
+    MyASTConsumer(ASTContext *C, int id, int systemHeaderThreshold);
 
     bool HandleTopLevelDecl(DeclGroupRef DR) override;
-
-    /// HandleTranslationUnit - This method is called when the ASTs for entire
-    /// translation unit have been parsed.
-    void HandleTranslationUnit(ASTContext &Ctx) override;
 };
 #endif // CLANGASTDUMPER_CLANGAST_H

@@ -7,13 +7,6 @@
 
 #include <string>
 
-static const std::string CXX_CTOR_INITIALIZER_BEGIN = "<CXXCtorInitializer>";
-static const std::string CXX_CTOR_INITIALIZER_END = "<CXXCtorInitializer End>";
-
-// Use in TemplateDecl
-static const std::string DUMP_NUMBER_TEMPLATE_PARAMETERS =
-    "<Number Template Parameters>";
-
 // Used in FunctionDecl, such as FunctionTemplateDecl
 static const std::string DUMP_NAMESPACE_ALIAS_PREFIX =
     "<Namespace Alias Prefix>";
