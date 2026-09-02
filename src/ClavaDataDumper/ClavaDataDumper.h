@@ -7,6 +7,7 @@
 #define CLANGASTDUMPER_CLAVADATADUMPER_H
 
 #include "../Clava/ClavaConstants.h"
+#include "../Clava/DumpStream.h"
 #include "../Clava/HandlerCoverage.h"
 #include "../Clang/ClangNodes.h"
 
@@ -85,9 +86,9 @@ class ClavaDataDumper {
         const char *dataName =
             it != entries.end() ? it->second.dataName : defaultDataName;
 
-        llvm::errs() << "<" << dataName << "Data>\n";
-        llvm::errs() << clava::getId(node, id) << "\n";
-        llvm::errs() << classname << "\n";
+        clava::dumpStream() << "<" << dataName << "Data>\n";
+        clava::dumpStream() << clava::getId(node, id) << "\n";
+        clava::dumpStream() << classname << "\n";
 
         if (it != entries.end()) {
             it->second.dump(*this, node);

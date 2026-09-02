@@ -11,6 +11,23 @@ The CMakeLists.txt has two targets, `plugin` and `tool`; pass one or both to
 The target `tool` has been successfully built in Ubuntu and macOS. Windows
 executables are cross-compiled from Linux.
 
+## Stand-alone output
+
+By default, the stand-alone tool writes its structured AST protocol to stderr
+for compatibility with existing consumers. Use `-o` to keep the
+protocol separate from Clang's ordinary stdout and stderr output:
+
+```sh
+build/tool -c source.cpp -o source.ast -- -std=c++17
+```
+
+For large dumps, the tool can stream a Zstandard frame directly to the output
+without buffering the AST in memory:
+
+```sh
+build/tool -c source.cpp -o source.ast.zst -ast-dump-compression=zstd -- -std=c++17
+```
+
 ## Dependencies
 
 **Python3 is required to build this project**

@@ -23,6 +23,7 @@ import re
 import shlex
 import subprocess
 import sys
+import tempfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -971,9 +972,9 @@ def run_tool_and_normalize(
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
-) -> tuple[int, str, str, str, dict[str, list[str]]]:
+) -> tuple[int, str, str, str, str, dict[str, list[str]]]:
     """
-    Run the clang-dumper tool or plugin and normalize captured stderr.
+    Run the clang-dumper tool or plugin and normalize its AST dump.
 
     Args:
         mode: Either "tool" or "plugin"
@@ -988,15 +989,20 @@ def run_tool_and_normalize(
             boundary leaves. A non-positive value disables the threshold.
 
     Returns:
-        tuple: (return_code, stdout, raw_stderr, normalized_stderr, address_mapping)
+        tuple: (return_code, stdout, raw_dump, raw_stderr, normalized_dump,
+            address_mapping)
     """
     flags = extra_flags or []
 
+    dump_directory = None
+    dump_path = None
     if mode == "tool":
+        dump_directory = tempfile.TemporaryDirectory(prefix="clang-dumper-")
+        dump_path = Path(dump_directory.name) / "ast.dump"
         cmd = [path, f"-id={test_id}"]
         if system_header_threshold is not None:
             cmd.append(f"-system-header-threshold={system_header_threshold}")
-        cmd += [input_file, "--"] + flags
+        cmd += ["-c", input_file, "-o", str(dump_path), "--"] + flags
     else:
         # Plugin mode - invoke clang with the plugin loaded
         assert clang_path is not None, "clang_path required for plugin mode"
@@ -1024,19 +1030,76 @@ def run_tool_and_normalize(
             input_file,
         ]
 
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
 
-    stdout, raw_stderr = proc.communicate()
-    normalized_stderr, placeholder_to_raw = normalize_captured_output(
-        raw_stderr,
+        stdout, raw_stderr = proc.communicate()
+        if dump_path is not None:
+            raw_dump = (
+                dump_path.read_text(encoding="utf-8")
+                if dump_path.exists()
+                else ""
+            )
+        else:
+            raw_dump = strip_clang_diagnostics(raw_stderr)
+    finally:
+        if dump_directory is not None:
+            dump_directory.cleanup()
+
+    normalized_dump, placeholder_to_raw = normalize_captured_output(
+        raw_dump,
         inputs_dir_str,
     )
-    return proc.returncode, stdout, raw_stderr, normalized_stderr, placeholder_to_raw
+    return (
+        proc.returncode,
+        stdout,
+        raw_dump,
+        raw_stderr,
+        normalized_dump,
+        placeholder_to_raw,
+    )
+
+
+_CLANG_DIAGNOSTIC_HEADER = re.compile(
+    r"^.+:\d+:\d+: (?:fatal error|error|warning|remark|note):"
+)
+_CLANG_DIAGNOSTIC_SOURCE = re.compile(r"^\s*\d+\s+\|")
+_CLANG_DIAGNOSTIC_MARKER = re.compile(r"^\s*\|")
+_CLANG_DIAGNOSTIC_SUMMARY = re.compile(
+    r"^\d+ (?:warnings?|errors?) generated\.$"
+)
+
+
+def strip_clang_diagnostics(output: str) -> str:
+    """Remove Clang diagnostics interleaved with the plugin's legacy dump."""
+    protocol_lines = []
+    in_diagnostic = False
+
+    for line in output.splitlines(keepends=True):
+        stripped_line = line.rstrip("\r\n")
+        if _CLANG_DIAGNOSTIC_HEADER.match(stripped_line):
+            in_diagnostic = True
+            continue
+
+        if in_diagnostic and (
+            not stripped_line
+            or _CLANG_DIAGNOSTIC_SOURCE.match(stripped_line)
+            or _CLANG_DIAGNOSTIC_MARKER.match(stripped_line)
+        ):
+            continue
+
+        in_diagnostic = False
+        if _CLANG_DIAGNOSTIC_SUMMARY.match(stripped_line):
+            continue
+
+        protocol_lines.append(line)
+
+    return "".join(protocol_lines)
 
 
 def discover_tests(inputs_dir: Path) -> list[Path]:
@@ -1126,7 +1189,8 @@ def run_single_test(
     (
         return_code,
         stdout,
-        raw_output,
+        raw_dump,
+        raw_stderr,
         normalized_output,
         placeholder_to_raw,
     ) = run_tool_and_normalize(
@@ -1144,16 +1208,20 @@ def run_single_test(
 
     if raw_output_dir is not None:
         raw_output_dir.mkdir(parents=True, exist_ok=True)
-        raw_output_file = raw_output_dir / f"{test_name}.stderr"
-        raw_output_file.write_text(raw_output, encoding="utf-8")
+        (raw_output_dir / f"{test_name}.dump").write_text(
+            raw_dump, encoding="utf-8"
+        )
+        (raw_output_dir / f"{test_name}.stderr").write_text(
+            raw_stderr, encoding="utf-8"
+        )
 
     if return_code != 0:
         if failure_output_dir is not None:
             failure_output_dir.mkdir(parents=True, exist_ok=True)
             failure_output_file = failure_output_dir / expected_file_name
             failure_output_file.write_text(normalized_output, encoding="utf-8")
-        # Include stderr excerpt for debugging
-        stderr_lines = normalized_output.splitlines()
+        # Include both the normalized dump and the real stderr diagnostics.
+        stderr_lines = raw_stderr.splitlines()
         if stderr_lines:
             head_excerpt = "\n".join(stderr_lines[:50])
             tail_excerpt = "\n".join(stderr_lines[-50:])
@@ -1163,7 +1231,8 @@ def run_single_test(
         return TestStatus.FAIL, (
             f"Tool exited with code {return_code}\n"
             f"Stderr (first 50 lines):\n{head_excerpt}\n"
-            f"Stderr (last 50 lines):\n{tail_excerpt}"
+            f"Stderr (last 50 lines):\n{tail_excerpt}\n"
+            f"Dump contained {len(normalized_output.splitlines())} lines"
         )
 
     # Check address consistency
@@ -1294,7 +1363,7 @@ def main():
         "--raw-output-dir",
         default=None,
         help=(
-            "Write raw, non-normalized stderr for every executed test to this "
+            "Write raw AST dumps and stderr for every executed test to this "
             "directory, plus a _manifest.json file for offline replay."
         ),
     )

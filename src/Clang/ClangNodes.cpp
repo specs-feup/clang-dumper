@@ -4,6 +4,7 @@
 
 #include "ClangNodes.h"
 #include "../ClangEnums/ClangEnums.h"
+#include "../Clava/DumpStream.h"
 
 #include "clang/AST/Attr.h"
 #include "clang/Basic/OperatorKinds.h"
@@ -95,17 +96,17 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
     SourceLocation startSpellingLoc = SM.getSpellingLoc(startLoc);
 
     if (startSpellingLoc.isInvalid()) {
-        llvm::errs() << "<invalid>\n";
+        clava::dumpStream() << "<invalid>\n";
         return;
     }
 
     // Dump start location
-    llvm::errs() << getLocationFilename(SM, startSpellingLoc) << "\n";
-    llvm::errs() << SM.getSpellingLineNumber(startSpellingLoc) << "\n";
-    llvm::errs() << SM.getSpellingColumnNumber(startSpellingLoc) << "\n";
+    clava::dumpStream() << getLocationFilename(SM, startSpellingLoc) << "\n";
+    clava::dumpStream() << SM.getSpellingLineNumber(startSpellingLoc) << "\n";
+    clava::dumpStream() << SM.getSpellingColumnNumber(startSpellingLoc) << "\n";
 
     if (startLoc == endLoc) {
-        llvm::errs() << "<end>\n";
+        clava::dumpStream() << "<end>\n";
         return;
     }
 
@@ -113,14 +114,14 @@ void clava::dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
 
     if (endSpellingLoc.isInvalid()) {
         // if(endPLoc.isInvalid()) {
-        llvm::errs() << "<end>\n";
+        clava::dumpStream() << "<end>\n";
         return;
     }
 
     // Dump end location
-    llvm::errs() << getLocationFilename(SM, endSpellingLoc) << "\n";
-    llvm::errs() << SM.getSpellingLineNumber(endSpellingLoc) << "\n";
-    llvm::errs() << SM.getSpellingColumnNumber(endSpellingLoc) << "\n";
+    clava::dumpStream() << getLocationFilename(SM, endSpellingLoc) << "\n";
+    clava::dumpStream() << SM.getSpellingLineNumber(endSpellingLoc) << "\n";
+    clava::dumpStream() << SM.getSpellingColumnNumber(endSpellingLoc) << "\n";
 }
 
 void clava::dumpSourceInfo(ASTContext *Context, SourceLocation begin,
@@ -226,20 +227,20 @@ const std::string clava::getId(const Attr *addr, int id) {
     return getId((void *)addr, id);
 }
 
-void clava::dump(bool boolean) { llvm::errs() << boolean << "\n"; }
+void clava::dump(bool boolean) { clava::dumpStream() << boolean << "\n"; }
 
-void clava::dump(int integer) { llvm::errs() << integer << "\n"; }
+void clava::dump(int integer) { clava::dumpStream() << integer << "\n"; }
 
-void clava::dump(double aDouble) { llvm::errs() << aDouble << "\n"; }
+void clava::dump(double aDouble) { clava::dumpStream() << aDouble << "\n"; }
 
-void clava::dump(unsigned int integer) { llvm::errs() << integer << "\n"; }
+void clava::dump(unsigned int integer) { clava::dumpStream() << integer << "\n"; }
 
-void clava::dumpSize(size_t integer) { llvm::errs() << integer << "\n"; }
+void clava::dumpSize(size_t integer) { clava::dumpStream() << integer << "\n"; }
 
-void clava::dump(const std::string &string) { llvm::errs() << string << "\n"; }
+void clava::dump(const std::string &string) { clava::dumpStream() << string << "\n"; }
 
 void clava::dump(const llvm::StringRef string) {
-    llvm::errs() << string << "\n";
+    clava::dumpStream() << string << "\n";
 }
 
 void clava::dump(const char string[]) { dump(std::string(string)); }

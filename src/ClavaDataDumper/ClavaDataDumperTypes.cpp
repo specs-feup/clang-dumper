@@ -3,6 +3,7 @@
 //
 
 #include "../Clang/ClangNodes.h"
+#include "../Clava/DumpStream.h"
 #include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
@@ -96,10 +97,10 @@ void clava::ClavaDataDumper::DumpTypeData(const Type *T,
 // QualType
 void clava::ClavaDataDumper::dump(const QualType &T) {
   // Dump header
-  llvm::errs() << "<QualTypeData>"
+  clava::dumpStream() << "<QualTypeData>"
                << "\n";
-  llvm::errs() << clava::getId(T, id) << "\n";
-  llvm::errs() << "QualType"
+  clava::dumpStream() << clava::getId(T, id) << "\n";
+  clava::dumpStream() << "QualType"
                << "\n";
 
   auto qualifiers = T.getQualifiers();

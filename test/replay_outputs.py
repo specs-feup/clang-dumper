@@ -11,6 +11,7 @@ import argparse
 import json
 import os
 import sys
+from io import StringIO
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional
@@ -23,6 +24,7 @@ from run_tests import (
     platform_expected_dir,
     platform_expected_dirs,
     resolve_expected_file,
+    strip_clang_diagnostics,
 )
 
 
@@ -34,15 +36,17 @@ def replay_single_output(
     inputs_dir_str: str,
     write_platform_baseline_dir: Optional[Path],
 ) -> tuple[str, str]:
-    test_name = raw_file.name.removesuffix(".stderr")
+    test_name = raw_file.name.removesuffix(raw_file.suffix)
     if test_name == raw_file.name:
-        return TestStatus.SKIP, "Not a captured stderr file"
+        return TestStatus.SKIP, "Not a captured dump file"
 
-    with raw_file.open(encoding="utf-8", errors="replace") as raw_stream:
-        normalized_output, placeholder_to_raw = normalize_captured_lines(
-            raw_stream,
-            inputs_dir_str,
-        )
+    raw_output = raw_file.read_text(encoding="utf-8", errors="replace")
+    if raw_file.suffix == ".stderr":
+        raw_output = strip_clang_diagnostics(raw_output)
+    normalized_output, placeholder_to_raw = normalize_captured_lines(
+        StringIO(raw_output),
+        inputs_dir_str,
+    )
 
     consistency_errors = check_address_consistency(placeholder_to_raw)
     if consistency_errors:
@@ -109,7 +113,7 @@ def replay_raw_file(
         inputs_dir_str,
         write_platform_baseline_dir,
     )
-    return raw_file.name.removesuffix(".stderr"), status, message
+    return raw_file.name.removesuffix(raw_file.suffix), status, message
 
 
 def main() -> None:
@@ -223,9 +227,13 @@ def main() -> None:
         Path(args.failure_output_dir) if args.failure_output_dir else None
     )
 
-    raw_files = sorted(raw_output_dir.glob("*.stderr"))
+    raw_files = sorted(raw_output_dir.glob("*.dump"))
     if not raw_files:
-        print(f"ERROR: No captured .stderr files found in {raw_output_dir}", file=sys.stderr)
+        # Compatibility with captures made before dumps and diagnostics were
+        # stored separately.
+        raw_files = sorted(raw_output_dir.glob("*.stderr"))
+    if not raw_files:
+        print(f"ERROR: No captured dump files found in {raw_output_dir}", file=sys.stderr)
         sys.exit(1)
 
     print(f"Replaying {len(raw_files)} captured output(s) from {raw_output_dir}")
@@ -267,7 +275,7 @@ def main() -> None:
 
         for future in as_completed(future_to_raw_file):
             raw_file = future_to_raw_file[future]
-            test_name = raw_file.name.removesuffix(".stderr")
+            test_name = raw_file.name.removesuffix(raw_file.suffix)
             try:
                 _, status, message = future.result()
                 results[test_name] = (status, message)
@@ -275,7 +283,7 @@ def main() -> None:
                 results[test_name] = (TestStatus.FAIL, f"Exception: {exc}")
 
     for raw_file in raw_files:
-        test_name = raw_file.name.removesuffix(".stderr")
+        test_name = raw_file.name.removesuffix(raw_file.suffix)
         status, message = results[test_name]
 
         if status == TestStatus.PASS:

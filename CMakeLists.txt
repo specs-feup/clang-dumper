@@ -217,6 +217,7 @@ set(SOURCE_FILES
     src/Clang/ClangAst.cpp
     src/Clang/ClangNodes.cpp
     src/ClangEnums/ClangEnums.cpp
+    src/Clava/DumpStream.cpp
     src/Clava/HandlerCoverage.cpp
     src/ClavaDataDumper/ClavaDataDumper.cpp
     src/ClavaDataDumper/ClavaDataDumperAttrs.cpp
@@ -243,9 +244,23 @@ if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_dependencies(plugin clang_enums)
 endif()
 
-add_executable(tool ${SOURCE_FILES} src/tool.cpp)
+add_executable(tool ${SOURCE_FILES} src/tool.cpp src/Clava/ZstdStream.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
 add_dependencies(tool clang_enums)
+
+find_path(CLANG_DUMPER_ZSTD_INCLUDE_DIR NAMES zstd.h
+    HINTS "$ENV{ZSTD_ROOT}"
+    PATH_SUFFIXES include
+    REQUIRED)
+target_include_directories(tool PRIVATE "${CLANG_DUMPER_ZSTD_INCLUDE_DIR}")
+
+if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
+    find_library(CLANG_DUMPER_ZSTD_LIBRARY NAMES zstd
+        HINTS "$ENV{ZSTD_ROOT}"
+        PATH_SUFFIXES lib
+        REQUIRED)
+    target_link_libraries(tool PRIVATE "${CLANG_DUMPER_ZSTD_LIBRARY}")
+endif()
 
 target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
 

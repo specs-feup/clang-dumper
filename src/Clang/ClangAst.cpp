@@ -9,6 +9,7 @@
 #include "../Clava/HandlerCoverage.h"
 #include "../ClangAstDumper/ClangAstDumperConstants.h"
 #include "ClangNodes.h"
+#include "../Clava/DumpStream.h"
 
 #include <clang/AST/AST.h>
 #include <clang/AST/ASTConsumer.h>
@@ -61,14 +62,14 @@ std::string sanitizeErrorMessage(const char *message) {
     return sanitized;
 }
 
-[[noreturn]] void dumpFatalError(const Decl *D, const char *message) {
+void dumpFatalError(const Decl *D, const char *message) {
     llvm::errs() << "ERROR "
                  << (D == nullptr ? "<unknown>" : clava::getClassName(D)) << " "
                  << sanitizeErrorMessage(message) << "\n";
     llvm::errs().flush();
+    clava::dumpStream().flush();
     clava::reportHandlerCoverage();
     llvm::outs().flush();
-    exit(1);
 }
 
 } // namespace
@@ -132,13 +133,15 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             FullSourceLoc fullLocation = Context->getFullLoc(D->getBeginLoc());
             if (fullLocation.isValid() && fullLocation.hasManager() &&
                 !fullLocation.isInSystemHeader()) {
-                llvm::errs() << TOP_LEVEL_NODES << "\n";
-                llvm::errs() << D << "_" << id << "\n";
+                clava::dumpStream() << TOP_LEVEL_NODES << "\n";
+                clava::dumpStream() << D << "_" << id << "\n";
             }
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
+            return false;
         } catch (...) {
             dumpFatalError(D, "unknown error");
+            return false;
         }
     }
 
@@ -147,8 +150,10 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             printRelationsVisitor.TraverseDecl(D);
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
+            return false;
         } catch (...) {
             dumpFatalError(D, "unknown error");
+            return false;
         }
     }
 
@@ -173,9 +178,9 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
     dumpCompilerInstanceData(CI, file);
 
     // Dump id->file data
-    llvm::errs() << ID_FILE_MAP << "\n";
-    llvm::errs() << counter << "\n";
-    llvm::errs() << file << "\n";
+    clava::dumpStream() << ID_FILE_MAP << "\n";
+    clava::dumpStream() << counter << "\n";
+    clava::dumpStream() << file << "\n";
 
     ASTContext *Context = &CI.getASTContext();
 
@@ -239,12 +244,12 @@ void IncludeDumper::InclusionDirective(
 
     if (!sourceManager.isInSystemHeader(HashLoc)) {
         // Includes information in stream
-        llvm::errs() << INCLUDES << "\n";
+        clava::dumpStream() << INCLUDES << "\n";
         // Source
-        llvm::errs() << sourceManager.getFilename(HashLoc).str() << "\n";
-        llvm::errs() << FileName.str() << "\n";
-        llvm::errs() << sourceManager.getSpellingLineNumber(HashLoc) << "\n";
-        llvm::errs() << IsAngled << "\n";
+        clava::dumpStream() << sourceManager.getFilename(HashLoc).str() << "\n";
+        clava::dumpStream() << FileName.str() << "\n";
+        clava::dumpStream() << sourceManager.getSpellingLineNumber(HashLoc) << "\n";
+        clava::dumpStream() << IsAngled << "\n";
     }
 }
 
@@ -286,11 +291,8 @@ void DumpResources::writeCounter(int id) {
 
     // Output is processed with a line iterator, allows multiple-line processing
 
-    llvm::outs() << PREFIX << "\n";
-    llvm::outs() << id << "\n";
-
-    llvm::errs() << PREFIX << "\n";
-    llvm::errs() << id << "\n";
+    clava::dumpStream() << PREFIX << "\n";
+    clava::dumpStream() << id << "\n";
 }
 
 void DumpResources::init(int runId, int systemLevelThreshold) {
