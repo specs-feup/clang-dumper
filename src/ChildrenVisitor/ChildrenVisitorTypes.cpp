@@ -7,6 +7,33 @@
 #include <string>
 #include "../Clava/HandlerCoverage.h"
 
+namespace {
+
+template <typename T>
+void visitArrayTypeWithSizeExpr(
+    ClangAstDumper &dumper, const T *type,
+    std::vector<std::string> &children) {
+    dumper.VisitArrayTypeChildren(type, children);
+    dumper.VisitStmtTop(type->getSizeExpr());
+}
+
+template <typename T>
+void visitTypeWithDecl(ClangAstDumper &dumper, const T *type,
+                       std::vector<std::string> &children) {
+    dumper.VisitTypeChildren(type, children);
+    dumper.VisitDeclTop(type->getDecl());
+}
+
+template <typename T>
+void visitTypeWithUnderlyingExpr(
+    ClangAstDumper &dumper, const T *type,
+    std::vector<std::string> &children) {
+    dumper.VisitTypeChildren(type, children);
+    dumper.VisitStmtTop(type->getUnderlyingExpr());
+}
+
+} // namespace
+
 // Selects the children visitor by class name. Several classes can share one
 // visitor (e.g. EnumType and RecordType use the TagType visitor).
 #define TYPE_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
@@ -150,21 +177,13 @@ void ClangAstDumper::VisitArrayTypeChildren(
 
 void ClangAstDumper::VisitVariableArrayTypeChildren(
     const VariableArrayType *T, std::vector<std::string> &visitedChildren) {
-    // Hierarchy
-    VisitArrayTypeChildren(T, visitedChildren);
-
-    // Visit and add size expression
-    VisitStmtTop(T->getSizeExpr());
+    visitArrayTypeWithSizeExpr(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitDependentSizedArrayTypeChildren(
     const DependentSizedArrayType *T,
     std::vector<std::string> &visitedChildren) {
-    // Hierarchy
-    VisitArrayTypeChildren(T, visitedChildren);
-
-    // Visit and add size expression
-    VisitStmtTop(T->getSizeExpr());
+    visitArrayTypeWithSizeExpr(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitPointerTypeChildren(
@@ -195,20 +214,12 @@ void ClangAstDumper::VisitReferenceTypeChildren(
 
 void ClangAstDumper::VisitInjectedClassNameTypeChildren(
     const InjectedClassNameType *T, std::vector<std::string> &visitedChildren) {
-    // Hierarchy
-    VisitTypeChildren(T, visitedChildren);
-
-    // Visit decl
-    VisitDeclTop(T->getDecl());
+    visitTypeWithDecl(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitTemplateTypeParmTypeChildren(
     const TemplateTypeParmType *T, std::vector<std::string> &visitedChildren) {
-    // Hierarchy
-    VisitTypeChildren(T, visitedChildren);
-
-    // Visit decl
-    VisitDeclTop(T->getDecl());
+    visitTypeWithDecl(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitSubstTemplateTypeParmTypeChildren(
@@ -275,10 +286,7 @@ void ClangAstDumper::VisitDecayedTypeChildren(
 
 void ClangAstDumper::VisitDecltypeTypeChildren(
     const DecltypeType *T, std::vector<std::string> &visitedChildren) {
-    // Hierarchy
-    VisitTypeChildren(T, visitedChildren);
-
-    VisitStmtTop(T->getUnderlyingExpr());
+    visitTypeWithUnderlyingExpr(*this, T, visitedChildren);
 };
 
 void ClangAstDumper::VisitAutoTypeChildren(
@@ -301,10 +309,7 @@ void ClangAstDumper::VisitPackExpansionTypeChildren(
 
 void ClangAstDumper::VisitTypeOfExprTypeChildren(
     const TypeOfExprType *T, std::vector<std::string> &visitedChildren) {
-    // Hierarchy
-    VisitTypeChildren(T, visitedChildren);
-
-    VisitStmtTop(T->getUnderlyingExpr());
+    visitTypeWithUnderlyingExpr(*this, T, visitedChildren);
 };
 
 void ClangAstDumper::VisitAttributedTypeChildren(

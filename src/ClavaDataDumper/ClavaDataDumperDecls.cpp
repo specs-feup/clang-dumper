@@ -3,7 +3,6 @@
 //
 
 #include "../Clang/ClangNodes.h"
-#include "../Clava/DumpStream.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
@@ -69,23 +68,8 @@ const std::map<std::string, clava::ClavaDataDumper::DeclDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Decl *D) {
-    const std::string classname = clava::getClassName(D);
-    auto it = DECL_DATA_DUMPERS.find(classname);
-    const char *dataName =
-        it != DECL_DATA_DUMPERS.end() ? it->second.dataName : "Decl";
-
-    // Dump header
-    clava::dumpStream() << "<" << dataName << "Data>\n";
-    clava::dumpStream() << clava::getId(D, id) << "\n";
-    clava::dumpStream() << clava::getClassName(D) << "\n";
-
-    if (it != DECL_DATA_DUMPERS.end()) {
-        it->second.dump(*this, D);
-    } else {
-        clava::recordHandlerFallback("decl data", classname);
-        // Default: plain Decl data
-        DumpDeclData(D);
-    }
+    dumpNode(D, clava::getClassName(D), DECL_DATA_DUMPERS, "decl data", "Decl",
+             &ClavaDataDumper::DumpDeclData);
 }
 
 void clava::ClavaDataDumper::DumpDeclData(const Decl *D) {

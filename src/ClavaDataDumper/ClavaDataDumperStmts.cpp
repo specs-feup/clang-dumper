@@ -3,7 +3,6 @@
 //
 
 #include "../Clang/ClangNodes.h"
-#include "../Clava/DumpStream.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
@@ -88,44 +87,23 @@ const std::map<std::string, clava::ClavaDataDumper::ExprDataEntry>
         EXPR_DATA_ENTRY(MSPropertyRefExpr),
 };
 
-void clava::ClavaDataDumper::dump(const Stmt *S) {
-    const std::string classname = clava::getClassName(S);
-    auto it = STMT_DATA_DUMPERS.find(classname);
-    const char *dataName =
-        it != STMT_DATA_DUMPERS.end() ? it->second.dataName : "Stmt";
+void clava::ClavaDataDumper::dumpTemplateArguments(
+    const TemplateArgumentLoc *templateArgs, unsigned count) {
+    clava::dump(count);
 
-    // Dump header
-    clava::dumpStream() << "<" << dataName << "Data>\n";
-    clava::dumpStream() << clava::getId(S, id) << "\n";
-    clava::dumpStream() << clava::getClassName(S) << "\n";
-
-    if (it != STMT_DATA_DUMPERS.end()) {
-        it->second.dump(*this, S);
-    } else {
-        clava::recordHandlerFallback("stmt data", classname);
-        // Default: plain Stmt data
-        DumpStmtData(S);
+    for (unsigned i = 0; i < count; ++i) {
+        clava::dump((templateArgs + i)->getArgument(), id, Context);
     }
 }
 
+void clava::ClavaDataDumper::dump(const Stmt *S) {
+    dumpNode(S, clava::getClassName(S), STMT_DATA_DUMPERS, "stmt data",
+             "Stmt", &ClavaDataDumper::DumpStmtData);
+}
+
 void clava::ClavaDataDumper::dump(const Expr *E) {
-    const std::string classname = clava::getClassName(E);
-    auto it = EXPR_DATA_DUMPERS.find(classname);
-    const char *dataName =
-        it != EXPR_DATA_DUMPERS.end() ? it->second.dataName : "Expr";
-
-    // Dump header
-    clava::dumpStream() << "<" << dataName << "Data>\n";
-    clava::dumpStream() << clava::getId(E, id) << "\n";
-    clava::dumpStream() << clava::getClassName(E) << "\n";
-
-    if (it != EXPR_DATA_DUMPERS.end()) {
-        it->second.dump(*this, E);
-    } else {
-        clava::recordHandlerFallback("expr data", classname);
-        // Default: plain Expr data
-        DumpExprData(static_cast<const Expr *>(E));
-    }
+    dumpNode(E, clava::getClassName(E), EXPR_DATA_DUMPERS, "expr data",
+             "Expr", &ClavaDataDumper::DumpExprData);
 }
 
 // STMTS
@@ -299,16 +277,8 @@ void clava::ClavaDataDumper::DumpDeclRefExprData(const DeclRefExpr *E) {
     // Dump qualifier
     clava::dump(E->getQualifier(), Context);
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }
@@ -327,16 +297,8 @@ void clava::ClavaDataDumper::DumpDependentScopeDeclRefExprData(
 
     clava::dump(E->hasTemplateKeyword());
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }
@@ -359,16 +321,8 @@ void clava::ClavaDataDumper::DumpOverloadExprData(const OverloadExpr *E) {
         clava::dump(clava::getId(*currentDecl, id));
     }
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }
@@ -482,16 +436,8 @@ void clava::ClavaDataDumper::DumpCXXDependentScopeMemberExprData(
     clava::dump(E->getQualifier(), Context);
     clava::dump(E->hasTemplateKeyword());
 
-    // Dump template arguments
     if (E->hasExplicitTemplateArgs()) {
-        // Number of template args
-        clava::dump(E->getNumTemplateArgs());
-
-        auto templateArgs = E->getTemplateArgs();
-        for (unsigned i = 0; i < E->getNumTemplateArgs(); ++i) {
-            auto templateArg = templateArgs + i;
-            clava::dump(templateArg->getArgument(), id, Context);
-        }
+        dumpTemplateArguments(E->getTemplateArgs(), E->getNumTemplateArgs());
     } else {
         clava::dump(0);
     }

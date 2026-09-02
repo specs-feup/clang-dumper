@@ -3,15 +3,7 @@ Enum extraction logic using regex parsing.
 """
 
 import re
-from dataclasses import dataclass
 from typing import Optional
-
-
-@dataclass
-class ExtractedEnum:
-    """Result of enum extraction."""
-    name: str
-    values: list[str]
 
 
 class EnumExtractor:
@@ -25,14 +17,6 @@ class EnumExtractor:
     - Comments and preprocessor directives
     """
     
-    # Regex to match enum definition opening
-    # Captures: (1) optional 'class', (2) enum name, (3) everything after '{'
-    # Note: The base type can be multi-word like "unsigned char"
-    ENUM_PATTERN = re.compile(
-        r'enum\s+(?:class\s+)?(\w+)\s*(?::[^{]+)?\s*\{',
-        re.MULTILINE
-    )
-
     # Maximum parenthesis nesting depth tolerated in the attribute/specifier
     # run between a class/struct keyword and its name (e.g.
     # `class __attribute__((visibility("default"))) W {`). Real-world

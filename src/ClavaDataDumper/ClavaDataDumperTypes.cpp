@@ -53,23 +53,8 @@ const std::map<std::string, clava::ClavaDataDumper::TypeDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Type *T) {
-  const std::string classname = clava::getClassName(T);
-  auto it = TYPE_DATA_DUMPERS.find(classname);
-  const char *dataName =
-      it != TYPE_DATA_DUMPERS.end() ? it->second.dataName : "Type";
-
-  // Dump header
-  clava::dumpStream() << "<" << dataName << "Data>\n";
-  clava::dumpStream() << clava::getId(T, id) << "\n";
-  clava::dumpStream() << clava::getClassName(T) << "\n";
-
-  if (it != TYPE_DATA_DUMPERS.end()) {
-    it->second.dump(*this, T);
-  } else {
-    clava::recordHandlerFallback("type data", classname);
-    // Default: plain Type data
-    DumpTypeData(T);
-  }
+  dumpNode(T, clava::getClassName(T), TYPE_DATA_DUMPERS, "type data", "Type",
+           &ClavaDataDumper::DumpTypeData);
 }
 
 void clava::ClavaDataDumper::DumpTypeData(const Type *T) {
@@ -280,20 +265,20 @@ void clava::ClavaDataDumper::DumpConstantArrayTypeData(
   clava::dump(str);
 }
 
+void clava::ClavaDataDumper::dumpVariableSizeArrayTypeData(
+    const ArrayType *T, const Expr *sizeExpr) {
+  DumpArrayTypeData(T);
+  clava::dump(clava::getId(sizeExpr, id));
+}
+
 void clava::ClavaDataDumper::DumpVariableArrayTypeData(
     const VariableArrayType *T) {
-  // Hierarchy
-  DumpArrayTypeData(T);
-
-  clava::dump(clava::getId(T->getSizeExpr(), id));
+  dumpVariableSizeArrayTypeData(T, T->getSizeExpr());
 }
 
 void clava::ClavaDataDumper::DumpDependentSizedArrayTypeData(
     const DependentSizedArrayType *T) {
-  // Hierarchy
-  DumpArrayTypeData(T);
-
-  clava::dump(clava::getId(T->getSizeExpr(), id));
+  dumpVariableSizeArrayTypeData(T, T->getSizeExpr());
 }
 
 void clava::ClavaDataDumper::DumpTypeWithKeywordData(const TypeWithKeyword *T) {
@@ -370,12 +355,15 @@ void clava::ClavaDataDumper::DumpDecayedTypeData(const DecayedType *T) {
   clava::dump(clava::getId(T->getPointeeType(), id));
 }
 
-void clava::ClavaDataDumper::DumpDecltypeTypeData(const DecltypeType *T) {
-  // Hierarchy
+void clava::ClavaDataDumper::dumpExprTypeData(
+    const Type *T, bool isSugared, const Expr *underlyingExpr) {
   DumpTypeData(T);
+  clava::dump(isSugared);
+  clava::dump(clava::getId(underlyingExpr, id));
+}
 
-  clava::dump(T->isSugared());
-  clava::dump(clava::getId(T->getUnderlyingExpr(), id));
+void clava::ClavaDataDumper::DumpDecltypeTypeData(const DecltypeType *T) {
+  dumpExprTypeData(T, T->isSugared(), T->getUnderlyingExpr());
 }
 
 void clava::ClavaDataDumper::DumpAutoTypeData(const AutoType *T) {
@@ -407,11 +395,7 @@ void clava::ClavaDataDumper::DumpPackExpansionTypeData(
 }
 
 void clava::ClavaDataDumper::DumpTypeOfExprTypeData(const TypeOfExprType *T) {
-  // Hierarchy
-  DumpTypeData(T);
-
-  clava::dump(T->isSugared());
-  clava::dump(clava::getId(T->getUnderlyingExpr(), id));
+  dumpExprTypeData(T, T->isSugared(), T->getUnderlyingExpr());
 }
 
 void clava::ClavaDataDumper::DumpAttributedTypeData(const AttributedType *T) {

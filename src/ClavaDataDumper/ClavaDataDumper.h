@@ -7,6 +7,9 @@
 #define CLANGASTDUMPER_CLAVADATADUMPER_H
 
 #include "../Clava/ClavaConstants.h"
+#include "../Clava/DumpStream.h"
+#include "../Clava/HandlerCoverage.h"
+#include "../Clang/ClangNodes.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/Attr.h"
@@ -74,6 +77,35 @@ class ClavaDataDumper {
     void dump(const Attr *A);
 
   private:
+    template <typename Node, typename Entries>
+    void dumpNode(const Node *node, const std::string &classname,
+                  const Entries &entries, const char *family,
+                  const char *defaultDataName,
+                  void (ClavaDataDumper::*fallback)(const Node *)) {
+        auto it = entries.find(classname);
+        const char *dataName =
+            it != entries.end() ? it->second.dataName : defaultDataName;
+
+        clava::dumpStream() << "<" << dataName << "Data>\n";
+        clava::dumpStream() << clava::getId(node, id) << "\n";
+        clava::dumpStream() << classname << "\n";
+
+        if (it != entries.end()) {
+            it->second.dump(*this, node);
+        } else {
+            clava::recordHandlerFallback(family, classname);
+            (this->*fallback)(node);
+        }
+    }
+
+    void dumpTemplateArguments(const TemplateArgumentLoc *templateArgs,
+                               unsigned count);
+
+    void dumpVariableSizeArrayTypeData(const ArrayType *T,
+                                       const Expr *sizeExpr);
+    void dumpExprTypeData(const Type *T, bool isSugared,
+                          const Expr *underlyingExpr);
+
     // DECLS
     void DumpDeclData(const Decl *D);
     void DumpNamedDeclData(const NamedDecl *D);

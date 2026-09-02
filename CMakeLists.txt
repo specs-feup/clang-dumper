@@ -217,7 +217,6 @@ set(SOURCE_FILES
     src/Clang/ClangAst.cpp
     src/Clang/ClangNodes.cpp
     src/ClangEnums/ClangEnums.cpp
-    src/TypeMarker/TypeMarker.cpp
     src/Clava/DumpStream.cpp
     src/Clava/HandlerCoverage.cpp
     src/ClavaDataDumper/ClavaDataDumper.cpp
@@ -234,7 +233,6 @@ set(SOURCE_FILES
     src/ClangAstDumper/ClangAstDumperAttr.cpp
     src/ClangAstDumper/ClangAstDumperDecls.cpp
     src/ClangAstDumper/ClangAstDumperExprs.cpp
-    src/ClangAstDumper/ClangAstDumperExtra.cpp
     src/ClangAstDumper/ClangAstDumperStmts.cpp
     src/ClangAstDumper/ClangAstDumperTypes.cpp
     "${ENUMS_AGGREGATED_SRC}"

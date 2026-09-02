@@ -3,7 +3,6 @@
 //
 
 #include "../Clang/ClangNodes.h"
-#include "../Clava/DumpStream.h"
 #include "../Clava/HandlerCoverage.h"
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
@@ -25,25 +24,9 @@ const std::map<std::string, clava::ClavaDataDumper::AttrDataEntry>
 };
 
 void clava::ClavaDataDumper::dump(const Attr *A) {
-    const std::string classname = clava::getClassName(A);
-    auto it = ATTR_DATA_DUMPERS.find(classname);
-    // NOTE: the legacy section name for the generic attribute data was
-    // "<AttributeData>", not "<AttrData>".
-    const char *dataName =
-        it != ATTR_DATA_DUMPERS.end() ? it->second.dataName : "Attribute";
-
-    // Dump header
-    clava::dumpStream() << "<" << dataName << "Data>\n";
-    clava::dumpStream() << clava::getId(A, id) << "\n";
-    clava::dumpStream() << clava::getClassName(A) << "\n";
-
-    if (it != ATTR_DATA_DUMPERS.end()) {
-        it->second.dump(*this, A);
-    } else {
-        clava::recordHandlerFallback("attr data", classname);
-        // Default: plain Attr data
-        DumpAttrData(A);
-    }
+    // "Attribute" is the legacy section name for generic attributes.
+    dumpNode(A, clava::getClassName(A), ATTR_DATA_DUMPERS, "attr data",
+             "Attribute", &ClavaDataDumper::DumpAttrData);
 }
 
 void clava::ClavaDataDumper::DumpAttrData(const Attr *A) {
