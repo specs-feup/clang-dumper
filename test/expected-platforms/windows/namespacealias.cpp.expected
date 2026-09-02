@@ -155,9 +155,7 @@ External
 Default
 %CLAVA_SOURCE_BEGIN%
 namespace baz {
-
              int qux = 42;
-
          }
 %CLAVA_SOURCE_END%
 <Id to Class Map>
@@ -193,13 +191,9 @@ External
 Default
 %CLAVA_SOURCE_BEGIN%
 namespace bar {
-
          namespace baz {
-
              int qux = 42;
-
          }
-
     }
 %CLAVA_SOURCE_END%
 <Id to Class Map>
@@ -235,17 +229,11 @@ External
 Default
 %CLAVA_SOURCE_BEGIN%
 namespace foo {
-
     namespace bar {
-
          namespace baz {
-
              int qux = 42;
-
          }
-
     }
-
 }
 %CLAVA_SOURCE_END%
 <Id to Class Map>
