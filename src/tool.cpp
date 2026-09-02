@@ -226,28 +226,70 @@ int main(int argc, const char *argv[]) {
     }
   }
 
-  clang::tooling::ClangTool Tool((*OptionsParser).getCompilations(),
-                                 SourcePaths);
-
-  if (DependencyOption) {
-    const std::string DependencyTarget = AstDumpOutputOption.empty()
-        ? SourcePaths.front()
-        : AstDumpOutputOption.getValue();
-    llvm::SmallVector<char> QuotedDependencyTarget;
-    clang::quoteMakeTarget(DependencyTarget, QuotedDependencyTarget);
-    Tool.appendArgumentsAdjuster(clang::tooling::getInsertArgumentAdjuster(
-        {"-Xclang", "-dependency-file", "-Xclang", DependencyFileOption,
-         "-Xclang", "-MT", "-Xclang",
-         std::string(QuotedDependencyTarget.begin(), QuotedDependencyTarget.end()),
-         "-Xclang", "-sys-header-deps"},
-        clang::tooling::ArgumentInsertPosition::END));
-  }
-
   DumpResources::init(UserIdOption.getValue(),
                       UserSystemHeaderThresholdOption.getValue());
 
-  int returnValue =
-      Tool.run(clang::tooling::newFrontendActionFactory<DumpAstAction>().get());
+  int returnValue;
+  if (!AstDumpOutputOption.empty()) {
+    // ClangTool canonicalizes each source path before constructing the
+    // CompilerInvocation. That is useful for source-to-source tooling, but it
+    // changes the path spelling recorded by SourceManager, diagnostics, and
+    // the dependency scanner. A compiler-style output must retain the path as
+    // written by the caller so that two isolated parse roots with the same
+    // relative layout produce the same cacheable dump.
+    auto CompileCommands = (*OptionsParser)
+                                .getCompilations()
+                                .getCompileCommands(SourcePaths.front());
+    if (CompileCommands.empty()) {
+      llvm::errs() << "No compilation command for source file '"
+                   << SourcePaths.front() << "'\n";
+      returnValue = 1;
+    } else {
+      auto InvocationArguments = clang::tooling::getClangSyntaxOnlyAdjuster()(
+          CompileCommands.front().CommandLine, SourcePaths.front());
+
+      if (DependencyOption) {
+        const std::string DependencyTarget =
+            AstDumpOutputOption.getValue();
+        llvm::SmallVector<char> QuotedDependencyTarget;
+        clang::quoteMakeTarget(DependencyTarget, QuotedDependencyTarget);
+        InvocationArguments.insert(
+            InvocationArguments.end(),
+            {"-Xclang", "-dependency-file", "-Xclang", DependencyFileOption,
+             "-Xclang", "-MT", "-Xclang",
+             std::string(QuotedDependencyTarget.begin(),
+                         QuotedDependencyTarget.end()),
+             "-Xclang", "-sys-header-deps"});
+      }
+
+      llvm::IntrusiveRefCntPtr<clang::FileManager> Files =
+          new clang::FileManager(clang::FileSystemOptions());
+      auto ActionFactory =
+          clang::tooling::newFrontendActionFactory<DumpAstAction>();
+      clang::tooling::ToolInvocation Invocation(
+          std::move(InvocationArguments), ActionFactory->create(), Files.get());
+      returnValue = Invocation.run() ? 0 : 1;
+    }
+  } else {
+    clang::tooling::ClangTool Tool((*OptionsParser).getCompilations(),
+                                   SourcePaths);
+
+    if (DependencyOption) {
+      const std::string DependencyTarget = SourcePaths.front();
+      llvm::SmallVector<char> QuotedDependencyTarget;
+      clang::quoteMakeTarget(DependencyTarget, QuotedDependencyTarget);
+      Tool.appendArgumentsAdjuster(clang::tooling::getInsertArgumentAdjuster(
+          {"-Xclang", "-dependency-file", "-Xclang", DependencyFileOption,
+           "-Xclang", "-MT", "-Xclang",
+           std::string(QuotedDependencyTarget.begin(),
+                       QuotedDependencyTarget.end()),
+           "-Xclang", "-sys-header-deps"},
+          clang::tooling::ArgumentInsertPosition::END));
+    }
+
+    returnValue =
+        Tool.run(clang::tooling::newFrontendActionFactory<DumpAstAction>().get());
+  }
 
   DumpResources::finish();
 

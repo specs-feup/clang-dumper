@@ -263,6 +263,159 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertIn("direct_cache_hit\t1", stats)
             self.assertIn("cache_miss\t1", stats)
 
+    def test_generated_roots_keep_relative_paths_across_invocations(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            roots = [root / "A", root / "C"]
+            for parse_root in roots:
+                (parse_root / "include").mkdir(parents=True)
+                (parse_root / "include" / "value.h").write_text(
+                    "#define VALUE 7\n", encoding="utf-8"
+                )
+                (parse_root / "src.cpp").write_text(
+                    '#include "include/value.h"\n'
+                    '#warning generated-root-warning\n'
+                    'const char *path = __FILE__;\n'
+                    'const char *base = __BASE_FILE__;\n'
+                    "int value = VALUE;\n",
+                    encoding="utf-8",
+                )
+
+            dumps: list[str] = []
+            dump_paths: list[str] = []
+            diagnostics: list[str] = []
+            dependencies: list[str] = []
+            for parse_root in roots:
+                output = root / f"{parse_root.name}.dump"
+                dependency = root / f"{parse_root.name}.d"
+                result = subprocess.run(
+                    [
+                        str(clang_dumper_tool()),
+                        "-c",
+                        "-o",
+                        str(output),
+                        "-MD",
+                        "-MF",
+                        str(dependency),
+                        "src.cpp",
+                        "--",
+                        "-I.",
+                    ],
+                    cwd=parse_root,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                dump_text = output.read_text(encoding="utf-8")
+                normalized_dump, _ = normalize_captured_output(
+                    dump_text, str(parse_root.resolve())
+                )
+                dumps.append(normalized_dump)
+                dump_paths.append(dump_text)
+                diagnostics.append(result.stderr)
+                dependencies.append(dependency.read_text(encoding="utf-8"))
+
+            self.assertEqual(dumps[0], dumps[1])
+            self.assertEqual(diagnostics[0], diagnostics[1])
+            self.assertEqual(
+                dependencies[0].split(": ", 1)[1],
+                dependencies[1].split(": ", 1)[1],
+            )
+            self.assertIn("src.cpp", diagnostics[0])
+            self.assertNotIn(str(root / "A"), diagnostics[0])
+            self.assertIn("src.cpp", dependencies[0])
+            self.assertNotIn(str(root / "A" / "src.cpp"), dependencies[0])
+            self.assertNotIn(str(root / "A"), dump_paths[0])
+            self.assertNotIn(str(root / "C"), dump_paths[1])
+            self.assertIn('"src.cpp"', dump_paths[0])
+
+            cache = root / "cache"
+            cache_environment = os.environ.copy()
+            cache_environment.update(
+                CCACHE_DIR=str(cache),
+                CCACHE_COMPILERTYPE="clang",
+                CCACHE_DEPEND="true",
+                CCACHE_NOHASHDIR="true",
+                CCACHE_NOCOMPRESS="true",
+            )
+            cache_commands = []
+            for parse_root in roots:
+                output = parse_root / "ast.dump"
+                dependency = parse_root / "ast.d"
+                self.assertFalse(output.exists())
+                self.assertFalse(dependency.exists())
+                cache_commands.append(
+                    (
+                        parse_root,
+                        output,
+                        dependency,
+                    )
+                )
+
+            first_root, first_output, first_dependency = cache_commands[0]
+            first = subprocess.run(
+                [
+                    "ccache",
+                    str(clang_dumper_tool()),
+                    "-c",
+                    "-o",
+                    "ast.dump",
+                    "-MD",
+                    "-MF",
+                    "ast.d",
+                    "src.cpp",
+                    "--",
+                    "-I.",
+                ],
+                cwd=first_root,
+                capture_output=True,
+                text=True,
+                check=False,
+                env=cache_environment,
+            )
+            self.assertEqual(first.returncode, 0, first.stderr)
+            first_dump = first_output.read_bytes()
+            self.assertTrue(first_dependency.is_file())
+
+            second_root, second_output, second_dependency = cache_commands[1]
+            self.assertFalse(second_output.exists())
+            self.assertFalse(second_dependency.exists())
+            second = subprocess.run(
+                [
+                    "ccache",
+                    str(clang_dumper_tool()),
+                    "-c",
+                    "-o",
+                    "ast.dump",
+                    "-MD",
+                    "-MF",
+                    "ast.d",
+                    "src.cpp",
+                    "--",
+                    "-I.",
+                ],
+                cwd=second_root,
+                capture_output=True,
+                text=True,
+                check=False,
+                env=cache_environment,
+            )
+            stats = subprocess.run(
+                ["ccache", "--print-stats"],
+                capture_output=True,
+                text=True,
+                check=True,
+                env=cache_environment,
+            ).stdout
+
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(second_output.read_bytes(), first_dump)
+            self.assertTrue(second_dependency.is_file())
+            self.assertIn("cache_miss\t1", stats)
+            self.assertIn("direct_cache_hit\t1", stats)
+            self.assertNotIn(str(root / "A"), second_output.read_text(encoding="utf-8"))
+
 
 class ClangDiagnosticFilteringTest(unittest.TestCase):
     def test_removes_interleaved_diagnostics_without_touching_protocol(self) -> None:
