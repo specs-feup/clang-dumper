@@ -931,9 +931,23 @@ def get_test_config(test_name: str) -> TestConfig:
     return TEST_REGISTRY[test_name]
 
 
+def raw_address_format(raw_address: str) -> str:
+    """Return the formatting convention used for a raw address token.
+
+    A node ID must always be emitted by a single formatting path (clava::getId
+    uses CRT %p). If the same pointer appears both as '0x...' (LLVM raw_ostream
+    format) and zero-padded without a prefix (MinGW CRT %p format), some dump
+    line is streaming a raw pointer instead of using clava::getId, which breaks
+    ID resolution in consumers such as Clava on Windows.
+    """
+    pointer, _ = raw_address.rsplit("_", 1)
+    return "llvm-0x" if pointer.lower().startswith("0x") else "crt-padded"
+
+
 def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[str]:
     """
-    Verify that each placeholder maps to exactly one raw address.
+    Verify that each placeholder maps to exactly one raw address, spelled with
+    a single formatting convention.
 
     Returns:
         List of error messages (empty if consistent)
@@ -945,6 +959,13 @@ def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[
             errors.append(
                 f"Inconsistent address for {placeholder}: "
                 f"found {len(unique_addresses)} different addresses: {unique_addresses}"
+            )
+            continue
+        unique_formats = {raw_address_format(address) for address in raw_addresses}
+        if len(unique_formats) > 1:
+            errors.append(
+                f"Inconsistent address format for {placeholder}: "
+                f"found {sorted(unique_formats)}: {sorted(raw_addresses)}"
             )
     return errors
 

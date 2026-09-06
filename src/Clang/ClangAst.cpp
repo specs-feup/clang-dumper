@@ -133,7 +133,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             if (fullLocation.isValid() && fullLocation.hasManager() &&
                 !fullLocation.isInSystemHeader()) {
                 llvm::errs() << TOP_LEVEL_NODES << "\n";
-                llvm::errs() << D << "_" << id << "\n";
+                llvm::errs() << clava::getId(D, id) << "\n";
             }
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
