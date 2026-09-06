@@ -7,6 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from run_tests import (
+    check_address_consistency,
     normalize_captured_output,
     normalize_static_output,
     normalize_system_source_blocks,
@@ -297,6 +298,39 @@ class NodeClosureTest(unittest.TestCase):
         )
 
         self.assertEqual(unresolved_node_ids(output), ["ADDR_002", "ADDR_003"])
+
+
+class AddressConsistencyTest(unittest.TestCase):
+    def test_accepts_single_format(self) -> None:
+        self.assertEqual(
+            check_address_consistency(
+                {"ADDR_001": ["0x7fffff939e08_1", "0x7fffff939e08_1"]}
+            ),
+            [],
+        )
+        self.assertEqual(
+            check_address_consistency(
+                {"ADDR_001": ["00007fffff939e08_1", "00007fffff939e08_1"]}
+            ),
+            [],
+        )
+
+    def test_rejects_mixed_address_formats(self) -> None:
+        # Same pointer emitted in LLVM raw_ostream format (0x-prefixed) and
+        # CRT %p format (zero-padded, no prefix): the signature of a node ID
+        # bypassing clava::getId, which breaks Clava on Windows.
+        errors = check_address_consistency(
+            {"ADDR_001": ["0x7fffff93a898_1", "00007fffff93a898_1"]}
+        )
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Inconsistent address format", errors[0])
+
+    def test_rejects_different_addresses(self) -> None:
+        errors = check_address_consistency(
+            {"ADDR_001": ["0x7fffff93a898_1", "0x7fffff9390f0_1"]}
+        )
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Inconsistent address for", errors[0])
 
 
 if __name__ == "__main__":
