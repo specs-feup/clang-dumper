@@ -73,6 +73,14 @@ an include root relative to the archive root.
 
 OpenMP headers are included when available.
 
+Each package ships the headers reported by `clang++ -E -x c++ - -v` for that platform, plus the OpenMP `omp.h` when found:
+
+| Platform | C library | C++ library |
+|---|---|---|
+| Linux | glibc (`/usr/include`) | libstdc++ (distro GCC headers) |
+| macOS | Apple SDK (`SDKROOT`) | libc++ (bundled LLVM prefix) |
+| Windows | MinGW-w64 (MSYS2 `clang64`/`clangarm64` sysroot) | libc++ (`-stdlib=libc++`) |
+
 ```sh
 scripts/package_includes.sh linux x64 dist/clang-dumper-linux-x64-includes.zip
 scripts/package_includes.sh linux arm64 dist/clang-dumper-linux-arm64-includes.zip
