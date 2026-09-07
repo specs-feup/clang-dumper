@@ -319,7 +319,7 @@ void ClangAstDumper::VisitTemplateTypeParmDeclChildren(
     VisitTypeDeclChildren(D, children);
 
     if (D->hasDefaultArgument()) {
-        VisitTypeTop(D->getDefaultArgument());
+        VisitTypeTop(D->getDefaultArgument().getArgument().getAsType());
     }
 }
 
@@ -404,7 +404,7 @@ void ClangAstDumper::VisitNonTypeTemplateParmDeclChildren(
     VisitValueDeclChildren(D, children);
 
     if (D->hasDefaultArgument()) {
-        VisitStmtTop(D->getDefaultArgument());
+        VisitStmtTop(D->getDefaultArgument().getSourceExpression());
     }
 
     if (D->isExpandedParameterPack()) {
