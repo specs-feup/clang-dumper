@@ -1,5 +1,9 @@
 # Building
 
+See [docs/updating-llvm.md](docs/updating-llvm.md) for how to update the
+pinned LLVM/Clang version, refresh the golden test baselines from CI, and
+iterate on test normalization locally.
+
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --target tool plugin --parallel
@@ -53,8 +57,9 @@ The MSYS2 package archives used by cross builds are pinned in
 `llvm-version.env` and retrieved from the
 [Windows builds SDKs](https://github.com/specs-feup/clang-dumper/releases/tag/windows-build-sdks)
 release. To add a new immutable SDK version, place its required archives in
-`.deps/msys2-sdk-downloads/`, update the package-version settings and
-`WINDOWS_SDK_ASSET` in `llvm-version.env`, then run:
+`.deps/msys2-sdk-downloads/`, update the package-version settings in
+`llvm-version.env` (the SDK asset name is derived from `LLVM_RELEASE` unless
+`WINDOWS_SDK_ASSET` overrides it), then run:
 
 ```sh
 scripts/create_windows_cross_sdk_bundle.sh
