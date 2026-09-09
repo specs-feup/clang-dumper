@@ -98,8 +98,15 @@ if(NOT TARGET LibEdit::LibEdit)
         message(WARNING "libedit not found; created empty LibEdit::LibEdit target. If link errors referencing edit/readline occur, install libedit-dev.")
     endif()
 endif()
-find_package(LLVM REQUIRED CONFIG)
+# Require an LLVM whose major version matches CLANG_VERSION from
+# llvm-version.env; a stale build cache or LLVM_DIR would otherwise configure
+# silently against the wrong toolchain.
+find_package(LLVM ${CLANG_VERSION} REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
+
+if(NOT LLVM_PACKAGE_VERSION MATCHES "^${CLANG_VERSION}\\.")
+    message(FATAL_ERROR "LLVM ${LLVM_PACKAGE_VERSION} found, but llvm-version.env pins major version ${CLANG_VERSION}")
+endif()
 
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 
