@@ -33,11 +33,16 @@ Consumers:
 - `cmake/read_llvm_version.cmake` → `CMakeLists.txt` (compilers, paths,
   llvm-config, and the major-version guard that fails the configure step when
   the found LLVM doesn't match the pin).
-- `scripts/load_llvm_version.sh` → every shell script under `scripts/`. All
-  manifest variables must be listed in its required-variables block; a missing
-  pin fails loudly instead of silently using a default.
+- `scripts/load_llvm_version.sh` → every shell script under `scripts/`. The
+  pin variables are listed in its required-variables block; a missing pin
+  fails loudly instead of silently using a default. (`WINDOWS_SDK_SHA256` is
+  validated separately, at download time, by
+  `scripts/setup_windows_cross_sdk.sh`.)
 - `.github/workflows/build.yml` → passes the values between jobs via job
-  outputs. All apt/homebrew installs are `${LLVM_VERSION}`-driven.
+  outputs. The LLVM toolchain packages (apt `clang-${LLVM_VERSION}` /
+  `llvm-${LLVM_VERSION}-dev`, brew `llvm@${LLVM_VERSION}`) are
+  `${LLVM_VERSION}`-driven; supporting packages (`zlib1g-dev`, `libedit-dev`,
+  `libzstd-dev`, `libxml2-dev`, brew `libomp`/`zstd`) are versionless.
 
 **msys2 pin lookups** (do this manually at every bump):
 
@@ -68,9 +73,12 @@ config rejects a major-only requested version — hence the explicit
 2. **Source API adaptations**: fix `src/` for the new Clang API. Put
    version-conditional code in **one** place,
    `src/Clang/ClangVersion.h`, instead of scattering `#if`s across visitors.
-   The 19 bump touched 5 files (`ChildrenVisitorDecls.cpp`,
-   `ClavaDataDumperDecls.cpp/.h`, `ClangAst.h/.cpp`) — the pattern a shim
-   header centralizes.
+   The 19 bump touched `ChildrenVisitorDecls.cpp`, `ClavaDataDumperDecls.cpp`,
+   `ClavaDataDumperTypes.cpp`, `ClangAst.h/.cpp` (plus a comment in
+   `ClangNodes.cpp`) — the pattern a shim header centralizes. `ClangVersion.h`
+   currently contains no shims (19 needed none guarded by version); it is the
+   designated home for the first one, e.g. the LLVM 21
+   `NestedNameSpecifier::TypeSpecWithTemplate` change (see §8).
 3. **Build**: local or CI. The CMake major guard catches wrong-toolchain
    configurations (stale build cache, stray `LLVM_DIR`).
 4. **Windows SDK**: rebuild and republish the bundle (see §7), update
@@ -100,8 +108,10 @@ test/expected-platforms/<platform>/    # overrides per CI target
 that are identical across the architectures of that OS — `macos/` contains the
 files where `macos-arm64` and `macos-x64` produce the exact same normalized
 output, and `windows/` serves both `windows-x86_64` and `windows-arm64` (their
-outputs are fully identical after normalization). Per-arch dirs hold only the
-divergences. `linux/` currently doesn't exist because linux-x64, linux-arm64
+tests common to both arches are byte-identical after normalization; the
+x86-gated tests like `variadic.c` only ever run on `windows-x86_64` and live in
+`windows/` as the common dir). Per-arch dirs hold only the divergences.
+`linux/` currently doesn't exist because linux-x64, linux-arm64
 and the shared baseline all agree.
 
 **Precedence is by design**: a platform file always wins over the shared
@@ -127,10 +137,11 @@ Artifacts are retained for **24 hours**. If you miss the window, re-run CI
 ### Refresh loop
 
 ```sh
-# Download one platform's raw outputs (zip contains test/raw-outputs/<plat>/...)
-gh api repos/<owner>/<repo>/actions/runs/<run-id>/artifacts --jq \
-  '.artifacts[] | select(.name=="raw-test-outputs-macos-arm64") | .id'
-gh api repos/<owner>/<repo>/actions/artifacts/<id>/zip > raw.zip
+# Download one platform's raw outputs. The artifact zip contains tool/ and
+# plugin/ directories at its root (not test/raw-outputs/...):
+#   gh api repos/<owner>/<repo>/actions/runs/<run-id>/artifacts --jq \
+#     '.artifacts[] | select(.name=="raw-test-outputs-macos-arm64") | .id'
+#   gh api repos/<owner>/<repo>/actions/artifacts/<id>/zip > raw.zip
 unzip -q raw.zip -d raw-macos-arm64
 
 # Regenerate the platform baselines: writes a file only when the output
@@ -167,6 +178,15 @@ Notes:
   `test/expected/<test>.expected`; replay only writes platform dirs, so use
   its `--failure-output-dir` outputs or generate the shared files from the
   normalized capture directly.
+- The refresh loop above writes platform baselines from the `tool` captures.
+  Verify `tool` and `plugin` produce identical normalized output for every
+  test (replay both captures); if they diverge anywhere, that is a real bug
+  to fix, not a baseline to fork — the baseline layout can only hold one
+  expected output per test.
+- The five CUDA inputs (`.cu`) are skipped on every runner (no CI job enables
+  CUDA), so their shared `test/expected/*.cu.expected` files are never
+  replayed and stay at the previous LLVM version. They are only exercised
+  once a CUDA-enabled runner exists; regenerate them then.
 - Always finish with the check-mode replay of all captures. All-green is the
   definition of a valid refresh.
 
@@ -180,7 +200,7 @@ files — diff them 1:1 against the baseline the run reported.
 The test log tells you which resolution layer was compared:
 
 ```
-Expected file: .../test/expected-platforms/macos/atom.cpp.expected (macos baseline)
+Expected file: .../test/expected-platforms/macos/classes.cpp.expected (macos baseline)
 ```
 
 The suffix in parentheses is the resolution layer: `(macos baseline)` = family
