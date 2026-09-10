@@ -5,12 +5,14 @@
 
 #include "Clang/ClangAst.h"
 #include "Clava/DumpStream.h"
+#include "Clava/WireStream.h"
 #include "Clava/ZstdStream.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/TargetSelect.h"
 
 #include <memory>
+#include <cstdlib>
 #include <system_error>
 #include <vector>
 
@@ -200,6 +202,7 @@ int main(int argc, const char *argv[]) {
 
   std::unique_ptr<llvm::raw_fd_ostream> dumpOutput;
   std::unique_ptr<clava::ZstdStream> compressedDumpOutput;
+  std::unique_ptr<clava::WireStream> wireDumpOutput;
   if (!AstDumpOutputOption.getValue().empty()) {
     std::error_code ErrorCode;
     dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
@@ -220,9 +223,23 @@ int main(int argc, const char *argv[]) {
         return 1;
       }
       compressedDumpOutput = std::move(*CompressedOutput);
-      clava::setDumpStream(*compressedDumpOutput);
+      const char *flat = std::getenv("AST_WIRE_FLAT");
+      if (flat != nullptr && std::string(flat) == "1") {
+        wireDumpOutput = std::make_unique<clava::WireStream>(
+            *compressedDumpOutput);
+        clava::setDumpStream(*wireDumpOutput);
+      } else {
+        clava::setDumpStream(*compressedDumpOutput);
+      }
     } else {
-      clava::setDumpStream(*dumpOutput);
+      const char *flat = std::getenv("AST_WIRE_FLAT");
+      if (flat != nullptr && std::string(flat) == "1") {
+        wireDumpOutput =
+            std::make_unique<clava::WireStream>(*dumpOutput);
+        clava::setDumpStream(*wireDumpOutput);
+      } else {
+        clava::setDumpStream(*dumpOutput);
+      }
     }
   }
 
@@ -294,6 +311,9 @@ int main(int argc, const char *argv[]) {
   DumpResources::finish();
 
   if (dumpOutput) {
+    if (wireDumpOutput) {
+      wireDumpOutput->finish();
+    }
     if (compressedDumpOutput) {
       if (auto Error = compressedDumpOutput->finish()) {
         llvm::errs() << "Cannot compress AST dump output '"

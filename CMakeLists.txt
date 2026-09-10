@@ -219,6 +219,7 @@ set(SOURCE_FILES
     src/ClangEnums/ClangEnums.cpp
     src/Clava/DumpStream.cpp
     src/Clava/HandlerCoverage.cpp
+    src/Clava/WireStream.cpp
     src/ClavaDataDumper/ClavaDataDumper.cpp
     src/ClavaDataDumper/ClavaDataDumperAttrs.cpp
     src/ClavaDataDumper/ClavaDataDumperDecls.cpp
@@ -238,15 +239,67 @@ set(SOURCE_FILES
     "${ENUMS_AGGREGATED_SRC}"
     )
 
+set(AST_WIRE_FLATC "" CACHE FILEPATH
+    "FlatBuffers flatc executable used to generate the AST wire header")
+if(NOT AST_WIRE_FLATC)
+    find_program(AST_WIRE_FLATC_AUTO
+        NAMES flatc
+        HINTS "$ENV{FLATBUFFERS_ROOT}/build-make")
+    set(AST_WIRE_FLATC "${AST_WIRE_FLATC_AUTO}" CACHE FILEPATH
+        "FlatBuffers flatc executable used to generate the AST wire header" FORCE)
+endif()
+if(NOT AST_WIRE_FLATC)
+    message(FATAL_ERROR
+        "FlatBuffers flatc was not found. Set AST_WIRE_FLATC or FLATBUFFERS_ROOT.")
+endif()
+
+set(AST_WIRE_FLATBUFFERS_INCLUDE_DIR "" CACHE PATH
+    "FlatBuffers include directory used by the AST wire pilot")
+if(NOT AST_WIRE_FLATBUFFERS_INCLUDE_DIR)
+    find_path(AST_WIRE_FLATBUFFERS_INCLUDE_DIR_AUTO
+        NAMES flatbuffers/flatbuffers.h
+        HINTS "$ENV{FLATBUFFERS_ROOT}/include"
+        REQUIRED)
+    set(AST_WIRE_FLATBUFFERS_INCLUDE_DIR "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR_AUTO}" CACHE PATH
+        "FlatBuffers include directory used by the AST wire pilot" FORCE)
+endif()
+
+set(AST_WIRE_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated/wire")
+set(AST_WIRE_SCHEMA "${CMAKE_CURRENT_SOURCE_DIR}/wire/wire.fbs")
+set(AST_WIRE_GENERATED_HEADER "${AST_WIRE_GENERATED_DIR}/wire_generated.h")
+add_custom_command(
+    OUTPUT "${AST_WIRE_GENERATED_HEADER}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${AST_WIRE_GENERATED_DIR}"
+    COMMAND "${AST_WIRE_FLATC}" --cpp --scoped-enums
+        -o "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_SCHEMA}"
+    DEPENDS "${AST_WIRE_SCHEMA}" "${AST_WIRE_FLATC}"
+    COMMENT "Generate FlatBuffers AST wire header"
+    VERBATIM
+    )
+add_custom_target(ast_wire_flatbuffers DEPENDS "${AST_WIRE_GENERATED_HEADER}")
+
 if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
     target_compile_features(plugin PRIVATE cxx_std_20)
-    add_dependencies(plugin clang_enums)
+    target_include_directories(plugin PRIVATE
+        "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
+        "${AST_WIRE_GENERATED_DIR}")
+    add_dependencies(plugin clang_enums ast_wire_flatbuffers)
 endif()
 
 add_executable(tool ${SOURCE_FILES} src/tool.cpp src/Clava/ZstdStream.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
-add_dependencies(tool clang_enums)
+target_include_directories(tool PRIVATE
+    "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
+    "${AST_WIRE_GENERATED_DIR}")
+add_dependencies(tool clang_enums ast_wire_flatbuffers)
+
+add_executable(verify_flat_wire test/verify_flat_wire.cpp)
+target_compile_features(verify_flat_wire PRIVATE cxx_std_20)
+target_include_directories(verify_flat_wire PRIVATE
+    "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
+    "${AST_WIRE_GENERATED_DIR}")
+add_dependencies(verify_flat_wire ast_wire_flatbuffers)
 
 find_path(CLANG_DUMPER_ZSTD_INCLUDE_DIR NAMES zstd.h
     HINTS "$ENV{ZSTD_ROOT}"

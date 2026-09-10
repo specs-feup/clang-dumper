@@ -1,0 +1,120 @@
+namespace astwire.flat;
+
+// Every record is serialized as an independent size-prefixed FlatBuffer.
+// The file identifier is deliberately omitted: the size prefix and union
+// discriminator are the framing contract, while the schema version is carried
+// by Header.schema_id.
+
+enum Kind : ubyte {
+  INVALID = 0,
+  IMPLICIT_CAST = 1,
+  INTEGER_LITERAL = 2,
+  BINARY_OPERATOR = 3,
+  COMPOUND_ASSIGN = 4,
+  UNARY_OPERATOR = 5,
+  CAST_EXPR = 6,
+  FUNCTIONAL_CAST = 7,
+  DECL_REF = 8,
+  BASE_EXPR = 9,
+  BASE_STMT = 10
+}
+
+table Header {
+  schema_id:string (required);
+}
+
+table Raw {
+  bytes:[ubyte] (required);
+}
+
+table File {
+  id:uint;
+  // Bytes rather than string preserve the native path spelling verbatim.
+  path:[ubyte] (required);
+}
+
+table Range {
+  file:uint;
+  line:uint;
+  column:uint;
+  // Zero means the legacy one-location <end> marker. File IDs start at one.
+  end_file:uint;
+  end_line:uint;
+  end_column:uint;
+}
+
+table BaseStmt {}
+table BaseExpr {}
+table IntegerLiteral {
+  literal_source:[ubyte] (required);
+  integer_decimal:[ubyte] (required);
+}
+table BinaryOperator {
+  opcode:[ubyte] (required);
+}
+table CompoundAssign {
+  opcode:[ubyte] (required);
+}
+table UnaryOperator {
+  opcode:[ubyte] (required);
+  postfix:bool;
+}
+table CastExpr {
+  opcode:[ubyte] (required);
+}
+table FunctionalCast {
+  opcode:[ubyte] (required);
+}
+table DeclRef {
+  decl_id:uint;
+}
+
+union NodePayload {
+  BaseStmt,
+  BaseExpr,
+  IntegerLiteral,
+  BinaryOperator,
+  CompoundAssign,
+  UnaryOperator,
+  CastExpr,
+  FunctionalCast,
+  DeclRef
+}
+
+table Node {
+  id:uint;
+  kind:Kind;
+  expansion:Range;
+  spelling:Range;
+  is_macro:bool;
+  system_header:bool;
+  // These fields are present for expression kinds. Zero is the legacy null
+  // reference for type_id and decl_id.
+  type_id:uint;
+  value_kind:uint;
+  object_kind:uint;
+  default_argument:bool;
+  payload:NodePayload;
+}
+
+table End {
+  records:ulong;
+  nodes:ulong;
+  raw_bytes:ulong;
+  files:uint;
+  ids:uint;
+}
+
+union RecordBody {
+  Header,
+  Raw,
+  File,
+  Node,
+  End
+}
+
+table Record {
+  body:RecordBody;
+}
+
+root_type Record;

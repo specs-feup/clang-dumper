@@ -14,6 +14,7 @@
 #include "clang/AST/Type.h"
 
 #include <functional>
+#include <cstdint>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -103,6 +104,12 @@ const std::string getId(const Attr *addr, int id);
  */
 const std::string getId(const void *addr, int id);
 
+/** Resets the per-translation-unit dense pointer IDs used by wire pilots. */
+void resetDenseIds();
+
+/** Returns the number of non-null pointers assigned a dense wire ID. */
+size_t denseIdCount();
+
 /**
  *
  * @param Context
@@ -110,6 +117,7 @@ const std::string getId(const void *addr, int id);
  * @return the source code corresponding to the given sourceRange
  */
 const std::string getSource(ASTContext *Context, SourceRange sourceRange);
+const std::string getSourceText(ASTContext *Context, SourceRange sourceRange);
 
 // Value dumpers
 void dump(bool boolean);

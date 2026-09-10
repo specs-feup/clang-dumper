@@ -134,7 +134,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             if (fullLocation.isValid() && fullLocation.hasManager() &&
                 !fullLocation.isInSystemHeader()) {
                 clava::dumpStream() << TOP_LEVEL_NODES << "\n";
-                clava::dumpStream() << D << "_" << id << "\n";
+                clava::dumpStream() << clava::getId(D, id) << "\n";
             }
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
@@ -163,6 +163,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
 // For each source file provided to the tool, a new FrontendAction is created.
 std::unique_ptr<ASTConsumer>
 DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
+    clava::resetDenseIds();
     int counter = DumpResources::runId;
     
     // If runId is 0 (default value), use the global counter instead
