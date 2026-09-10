@@ -16,11 +16,14 @@ load_llvm_version() {
   : "${LLVM_RELEASE:?LLVM_RELEASE is required in ${manifest}}"
   : "${MSYS2_LLVM_PACKAGE_RELEASE:?MSYS2_LLVM_PACKAGE_RELEASE is required in ${manifest}}"
   : "${MSYS2_MINGW_PACKAGE_RELEASE:?MSYS2_MINGW_PACKAGE_RELEASE is required in ${manifest}}"
+  : "${MSYS2_OPENMP_PACKAGE:?MSYS2_OPENMP_PACKAGE is required in ${manifest}}"
   : "${MSYS2_OPENMP_RELEASE:?MSYS2_OPENMP_RELEASE is required in ${manifest}}"
   : "${MSYS2_ZLIB_NG_RELEASE:?MSYS2_ZLIB_NG_RELEASE is required in ${manifest}}"
   : "${MSYS2_ZSTD_RELEASE:?MSYS2_ZSTD_RELEASE is required in ${manifest}}"
   : "${WINDOWS_SDK_RELEASE_TAG:?WINDOWS_SDK_RELEASE_TAG is required in ${manifest}}"
-  : "${WINDOWS_SDK_ASSET:?WINDOWS_SDK_ASSET is required in ${manifest}}"
+  # Derived from the pinned LLVM release by default; WINDOWS_SDK_ASSET in the
+  # manifest can still override the name.
+  WINDOWS_SDK_ASSET="${WINDOWS_SDK_ASSET:-msys2-clang-sdk-llvm-${LLVM_RELEASE}.tar}"
 
   if [[ -n "${CLANG_VERSION:-}" && "${CLANG_VERSION}" != "${LLVM_VERSION}" ]]; then
     echo "CLANG_VERSION=${CLANG_VERSION} conflicts with LLVM_VERSION=${LLVM_VERSION} from ${manifest}" >&2

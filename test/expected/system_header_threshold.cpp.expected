@@ -236,8 +236,97 @@ ADDR_009
 <Visited Children>
 ADDR_010
 0
-<CXXRecordDeclData>
+<TagTypeData>
 ADDR_010
+RecordType
+threshold_outer::threshold_nested
+NONE
+0
+0
+0
+nullptr_type
+ADDR_011
+<Id to Class Map>
+ADDR_010
+RecordType
+<Visited Children>
+ADDR_011
+0
+<CXXRecordDeclData>
+ADDR_011
+CXXRecordDecl
+<TEST_DIR>/system_headers/system_header_threshold.h
+4
+5
+<TEST_DIR>/system_headers/system_header_threshold.h
+4
+30
+0
+1
+0
+0
+0
+0
+0
+0
+threshold_outer
+threshold_nested
+0
+1
+0
+External
+Default
+ADDR_010
+Struct
+1
+0
+0
+ADDR_011
+<Id to Class Map>
+ADDR_011
+CXXRecordDecl
+<Top Level Types>
+ADDR_005
+<Visited Children>
+ADDR_012
+0
+<FieldDeclData>
+ADDR_012
+FieldDecl
+<TEST_DIR>/system_headers/system_header_threshold.h
+5
+5
+<TEST_DIR>/system_headers/system_header_threshold.h
+5
+20
+0
+1
+0
+0
+0
+0
+0
+0
+threshold_outer
+value
+0
+1
+1
+External
+Default
+ADDR_005
+0
+0
+<Id to Class Map>
+ADDR_012
+FieldDecl
+<Visited Children>
+ADDR_013
+2
+ADDR_011
+ADDR_012
+<CXXRecordDeclData>
+ADDR_013
 CXXRecordDecl
 <TEST_DIR>/system_headers/system_header_threshold.h
 3
@@ -261,20 +350,20 @@ threshold_outer
 0
 External
 Default
-ADDR_011
+ADDR_014
 Struct
 1
 0
 0
-ADDR_010
+ADDR_013
 <Id to Class Map>
-ADDR_010
+ADDR_013
 CXXRecordDecl
 <Visited Children>
-ADDR_011
+ADDR_014
 0
 <TagTypeData>
-ADDR_011
+ADDR_014
 RecordType
 threshold_outer
 NONE
@@ -282,37 +371,37 @@ NONE
 0
 0
 nullptr_type
-ADDR_010
+ADDR_013
 <Id to Class Map>
-ADDR_011
+ADDR_014
 RecordType
 <Visited Children>
-ADDR_012
+ADDR_015
 0
 <ElaboratedTypeData>
-ADDR_012
+ADDR_015
 ElaboratedType
 threshold_outer
 NONE
 0
 0
 0
-ADDR_011
+ADDR_014
 None
 
-ADDR_011
+ADDR_014
 <Id to Class Map>
-ADDR_012
+ADDR_015
 ElaboratedType
 <Top Level Types>
-ADDR_012
+ADDR_015
 <Top Level Types>
-ADDR_012
+ADDR_015
 <Visited Children>
-ADDR_013
+ADDR_016
 0
 <BuiltinTypeData>
-ADDR_013
+ADDR_016
 BuiltinType
 void
 NONE
@@ -323,13 +412,13 @@ nullptr_type
 Void
 void
 <Id to Class Map>
-ADDR_013
+ADDR_016
 BuiltinType
 <Visited Children>
-ADDR_014
+ADDR_017
 0
 <FunctionProtoTypeData>
-ADDR_014
+ADDR_017
 FunctionProtoType
 void () noexcept
 NONE
@@ -345,7 +434,7 @@ nullptr_type
 0
 0
 C
-ADDR_013
+ADDR_016
 0
 0
 0
@@ -354,15 +443,30 @@ None
 BasicNoexcept
 0
 <Id to Class Map>
-ADDR_014
+ADDR_017
 FunctionProtoType
 <Top Level Types>
-ADDR_014
+ADDR_017
 <Visited Children>
-ADDR_015
+ADDR_018
+0
+<StmtData>
+ADDR_018
+CompoundStmt
+<TEST_DIR>/system_headers/system_header_threshold.h
+3
+37
+<end>
+0
+1
+<Id to Class Map>
+ADDR_018
+CompoundStmt
+<Visited Children>
+ADDR_019
 0
 <PointerTypeData>
-ADDR_015
+ADDR_019
 PointerType
 threshold_outer *
 NONE
@@ -370,15 +474,16 @@ NONE
 0
 0
 nullptr_type
-ADDR_011
+ADDR_014
 <Id to Class Map>
-ADDR_015
+ADDR_019
 PointerType
 <Visited Children>
-ADDR_016
-0
+ADDR_020
+1
+ADDR_018
 <CXXConstructorDeclData>
-ADDR_016
+ADDR_020
 CXXConstructorDecl
 <TEST_DIR>/system_headers/system_header_threshold.h
 3
@@ -399,7 +504,7 @@ threshold_outer
 1
 External
 Default
-ADDR_014
+ADDR_017
 0
 0
 0
@@ -410,10 +515,10 @@ None
 0
 0
 nullptr_decl
-ADDR_016
+ADDR_020
 nullptr_decl
 0
-ADDR_010
+ADDR_013
 0
 0
 1
@@ -422,8 +527,8 @@ ADDR_010
 0
 0
 0
-ADDR_015
-ADDR_011
+ADDR_019
+ADDR_014
 1
 0
 0
@@ -433,13 +538,13 @@ ResolvedFalse
 nullptr_expr
 0
 <Id to Class Map>
-ADDR_016
+ADDR_020
 CXXConstructorDecl
 <Visited Children>
-ADDR_017
+ADDR_021
 0
 <CXXConstructExprData>
-ADDR_017
+ADDR_021
 CXXConstructExpr
 <TEST_DIR>/system_header_threshold.cpp
 4
@@ -447,7 +552,7 @@ CXXConstructExpr
 <end>
 0
 0
-ADDR_012
+ADDR_015
 0
 0
 0
@@ -457,14 +562,14 @@ ADDR_012
 0
 Complete
 1
-ADDR_016
+ADDR_020
 <Id to Class Map>
-ADDR_017
+ADDR_021
 CXXConstructExpr
 <Visited Children>
 ADDR_006
 1
-ADDR_017
+ADDR_021
 <VarDeclData>
 ADDR_006
 VarDecl
@@ -489,7 +594,7 @@ threshold_record
 0
 External
 Default
-ADDR_012
+ADDR_015
 0
 None
 NONE

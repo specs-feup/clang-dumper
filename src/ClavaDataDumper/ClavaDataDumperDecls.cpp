@@ -390,7 +390,7 @@ void clava::ClavaDataDumper::DumpTemplateTypeParmDeclData(
     clava::dump(D->isParameterPack());
 
     if (D->hasDefaultArgument()) {
-        clava::dump(clava::getId(D->getDefaultArgument(), id));
+        clava::dump(clava::getId(D->getDefaultArgument().getArgument().getAsType(), id));
     } else {
         clava::dump(clava::getId((const Type *)nullptr, id));
     }
@@ -503,7 +503,7 @@ void clava::ClavaDataDumper::DumpNonTypeTemplateParmDeclData(
     DumpDeclaratorDeclData(D);
 
     if (D->hasDefaultArgument()) {
-        clava::dump(clava::getId(D->getDefaultArgument(), id));
+        clava::dump(clava::getId(D->getDefaultArgument().getSourceExpression(), id));
     } else {
         clava::dump(clava::getId((const Expr *)nullptr, id));
     }
