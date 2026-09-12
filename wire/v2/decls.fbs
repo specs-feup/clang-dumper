@@ -1,0 +1,262 @@
+include "common.fbs";
+namespace astwire.v2;
+
+// Declaration data follows the native dumper's inheritance walk.  Each
+// handler owns a table, and embeds the data produced by its parent handler in
+// `base`; this keeps the generated Java object model compatible with Clava's
+// existing data keys while keeping every value typed on the wire.
+table DeclData {
+  base:NodeData (required);
+  is_implicit:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.Decl.IS_IMPLICIT");
+  is_used:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.Decl.IS_USED");
+  is_referenced:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.Decl.IS_REFERENCED");
+  is_invalid_decl:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.Decl.IS_INVALID_DECL");
+  is_module_private:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.Decl.IS_MODULE_PRIVATE");
+  attributes:[long] (required, java_key:"pt.up.fe.specs.clava.ast.decl.Decl.ATTRIBUTES", java_ref:"list");
+}
+
+table NamedDeclData {
+  base:DeclData (required);
+  qualified_prefix:string (required, java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.QUALIFIED_PREFIX");
+  decl_name:string (required, java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.DECL_NAME");
+  name_kind:NameKind = null (java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.NAME_KIND", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.NameKind");
+  is_cxx_class_member:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.IS_CXX_CLASS_MEMBER");
+  is_cxx_instance_member:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.IS_CXX_INSTANCE_MEMBER");
+  linkage:Linkage = null (java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.LINKAGE", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.Linkage");
+  visibility:Visibility = null (java_key:"pt.up.fe.specs.clava.ast.decl.NamedDecl.VISIBILITY", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.Visibility");
+}
+
+table TypeDeclData {
+  base:NamedDeclData (required);
+  type_for_decl:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.TypeDecl.TYPE_FOR_DECL", java_ref:"optional");
+}
+
+table TagDeclData {
+  base:TypeDeclData (required);
+  tag_kind:TagKind = null (java_key:"pt.up.fe.specs.clava.ast.decl.TagDecl.TAG_KIND", java_enum:"pt.up.fe.specs.clava.language.TagKind");
+  is_complete_definition:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.TagDecl.IS_COMPLETE_DEFINITION");
+}
+
+table RecordDeclData {
+  base:TagDeclData (required);
+  is_anonymous:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.RecordDecl.IS_ANONYMOUS");
+}
+
+table ValueDeclData {
+  base:NamedDeclData (required);
+  type:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.ValueDecl.TYPE", java_ref:"node");
+  is_weak:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.ValueDecl.IS_WEAK");
+}
+
+table DeclaratorDeclData { base:ValueDeclData (required); }
+
+table TemplateDeclData {
+  base:NamedDeclData (required);
+  template_parameters:[long] (required, java_key:"pt.up.fe.specs.clava.ast.decl.TemplateDecl.TEMPLATE_PARAMETERS", java_ref:"list");
+  templated_decl:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateDecl.TEMPLATE_DECL", java_ref:"optional");
+}
+
+table FunctionDeclData {
+  base:DeclaratorDeclData (required);
+  is_constexpr:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.IS_CONSTEXPR");
+  template_kind:TemplateKind = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.TEMPLATE_KIND", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.TemplateKind");
+  storage_class:StorageClass = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.STORAGE_CLASS", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.StorageClass");
+  is_inline_specified:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.IS_INLINE_SPECIFIED");
+  is_virtual_as_written:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.IS_VIRTUAL_AS_WRITTEN");
+  is_pure:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.IS_PURE");
+  is_deleted:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.IS_DELETED");
+  is_explicitly_defaulted:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.IS_EXPLICITLY_DEFAULTED");
+  previous_decl:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.PREVIOUS_DECL", java_ref:"optional");
+  canonical_decl:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.CANONICAL_DECL", java_ref:"node");
+  primary_template_decl:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.PRIMARY_TEMPLATE_DECL", java_ref:"optional");
+  template_arguments:[TemplateArgument] (required, java_key:"pt.up.fe.specs.clava.ast.decl.FunctionDecl.TEMPLATE_ARGUMENTS", java_codec:"compoundList");
+}
+
+table CXXMethodDeclData {
+  base:FunctionDeclData (required);
+  record:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.RECORD", java_ref:"node", java_ref_alias:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.RECORD_ID");
+  overridden_methods:[long] (required, java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.OVERRIDDEN_METHODS", java_ref:"list");
+  is_static:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_STATIC");
+  is_instance:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_INSTANCE");
+  is_const:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_CONST");
+  is_volatile:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_VOLATILE");
+  is_virtual:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_VIRTUAL");
+  is_copy_assignment_operator:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_COPY_ASSIGNMENT_OPERATOR");
+  is_move_assignment_operator:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_MOVE_ASSIGNMENT_OPERATOR");
+  this_type:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.THIS_TYPE", java_ref:"optional");
+  this_object_type:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.THIS_OJBECT_TYPE", java_ref:"optional");
+  has_inline_body:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.HAS_INLINE_BODY");
+  is_lambda_static_invoker:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXMethodDecl.IS_LAMBDA_STATIC_INVOKER");
+}
+
+table CXXConstructorDeclData {
+  base:CXXMethodDeclData (required);
+  constructor_inits:[CXXCtorInitializer] (required, java_key:"pt.up.fe.specs.clava.ast.decl.CXXConstructorDecl.CONSTRUCTOR_INITS", java_codec:"compoundList");
+  is_default_constructor:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXConstructorDecl.IS_DEFAULT_CONSTRUCTOR");
+  is_explicit:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXConstructorDecl.IS_EXPLICIT");
+  explicit_specifier:ExplicitSpecifier (required, java_key:"pt.up.fe.specs.clava.ast.decl.CXXConstructorDecl.EXPLICIT_SPECIFIER", java_codec:"compound");
+}
+
+table CXXConversionDeclData {
+  base:CXXMethodDeclData (required);
+  is_explicit:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXConversionDecl.IS_EXPLICIT");
+  is_lambda_to_block_pointer_conversion:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXConversionDecl.IS_LAMBDA_TO_BLOCK_POINTER_CONVERSION");
+  conversion_type:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXConversionDecl.CONVERSION_TYPE", java_ref:"node");
+}
+
+table FieldDeclData {
+  base:DeclaratorDeclData (required);
+  is_mutable:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.FieldDecl.IS_MUTABLE");
+}
+
+table ParmVarDeclData {
+  base:VarDeclData (required);
+  has_inherited_default_arg:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.ParmVarDecl.HAS_INHERITED_DEFAULT_ARG");
+}
+
+table VarDeclData {
+  base:ValueDeclData (required);
+  storage_class:StorageClass = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.STORAGE_CLASS", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.StorageClass");
+  tls_kind:TLSKind = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.TLS_KIND", java_enum:"pt.up.fe.specs.clava.language.TLSKind");
+  is_nrvo_variable:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.IS_NRVO_VARIABLE");
+  init_style:InitializationStyle = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.INIT_STYLE", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.InitializationStyle");
+  is_constexpr:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.IS_CONSTEXPR");
+  is_static_data_member:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.IS_STATIC_DATA_MEMBER");
+  is_out_of_line:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.IS_OUT_OF_LINE");
+  has_global_storage:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.VarDecl.HAS_GLOBAL_STORAGE");
+}
+
+table TemplateTypeParmDeclData {
+  base:TypeDeclData (required);
+  kind:TemplateTypeParmKind = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTypeParmDecl.KIND", java_enum:"pt.up.fe.specs.clava.language.TemplateTypeParmKind");
+  is_parameter_pack:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTypeParmDecl.IS_PARAMETER_PACK");
+  default_argument:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTypeParmDecl.DEFAULT_ARGUMENT", java_ref:"optional");
+}
+
+table UnresolvedUsingTypenameDeclData {
+  base:TypeDeclData (required);
+  qualifier:string (required, java_key:"pt.up.fe.specs.clava.ast.decl.UnresolvedUsingTypenameDecl.QUALIFIER");
+  is_pack_expansion:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.UnresolvedUsingTypenameDecl.IS_PACK_EXPANSION");
+}
+
+table EnumDeclData {
+  base:TagDeclData (required);
+  enum_scope_kind:EnumScopeType = null ( java_key:"pt.up.fe.specs.clava.ast.decl.EnumDecl.ENUM_SCOPE_KIND", java_enum:"pt.up.fe.specs.clava.ast.decl.EnumDecl.EnumScopeType");
+  integer_type:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.EnumDecl.INTEGER_TYPE", java_ref:"optional");
+}
+
+table CXXRecordDeclData {
+  base:RecordDeclData (required);
+  record_bases:[CXXBaseSpecifier] (required, java_key:"pt.up.fe.specs.clava.ast.decl.CXXRecordDecl.RECORD_BASES", java_codec:"compoundList");
+  record_definition:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.CXXRecordDecl.RECORD_DEFINITION", java_ref:"optional");
+}
+
+table ClassTemplateSpecializationDeclData {
+  base:CXXRecordDeclData (required);
+  specialized_template:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.ClassTemplateSpecializationDecl.SPECIALIZED_TEMPLATE", java_ref:"node");
+  specialization_kind:TemplateSpecializationKind = null (java_key:"pt.up.fe.specs.clava.ast.decl.ClassTemplateSpecializationDecl.SPECIALIZATION_KIND", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.TemplateSpecializationKind");
+  template_arguments:[TemplateArgument] (required, java_key:"pt.up.fe.specs.clava.ast.decl.ClassTemplateSpecializationDecl.TEMPLATE_ARGUMENTS", java_codec:"compoundList");
+}
+
+table NonTypeTemplateParmDeclData {
+  base:DeclaratorDeclData (required);
+  default_argument:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.NonTypeTemplateParmDecl.DEFAULT_ARGUMENT", java_ref:"optional");
+  default_argument_was_inherited:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.NonTypeTemplateParmDecl.DEFAULT_ARGUMENT_WAS_INHERITED");
+  is_parameter_pack:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.NonTypeTemplateParmDecl.IS_PARAMETER_PACK");
+  is_pack_expansion:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.NonTypeTemplateParmDecl.IS_PACK_EXPANSION");
+  is_expanded_parameter_pack:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.NonTypeTemplateParmDecl.IS_EXPANDED_PARAMETER_PACK");
+  expansion_types:[long] (required, java_key:"pt.up.fe.specs.clava.ast.decl.NonTypeTemplateParmDecl.EXPANSION_TYPES", java_ref:"list");
+}
+
+table TypedefNameDeclData {
+  base:TypeDeclData (required);
+  underlying_type:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.TypedefNameDecl.UNDERLYING_TYPE", java_ref:"node");
+}
+
+table AccessSpecDeclData {
+  base:DeclData (required);
+  access_specifier:AccessSpecifier = null (java_key:"pt.up.fe.specs.clava.ast.decl.AccessSpecDecl.ACCESS_SPECIFIER", java_enum:"pt.up.fe.specs.clava.language.AccessSpecifier");
+}
+
+table UsingDeclData {
+  base:NamedDeclData (required);
+  nested_name_specifier:NestedNameSpecifier (required, java_key:"pt.up.fe.specs.clava.ast.decl.UsingDecl.NESTED_NAME_SPECIFIER", java_codec:"compound");
+}
+
+table UsingDirectiveDeclData {
+  base:NamedDeclData (required);
+  qualifier:string (required, java_key:"pt.up.fe.specs.clava.ast.decl.UsingDirectiveDecl.QUALIFIER");
+  namespace:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.UsingDirectiveDecl.NAMESPACE", java_ref:"node");
+  namespace_as_written:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.UsingDirectiveDecl.NAMESPACE_AS_WRITTEN", java_ref:"node");
+}
+
+table NamespaceDeclData {
+  base:NamedDeclData (required);
+  source_literal:string (required, java_key:"pt.up.fe.specs.clava.ast.decl.NamespaceDecl.SOURCE_LITERAL");
+}
+
+table NamespaceAliasDeclData {
+  base:NamedDeclData (required);
+  nested_prefix:string (required, java_key:"pt.up.fe.specs.clava.ast.decl.NamespaceAliasDecl.NESTED_PREFIX");
+  aliased_namespace:long = null (java_key:"pt.up.fe.specs.clava.ast.decl.NamespaceAliasDecl.ALIASED_NAMESPACE", java_ref:"node");
+}
+
+table LinkageSpecDeclData {
+  base:DeclData (required);
+  linkage_type:LanguageId = null (java_key:"pt.up.fe.specs.clava.ast.decl.LinkageSpecDecl.LINKAGE_TYPE", java_enum:"pt.up.fe.specs.clava.ast.decl.enums.LanguageId");
+}
+
+table StaticAssertDeclData {
+  base:DeclData (required);
+  is_failed:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.StaticAssertDecl.IS_FAILED");
+}
+
+table TemplateTemplateParmDeclData {
+  base:TemplateDeclData (required);
+  default_argument:TemplateArgument ( java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTemplateParmDecl.DEFAULT_ARGUMENT", java_codec:"optionalCompound");
+  is_parameter_pack:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTemplateParmDecl.IS_PARAMETER_PACK");
+  is_pack_expansion:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTemplateParmDecl.IS_PACK_EXPANSION");
+  is_expanded_parameter_pack:bool = null (java_key:"pt.up.fe.specs.clava.ast.decl.TemplateTemplateParmDecl.IS_EXPANDED_PARAMETER_PACK");
+}
+
+table MSPropertyDeclData {
+  base:DeclaratorDeclData (required);
+  getter_name:string ( java_key:"pt.up.fe.specs.clava.ast.decl.MSPropertyDecl.GETTER_NAME", java_codec:"optionalString");
+  setter_name:string ( java_key:"pt.up.fe.specs.clava.ast.decl.MSPropertyDecl.SETTER_NAME", java_codec:"optionalString");
+}
+
+union DeclPayload {
+  DeclData,
+  NamedDeclData,
+  TypeDeclData,
+  TagDeclData,
+  RecordDeclData,
+  ValueDeclData,
+  DeclaratorDeclData,
+  TemplateDeclData,
+  FunctionDeclData,
+  CXXMethodDeclData,
+  CXXConstructorDeclData,
+  CXXConversionDeclData,
+  FieldDeclData,
+  ParmVarDeclData,
+  VarDeclData,
+  TemplateTypeParmDeclData,
+  UnresolvedUsingTypenameDeclData,
+  EnumDeclData,
+  CXXRecordDeclData,
+  ClassTemplateSpecializationDeclData,
+  NonTypeTemplateParmDeclData,
+  TypedefNameDeclData,
+  AccessSpecDeclData,
+  UsingDeclData,
+  UsingDirectiveDeclData,
+  NamespaceDeclData,
+  NamespaceAliasDeclData,
+  LinkageSpecDeclData,
+  StaticAssertDeclData,
+  TemplateTemplateParmDeclData,
+  MSPropertyDeclData
+}
+
+table ClassTemplatePartialSpecializationDeclData { base:ClassTemplateSpecializationDeclData (required); }

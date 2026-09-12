@@ -1,0 +1,209 @@
+include "common.fbs";
+namespace astwire.v2;
+
+// Types have no source node base.  QualTypeData composes TypeData with the
+// qualifier-specific fields used by the top-level QualType records.
+table TypeData {
+  type_as_string:string (required, java_key:"pt.up.fe.specs.clava.ast.type.Type.TYPE_AS_STRING");
+  type_dependency:TypeDependency = null (java_key:"pt.up.fe.specs.clava.ast.type.Type.TYPE_DEPENDENCY", java_enum:"pt.up.fe.specs.clava.ast.type.enums.TypeDependency");
+  is_variably_modified:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.Type.IS_VARIABLY_MODIFIED");
+  contains_unexpanded_parameter_pack:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.Type.CONTAINS_UNEXPANDED_PARAMETER_PACK");
+  is_from_ast:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.Type.IS_FROM_AST");
+  unqualified_desugared_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.Type.UNQUALIFIED_DESUGARED_TYPE", java_ref:"optional");
+}
+
+table QualTypeData {
+  base:TypeData (required);
+  c99_qualifiers:[C99Qualifier] (required, java_key:"pt.up.fe.specs.clava.ast.type.QualType.C99_QUALIFIERS", java_enum:"pt.up.fe.specs.clava.ast.type.enums.C99Qualifier");
+  address_space_qualifier:AddressSpaceQualifierV2 = null (java_key:"pt.up.fe.specs.clava.ast.type.QualType.ADDRESS_SPACE_QUALIFIER", java_enum:"pt.up.fe.specs.clava.ast.type.enums.AddressSpaceQualifierV2");
+  address_space:long = null (java_key:"pt.up.fe.specs.clava.ast.type.QualType.ADDRESS_SPACE");
+  unqualified_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.QualType.UNQUALIFIED_TYPE", java_ref:"node");
+}
+
+table BuiltinTypeData {
+  base:TypeData (required);
+  kind:BuiltinKind = null (java_key:"pt.up.fe.specs.clava.ast.type.BuiltinType.KIND", java_enum:"pt.up.fe.specs.clava.ast.type.enums.BuiltinKind");
+  kind_literal:string (required, java_key:"pt.up.fe.specs.clava.ast.type.BuiltinType.KIND_LITERAL");
+}
+
+table PointerTypeData {
+  base:TypeData (required);
+  pointee_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.PointerType.POINTEE_TYPE", java_ref:"node");
+}
+
+table FunctionTypeData {
+  base:TypeData (required);
+  is_const:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.IS_CONST");
+  is_volatile:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.IS_VOLATILE");
+  is_restrict:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.IS_RESTRICT");
+  no_return:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.NO_RETURN");
+  produces_result:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.PRODUCES_RESULT");
+  uses_reg_parm:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.HAS_REG_PARM");
+  reg_parm:long = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.REG_PARM");
+  calling_convention:CallingConvention = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.CALLING_CONVENTION", java_enum:"pt.up.fe.specs.clava.ast.type.enums.CallingConvention");
+  return_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionType.RETURN_TYPE", java_ref:"node");
+}
+
+table FunctionProtoTypeData {
+  base:FunctionTypeData (required);
+  num_parameters:int = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionProtoType.NUM_PARAMETERS");
+  parameters_types:[long] (required, java_key:"pt.up.fe.specs.clava.ast.type.FunctionProtoType.PARAMETERS_TYPES", java_ref:"list");
+  has_trailing_returns:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionProtoType.HAS_TRAILING_RETURNS");
+  is_variadic:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionProtoType.IS_VARIADIC");
+  reference_qualifier:ReferenceQualifier = null (java_key:"pt.up.fe.specs.clava.ast.type.FunctionProtoType.REFERENCE_QUALIFIER", java_enum:"pt.up.fe.specs.clava.language.ReferenceQualifier");
+  exception_specification:ExceptionSpecification (required, java_key:"pt.up.fe.specs.clava.ast.type.FunctionProtoType.EXCEPTION_SPECIFICATION", java_codec:"compound");
+}
+
+table ArrayTypeData {
+  base:TypeData (required);
+  array_size_modifier:ArraySizeModifier = null (java_key:"pt.up.fe.specs.clava.ast.type.ArrayType.ARRAY_SIZE_MODIFIER", java_enum:"pt.up.fe.specs.clava.ast.type.enums.ArraySizeModifier");
+  index_type_qualifiers:[C99Qualifier] (required, java_key:"pt.up.fe.specs.clava.ast.type.ArrayType.INDEX_TYPE_QUALIFIERS", java_enum:"pt.up.fe.specs.clava.ast.type.enums.C99Qualifier");
+  element_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.ArrayType.ELEMENT_TYPE", java_ref:"node");
+}
+
+table ConstantArrayTypeData {
+  base:ArrayTypeData (required);
+  array_size:string (required, java_key:"pt.up.fe.specs.clava.ast.type.ConstantArrayType.ARRAY_SIZE", java_codec:"bigint");
+}
+
+table VariableArrayTypeData {
+  base:ArrayTypeData (required);
+  size_expr:long = null (java_key:"pt.up.fe.specs.clava.ast.type.VariableArrayType.SIZE_EXPR", java_ref:"nullable");
+}
+
+table DependentSizedArrayTypeData {
+  base:ArrayTypeData (required);
+  size_expr:long = null (java_key:"pt.up.fe.specs.clava.ast.type.DependentSizedArrayType.SIZE_EXPR", java_ref:"optional");
+}
+
+table TagTypeData {
+  base:TypeData (required);
+  decl:long = null (java_key:"pt.up.fe.specs.clava.ast.type.TagType.DECL", java_ref:"node");
+}
+
+table TypeWithKeywordData {
+  base:TypeData (required);
+  elaborated_type_keyword:ElaboratedTypeKeyword = null (java_key:"pt.up.fe.specs.clava.ast.type.TypeWithKeyword.ELABORATED_TYPE_KEYWORD", java_enum:"pt.up.fe.specs.clava.ast.type.enums.ElaboratedTypeKeyword");
+}
+
+table ElaboratedTypeData {
+  base:TypeWithKeywordData (required);
+  qualifier:string (required, java_key:"pt.up.fe.specs.clava.ast.type.ElaboratedType.QUALIFIER");
+  named_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.ElaboratedType.NAMED_TYPE", java_ref:"node");
+}
+
+table TemplateTypeParmTypeData {
+  base:TypeData (required);
+  depth:int = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateTypeParmType.DEPTH");
+  index:int = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateTypeParmType.INDEX");
+  is_packed:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateTypeParmType.IS_PACKED");
+  decl:long = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateTypeParmType.DECL", java_ref:"optional");
+}
+
+table TemplateSpecializationTypeData {
+  base:TypeData (required);
+  is_type_alias:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateSpecializationType.IS_TYPE_ALIAS");
+  aliased_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateSpecializationType.ALIASED_TYPE", java_ref:"optional");
+  template_name:string (required, java_key:"pt.up.fe.specs.clava.ast.type.TemplateSpecializationType.TEMPLATE_NAME");
+  template_decl:long = null (java_key:"pt.up.fe.specs.clava.ast.type.TemplateSpecializationType.TEMPLATE_DECL", java_ref:"optional");
+  template_arguments:[TemplateArgument] (required, java_key:"pt.up.fe.specs.clava.ast.type.TemplateSpecializationType.TEMPLATE_ARGUMENTS", java_codec:"compoundList");
+}
+
+table TypedefTypeData {
+  base:TypeData (required);
+  decl:long = null (java_key:"pt.up.fe.specs.clava.ast.type.TypedefType.DECL", java_ref:"node");
+}
+
+table AdjustedTypeData {
+  base:TypeData (required);
+  original_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.AdjustedType.ORIGINAL_TYPE", java_ref:"node");
+  adjusted_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.AdjustedType.ADJUSTED_TYPE", java_ref:"node");
+}
+
+table DecayedTypeData {
+  base:AdjustedTypeData (required);
+  decayed_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.DecayedType.DECAYED_TYPE", java_ref:"node");
+  pointee_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.DecayedType.POINTEE_TYPE", java_ref:"node");
+}
+
+table DecltypeTypeData {
+  base:TypeData (required);
+  is_sugared:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.DecltypeType.IS_SUGARED");
+  underlying_expr:long = null (java_key:"pt.up.fe.specs.clava.ast.type.DecltypeType.UNDERLYING_EXPR", java_ref:"node");
+}
+
+table AutoTypeData {
+  base:TypeData (required);
+  deduced_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.AutoType.DEDUCED_TYPE", java_ref:"optional");
+}
+
+table ReferenceTypeData {
+  base:TypeData (required);
+  pointee_type_as_written:long = null (java_key:"pt.up.fe.specs.clava.ast.type.ReferenceType.POINTEE_TYPE_AS_WRITTEN", java_ref:"node");
+}
+
+table TypeOfExprTypeData {
+  base:TypeData (required);
+  is_sugared:bool = null (java_key:"pt.up.fe.specs.clava.ast.type.DecltypeType.IS_SUGARED");
+  underlying_expr:long = null (java_key:"pt.up.fe.specs.clava.ast.type.TypeOfExprType.UNDERLYING_EXPR", java_ref:"node");
+}
+
+table PackExpansionTypeData {
+  base:TypeData (required);
+  num_expansions:int = null (java_key:"pt.up.fe.specs.clava.ast.type.PackExpansionType.NUM_EXPANSIONS");
+  pattern:long = null (java_key:"pt.up.fe.specs.clava.ast.type.PackExpansionType.PATTERN", java_ref:"node");
+}
+
+table UnaryTransformTypeData {
+  base:TypeData (required);
+  kind:UnaryTransformTypeKind = null (java_key:"pt.up.fe.specs.clava.ast.type.UnaryTransformType.KIND", java_enum:"pt.up.fe.specs.clava.ast.type.enums.UnaryTransformTypeKind");
+  underlying_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.UnaryTransformType.UNDERLYING_TYPE", java_ref:"optional");
+  base_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.UnaryTransformType.BASE_TYPE", java_ref:"node");
+}
+
+table AttributedTypeData {
+  base:TypeData (required);
+  modified_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.AttributedType.MODIFIED_TYPE", java_ref:"node");
+  equivalent_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.AttributedType.EQUIVALENT_TYPE", java_ref:"node");
+}
+
+table SubstTemplateTypeParmTypeData {
+  base:TypeData (required);
+  replaced_parameter:long = null (java_key:"pt.up.fe.specs.clava.ast.type.SubstTemplateTypeParmType.REPLACED_PARAMETER", java_ref:"node");
+  replacement_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.SubstTemplateTypeParmType.REPLACEMENT_TYPE", java_ref:"node");
+}
+
+table ComplexTypeData {
+  base:TypeData (required);
+  element_type:long = null (java_key:"pt.up.fe.specs.clava.ast.type.ComplexType.ELEMENT_TYPE", java_ref:"node");
+}
+
+union TypePayload {
+  TypeData,
+  QualTypeData,
+  BuiltinTypeData,
+  PointerTypeData,
+  FunctionTypeData,
+  FunctionProtoTypeData,
+  ArrayTypeData,
+  ConstantArrayTypeData,
+  VariableArrayTypeData,
+  DependentSizedArrayTypeData,
+  TagTypeData,
+  TypeWithKeywordData,
+  ElaboratedTypeData,
+  TemplateTypeParmTypeData,
+  TemplateSpecializationTypeData,
+  TypedefTypeData,
+  AdjustedTypeData,
+  DecayedTypeData,
+  DecltypeTypeData,
+  AutoTypeData,
+  ReferenceTypeData,
+  TypeOfExprTypeData,
+  PackExpansionTypeData,
+  UnaryTransformTypeData,
+  AttributedTypeData,
+  SubstTemplateTypeParmTypeData,
+  ComplexTypeData
+}

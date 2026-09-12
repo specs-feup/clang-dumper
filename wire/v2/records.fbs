@@ -1,0 +1,46 @@
+include "common.fbs";
+namespace astwire.v2;
+table Header { schema_hash:string (required); }
+table File { id:uint = null; path:string (required); }
+table Children { node:long = null; children:[long] (required); }
+table NodeClass { node:long = null; class_name:string (required); }
+enum TopLevelKind : ubyte { Decl, Type, Attr }
+table TopLevel { kind:TopLevelKind = null; node:long = null; }
+table Include { source:string (required); name:string (required); line:uint = null; angled:bool = null; }
+table Pragma { source:string (required); line:uint = null; column:uint = null; }
+table TranslationUnitFile { id:int = null; path:string (required); }
+table Counter { value:int = null; }
+table Language {
+  file:string (required);
+  line_comment:bool = null;
+  gnu_inline:bool = null;
+  c99:bool = null;
+  c11:bool = null;
+  c_plus_plus:bool = null;
+  c_plus_plus_11:bool = null;
+  c_plus_plus_14:bool = null;
+  c_plus_plus_17:bool = null;
+  c_plus_plus_20:bool = null;
+  c_plus_plus_23:bool = null;
+  c_plus_plus_26:bool = null;
+  has_digraphs:bool = null;
+  is_gnu:bool = null;
+  hex_floats:bool = null;
+  open_cl:bool = null;
+  open_cl_version:uint = null;
+  native_half_type:bool = null;
+  cuda:bool = null;
+  has_bool:bool = null;
+  has_half:bool = null;
+  has_wchar:bool = null;
+  char_width:uint = null;
+  float_width:uint = null;
+  double_width:uint = null;
+  long_double_width:uint = null;
+  bool_width:uint = null;
+  short_width:uint = null;
+  int_width:uint = null;
+  long_width:uint = null;
+  long_long_width:uint = null;
+}
+table End { records:ulong = null; nodes:ulong = null; files:uint = null; ids:uint = null; }

@@ -1,0 +1,117 @@
+namespace astwire.v2;
+
+attribute "java_enum";
+
+
+
+
+
+
+
+
+enum AttributeKind : int (java_enum: "pt.up.fe.specs.clava.ast.attr.enums.AttributeKind") { AddressSpace = 0, AnnotateType = 1, ArmIn = 2, ArmInOut = 3, ArmMveStrictPolymorphism = 4, ArmOut = 5, ArmPreserves = 6, ArmStreaming = 7, ArmStreamingCompatible = 8, BTFTypeTag = 9, CmseNSCall = 10, HLSLGroupSharedAddressSpace = 11, HLSLParamModifier = 12, NoDeref = 13, ObjCGC = 14, ObjCInertUnsafeUnretained = 15, ObjCKindOf = 16, OpenCLConstantAddressSpace = 17, OpenCLGenericAddressSpace = 18, OpenCLGlobalAddressSpace = 19, OpenCLGlobalDeviceAddressSpace = 20, OpenCLGlobalHostAddressSpace = 21, OpenCLLocalAddressSpace = 22, OpenCLPrivateAddressSpace = 23, Ptr32 = 24, Ptr64 = 25, SPtr = 26, TypeNonNull = 27, TypeNullUnspecified = 28, TypeNullable = 29, TypeNullableResult = 30, UPtr = 31, WebAssemblyFuncref = 32, CodeAlign = 33, FallThrough = 34, Likely = 35, MustTail = 36, OpenCLUnrollHint = 37, Unlikely = 38, AlwaysInline = 39, NoInline = 40, NoMerge = 41, Suppress = 42, AArch64SVEPcs = 43, AArch64VectorPcs = 44, AMDGPUKernelCall = 45, AcquireHandle = 46, AnyX86NoCfCheck = 47, CDecl = 48, FastCall = 49, IntelOclBicc = 50, LifetimeBound = 51, M68kRTD = 52, MSABI = 53, NSReturnsRetained = 54, ObjCOwnership = 55, Pascal = 56, Pcs = 57, PreserveAll = 58, PreserveMost = 59, RegCall = 60, StdCall = 61, SwiftAsyncCall = 62, SwiftCall = 63, SysVABI = 64, ThisCall = 65, VectorCall = 66, SwiftAsyncContext = 67, SwiftContext = 68, SwiftErrorResult = 69, SwiftIndirectResult = 70, Annotate = 71, CFConsumed = 72, CarriesDependency = 73, NSConsumed = 74, NonNull = 75, OSConsumed = 76, PassObjectSize = 77, ReleaseHandle = 78, UseHandle = 79, HLSLSV_DispatchThreadID = 80, HLSLSV_GroupIndex = 81, AMDGPUFlatWorkGroupSize = 82, AMDGPUNumSGPR = 83, AMDGPUNumVGPR = 84, AMDGPUWavesPerEU = 85, ARMInterrupt = 86, AVRInterrupt = 87, AVRSignal = 88, AcquireCapability = 89, AcquiredAfter = 90, AcquiredBefore = 91, AlignMac68k = 92, AlignNatural = 93, Aligned = 94, AllocAlign = 95, AllocSize = 96, AlwaysDestroy = 97, AnalyzerNoReturn = 98, AnyX86Interrupt = 99, AnyX86NoCallerSavedRegisters = 100, ArcWeakrefUnavailable = 101, ArgumentWithTypeTag = 102, ArmBuiltinAlias = 103, ArmLocallyStreaming = 104, ArmNew = 105, Artificial = 106, AsmLabel = 107, AssertCapability = 108, AssertExclusiveLock = 109, AssertSharedLock = 110, AssumeAligned = 111, Assumption = 112, Availability = 113, AvailableOnlyInDefaultEvalMethod = 114, BPFPreserveAccessIndex = 115, BPFPreserveStaticOffset = 116, BTFDeclTag = 117, Blocks = 118, Builtin = 119, C11NoReturn = 120, CFAuditedTransfer = 121, CFGuard = 122, CFICanonicalJumpTable = 123, CFReturnsNotRetained = 124, CFReturnsRetained = 125, CFUnknownTransfer = 126, CPUDispatch = 127, CPUSpecific = 128, CUDAConstant = 129, CUDADevice = 130, CUDADeviceBuiltinSurfaceType = 131, CUDADeviceBuiltinTextureType = 132, CUDAGlobal = 133, CUDAHost = 134, CUDAInvalidTarget = 135, CUDALaunchBounds = 136, CUDAShared = 137, CXX11NoReturn = 138, CallableWhen = 139, Callback = 140, Capability = 141, CapturedRecord = 142, Cleanup = 143, CmseNSEntry = 144, CodeModel = 145, CodeSeg = 146, Cold = 147, Common = 148, Const = 149, ConstInit = 150, Constructor = 151, Consumable = 152, ConsumableAutoCast = 153, ConsumableSetOnRead = 154, Convergent = 155, CoroDisableLifetimeBound = 156, CoroLifetimeBound = 157, CoroOnlyDestroyWhenComplete = 158, CoroReturnType = 159, CoroWrapper = 160, CountedBy = 161, DLLExport = 162, DLLExportStaticLocal = 163, DLLImport = 164, DLLImportStaticLocal = 165, Deprecated = 166, Destructor = 167, DiagnoseAsBuiltin = 168, DiagnoseIf = 169, DisableSanitizerInstrumentation = 170, DisableTailCalls = 171, EmptyBases = 172, EnableIf = 173, EnforceTCB = 174, EnforceTCBLeaf = 175, EnumExtensibility = 176, Error = 177, ExcludeFromExplicitInstantiation = 178, ExclusiveTrylockFunction = 179, ExternalSourceSymbol = 180, Final = 181, FlagEnum = 182, Flatten = 183, Format = 184, FormatArg = 185, FunctionReturnThunks = 186, GNUInline = 187, GuardedBy = 188, GuardedVar = 189, HIPManaged = 190, HLSLNumThreads = 191, HLSLResource = 192, HLSLResourceBinding = 193, HLSLShader = 194, Hot = 195, IBAction = 196, IBOutlet = 197, IBOutletCollection = 198, InitPriority = 199, InternalLinkage = 200, LTOVisibilityPublic = 201, LayoutVersion = 202, Leaf = 203, LockReturned = 204, LocksExcluded = 205, M68kInterrupt = 206, MIGServerRoutine = 207, MSAllocator = 208, MSConstexpr = 209, MSInheritance = 210, MSNoVTable = 211, MSP430Interrupt = 212, MSStruct = 213, MSVtorDisp = 214, MaxFieldAlignment = 215, MayAlias = 216, MaybeUndef = 217, MicroMips = 218, MinSize = 219, MinVectorWidth = 220, Mips16 = 221, MipsInterrupt = 222, MipsLongCall = 223, MipsShortCall = 224, NSConsumesSelf = 225, NSErrorDomain = 226, NSReturnsAutoreleased = 227, NSReturnsNotRetained = 228, NVPTXKernel = 229, Naked = 230, NoAlias = 231, NoCommon = 232, NoDebug = 233, NoDestroy = 234, NoDuplicate = 235, NoInstrumentFunction = 236, NoMicroMips = 237, NoMips16 = 238, NoProfileFunction = 239, NoRandomizeLayout = 240, NoReturn = 241, NoSanitize = 242, NoSpeculativeLoadHardening = 243, NoSplitStack = 244, NoStackProtector = 245, NoThreadSafetyAnalysis = 246, NoThrow = 247, NoUniqueAddress = 248, NoUwtable = 249, NotTailCalled = 250, OMPAllocateDecl = 251, OMPCaptureNoInit = 252, OMPDeclareTargetDecl = 253, OMPDeclareVariant = 254, OMPThreadPrivateDecl = 255, OSConsumesThis = 256, OSReturnsNotRetained = 257, OSReturnsRetained = 258, OSReturnsRetainedOnNonZero = 259, OSReturnsRetainedOnZero = 260, ObjCBridge = 261, ObjCBridgeMutable = 262, ObjCBridgeRelated = 263, ObjCException = 264, ObjCExplicitProtocolImpl = 265, ObjCExternallyRetained = 266, ObjCIndependentClass = 267, ObjCMethodFamily = 268, ObjCNSObject = 269, ObjCPreciseLifetime = 270, ObjCRequiresPropertyDefs = 271, ObjCRequiresSuper = 272, ObjCReturnsInnerPointer = 273, ObjCRootClass = 274, ObjCSubclassingRestricted = 275, OpenCLIntelReqdSubGroupSize = 276, OpenCLKernel = 277, OptimizeNone = 278, Override = 279, Owner = 280, Ownership = 281, Packed = 282, ParamTypestate = 283, PatchableFunctionEntry = 284, Pointer = 285, PragmaClangBSSSection = 286, PragmaClangDataSection = 287, PragmaClangRelroSection = 288, PragmaClangRodataSection = 289, PragmaClangTextSection = 290, PreferredName = 291, PreferredType = 292, PtGuardedBy = 293, PtGuardedVar = 294, Pure = 295, RISCVInterrupt = 296, RandomizeLayout = 297, ReadOnlyPlacement = 298, Reinitializes = 299, ReleaseCapability = 300, ReqdWorkGroupSize = 301, RequiresCapability = 302, Restrict = 303, Retain = 304, ReturnTypestate = 305, ReturnsNonNull = 306, ReturnsTwice = 307, SYCLKernel = 308, SYCLSpecialClass = 309, ScopedLockable = 310, Section = 311, SelectAny = 312, Sentinel = 313, SetTypestate = 314, SharedTrylockFunction = 315, SpeculativeLoadHardening = 316, StandaloneDebug = 317, StrictFP = 318, StrictGuardStackCheck = 319, SwiftAsync = 320, SwiftAsyncError = 321, SwiftAsyncName = 322, SwiftAttr = 323, SwiftBridge = 324, SwiftBridgedTypedef = 325, SwiftError = 326, SwiftImportAsNonGeneric = 327, SwiftImportPropertyAsAccessors = 328, SwiftName = 329, SwiftNewType = 330, SwiftPrivate = 331, TLSModel = 332, Target = 333, TargetClones = 334, TargetVersion = 335, TestTypestate = 336, TransparentUnion = 337, TrivialABI = 338, TryAcquireCapability = 339, TypeTagForDatatype = 340, TypeVisibility = 341, Unavailable = 342, Uninitialized = 343, UnsafeBufferUsage = 344, Unused = 345, Used = 346, UsingIfExists = 347, Uuid = 348, VecReturn = 349, VecTypeHint = 350, Visibility = 351, WarnUnused = 352, WarnUnusedResult = 353, Weak = 354, WeakImport = 355, WeakRef = 356, WebAssemblyExportName = 357, WebAssemblyImportModule = 358, WebAssemblyImportName = 359, WorkGroupSizeHint = 360, X86ForceAlignArgPointer = 361, XRayInstrument = 362, XRayLogArgs = 363, ZeroCallUsedRegs = 364, AbiTag = 365, Alias = 366, AlignValue = 367, BuiltinAlias = 368, CalledOnce = 369, IFunc = 370, InitSeg = 371, LoaderUninitialized = 372, LoopHint = 373, Mode = 374, NoBuiltin = 375, NoEscape = 376, OMPCaptureKind = 377, OMPDeclareSimdDecl = 378, OMPReferencedVar = 379, ObjCBoxable = 380, ObjCClassStub = 381, ObjCDesignatedInitializer = 382, ObjCDirect = 383, ObjCDirectMembers = 384, ObjCNonLazyClass = 385, ObjCNonRuntimeProtocol = 386, ObjCRuntimeName = 387, ObjCRuntimeVisible = 388, OpenCLAccess = 389, Overloadable = 390, RenderScriptKernel = 391, SwiftObjCMembers = 392, SwiftVersionedAddition = 393, SwiftVersionedRemoval = 394, Thread = 395, FirstAttr = 396, LastAttr = 397, FirstTypeAttr = 398, LastTypeAttr = 399, FirstStmtAttr = 400, LastStmtAttr = 401, FirstDeclOrStmtAttr = 402, LastDeclOrStmtAttr = 403, FirstInheritableAttr = 404, LastInheritableAttr = 405, FirstDeclOrTypeAttr = 406, LastDeclOrTypeAttr = 407, FirstInheritableParamAttr = 408, LastInheritableParamAttr = 409, FirstParameterABIAttr = 410, LastParameterABIAttr = 411, FirstHLSLAnnotationAttr = 412, LastHLSLAnnotationAttr = 413 }
+
+enum FormatAttrKind : int (java_enum: "pt.up.fe.specs.clava.ast.attr.enums.FormatAttrKind") { printf = 0, scanf = 1, strftime = 2, gnu_printf = 3, gnu_scanf = 4, gnu_strftime = 5, strfmon = 6, ms_printf = 7, ms_scanf = 8, ms_strftime = 9, NSString = 10 }
+
+enum VisibilityType : int (java_enum: "pt.up.fe.specs.clava.ast.attr.enums.VisibilityType") { Default = 0, Hidden = 1, Protected = 2 }
+
+
+
+enum ExplicitSpecKind : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.ExplicitSpecKind") { ResolvedFalse = 0, ResolvedTrue = 1, Unresolved = 2 }
+
+enum InitializationStyle : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.InitializationStyle") { CINIT = 0, CALL_INIT = 1, LIST_INIT = 2, ParenListInit = 3 }
+
+enum LanguageId : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.LanguageId") { C = 0, CXX = 1 }
+
+enum Linkage : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.Linkage") { Invalid = 0, None = 1, Internal = 2, UniqueExternal = 3, VisibleNone = 4, Module = 5, External = 6 }
+
+enum NameKind : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.NameKind") { IDENTIFIER = 0, OBJ_C_ZERO_ARG_SELECTOR = 1, OBJ_C_ONE_ARG_SELECTOR = 2, OBJ_C_MULTI_ARG_SELECTOR = 3, CXX_CONSTRUCTOR_NAME = 4, CXX_DESTRUCTOR_NAME = 5, CXX_CONVERSION_FUNCTION_NAME = 6, CXX_DEDUCTION_GUIDE_NAME = 7, CXX_OPERATOR_NAME = 8, CXX_LITERAL_OPERATOR_NAME = 9, CXX_USING_DIRECTIVE = 10 }
+
+
+enum StorageClass : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.StorageClass") { None = 0, Extern = 1, Static = 2, PrivateExtern = 3, Auto = 4, Register = 5 }
+
+enum TemplateKind : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.TemplateKind") { NON_TEMPLATE = 0, FUNCTION_TEMPLATE = 1, MEMBER_SPECIALIZATION = 2, FUNCTION_TEMPLATE_SPECIALIZATION = 3, DEPENDENT_FUNCTION_TEMPLATE_SPECIALIZATION = 4 }
+
+enum TemplateSpecializationKind : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.TemplateSpecializationKind") { Undeclared = 0, ImplicitInstantiation = 1, ExplicitSpecialization = 2, ExplicitInstantiationDeclaration = 3, ExplicitInstantiationDefinition = 4 }
+
+enum Visibility : int (java_enum: "pt.up.fe.specs.clava.ast.decl.enums.Visibility") { Hidden = 0, Protected = 1, Default = 2 }
+
+
+enum BinaryOperatorKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.BinaryOperatorKind") { PtrMemD = 0, PtrMemI = 1, Mul = 2, Div = 3, Rem = 4, Add = 5, Sub = 6, Shl = 7, Shr = 8, Cmp = 9, LT = 10, GT = 11, LE = 12, GE = 13, EQ = 14, NE = 15, And = 16, Xor = 17, Or = 18, LAnd = 19, LOr = 20, Assign = 21, MulAssign = 22, DivAssign = 23, RemAssign = 24, AddAssign = 25, SubAssign = 26, ShlAssign = 27, ShrAssign = 28, AndAssign = 29, XorAssign = 30, OrAssign = 31, Comma = 32 }
+
+enum CharacterKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.CharacterKind") { ASCII = 0, WIDE = 1, UTF8 = 2, UTF16 = 3, UTF32 = 4 }
+
+enum ConstructionKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.ConstructionKind") { Complete = 0, NonVirtualBase = 1, VirtualBase = 2, Delegating = 3 }
+
+
+
+
+
+enum LambdaCaptureDefault : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.LambdaCaptureDefault") { None = 0, ByCopy = 1, ByRef = 2 }
+
+enum LambdaCaptureKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.LambdaCaptureKind") { This = 0, StarThis = 1, ByCopy = 2, ByRef = 3, VLAType = 4 }
+
+enum NewInitStyle : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.NewInitStyle") { NO_INIT = 0, CALL_INIT = 1, LIST_INIT = 2 }
+
+enum ObjectKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.ObjectKind") { ORDINARY = 0, BIT_FIELD = 1, OBJ_C_PROPERTY = 2, OBJ_C_SUBSCRIPT = 3, VECTOR_COMPONENT = 4 }
+
+enum PredefinedIdType : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.PredefinedIdType") { Func = 0, Function = 1, LFunction = 2, FuncDName = 3, FuncSig = 4, LFuncSig = 5, PrettyFunction = 6, PrettyFunctionNoVirtual = 7 }
+
+enum StringKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.StringKind") { ORDINARY = 0, WIDE = 1, UTF8 = 2, UTF16 = 3, UTF32 = 4, UNEVALUATED = 5 }
+
+enum UnaryOperatorKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.UnaryOperatorKind") { PostInc = 0, PostDec = 1, PreInc = 2, PreDec = 3, AddrOf = 4, Deref = 5, Plus = 6, Minus = 7, Not = 8, LNot = 9, Real = 10, Imag = 11, Extension = 12, Coawait = 13 }
+
+enum UnaryOperatorPosition : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.UnaryOperatorPosition") { PREFIX = 0, POSTFIX = 1 }
+
+enum ValueKind : int (java_enum: "pt.up.fe.specs.clava.ast.expr.enums.ValueKind") { R_VALUE = 0, L_VALUE = 1, X_VALUE = 2 }
+
+
+
+
+
+
+enum AddressSpaceQualifierV2 : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.AddressSpaceQualifierV2") { NONE = 0, GLOBAL = 1, LOCAL = 2, CONSTANT = 3, GENERIC = 4, DEFAULT = 5, PRIVATE = 6, CUDA_CONSTANT = 7, CUDA_DEVICE = 8, CUDA_SHARED = 9 }
+
+enum ArraySizeModifier : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.ArraySizeModifier") { Normal = 0, Static = 1, Star = 2 }
+
+
+enum BuiltinKind : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.BuiltinKind") { OCLImage1dRO = 0, OCLImage1dArrayRO = 1, OCLImage1dBufferRO = 2, OCLImage2dRO = 3, OCLImage2dArrayRO = 4, OCLImage2dDepthRO = 5, OCLImage2dArrayDepthRO = 6, OCLImage2dMSAARO = 7, OCLImage2dArrayMSAARO = 8, OCLImage2dMSAADepthRO = 9, OCLImage2dArrayMSAADepthRO = 10, OCLImage3dRO = 11, OCLImage1dWO = 12, OCLImage1dArrayWO = 13, OCLImage1dBufferWO = 14, OCLImage2dWO = 15, OCLImage2dArrayWO = 16, OCLImage2dDepthWO = 17, OCLImage2dArrayDepthWO = 18, OCLImage2dMSAAWO = 19, OCLImage2dArrayMSAAWO = 20, OCLImage2dMSAADepthWO = 21, OCLImage2dArrayMSAADepthWO = 22, OCLImage3dWO = 23, OCLImage1dRW = 24, OCLImage1dArrayRW = 25, OCLImage1dBufferRW = 26, OCLImage2dRW = 27, OCLImage2dArrayRW = 28, OCLImage2dDepthRW = 29, OCLImage2dArrayDepthRW = 30, OCLImage2dMSAARW = 31, OCLImage2dArrayMSAARW = 32, OCLImage2dMSAADepthRW = 33, OCLImage2dArrayMSAADepthRW = 34, OCLImage3dRW = 35, OCLIntelSubgroupAVCMcePayload = 36, OCLIntelSubgroupAVCImePayload = 37, OCLIntelSubgroupAVCRefPayload = 38, OCLIntelSubgroupAVCSicPayload = 39, OCLIntelSubgroupAVCMceResult = 40, OCLIntelSubgroupAVCImeResult = 41, OCLIntelSubgroupAVCRefResult = 42, OCLIntelSubgroupAVCSicResult = 43, OCLIntelSubgroupAVCImeResultSingleRefStreamout = 44, OCLIntelSubgroupAVCImeResultDualRefStreamout = 45, OCLIntelSubgroupAVCImeSingleRefStreamin = 46, OCLIntelSubgroupAVCImeDualRefStreamin = 47, SveInt8 = 48, SveInt16 = 49, SveInt32 = 50, SveInt64 = 51, SveUint8 = 52, SveUint16 = 53, SveUint32 = 54, SveUint64 = 55, SveFloat16 = 56, SveFloat32 = 57, SveFloat64 = 58, SveBFloat16 = 59, SveInt8x2 = 60, SveInt16x2 = 61, SveInt32x2 = 62, SveInt64x2 = 63, SveUint8x2 = 64, SveUint16x2 = 65, SveUint32x2 = 66, SveUint64x2 = 67, SveFloat16x2 = 68, SveFloat32x2 = 69, SveFloat64x2 = 70, SveBFloat16x2 = 71, SveInt8x3 = 72, SveInt16x3 = 73, SveInt32x3 = 74, SveInt64x3 = 75, SveUint8x3 = 76, SveUint16x3 = 77, SveUint32x3 = 78, SveUint64x3 = 79, SveFloat16x3 = 80, SveFloat32x3 = 81, SveFloat64x3 = 82, SveBFloat16x3 = 83, SveInt8x4 = 84, SveInt16x4 = 85, SveInt32x4 = 86, SveInt64x4 = 87, SveUint8x4 = 88, SveUint16x4 = 89, SveUint32x4 = 90, SveUint64x4 = 91, SveFloat16x4 = 92, SveFloat32x4 = 93, SveFloat64x4 = 94, SveBFloat16x4 = 95, SveBool = 96, VectorQuad = 97, VectorPair = 98, RvvInt8mf8 = 99, RvvInt8mf4 = 100, RvvInt8mf2 = 101, RvvInt8m1 = 102, RvvInt8m2 = 103, RvvInt8m4 = 104, RvvInt8m8 = 105, RvvUint8mf8 = 106, RvvUint8mf4 = 107, RvvUint8mf2 = 108, RvvUint8m1 = 109, RvvUint8m2 = 110, RvvUint8m4 = 111, RvvUint8m8 = 112, RvvInt16mf4 = 113, RvvInt16mf2 = 114, RvvInt16m1 = 115, RvvInt16m2 = 116, RvvInt16m4 = 117, RvvInt16m8 = 118, RvvUint16mf4 = 119, RvvUint16mf2 = 120, RvvUint16m1 = 121, RvvUint16m2 = 122, RvvUint16m4 = 123, RvvUint16m8 = 124, RvvInt32mf2 = 125, RvvInt32m1 = 126, RvvInt32m2 = 127, RvvInt32m4 = 128, RvvInt32m8 = 129, RvvUint32mf2 = 130, RvvUint32m1 = 131, RvvUint32m2 = 132, RvvUint32m4 = 133, RvvUint32m8 = 134, RvvInt64m1 = 135, RvvInt64m2 = 136, RvvInt64m4 = 137, RvvInt64m8 = 138, RvvUint64m1 = 139, RvvUint64m2 = 140, RvvUint64m4 = 141, RvvUint64m8 = 142, RvvFloat16mf4 = 143, RvvFloat16mf2 = 144, RvvFloat16m1 = 145, RvvFloat16m2 = 146, RvvFloat16m4 = 147, RvvFloat16m8 = 148, RvvFloat32mf2 = 149, RvvFloat32m1 = 150, RvvFloat32m2 = 151, RvvFloat32m4 = 152, RvvFloat32m8 = 153, RvvFloat64m1 = 154, RvvFloat64m2 = 155, RvvFloat64m4 = 156, RvvFloat64m8 = 157, RvvBool1 = 158, RvvBool2 = 159, RvvBool4 = 160, RvvBool8 = 161, RvvBool16 = 162, RvvBool32 = 163, RvvBool64 = 164, Void = 165, Bool = 166, Char_U = 167, UChar = 168, WChar_U = 169, Char8 = 170, Char16 = 171, Char32 = 172, UShort = 173, UInt = 174, ULong = 175, ULongLong = 176, UInt128 = 177, Char_S = 178, SChar = 179, WChar_S = 180, Short = 181, Int = 182, Long = 183, LongLong = 184, Int128 = 185, ShortAccum = 186, Accum = 187, LongAccum = 188, UShortAccum = 189, UAccum = 190, ULongAccum = 191, ShortFract = 192, Fract = 193, LongFract = 194, UShortFract = 195, UFract = 196, ULongFract = 197, SatShortAccum = 198, SatAccum = 199, SatLongAccum = 200, SatUShortAccum = 201, SatUAccum = 202, SatULongAccum = 203, SatShortFract = 204, SatFract = 205, SatLongFract = 206, SatUShortFract = 207, SatUFract = 208, SatULongFract = 209, Half = 210, Float = 211, Double = 212, LongDouble = 213, Float16 = 214, BFloat16 = 215, Float128 = 216, Ibm128 = 217, NullPtr = 218, ObjCId = 219, ObjCClass = 220, ObjCSel = 221, OCLSampler = 222, OCLEvent = 223, OCLClkEvent = 224, OCLQueue = 225, OCLReserveID = 226, Dependent = 227, Overload = 228, BoundMember = 229, PseudoObject = 230, UnknownAny = 231, BuiltinFn = 232, ARCUnbridgedCast = 233, IncompleteMatrixIdx = 234, OMPArraySection = 235, OMPArrayShaping = 236, OMPIterator = 237 }
+
+enum C99Qualifier : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.C99Qualifier") { CONST = 0, RESTRICT = 1, RESTRICT_C99 = 2, VOLATILE = 3 }
+
+enum CallingConvention : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.CallingConvention") { C = 0, X86StdCall = 1, X86FastCall = 2, X86ThisCall = 3, X86VectorCall = 4, X86Pascal = 5, Win64 = 6, X86_64SysV = 7, X86RegCall = 8, AAPCS = 9, AAPCS_VFP = 10, IntelOclBicc = 11, SpirFunction = 12, OpenCLKernel = 13, Swift = 14, SwiftAsync = 15, PreserveMost = 16, PreserveAll = 17, AArch64VectorCall = 18, AArch64SVEPCS = 19, AMDGPUKernelCall = 20, M68kRTD = 21 }
+
+enum ElaboratedTypeKeyword : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.ElaboratedTypeKeyword") { Struct = 0, Interface = 1, Union = 2, Class = 3, Enum = 4, Typename = 5, None = 6 }
+
+enum ExceptionSpecificationType : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.ExceptionSpecificationType") { None = 0, DynamicNone = 1, Dynamic = 2, MSAny = 3, NoThrow = 4, BasicNoexcept = 5, DependentNoexcept = 6, NoexceptFalse = 7, NoexceptTrue = 8, Unevaluated = 9, Uninstantiated = 10, Unparsed = 11 }
+
+
+enum TypeDependency : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.TypeDependency") { DEPENDENT = 0, INSTANTIATION_DEPENDENT = 1, NONE = 2 }
+
+enum UnaryTransformTypeKind : int (java_enum: "pt.up.fe.specs.clava.ast.type.enums.UnaryTransformTypeKind") { AddLvalueReference = 0, AddPointer = 1, AddRvalueReference = 2, Decay = 3, MakeSigned = 4, MakeUnsigned = 5, RemoveAllExtents = 6, RemoveConst = 7, RemoveCV = 8, RemoveCVRef = 9, RemoveExtent = 10, RemovePointer = 11, RemoveReference = 12, RemoveRestrict = 13, RemoveVolatile = 14, EnumUnderlyingType = 15 }
+
+
+enum AccessSpecifier : int (java_enum: "pt.up.fe.specs.clava.language.AccessSpecifier") { PUBLIC = 0, PROTECTED = 1, PRIVATE = 2, NONE = 3 }
+
+
+
+
+enum CastKind : int (java_enum: "pt.up.fe.specs.clava.language.CastKind") { Dependent = 0, BitCast = 1, LValueBitCast = 2, LValueToRValueBitCast = 3, LValueToRValue = 4, NoOp = 5, BaseToDerived = 6, DerivedToBase = 7, UncheckedDerivedToBase = 8, Dynamic = 9, ToUnion = 10, ArrayToPointerDecay = 11, FunctionToPointerDecay = 12, NullToPointer = 13, NullToMemberPointer = 14, BaseToDerivedMemberPointer = 15, DerivedToBaseMemberPointer = 16, MemberPointerToBoolean = 17, ReinterpretMemberPointer = 18, UserDefinedConversion = 19, ConstructorConversion = 20, IntegralToPointer = 21, PointerToIntegral = 22, PointerToBoolean = 23, ToVoid = 24, MatrixCast = 25, VectorSplat = 26, IntegralCast = 27, IntegralToBoolean = 28, IntegralToFloating = 29, FloatingToFixedPoint = 30, FixedPointToFloating = 31, FixedPointCast = 32, FixedPointToIntegral = 33, IntegralToFixedPoint = 34, FixedPointToBoolean = 35, FloatingToIntegral = 36, FloatingToBoolean = 37, BooleanToSignedIntegral = 38, FloatingCast = 39, CPointerToObjCPointerCast = 40, BlockPointerToObjCPointerCast = 41, AnyPointerToBlockPointerCast = 42, ObjCObjectLValueCast = 43, FloatingRealToComplex = 44, FloatingComplexToReal = 45, FloatingComplexToBoolean = 46, FloatingComplexCast = 47, FloatingComplexToIntegralComplex = 48, IntegralRealToComplex = 49, IntegralComplexToReal = 50, IntegralComplexToBoolean = 51, IntegralComplexCast = 52, IntegralComplexToFloatingComplex = 53, ARCProduceObject = 54, ARCConsumeObject = 55, ARCReclaimReturnedObject = 56, ARCExtendBlockObject = 57, AtomicToNonAtomic = 58, NonAtomicToAtomic = 59, CopyAndAutoreleaseBlockObject = 60, BuiltinFnToFnPtr = 61, ZeroToOCLOpaqueType = 62, AddressSpaceConversion = 63, IntToOCLSampler = 64 }
+
+enum ReferenceQualifier : int (java_enum: "pt.up.fe.specs.clava.language.ReferenceQualifier") { LValue = 0, RValue = 1, None = 2 }
+
+
+enum TLSKind : int (java_enum: "pt.up.fe.specs.clava.language.TLSKind") { NONE = 0, STATIC = 1, DYNAMIC = 2 }
+
+enum TagKind : int (java_enum: "pt.up.fe.specs.clava.language.TagKind") { STRUCT = 0, INTERFACE = 1, UNION = 2, CLASS = 3, ENUM = 4, NO_KIND = 5 }
+
+enum TemplateTypeParmKind : int (java_enum: "pt.up.fe.specs.clava.language.TemplateTypeParmKind") { TYPENAME = 0, CLASS = 1 }
+
+enum UnaryExprOrTypeTrait : int (java_enum: "pt.up.fe.specs.clava.language.UnaryExprOrTypeTrait") { SizeOf = 0, AlignOf = 1, PreferredAlignOf = 2, VecStep = 3, OpenMPRequiredSimdAlign = 4 }
+
+
+
+
+
+
+enum EnumScopeType : int (java_enum:"pt.up.fe.specs.clava.ast.decl.EnumDecl.EnumScopeType") { CLASS = 0, STRUCT = 1, NO_SCOPE = 2 }

@@ -1,3 +1,4 @@
+#include "../Clava/FlatStream.h"
 //
 // Created by JoaoBispo on 20/01/2017.
 //
@@ -158,6 +159,11 @@ void ClangAstDumper::log(const Attr *A) { log(clava::getClassName(A), A); }
 
 void ClangAstDumper::dumpVisitedChildren(const void *pointer,
                                          std::vector<std::string> children) {
+  if(auto *stream=clava::flat::FlatStream::active()) {
+    astwire::v2::ChildrenT record;record.node=clava::flat::wireId(clava::getId(pointer,id));
+    for(const auto &child:children)record.children.push_back(clava::flat::wireId(child));
+    stream->record(std::move(record));return;
+  }
   clava::dumpStream() << VISITED_CHILDREN << "\n";
   // If node has children, pointer will not be null
   clava::dumpStream() << clava::getId(pointer, id) << "\n";
@@ -170,17 +176,29 @@ void ClangAstDumper::dumpVisitedChildren(const void *pointer,
 
 void ClangAstDumper::dumpIdToClassMap(const void *pointer,
                                       std::string className) {
+  if(auto *stream=clava::flat::FlatStream::active()) {
+    astwire::v2::NodeClassT record;record.node=clava::flat::wireId(clava::getId(pointer,id));record.class_name=className;
+    stream->record(std::move(record));return;
+  }
   clava::dumpStream() << ID_TO_CLASS_MAP << "\n";
   clava::dumpStream() << clava::getId(pointer, id) << "\n";
   clava::dumpStream() << className << "\n";
 }
 
 void ClangAstDumper::dumpTopLevelType(const QualType &type) {
+  if(auto *stream=clava::flat::FlatStream::active()) {
+    astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Type;record.node=clava::flat::wireId(clava::getId(type,id));
+    stream->record(std::move(record));return;
+  }
   clava::dumpStream() << TOP_LEVEL_TYPES << "\n";
   clava::dump(type, id);
 }
 
 void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
+  if(auto *stream=clava::flat::FlatStream::active()) {
+    astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Attr;record.node=clava::flat::wireId(clava::getId(attr,id));
+    stream->record(std::move(record));return;
+  }
   clava::dumpStream() << TOP_LEVEL_ATTRIBUTES << "\n";
   clava::dumpStream() << clava::getId(attr, id) << "\n";
 }

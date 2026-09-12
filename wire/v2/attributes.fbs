@@ -1,0 +1,26 @@
+include "common.fbs";
+namespace astwire.v2;
+table AttributeData {
+  base:NodeData (required);
+  kind:AttributeKind = null (java_key:"pt.up.fe.specs.clava.ast.attr.Attribute.KIND");
+  is_implicit:bool = null (java_key:"pt.up.fe.specs.clava.ast.attr.Attribute.IS_IMPLICIT");
+  is_inherited:bool = null (java_key:"pt.up.fe.specs.clava.ast.attr.Attribute.IS_INHERITED");
+  is_late_parsed:bool = null (java_key:"pt.up.fe.specs.clava.ast.attr.Attribute.IS_LATE_PARSED");
+  is_pack_expansion:bool = null (java_key:"pt.up.fe.specs.clava.ast.attr.Attribute.IS_PACK_EXPANSION");
+}
+table AlignedAttrData { base:AttributeData (required); spelling:string (required, java_key:"pt.up.fe.specs.clava.ast.attr.AlignedAttr.SPELLING"); is_expression:bool = null; alignment:long = null; }
+table OpenCLUnrollHintAttrData {
+  base:AttributeData (required);
+  unroll_hint:int = null (java_key:"pt.up.fe.specs.clava.ast.attr.OpenCLUnrollHintAttr.UNROLL_HINT");
+}
+table FormatAttrData {
+  base:AttributeData (required);
+  type:FormatAttrKind = null (java_key:"pt.up.fe.specs.clava.ast.attr.FormatAttr.TYPE");
+  format_index:int = null (java_key:"pt.up.fe.specs.clava.ast.attr.FormatAttr.FORMAT_INDEX");
+  first_arg:int = null (java_key:"pt.up.fe.specs.clava.ast.attr.FormatAttr.FIRST_ARG");
+}
+table NonNullAttrData { base:AttributeData (required); arguments:[int] (required, java_key:"pt.up.fe.specs.clava.ast.attr.NonNullAttr.ARGUMENTS"); }
+table VisibilityAttrData {
+  base:AttributeData (required);
+  visibility_type:VisibilityType = null (java_key:"pt.up.fe.specs.clava.ast.attr.VisibilityAttr.VISIBILITY_TYPE");
+}

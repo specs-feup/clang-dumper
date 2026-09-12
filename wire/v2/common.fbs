@@ -1,0 +1,113 @@
+include "enums.fbs";
+namespace astwire.v2;
+
+// These attributes generate Clava field mapping and validation. Wire types and
+// presence use standard FlatBuffers declarations, not a separate schema grammar.
+attribute "java_key";
+attribute "java_ref";
+attribute "java_ref_alias";
+attribute "java_codec";
+attribute "java_class";
+attribute "wire_optional";
+
+// References are signed 64-bit IDs: positive values address TU-local nodes;
+// -1 type, -2 decl, -3 expr, -4 stmt, -5 attr and -6 generic preserve null kinds.
+// Every reference-bearing field is eagerly resolved before publishing the AST.
+// Scalar = null preserves presence; generated validation requires fields unless
+// the field explicitly represents an optional source property.
+
+table Range {
+  file:uint = null;
+  line:uint = null;
+  column:uint = null;
+  end_file:uint = null;
+  end_line:uint = null;
+  end_column:uint = null;
+}
+table SourceInfo {
+  expansion:Range;
+  is_macro:bool = null;
+  spelling:Range;
+  system_header:bool = null;
+}
+table NodeData { source:SourceInfo (required); }
+
+table CXXBaseSpecifier {
+  is_virtual:bool = null;
+  is_pack_expansion:bool = null;
+  access_specifier_as_written:AccessSpecifier = null;
+  access_specifier_semantic:AccessSpecifier = null;
+  type:long = null;
+}
+table ExplicitSpecifier {
+  kind:ExplicitSpecKind = null;
+  expr:long = null;
+  is_specified:bool = null;
+}
+
+table TemplateDeclaration { decl:long = null; }
+table TemplateNullPtr { type:long = null; }
+table TemplateType { type:long = null; }
+table TemplateExpression { expr:long = null; }
+table TemplatePack { arguments:[TemplateArgument] (required); }
+// Preserve arbitrary precision decimal spelling from the native APInt.
+table TemplateIntegral { integral:string (required); }
+table TemplateExpansion { num_expansions:uint = null (wire_optional); template_name:TemplateName (required); }
+table TemplateStructuralValue { type:long = null; }
+union TemplateValue { TemplateDeclaration, TemplateNullPtr, TemplateType, TemplateExpression, TemplatePack, TemplateIntegral, TemplateName, TemplateExpansion, TemplateStructuralValue }
+table TemplateArgument { value:TemplateValue (required); }
+
+table DirectTemplateName { template_decl:long = null; }
+table QualifiedTemplateName { qualifier:string (required); has_template_keyword:bool = null; template_decl:long = null; }
+table SubstitutedTemplateName { parameter:long = null; replacement:TemplateName (required); }
+table UsingTemplateName { using_shadow_decl:long = null; }
+table DependentTemplateName { qualifier:string (required); name:string (required); }
+union TemplateNameValue { DirectTemplateName, QualifiedTemplateName, SubstitutedTemplateName, UsingTemplateName, DependentTemplateName }
+table TemplateName { value:TemplateNameValue (required); }
+
+table AnyMemberInitializer { any_member_decl:long = null; }
+table BaseInitializer { base_class:long = null; }
+table DelegatingInitializer { delegated_type:long = null; }
+union InitializerTarget { AnyMemberInitializer, BaseInitializer, DelegatingInitializer }
+table CXXCtorInitializer {
+  target:InitializerTarget (required);
+  init_expr:long = null;
+  is_in_class_member_initializer:bool = null;
+  is_written:bool = null;
+}
+
+table NoExceptionDetails {}
+table ComputedExceptionDetails { noexcept_expr:long = null; }
+table UnevaluatedExceptionDetails { source_decl:long = null; }
+table UninstantiatedExceptionDetails { source_decl:long = null; source_template:long = null; }
+union ExceptionDetails { NoExceptionDetails, ComputedExceptionDetails, UnevaluatedExceptionDetails, UninstantiatedExceptionDetails }
+table ExceptionSpecification {
+  kind:ExceptionSpecificationType = null;
+  exception_types:[long] (required);
+  details:ExceptionDetails (required);
+}
+
+table OffsetArray { expr:long = null; }
+table OffsetField { field_name:string (required); }
+table OffsetIdentifier { field_name:string (required); }
+table OffsetBase { type:long = null; }
+union OffsetValue { OffsetArray, OffsetField, OffsetIdentifier, OffsetBase }
+table OffsetOfComponent { value:OffsetValue (required); }
+
+table FieldDesignator { field_name:string (required); }
+table ArrayDesignator { index:int = null; }
+table ArrayRangeDesignator { index:int = null; }
+union DesignatorValue { FieldDesignator, ArrayDesignator, ArrayRangeDesignator }
+table Designator { value:DesignatorValue (required); }
+
+table AsmInput { expr:long = null; constraint:string (required); }
+table AsmOutput { expr:long = null; constraint:string (required); is_plus_constraint:bool = null; }
+
+table NamespaceSpecifier { namespace_decl:long = null; }
+table NamespaceAliasSpecifier { namespace_alias:long = null; }
+table TypeSpecifier { type:long = null; }
+table TypeWithTemplateSpecifier { type:long = null; }
+table GlobalSpecifier {}
+table SuperSpecifier { super_decl:long = null; }
+union NestedNameValue { NamespaceSpecifier, NamespaceAliasSpecifier, TypeSpecifier, TypeWithTemplateSpecifier, GlobalSpecifier, SuperSpecifier }
+table NestedNameSpecifier { value:NestedNameValue (required); }

@@ -96,6 +96,7 @@ void clava::ClavaDataDumper::DumpTypeData(const Type *T,
 // Dumps the same information as DumpTypeData, and after that, information about
 // QualType
 void clava::ClavaDataDumper::dump(const QualType &T) {
+  if (clava::flat::emit(T, Context, id)) return;
   // Dump header
   clava::dumpStream() << "<QualTypeData>"
                << "\n";

@@ -6,6 +6,7 @@
 #include "Clang/ClangAst.h"
 #include "Clava/DumpStream.h"
 #include "Clava/WireStream.h"
+#include "Clava/FlatStream.h"
 #include "Clava/ZstdStream.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/FileSystem.h"
@@ -29,6 +30,9 @@ static llvm::cl::opt<std::string> AstDumpOutputOption(
         "o", llvm::cl::value_desc("path"),
         llvm::cl::desc("Write the structured AST dump to path"),
         llvm::cl::cat(MyToolCategory));
+static llvm::cl::opt<std::string> AstDumpFormatOption(
+        "ast-dump-format", llvm::cl::value_desc("text|flatbuffers-v2"),
+        llvm::cl::init("text"), llvm::cl::cat(MyToolCategory));
 static llvm::cl::opt<bool> DependencyOption(
         "MD", llvm::cl::desc("Write a Make dependency file including system headers"),
         llvm::cl::cat(MyToolCategory));
@@ -103,14 +107,15 @@ static std::vector<std::string> normalizeCcacheArguments(
     const bool HasSeparateValue =
         Argument == "-o" || Argument == "-MF" || Argument == "-id" ||
         Argument == "-system-header-threshold" ||
-        Argument == "-ast-dump-compression";
+        Argument == "-ast-dump-compression" || Argument == "-ast-dump-format";
     const bool IsToolArgument =
         Argument == "-c" || Argument == "-MD" || HasSeparateValue ||
         llvm::StringRef(Argument).starts_with("-o=") ||
         llvm::StringRef(Argument).starts_with("-MF=") ||
         llvm::StringRef(Argument).starts_with("-id=") ||
         llvm::StringRef(Argument).starts_with("-system-header-threshold=") ||
-        llvm::StringRef(Argument).starts_with("-ast-dump-compression=");
+        llvm::StringRef(Argument).starts_with("-ast-dump-compression=") ||
+        llvm::StringRef(Argument).starts_with("-ast-dump-format=");
 
     if (!IsToolArgument) {
       CompilerArguments.push_back(Argument);
@@ -200,6 +205,13 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
+  if (AstDumpFormatOption != "text" && AstDumpFormatOption != "flatbuffers-v2") {
+    llvm::errs() << "Unsupported AST dump format\n"; return 1;
+  }
+  if (AstDumpFormatOption == "flatbuffers-v2" && AstDumpOutputOption.empty()) {
+    llvm::errs() << "FlatBuffers output requires -o <path>\n"; return 1;
+  }
+  std::unique_ptr<clava::flat::FlatStream> completeDumpOutput;
   std::unique_ptr<llvm::raw_fd_ostream> dumpOutput;
   std::unique_ptr<clava::ZstdStream> compressedDumpOutput;
   std::unique_ptr<clava::WireStream> wireDumpOutput;
@@ -243,6 +255,13 @@ int main(int argc, const char *argv[]) {
     }
   }
 
+  if (AstDumpFormatOption == "flatbuffers-v2") {
+    if (wireDumpOutput) {llvm::errs() << "Cannot combine legacy and complete FlatBuffers modes\n"; return 1;}
+    clava::enableDenseIds();
+    llvm::raw_ostream &destination=compressedDumpOutput?static_cast<llvm::raw_ostream&>(*compressedDumpOutput):*dumpOutput;
+    completeDumpOutput=std::make_unique<clava::flat::FlatStream>(destination);
+    clava::setDumpStream(*completeDumpOutput);
+  }
   DumpResources::init(UserIdOption.getValue(),
                       UserSystemHeaderThresholdOption.getValue());
 
@@ -311,6 +330,7 @@ int main(int argc, const char *argv[]) {
   DumpResources::finish();
 
   if (dumpOutput) {
+    if (completeDumpOutput) completeDumpOutput->finish();
     if (wireDumpOutput) {
       wireDumpOutput->finish();
     }

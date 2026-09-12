@@ -59,6 +59,7 @@ std::unordered_map<const void *, uint32_t> &denseIds() {
     return ids;
 }
 
+bool forceDenseIds=false;
 bool denseIdsEnabled() {
     static const bool enabled = [] {
         const char *flat = std::getenv("AST_WIRE_FLAT");
@@ -66,7 +67,7 @@ bool denseIdsEnabled() {
         return (flat != nullptr && std::strcmp(flat, "1") == 0) ||
                (text != nullptr && std::strcmp(text, "1") == 0);
     }();
-    return enabled;
+    return forceDenseIds || enabled;
 }
 
 } // namespace
@@ -195,6 +196,8 @@ const std::string clava::getId(const void *addr, int id) {
 
     return buffer;
 }
+
+void clava::enableDenseIds() {forceDenseIds=true;}
 
 void clava::resetDenseIds() { denseIds().clear(); }
 

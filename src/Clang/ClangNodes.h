@@ -106,6 +106,7 @@ const std::string getId(const void *addr, int id);
 
 /** Resets the per-translation-unit dense pointer IDs used by wire pilots. */
 void resetDenseIds();
+void enableDenseIds();
 
 /** Returns the number of non-null pointers assigned a dense wire ID. */
 size_t denseIdCount();

@@ -220,6 +220,13 @@ set(SOURCE_FILES
     src/Clava/DumpStream.cpp
     src/Clava/HandlerCoverage.cpp
     src/Clava/WireStream.cpp
+    src/Clava/FlatCommon.cpp
+    src/Clava/FlatAttributes.cpp
+    src/Clava/FlatDecls.cpp
+    src/Clava/FlatTypes.cpp
+    src/Clava/FlatExpressions.cpp
+    src/Clava/FlatStatements.cpp
+    src/Clava/FlatStream.cpp
     src/ClavaDataDumper/ClavaDataDumper.cpp
     src/ClavaDataDumper/ClavaDataDumperAttrs.cpp
     src/ClavaDataDumper/ClavaDataDumperDecls.cpp
@@ -277,28 +284,47 @@ add_custom_command(
     VERBATIM
     )
 add_custom_target(ast_wire_flatbuffers DEPENDS "${AST_WIRE_GENERATED_HEADER}")
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+get_filename_component(AST_WIRE_SDK "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}" DIRECTORY)
+set(AST_WIRE_V2_DIR "${CMAKE_CURRENT_BINARY_DIR}/wire-v2")
+file(GLOB AST_WIRE_V2_SCHEMAS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/wire/v2/*.fbs")
+file(GLOB AST_WIRE_V2_BUILDERS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/Clava/Flat*.cpp")
+add_custom_command(
+    OUTPUT "${AST_WIRE_V2_DIR}/complete.stamp"
+    BYPRODUCTS "${AST_WIRE_V2_DIR}/complete_generated.h" "${AST_WIRE_V2_DIR}/FlatHandlerDeclarations.inc" "${AST_WIRE_V2_DIR}/FlatDispatch.inc"
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
+        --flatc "${AST_WIRE_FLATC}" --sdk "${AST_WIRE_SDK}" --out "${AST_WIRE_V2_DIR}"
+    DEPENDS ${AST_WIRE_V2_SCHEMAS} ${AST_WIRE_V2_BUILDERS}
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperDecls.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperTypes.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperStmts.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperAttrs.cpp"
+    VERBATIM)
+add_custom_target(ast_wire_v2 DEPENDS "${AST_WIRE_V2_DIR}/complete.stamp")
+
 
 if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
     target_compile_features(plugin PRIVATE cxx_std_20)
     target_include_directories(plugin PRIVATE
         "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
-        "${AST_WIRE_GENERATED_DIR}")
-    add_dependencies(plugin clang_enums ast_wire_flatbuffers)
+        "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_V2_DIR}")
+    add_dependencies(plugin clang_enums ast_wire_flatbuffers ast_wire_v2)
 endif()
 
 add_executable(tool ${SOURCE_FILES} src/tool.cpp src/Clava/ZstdStream.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
 target_include_directories(tool PRIVATE
     "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
-    "${AST_WIRE_GENERATED_DIR}")
-add_dependencies(tool clang_enums ast_wire_flatbuffers)
+    "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_V2_DIR}")
+add_dependencies(tool clang_enums ast_wire_flatbuffers ast_wire_v2)
 
 add_executable(verify_flat_wire test/verify_flat_wire.cpp)
 target_compile_features(verify_flat_wire PRIVATE cxx_std_20)
 target_include_directories(verify_flat_wire PRIVATE
     "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
-    "${AST_WIRE_GENERATED_DIR}")
+    "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_V2_DIR}")
 add_dependencies(verify_flat_wire ast_wire_flatbuffers)
 
 find_path(CLANG_DUMPER_ZSTD_INCLUDE_DIR NAMES zstd.h

@@ -1,0 +1,43 @@
+include "common.fbs";
+namespace astwire.v2;
+
+// Each table mirrors one Clava StmtDataParser handler. Inheritance is explicit
+// because FlatBuffers tables do not inherit: `base` contains the full parent
+// payload and ultimately NodeData/source information.
+table StmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.Stmt") {
+  base:NodeData (required);
+}
+
+table LabelStmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.LabelStmt") {
+  base:StmtData (required);
+  label:long = null (java_key: "pt.up.fe.specs.clava.ast.stmt.LabelStmt.LABEL", java_ref: "node");
+}
+
+table GotoStmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.GotoStmt") {
+  base:StmtData (required);
+  label:long = null (java_key: "pt.up.fe.specs.clava.ast.stmt.GotoStmt.LABEL", java_ref: "node");
+}
+
+table AttributedStmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.AttributedStmt") {
+  base:StmtData (required);
+  stmt_attributes:[long] (required, java_key: "pt.up.fe.specs.clava.ast.stmt.AttributedStmt.STMT_ATTRIBUTES", java_ref: "list");
+}
+
+table AsmStmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.AsmStmt") {
+  base:StmtData (required);
+  is_simple:bool = null (java_key: "pt.up.fe.specs.clava.ast.stmt.AsmStmt.IS_SIMPLE");
+  is_volatile:bool = null (java_key: "pt.up.fe.specs.clava.ast.stmt.AsmStmt.IS_VOLATILE");
+  clobbers:[string] (required, java_key: "pt.up.fe.specs.clava.ast.stmt.AsmStmt.CLOBBERS");
+  outputs:[AsmOutput] (required, java_key: "pt.up.fe.specs.clava.ast.stmt.AsmStmt.OUTPUTS", java_codec: "compoundList");
+  inputs:[AsmInput] (required, java_key: "pt.up.fe.specs.clava.ast.stmt.AsmStmt.INPUTS", java_codec: "compoundList");
+}
+
+table GCCAsmStmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.GCCAsmStmt") {
+  base:AsmStmtData (required);
+  asm_string:string (required, java_key: "pt.up.fe.specs.clava.ast.stmt.GCCAsmStmt.ASM_STRING");
+}
+
+table MSAsmStmtData (java_class: "pt.up.fe.specs.clava.ast.stmt.MSAsmStmt") {
+  base:AsmStmtData (required);
+  asm_string:string (required, java_key: "pt.up.fe.specs.clava.ast.stmt.MSAsmStmt.ASM_STRING");
+}
