@@ -1,4 +1,5 @@
 #pragma once
+// Generated from protoc's FileDescriptorSet; do not edit by hand.
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -10,79 +11,179 @@
 
 namespace astwire::v1obj {
 
-struct RangeT; struct SourceInfoT; struct NodeDataT;
-struct CXXBaseSpecifierT; struct ExplicitSpecifierT;
-struct TemplateDeclarationT; struct TemplateNullPtrT; struct TemplateTypeT;
-struct TemplateExpressionT; struct TemplatePackT; struct TemplateIntegralT;
-struct TemplateExpansionT; struct TemplateStructuralValueT;
-struct TemplateArgumentT; struct DirectTemplateNameT;
-struct QualifiedTemplateNameT; struct SubstitutedTemplateNameT;
-struct UsingTemplateNameT; struct DependentTemplateNameT; struct TemplateNameT;
-struct AnyMemberInitializerT; struct BaseInitializerT;
-struct DelegatingInitializerT; struct CXXCtorInitializerT;
-struct NoExceptionDetailsT; struct ComputedExceptionDetailsT;
-struct UnevaluatedExceptionDetailsT; struct UninstantiatedExceptionDetailsT;
-struct ExceptionSpecificationT; struct OffsetArrayT; struct OffsetFieldT;
-struct OffsetIdentifierT; struct OffsetBaseT; struct OffsetOfComponentT;
-struct FieldDesignatorT; struct ArrayDesignatorT; struct ArrayRangeDesignatorT;
-struct DesignatorT; struct AsmInputT; struct AsmOutputT;
-struct NamespaceSpecifierT; struct NamespaceAliasSpecifierT;
-struct TypeSpecifierT; struct TypeWithTemplateSpecifierT;
-struct GlobalSpecifierT; struct SuperSpecifierT; struct NestedNameSpecifierT;
-struct DeclDataT; struct NamedDeclDataT; struct TypeDeclDataT;
-struct TagDeclDataT; struct RecordDeclDataT; struct ValueDeclDataT;
-struct DeclaratorDeclDataT; struct TemplateDeclDataT; struct FunctionDeclDataT;
-struct CXXMethodDeclDataT; struct CXXConstructorDeclDataT;
-struct CXXConversionDeclDataT; struct FieldDeclDataT; struct ParmVarDeclDataT;
-struct VarDeclDataT; struct TemplateTypeParmDeclDataT;
-struct UnresolvedUsingTypenameDeclDataT; struct EnumDeclDataT;
-struct CXXRecordDeclDataT; struct ClassTemplateSpecializationDeclDataT;
-struct NonTypeTemplateParmDeclDataT; struct TypedefNameDeclDataT;
-struct AccessSpecDeclDataT; struct UsingDeclDataT;
-struct UsingDirectiveDeclDataT; struct NamespaceDeclDataT;
-struct NamespaceAliasDeclDataT; struct LinkageSpecDeclDataT;
-struct StaticAssertDeclDataT; struct TemplateTemplateParmDeclDataT;
-struct MSPropertyDeclDataT; struct ClassTemplatePartialSpecializationDeclDataT;
-struct TypeDataT; struct QualTypeDataT; struct BuiltinTypeDataT;
-struct PointerTypeDataT; struct FunctionTypeDataT; struct FunctionProtoTypeDataT;
-struct ArrayTypeDataT; struct ConstantArrayTypeDataT;
-struct VariableArrayTypeDataT; struct DependentSizedArrayTypeDataT;
-struct TagTypeDataT; struct TypeWithKeywordDataT; struct ElaboratedTypeDataT;
-struct TemplateTypeParmTypeDataT; struct TemplateSpecializationTypeDataT;
-struct TypedefTypeDataT; struct AdjustedTypeDataT; struct DecayedTypeDataT;
-struct DecltypeTypeDataT; struct AutoTypeDataT; struct ReferenceTypeDataT;
-struct TypeOfExprTypeDataT; struct PackExpansionTypeDataT;
-struct UnaryTransformTypeDataT; struct AttributedTypeDataT;
-struct SubstTemplateTypeParmTypeDataT; struct ComplexTypeDataT;
-struct ExprDataT; struct CastExprDataT; struct LiteralDataT;
-struct CharacterLiteralDataT; struct IntegerLiteralDataT;
-struct FloatingLiteralDataT; struct StringLiteralDataT;
-struct CXXBoolLiteralExprDataT; struct CompoundLiteralExprDataT;
-struct InitListExprDataT; struct DeclRefExprDataT; struct OverloadExprDataT;
-struct CXXConstructExprDataT; struct CXXTemporaryObjectExprDataT;
-struct MemberExprDataT; struct MaterializeTemporaryExprDataT;
-struct BinaryOperatorDataT; struct UnresolvedMemberExprDataT;
-struct UnresolvedLookupExprDataT; struct CallExprDataT;
-struct CXXMemberCallExprDataT; struct CXXTypeidExprDataT;
-struct ExplicitCastExprDataT; struct CXXNamedCastExprDataT;
-struct CXXDependentScopeMemberExprDataT; struct UnaryOperatorDataT;
-struct UnaryExprOrTypeTraitExprDataT; struct CXXNewExprDataT;
-struct CXXDeleteExprDataT; struct OffsetOfExprDataT; struct LambdaExprDataT;
-struct PredefinedExprDataT; struct SizeOfPackExprDataT;
-struct ArrayInitLoopExprDataT; struct DesignatedInitExprDataT;
-struct DependentScopeDeclRefExprDataT; struct CXXNoexceptExprDataT;
-struct CXXPseudoDestructorExprDataT; struct PseudoObjectExprDataT;
-struct MSPropertyRefExprDataT; struct StmtDataT; struct LabelStmtDataT;
-struct GotoStmtDataT; struct AttributedStmtDataT; struct AsmStmtDataT;
-struct GCCAsmStmtDataT; struct MSAsmStmtDataT; struct AttributeDataT;
-struct AlignedAttrDataT; struct OpenCLUnrollHintAttrDataT;
-struct FormatAttrDataT; struct NonNullAttrDataT; struct VisibilityAttrDataT;
-struct FileT; struct ChildrenT; struct NodeClassT; struct TopLevelT;
-struct IncludeT; struct PragmaT; struct TranslationUnitFileT;
-struct CounterT; struct LanguageT; struct NodeT;
+struct RangeT;
+struct SourceInfoT;
+struct NodeDataT;
+struct CXXBaseSpecifierT;
+struct ExplicitSpecifierT;
+struct TemplateDeclarationT;
+struct TemplateNullPtrT;
+struct TemplateTypeT;
+struct TemplateExpressionT;
+struct TemplatePackT;
+struct TemplateIntegralT;
+struct TemplateExpansionT;
+struct TemplateStructuralValueT;
+struct TemplateArgumentT;
+struct DirectTemplateNameT;
+struct QualifiedTemplateNameT;
+struct SubstitutedTemplateNameT;
+struct UsingTemplateNameT;
+struct DependentTemplateNameT;
+struct TemplateNameT;
+struct AnyMemberInitializerT;
+struct BaseInitializerT;
+struct DelegatingInitializerT;
+struct CXXCtorInitializerT;
+struct NoExceptionDetailsT;
+struct ComputedExceptionDetailsT;
+struct UnevaluatedExceptionDetailsT;
+struct UninstantiatedExceptionDetailsT;
+struct ExceptionSpecificationT;
+struct OffsetArrayT;
+struct OffsetFieldT;
+struct OffsetIdentifierT;
+struct OffsetBaseT;
+struct OffsetOfComponentT;
+struct FieldDesignatorT;
+struct ArrayDesignatorT;
+struct ArrayRangeDesignatorT;
+struct DesignatorT;
+struct AsmInputT;
+struct AsmOutputT;
+struct NamespaceSpecifierT;
+struct NamespaceAliasSpecifierT;
+struct TypeSpecifierT;
+struct TypeWithTemplateSpecifierT;
+struct GlobalSpecifierT;
+struct SuperSpecifierT;
+struct NestedNameSpecifierT;
+struct DeclDataT;
+struct NamedDeclDataT;
+struct TypeDeclDataT;
+struct TagDeclDataT;
+struct RecordDeclDataT;
+struct ValueDeclDataT;
+struct DeclaratorDeclDataT;
+struct TemplateDeclDataT;
+struct FunctionDeclDataT;
+struct CXXMethodDeclDataT;
+struct CXXConstructorDeclDataT;
+struct CXXConversionDeclDataT;
+struct FieldDeclDataT;
+struct ParmVarDeclDataT;
+struct VarDeclDataT;
+struct TemplateTypeParmDeclDataT;
+struct UnresolvedUsingTypenameDeclDataT;
+struct EnumDeclDataT;
+struct CXXRecordDeclDataT;
+struct ClassTemplateSpecializationDeclDataT;
+struct NonTypeTemplateParmDeclDataT;
+struct TypedefNameDeclDataT;
+struct AccessSpecDeclDataT;
+struct UsingDeclDataT;
+struct UsingDirectiveDeclDataT;
+struct NamespaceDeclDataT;
+struct NamespaceAliasDeclDataT;
+struct LinkageSpecDeclDataT;
+struct StaticAssertDeclDataT;
+struct TemplateTemplateParmDeclDataT;
+struct MSPropertyDeclDataT;
+struct ClassTemplatePartialSpecializationDeclDataT;
+struct TypeDataT;
+struct QualTypeDataT;
+struct BuiltinTypeDataT;
+struct PointerTypeDataT;
+struct FunctionTypeDataT;
+struct FunctionProtoTypeDataT;
+struct ArrayTypeDataT;
+struct ConstantArrayTypeDataT;
+struct VariableArrayTypeDataT;
+struct DependentSizedArrayTypeDataT;
+struct TagTypeDataT;
+struct TypeWithKeywordDataT;
+struct ElaboratedTypeDataT;
+struct TemplateTypeParmTypeDataT;
+struct TemplateSpecializationTypeDataT;
+struct TypedefTypeDataT;
+struct AdjustedTypeDataT;
+struct DecayedTypeDataT;
+struct DecltypeTypeDataT;
+struct AutoTypeDataT;
+struct ReferenceTypeDataT;
+struct TypeOfExprTypeDataT;
+struct PackExpansionTypeDataT;
+struct UnaryTransformTypeDataT;
+struct AttributedTypeDataT;
+struct SubstTemplateTypeParmTypeDataT;
+struct ComplexTypeDataT;
+struct ExprDataT;
+struct CastExprDataT;
+struct LiteralDataT;
+struct CharacterLiteralDataT;
+struct IntegerLiteralDataT;
+struct FloatingLiteralDataT;
+struct StringLiteralDataT;
+struct CXXBoolLiteralExprDataT;
+struct CompoundLiteralExprDataT;
+struct InitListExprDataT;
+struct DeclRefExprDataT;
+struct OverloadExprDataT;
+struct CXXConstructExprDataT;
+struct CXXTemporaryObjectExprDataT;
+struct MemberExprDataT;
+struct MaterializeTemporaryExprDataT;
+struct BinaryOperatorDataT;
+struct UnresolvedMemberExprDataT;
+struct UnresolvedLookupExprDataT;
+struct CallExprDataT;
+struct CXXMemberCallExprDataT;
+struct CXXTypeidExprDataT;
+struct ExplicitCastExprDataT;
+struct CXXNamedCastExprDataT;
+struct CXXDependentScopeMemberExprDataT;
+struct UnaryOperatorDataT;
+struct UnaryExprOrTypeTraitExprDataT;
+struct CXXNewExprDataT;
+struct CXXDeleteExprDataT;
+struct OffsetOfExprDataT;
+struct LambdaExprDataT;
+struct PredefinedExprDataT;
+struct SizeOfPackExprDataT;
+struct ArrayInitLoopExprDataT;
+struct DesignatedInitExprDataT;
+struct DependentScopeDeclRefExprDataT;
+struct CXXNoexceptExprDataT;
+struct CXXPseudoDestructorExprDataT;
+struct PseudoObjectExprDataT;
+struct MSPropertyRefExprDataT;
+struct StmtDataT;
+struct LabelStmtDataT;
+struct GotoStmtDataT;
+struct AttributedStmtDataT;
+struct AsmStmtDataT;
+struct GCCAsmStmtDataT;
+struct MSAsmStmtDataT;
+struct AttributeDataT;
+struct AlignedAttrDataT;
+struct OpenCLUnrollHintAttrDataT;
+struct FormatAttrDataT;
+struct NonNullAttrDataT;
+struct VisibilityAttrDataT;
+struct FileT;
+struct ChildrenT;
+struct NodeClassT;
+struct TopLevelT;
+struct IncludeT;
+struct PragmaT;
+struct TranslationUnitFileT;
+struct CounterT;
+struct LanguageT;
+struct NodeT;
 
 // Lightweight per-record object model used only while converting one native
-// record to generated protobuf classes. It is deliberately not an AST store.
+// record to generated protobuf classes. It is deliberately not an AST store
+// and is never retained as a second protobuf AST.
 struct UnionValue {
   std::shared_ptr<void> object;
   std::type_index type = typeid(void);
@@ -96,48 +197,48 @@ struct UnionValue {
   }
 };
 
-enum class TopLevelKind : int32_t { Decl = 0, Type = 1, Attr = 2, };
-enum class AttributeKind : int32_t { AddressSpace = 0, AnnotateType = 1, ArmIn = 2, ArmInOut = 3, ArmMveStrictPolymorphism = 4, ArmOut = 5, ArmPreserves = 6, ArmStreaming = 7, ArmStreamingCompatible = 8, BTFTypeTag = 9, CmseNSCall = 10, HLSLGroupSharedAddressSpace = 11, HLSLParamModifier = 12, NoDeref = 13, ObjCGC = 14, ObjCInertUnsafeUnretained = 15, ObjCKindOf = 16, OpenCLConstantAddressSpace = 17, OpenCLGenericAddressSpace = 18, OpenCLGlobalAddressSpace = 19, OpenCLGlobalDeviceAddressSpace = 20, OpenCLGlobalHostAddressSpace = 21, OpenCLLocalAddressSpace = 22, OpenCLPrivateAddressSpace = 23, Ptr32 = 24, Ptr64 = 25, SPtr = 26, TypeNonNull = 27, TypeNullUnspecified = 28, TypeNullable = 29, TypeNullableResult = 30, UPtr = 31, WebAssemblyFuncref = 32, CodeAlign = 33, FallThrough = 34, Likely = 35, MustTail = 36, OpenCLUnrollHint = 37, Unlikely = 38, AlwaysInline = 39, NoInline = 40, NoMerge = 41, Suppress = 42, AArch64SVEPcs = 43, AArch64VectorPcs = 44, AMDGPUKernelCall = 45, AcquireHandle = 46, AnyX86NoCfCheck = 47, CDecl = 48, FastCall = 49, IntelOclBicc = 50, LifetimeBound = 51, M68kRTD = 52, MSABI = 53, NSReturnsRetained = 54, ObjCOwnership = 55, Pascal = 56, Pcs = 57, PreserveAll = 58, PreserveMost = 59, RegCall = 60, StdCall = 61, SwiftAsyncCall = 62, SwiftCall = 63, SysVABI = 64, ThisCall = 65, VectorCall = 66, SwiftAsyncContext = 67, SwiftContext = 68, SwiftErrorResult = 69, SwiftIndirectResult = 70, Annotate = 71, CFConsumed = 72, CarriesDependency = 73, NSConsumed = 74, NonNull = 75, OSConsumed = 76, PassObjectSize = 77, ReleaseHandle = 78, UseHandle = 79, HLSLSV_DispatchThreadID = 80, HLSLSV_GroupIndex = 81, AMDGPUFlatWorkGroupSize = 82, AMDGPUNumSGPR = 83, AMDGPUNumVGPR = 84, AMDGPUWavesPerEU = 85, ARMInterrupt = 86, AVRInterrupt = 87, AVRSignal = 88, AcquireCapability = 89, AcquiredAfter = 90, AcquiredBefore = 91, AlignMac68k = 92, AlignNatural = 93, Aligned = 94, AllocAlign = 95, AllocSize = 96, AlwaysDestroy = 97, AnalyzerNoReturn = 98, AnyX86Interrupt = 99, AnyX86NoCallerSavedRegisters = 100, ArcWeakrefUnavailable = 101, ArgumentWithTypeTag = 102, ArmBuiltinAlias = 103, ArmLocallyStreaming = 104, ArmNew = 105, Artificial = 106, AsmLabel = 107, AssertCapability = 108, AssertExclusiveLock = 109, AssertSharedLock = 110, AssumeAligned = 111, Assumption = 112, Availability = 113, AvailableOnlyInDefaultEvalMethod = 114, BPFPreserveAccessIndex = 115, BPFPreserveStaticOffset = 116, BTFDeclTag = 117, Blocks = 118, Builtin = 119, C11NoReturn = 120, CFAuditedTransfer = 121, CFGuard = 122, CFICanonicalJumpTable = 123, CFReturnsNotRetained = 124, CFReturnsRetained = 125, CFUnknownTransfer = 126, CPUDispatch = 127, CPUSpecific = 128, CUDAConstant = 129, CUDADevice = 130, CUDADeviceBuiltinSurfaceType = 131, CUDADeviceBuiltinTextureType = 132, CUDAGlobal = 133, CUDAHost = 134, CUDAInvalidTarget = 135, CUDALaunchBounds = 136, CUDAShared = 137, CXX11NoReturn = 138, CallableWhen = 139, Callback = 140, Capability = 141, CapturedRecord = 142, Cleanup = 143, CmseNSEntry = 144, CodeModel = 145, CodeSeg = 146, Cold = 147, Common = 148, Const = 149, ConstInit = 150, Constructor = 151, Consumable = 152, ConsumableAutoCast = 153, ConsumableSetOnRead = 154, Convergent = 155, CoroDisableLifetimeBound = 156, CoroLifetimeBound = 157, CoroOnlyDestroyWhenComplete = 158, CoroReturnType = 159, CoroWrapper = 160, CountedBy = 161, DLLExport = 162, DLLExportStaticLocal = 163, DLLImport = 164, DLLImportStaticLocal = 165, Deprecated = 166, Destructor = 167, DiagnoseAsBuiltin = 168, DiagnoseIf = 169, DisableSanitizerInstrumentation = 170, DisableTailCalls = 171, EmptyBases = 172, EnableIf = 173, EnforceTCB = 174, EnforceTCBLeaf = 175, EnumExtensibility = 176, Error = 177, ExcludeFromExplicitInstantiation = 178, ExclusiveTrylockFunction = 179, ExternalSourceSymbol = 180, Final = 181, FlagEnum = 182, Flatten = 183, Format = 184, FormatArg = 185, FunctionReturnThunks = 186, GNUInline = 187, GuardedBy = 188, GuardedVar = 189, HIPManaged = 190, HLSLNumThreads = 191, HLSLResource = 192, HLSLResourceBinding = 193, HLSLShader = 194, Hot = 195, IBAction = 196, IBOutlet = 197, IBOutletCollection = 198, InitPriority = 199, InternalLinkage = 200, LTOVisibilityPublic = 201, LayoutVersion = 202, Leaf = 203, LockReturned = 204, LocksExcluded = 205, M68kInterrupt = 206, MIGServerRoutine = 207, MSAllocator = 208, MSConstexpr = 209, MSInheritance = 210, MSNoVTable = 211, MSP430Interrupt = 212, MSStruct = 213, MSVtorDisp = 214, MaxFieldAlignment = 215, MayAlias = 216, MaybeUndef = 217, MicroMips = 218, MinSize = 219, MinVectorWidth = 220, Mips16 = 221, MipsInterrupt = 222, MipsLongCall = 223, MipsShortCall = 224, NSConsumesSelf = 225, NSErrorDomain = 226, NSReturnsAutoreleased = 227, NSReturnsNotRetained = 228, NVPTXKernel = 229, Naked = 230, NoAlias = 231, NoCommon = 232, NoDebug = 233, NoDestroy = 234, NoDuplicate = 235, NoInstrumentFunction = 236, NoMicroMips = 237, NoMips16 = 238, NoProfileFunction = 239, NoRandomizeLayout = 240, NoReturn = 241, NoSanitize = 242, NoSpeculativeLoadHardening = 243, NoSplitStack = 244, NoStackProtector = 245, NoThreadSafetyAnalysis = 246, NoThrow = 247, NoUniqueAddress = 248, NoUwtable = 249, NotTailCalled = 250, OMPAllocateDecl = 251, OMPCaptureNoInit = 252, OMPDeclareTargetDecl = 253, OMPDeclareVariant = 254, OMPThreadPrivateDecl = 255, OSConsumesThis = 256, OSReturnsNotRetained = 257, OSReturnsRetained = 258, OSReturnsRetainedOnNonZero = 259, OSReturnsRetainedOnZero = 260, ObjCBridge = 261, ObjCBridgeMutable = 262, ObjCBridgeRelated = 263, ObjCException = 264, ObjCExplicitProtocolImpl = 265, ObjCExternallyRetained = 266, ObjCIndependentClass = 267, ObjCMethodFamily = 268, ObjCNSObject = 269, ObjCPreciseLifetime = 270, ObjCRequiresPropertyDefs = 271, ObjCRequiresSuper = 272, ObjCReturnsInnerPointer = 273, ObjCRootClass = 274, ObjCSubclassingRestricted = 275, OpenCLIntelReqdSubGroupSize = 276, OpenCLKernel = 277, OptimizeNone = 278, Override = 279, Owner = 280, Ownership = 281, Packed = 282, ParamTypestate = 283, PatchableFunctionEntry = 284, Pointer = 285, PragmaClangBSSSection = 286, PragmaClangDataSection = 287, PragmaClangRelroSection = 288, PragmaClangRodataSection = 289, PragmaClangTextSection = 290, PreferredName = 291, PreferredType = 292, PtGuardedBy = 293, PtGuardedVar = 294, Pure = 295, RISCVInterrupt = 296, RandomizeLayout = 297, ReadOnlyPlacement = 298, Reinitializes = 299, ReleaseCapability = 300, ReqdWorkGroupSize = 301, RequiresCapability = 302, Restrict = 303, Retain = 304, ReturnTypestate = 305, ReturnsNonNull = 306, ReturnsTwice = 307, SYCLKernel = 308, SYCLSpecialClass = 309, ScopedLockable = 310, Section = 311, SelectAny = 312, Sentinel = 313, SetTypestate = 314, SharedTrylockFunction = 315, SpeculativeLoadHardening = 316, StandaloneDebug = 317, StrictFP = 318, StrictGuardStackCheck = 319, SwiftAsync = 320, SwiftAsyncError = 321, SwiftAsyncName = 322, SwiftAttr = 323, SwiftBridge = 324, SwiftBridgedTypedef = 325, SwiftError = 326, SwiftImportAsNonGeneric = 327, SwiftImportPropertyAsAccessors = 328, SwiftName = 329, SwiftNewType = 330, SwiftPrivate = 331, TLSModel = 332, Target = 333, TargetClones = 334, TargetVersion = 335, TestTypestate = 336, TransparentUnion = 337, TrivialABI = 338, TryAcquireCapability = 339, TypeTagForDatatype = 340, TypeVisibility = 341, Unavailable = 342, Uninitialized = 343, UnsafeBufferUsage = 344, Unused = 345, Used = 346, UsingIfExists = 347, Uuid = 348, VecReturn = 349, VecTypeHint = 350, Visibility = 351, WarnUnused = 352, WarnUnusedResult = 353, Weak = 354, WeakImport = 355, WeakRef = 356, WebAssemblyExportName = 357, WebAssemblyImportModule = 358, WebAssemblyImportName = 359, WorkGroupSizeHint = 360, X86ForceAlignArgPointer = 361, XRayInstrument = 362, XRayLogArgs = 363, ZeroCallUsedRegs = 364, AbiTag = 365, Alias = 366, AlignValue = 367, BuiltinAlias = 368, CalledOnce = 369, IFunc = 370, InitSeg = 371, LoaderUninitialized = 372, LoopHint = 373, Mode = 374, NoBuiltin = 375, NoEscape = 376, OMPCaptureKind = 377, OMPDeclareSimdDecl = 378, OMPReferencedVar = 379, ObjCBoxable = 380, ObjCClassStub = 381, ObjCDesignatedInitializer = 382, ObjCDirect = 383, ObjCDirectMembers = 384, ObjCNonLazyClass = 385, ObjCNonRuntimeProtocol = 386, ObjCRuntimeName = 387, ObjCRuntimeVisible = 388, OpenCLAccess = 389, Overloadable = 390, RenderScriptKernel = 391, SwiftObjCMembers = 392, SwiftVersionedAddition = 393, SwiftVersionedRemoval = 394, Thread = 395, FirstAttr = 396, LastAttr = 397, FirstTypeAttr = 398, LastTypeAttr = 399, FirstStmtAttr = 400, LastStmtAttr = 401, FirstDeclOrStmtAttr = 402, LastDeclOrStmtAttr = 403, FirstInheritableAttr = 404, LastInheritableAttr = 405, FirstDeclOrTypeAttr = 406, LastDeclOrTypeAttr = 407, FirstInheritableParamAttr = 408, LastInheritableParamAttr = 409, FirstParameterABIAttr = 410, LastParameterABIAttr = 411, FirstHLSLAnnotationAttr = 412, LastHLSLAnnotationAttr = 413, };
-enum class FormatAttrKind : int32_t { printf = 0, scanf = 1, strftime = 2, gnu_printf = 3, gnu_scanf = 4, gnu_strftime = 5, strfmon = 6, ms_printf = 7, ms_scanf = 8, ms_strftime = 9, NSString = 10, };
-enum class VisibilityType : int32_t { Default = 0, Hidden = 1, Protected = 2, };
-enum class ExplicitSpecKind : int32_t { ResolvedFalse = 0, ResolvedTrue = 1, Unresolved = 2, };
-enum class InitializationStyle : int32_t { CINIT = 0, CALL_INIT = 1, LIST_INIT = 2, ParenListInit = 3, };
-enum class LanguageId : int32_t { C = 0, CXX = 1, };
-enum class Linkage : int32_t { Invalid = 0, None = 1, Internal = 2, UniqueExternal = 3, VisibleNone = 4, Module = 5, External = 6, };
-enum class NameKind : int32_t { IDENTIFIER = 0, OBJ_C_ZERO_ARG_SELECTOR = 1, OBJ_C_ONE_ARG_SELECTOR = 2, OBJ_C_MULTI_ARG_SELECTOR = 3, CXX_CONSTRUCTOR_NAME = 4, CXX_DESTRUCTOR_NAME = 5, CXX_CONVERSION_FUNCTION_NAME = 6, CXX_DEDUCTION_GUIDE_NAME = 7, CXX_OPERATOR_NAME = 8, CXX_LITERAL_OPERATOR_NAME = 9, CXX_USING_DIRECTIVE = 10, };
-enum class StorageClass : int32_t { None = 0, Extern = 1, Static = 2, PrivateExtern = 3, Auto = 4, Register = 5, };
-enum class TemplateKind : int32_t { NON_TEMPLATE = 0, FUNCTION_TEMPLATE = 1, MEMBER_SPECIALIZATION = 2, FUNCTION_TEMPLATE_SPECIALIZATION = 3, DEPENDENT_FUNCTION_TEMPLATE_SPECIALIZATION = 4, };
-enum class TemplateSpecializationKind : int32_t { Undeclared = 0, ImplicitInstantiation = 1, ExplicitSpecialization = 2, ExplicitInstantiationDeclaration = 3, ExplicitInstantiationDefinition = 4, };
-enum class Visibility : int32_t { Hidden = 0, Protected = 1, Default = 2, };
-enum class BinaryOperatorKind : int32_t { PtrMemD = 0, PtrMemI = 1, Mul = 2, Div = 3, Rem = 4, Add = 5, Sub = 6, Shl = 7, Shr = 8, Cmp = 9, LT = 10, GT = 11, LE = 12, GE = 13, EQ = 14, NE = 15, And = 16, Xor = 17, Or = 18, LAnd = 19, LOr = 20, Assign = 21, MulAssign = 22, DivAssign = 23, RemAssign = 24, AddAssign = 25, SubAssign = 26, ShlAssign = 27, ShrAssign = 28, AndAssign = 29, XorAssign = 30, OrAssign = 31, Comma = 32, };
-enum class CharacterKind : int32_t { ASCII = 0, WIDE = 1, UTF8 = 2, UTF16 = 3, UTF32 = 4, };
-enum class ConstructionKind : int32_t { Complete = 0, NonVirtualBase = 1, VirtualBase = 2, Delegating = 3, };
-enum class LambdaCaptureDefault : int32_t { None = 0, ByCopy = 1, ByRef = 2, };
-enum class LambdaCaptureKind : int32_t { This = 0, StarThis = 1, ByCopy = 2, ByRef = 3, VLAType = 4, };
-enum class NewInitStyle : int32_t { NO_INIT = 0, CALL_INIT = 1, LIST_INIT = 2, };
-enum class ObjectKind : int32_t { ORDINARY = 0, BIT_FIELD = 1, OBJ_C_PROPERTY = 2, OBJ_C_SUBSCRIPT = 3, VECTOR_COMPONENT = 4, };
-enum class PredefinedIdType : int32_t { Func = 0, Function = 1, LFunction = 2, FuncDName = 3, FuncSig = 4, LFuncSig = 5, PrettyFunction = 6, PrettyFunctionNoVirtual = 7, };
-enum class StringKind : int32_t { ORDINARY = 0, WIDE = 1, UTF8 = 2, UTF16 = 3, UTF32 = 4, UNEVALUATED = 5, };
-enum class UnaryOperatorKind : int32_t { PostInc = 0, PostDec = 1, PreInc = 2, PreDec = 3, AddrOf = 4, Deref = 5, Plus = 6, Minus = 7, Not = 8, LNot = 9, Real = 10, Imag = 11, Extension = 12, Coawait = 13, };
-enum class UnaryOperatorPosition : int32_t { PREFIX = 0, POSTFIX = 1, };
-enum class ValueKind : int32_t { R_VALUE = 0, L_VALUE = 1, X_VALUE = 2, };
-enum class AddressSpaceQualifierV2 : int32_t { NONE = 0, GLOBAL = 1, LOCAL = 2, CONSTANT = 3, GENERIC = 4, DEFAULT = 5, PRIVATE = 6, CUDA_CONSTANT = 7, CUDA_DEVICE = 8, CUDA_SHARED = 9, };
-enum class ArraySizeModifier : int32_t { Normal = 0, Static = 1, Star = 2, };
-enum class BuiltinKind : int32_t { OCLImage1dRO = 0, OCLImage1dArrayRO = 1, OCLImage1dBufferRO = 2, OCLImage2dRO = 3, OCLImage2dArrayRO = 4, OCLImage2dDepthRO = 5, OCLImage2dArrayDepthRO = 6, OCLImage2dMSAARO = 7, OCLImage2dArrayMSAARO = 8, OCLImage2dMSAADepthRO = 9, OCLImage2dArrayMSAADepthRO = 10, OCLImage3dRO = 11, OCLImage1dWO = 12, OCLImage1dArrayWO = 13, OCLImage1dBufferWO = 14, OCLImage2dWO = 15, OCLImage2dArrayWO = 16, OCLImage2dDepthWO = 17, OCLImage2dArrayDepthWO = 18, OCLImage2dMSAAWO = 19, OCLImage2dArrayMSAAWO = 20, OCLImage2dMSAADepthWO = 21, OCLImage2dArrayMSAADepthWO = 22, OCLImage3dWO = 23, OCLImage1dRW = 24, OCLImage1dArrayRW = 25, OCLImage1dBufferRW = 26, OCLImage2dRW = 27, OCLImage2dArrayRW = 28, OCLImage2dDepthRW = 29, OCLImage2dArrayDepthRW = 30, OCLImage2dMSAARW = 31, OCLImage2dArrayMSAARW = 32, OCLImage2dMSAADepthRW = 33, OCLImage2dArrayMSAADepthRW = 34, OCLImage3dRW = 35, OCLIntelSubgroupAVCMcePayload = 36, OCLIntelSubgroupAVCImePayload = 37, OCLIntelSubgroupAVCRefPayload = 38, OCLIntelSubgroupAVCSicPayload = 39, OCLIntelSubgroupAVCMceResult = 40, OCLIntelSubgroupAVCImeResult = 41, OCLIntelSubgroupAVCRefResult = 42, OCLIntelSubgroupAVCSicResult = 43, OCLIntelSubgroupAVCImeResultSingleRefStreamout = 44, OCLIntelSubgroupAVCImeResultDualRefStreamout = 45, OCLIntelSubgroupAVCImeSingleRefStreamin = 46, OCLIntelSubgroupAVCImeDualRefStreamin = 47, SveInt8 = 48, SveInt16 = 49, SveInt32 = 50, SveInt64 = 51, SveUint8 = 52, SveUint16 = 53, SveUint32 = 54, SveUint64 = 55, SveFloat16 = 56, SveFloat32 = 57, SveFloat64 = 58, SveBFloat16 = 59, SveInt8x2 = 60, SveInt16x2 = 61, SveInt32x2 = 62, SveInt64x2 = 63, SveUint8x2 = 64, SveUint16x2 = 65, SveUint32x2 = 66, SveUint64x2 = 67, SveFloat16x2 = 68, SveFloat32x2 = 69, SveFloat64x2 = 70, SveBFloat16x2 = 71, SveInt8x3 = 72, SveInt16x3 = 73, SveInt32x3 = 74, SveInt64x3 = 75, SveUint8x3 = 76, SveUint16x3 = 77, SveUint32x3 = 78, SveUint64x3 = 79, SveFloat16x3 = 80, SveFloat32x3 = 81, SveFloat64x3 = 82, SveBFloat16x3 = 83, SveInt8x4 = 84, SveInt16x4 = 85, SveInt32x4 = 86, SveInt64x4 = 87, SveUint8x4 = 88, SveUint16x4 = 89, SveUint32x4 = 90, SveUint64x4 = 91, SveFloat16x4 = 92, SveFloat32x4 = 93, SveFloat64x4 = 94, SveBFloat16x4 = 95, SveBool = 96, VectorQuad = 97, VectorPair = 98, RvvInt8mf8 = 99, RvvInt8mf4 = 100, RvvInt8mf2 = 101, RvvInt8m1 = 102, RvvInt8m2 = 103, RvvInt8m4 = 104, RvvInt8m8 = 105, RvvUint8mf8 = 106, RvvUint8mf4 = 107, RvvUint8mf2 = 108, RvvUint8m1 = 109, RvvUint8m2 = 110, RvvUint8m4 = 111, RvvUint8m8 = 112, RvvInt16mf4 = 113, RvvInt16mf2 = 114, RvvInt16m1 = 115, RvvInt16m2 = 116, RvvInt16m4 = 117, RvvInt16m8 = 118, RvvUint16mf4 = 119, RvvUint16mf2 = 120, RvvUint16m1 = 121, RvvUint16m2 = 122, RvvUint16m4 = 123, RvvUint16m8 = 124, RvvInt32mf2 = 125, RvvInt32m1 = 126, RvvInt32m2 = 127, RvvInt32m4 = 128, RvvInt32m8 = 129, RvvUint32mf2 = 130, RvvUint32m1 = 131, RvvUint32m2 = 132, RvvUint32m4 = 133, RvvUint32m8 = 134, RvvInt64m1 = 135, RvvInt64m2 = 136, RvvInt64m4 = 137, RvvInt64m8 = 138, RvvUint64m1 = 139, RvvUint64m2 = 140, RvvUint64m4 = 141, RvvUint64m8 = 142, RvvFloat16mf4 = 143, RvvFloat16mf2 = 144, RvvFloat16m1 = 145, RvvFloat16m2 = 146, RvvFloat16m4 = 147, RvvFloat16m8 = 148, RvvFloat32mf2 = 149, RvvFloat32m1 = 150, RvvFloat32m2 = 151, RvvFloat32m4 = 152, RvvFloat32m8 = 153, RvvFloat64m1 = 154, RvvFloat64m2 = 155, RvvFloat64m4 = 156, RvvFloat64m8 = 157, RvvBool1 = 158, RvvBool2 = 159, RvvBool4 = 160, RvvBool8 = 161, RvvBool16 = 162, RvvBool32 = 163, RvvBool64 = 164, Void = 165, Bool = 166, Char_U = 167, UChar = 168, WChar_U = 169, Char8 = 170, Char16 = 171, Char32 = 172, UShort = 173, UInt = 174, ULong = 175, ULongLong = 176, UInt128 = 177, Char_S = 178, SChar = 179, WChar_S = 180, Short = 181, Int = 182, Long = 183, LongLong = 184, Int128 = 185, ShortAccum = 186, Accum = 187, LongAccum = 188, UShortAccum = 189, UAccum = 190, ULongAccum = 191, ShortFract = 192, Fract = 193, LongFract = 194, UShortFract = 195, UFract = 196, ULongFract = 197, SatShortAccum = 198, SatAccum = 199, SatLongAccum = 200, SatUShortAccum = 201, SatUAccum = 202, SatULongAccum = 203, SatShortFract = 204, SatFract = 205, SatLongFract = 206, SatUShortFract = 207, SatUFract = 208, SatULongFract = 209, Half = 210, Float = 211, Double = 212, LongDouble = 213, Float16 = 214, BFloat16 = 215, Float128 = 216, Ibm128 = 217, NullPtr = 218, ObjCId = 219, ObjCClass = 220, ObjCSel = 221, OCLSampler = 222, OCLEvent = 223, OCLClkEvent = 224, OCLQueue = 225, OCLReserveID = 226, Dependent = 227, Overload = 228, BoundMember = 229, PseudoObject = 230, UnknownAny = 231, BuiltinFn = 232, ARCUnbridgedCast = 233, IncompleteMatrixIdx = 234, OMPArraySection = 235, OMPArrayShaping = 236, OMPIterator = 237, };
-enum class C99Qualifier : int32_t { CONST = 0, RESTRICT = 1, RESTRICT_C99 = 2, VOLATILE = 3, };
-enum class CallingConvention : int32_t { C = 0, X86StdCall = 1, X86FastCall = 2, X86ThisCall = 3, X86VectorCall = 4, X86Pascal = 5, Win64 = 6, X86_64SysV = 7, X86RegCall = 8, AAPCS = 9, AAPCS_VFP = 10, IntelOclBicc = 11, SpirFunction = 12, OpenCLKernel = 13, Swift = 14, SwiftAsync = 15, PreserveMost = 16, PreserveAll = 17, AArch64VectorCall = 18, AArch64SVEPCS = 19, AMDGPUKernelCall = 20, M68kRTD = 21, };
-enum class ElaboratedTypeKeyword : int32_t { Struct = 0, Interface = 1, Union = 2, Class = 3, Enum = 4, Typename = 5, None = 6, };
-enum class ExceptionSpecificationType : int32_t { None = 0, DynamicNone = 1, Dynamic = 2, MSAny = 3, NoThrow = 4, BasicNoexcept = 5, DependentNoexcept = 6, NoexceptFalse = 7, NoexceptTrue = 8, Unevaluated = 9, Uninstantiated = 10, Unparsed = 11, };
-enum class TypeDependency : int32_t { DEPENDENT = 0, INSTANTIATION_DEPENDENT = 1, NONE = 2, };
-enum class UnaryTransformTypeKind : int32_t { AddLvalueReference = 0, AddPointer = 1, AddRvalueReference = 2, Decay = 3, MakeSigned = 4, MakeUnsigned = 5, RemoveAllExtents = 6, RemoveConst = 7, RemoveCV = 8, RemoveCVRef = 9, RemoveExtent = 10, RemovePointer = 11, RemoveReference = 12, RemoveRestrict = 13, RemoveVolatile = 14, EnumUnderlyingType = 15, };
-enum class AccessSpecifier : int32_t { PUBLIC = 0, PROTECTED = 1, PRIVATE = 2, NONE = 3, };
-enum class CastKind : int32_t { Dependent = 0, BitCast = 1, LValueBitCast = 2, LValueToRValueBitCast = 3, LValueToRValue = 4, NoOp = 5, BaseToDerived = 6, DerivedToBase = 7, UncheckedDerivedToBase = 8, Dynamic = 9, ToUnion = 10, ArrayToPointerDecay = 11, FunctionToPointerDecay = 12, NullToPointer = 13, NullToMemberPointer = 14, BaseToDerivedMemberPointer = 15, DerivedToBaseMemberPointer = 16, MemberPointerToBoolean = 17, ReinterpretMemberPointer = 18, UserDefinedConversion = 19, ConstructorConversion = 20, IntegralToPointer = 21, PointerToIntegral = 22, PointerToBoolean = 23, ToVoid = 24, MatrixCast = 25, VectorSplat = 26, IntegralCast = 27, IntegralToBoolean = 28, IntegralToFloating = 29, FloatingToFixedPoint = 30, FixedPointToFloating = 31, FixedPointCast = 32, FixedPointToIntegral = 33, IntegralToFixedPoint = 34, FixedPointToBoolean = 35, FloatingToIntegral = 36, FloatingToBoolean = 37, BooleanToSignedIntegral = 38, FloatingCast = 39, CPointerToObjCPointerCast = 40, BlockPointerToObjCPointerCast = 41, AnyPointerToBlockPointerCast = 42, ObjCObjectLValueCast = 43, FloatingRealToComplex = 44, FloatingComplexToReal = 45, FloatingComplexToBoolean = 46, FloatingComplexCast = 47, FloatingComplexToIntegralComplex = 48, IntegralRealToComplex = 49, IntegralComplexToReal = 50, IntegralComplexToBoolean = 51, IntegralComplexCast = 52, IntegralComplexToFloatingComplex = 53, ARCProduceObject = 54, ARCConsumeObject = 55, ARCReclaimReturnedObject = 56, ARCExtendBlockObject = 57, AtomicToNonAtomic = 58, NonAtomicToAtomic = 59, CopyAndAutoreleaseBlockObject = 60, BuiltinFnToFnPtr = 61, ZeroToOCLOpaqueType = 62, AddressSpaceConversion = 63, IntToOCLSampler = 64, };
-enum class ReferenceQualifier : int32_t { LValue = 0, RValue = 1, None = 2, };
-enum class TLSKind : int32_t { NONE = 0, STATIC = 1, DYNAMIC = 2, };
-enum class TagKind : int32_t { STRUCT = 0, INTERFACE = 1, UNION = 2, CLASS = 3, ENUM = 4, NO_KIND = 5, };
-enum class TemplateTypeParmKind : int32_t { TYPENAME = 0, CLASS = 1, };
-enum class UnaryExprOrTypeTrait : int32_t { SizeOf = 0, AlignOf = 1, PreferredAlignOf = 2, VecStep = 3, OpenMPRequiredSimdAlign = 4, };
-enum class EnumScopeType : int32_t { CLASS = 0, STRUCT = 1, NO_SCOPE = 2, };
+enum class TopLevelKind : int32_t { TOPLEVELKIND_DECL = 0, TOPLEVELKIND_TYPE = 1, TOPLEVELKIND_ATTR = 2, };
+enum class AttributeKind : int32_t { ATTRIBUTEKIND_ADDRESSSPACE = 0, ATTRIBUTEKIND_ANNOTATETYPE = 1, ATTRIBUTEKIND_ARMIN = 2, ATTRIBUTEKIND_ARMINOUT = 3, ATTRIBUTEKIND_ARMMVESTRICTPOLYMORPHISM = 4, ATTRIBUTEKIND_ARMOUT = 5, ATTRIBUTEKIND_ARMPRESERVES = 6, ATTRIBUTEKIND_ARMSTREAMING = 7, ATTRIBUTEKIND_ARMSTREAMINGCOMPATIBLE = 8, ATTRIBUTEKIND_BTFTYPETAG = 9, ATTRIBUTEKIND_CMSENSCALL = 10, ATTRIBUTEKIND_HLSLGROUPSHAREDADDRESSSPACE = 11, ATTRIBUTEKIND_HLSLPARAMMODIFIER = 12, ATTRIBUTEKIND_NODEREF = 13, ATTRIBUTEKIND_OBJCGC = 14, ATTRIBUTEKIND_OBJCINERTUNSAFEUNRETAINED = 15, ATTRIBUTEKIND_OBJCKINDOF = 16, ATTRIBUTEKIND_OPENCLCONSTANTADDRESSSPACE = 17, ATTRIBUTEKIND_OPENCLGENERICADDRESSSPACE = 18, ATTRIBUTEKIND_OPENCLGLOBALADDRESSSPACE = 19, ATTRIBUTEKIND_OPENCLGLOBALDEVICEADDRESSSPACE = 20, ATTRIBUTEKIND_OPENCLGLOBALHOSTADDRESSSPACE = 21, ATTRIBUTEKIND_OPENCLLOCALADDRESSSPACE = 22, ATTRIBUTEKIND_OPENCLPRIVATEADDRESSSPACE = 23, ATTRIBUTEKIND_PTR32 = 24, ATTRIBUTEKIND_PTR64 = 25, ATTRIBUTEKIND_SPTR = 26, ATTRIBUTEKIND_TYPENONNULL = 27, ATTRIBUTEKIND_TYPENULLUNSPECIFIED = 28, ATTRIBUTEKIND_TYPENULLABLE = 29, ATTRIBUTEKIND_TYPENULLABLERESULT = 30, ATTRIBUTEKIND_UPTR = 31, ATTRIBUTEKIND_WEBASSEMBLYFUNCREF = 32, ATTRIBUTEKIND_CODEALIGN = 33, ATTRIBUTEKIND_FALLTHROUGH = 34, ATTRIBUTEKIND_LIKELY = 35, ATTRIBUTEKIND_MUSTTAIL = 36, ATTRIBUTEKIND_OPENCLUNROLLHINT = 37, ATTRIBUTEKIND_UNLIKELY = 38, ATTRIBUTEKIND_ALWAYSINLINE = 39, ATTRIBUTEKIND_NOINLINE = 40, ATTRIBUTEKIND_NOMERGE = 41, ATTRIBUTEKIND_SUPPRESS = 42, ATTRIBUTEKIND_AARCH64SVEPCS = 43, ATTRIBUTEKIND_AARCH64VECTORPCS = 44, ATTRIBUTEKIND_AMDGPUKERNELCALL = 45, ATTRIBUTEKIND_ACQUIREHANDLE = 46, ATTRIBUTEKIND_ANYX86NOCFCHECK = 47, ATTRIBUTEKIND_CDECL = 48, ATTRIBUTEKIND_FASTCALL = 49, ATTRIBUTEKIND_INTELOCLBICC = 50, ATTRIBUTEKIND_LIFETIMEBOUND = 51, ATTRIBUTEKIND_M68KRTD = 52, ATTRIBUTEKIND_MSABI = 53, ATTRIBUTEKIND_NSRETURNSRETAINED = 54, ATTRIBUTEKIND_OBJCOWNERSHIP = 55, ATTRIBUTEKIND_PASCAL = 56, ATTRIBUTEKIND_PCS = 57, ATTRIBUTEKIND_PRESERVEALL = 58, ATTRIBUTEKIND_PRESERVEMOST = 59, ATTRIBUTEKIND_REGCALL = 60, ATTRIBUTEKIND_STDCALL = 61, ATTRIBUTEKIND_SWIFTASYNCCALL = 62, ATTRIBUTEKIND_SWIFTCALL = 63, ATTRIBUTEKIND_SYSVABI = 64, ATTRIBUTEKIND_THISCALL = 65, ATTRIBUTEKIND_VECTORCALL = 66, ATTRIBUTEKIND_SWIFTASYNCCONTEXT = 67, ATTRIBUTEKIND_SWIFTCONTEXT = 68, ATTRIBUTEKIND_SWIFTERRORRESULT = 69, ATTRIBUTEKIND_SWIFTINDIRECTRESULT = 70, ATTRIBUTEKIND_ANNOTATE = 71, ATTRIBUTEKIND_CFCONSUMED = 72, ATTRIBUTEKIND_CARRIESDEPENDENCY = 73, ATTRIBUTEKIND_NSCONSUMED = 74, ATTRIBUTEKIND_NONNULL = 75, ATTRIBUTEKIND_OSCONSUMED = 76, ATTRIBUTEKIND_PASSOBJECTSIZE = 77, ATTRIBUTEKIND_RELEASEHANDLE = 78, ATTRIBUTEKIND_USEHANDLE = 79, ATTRIBUTEKIND_HLSLSV_DISPATCHTHREADID = 80, ATTRIBUTEKIND_HLSLSV_GROUPINDEX = 81, ATTRIBUTEKIND_AMDGPUFLATWORKGROUPSIZE = 82, ATTRIBUTEKIND_AMDGPUNUMSGPR = 83, ATTRIBUTEKIND_AMDGPUNUMVGPR = 84, ATTRIBUTEKIND_AMDGPUWAVESPEREU = 85, ATTRIBUTEKIND_ARMINTERRUPT = 86, ATTRIBUTEKIND_AVRINTERRUPT = 87, ATTRIBUTEKIND_AVRSIGNAL = 88, ATTRIBUTEKIND_ACQUIRECAPABILITY = 89, ATTRIBUTEKIND_ACQUIREDAFTER = 90, ATTRIBUTEKIND_ACQUIREDBEFORE = 91, ATTRIBUTEKIND_ALIGNMAC68K = 92, ATTRIBUTEKIND_ALIGNNATURAL = 93, ATTRIBUTEKIND_ALIGNED = 94, ATTRIBUTEKIND_ALLOCALIGN = 95, ATTRIBUTEKIND_ALLOCSIZE = 96, ATTRIBUTEKIND_ALWAYSDESTROY = 97, ATTRIBUTEKIND_ANALYZERNORETURN = 98, ATTRIBUTEKIND_ANYX86INTERRUPT = 99, ATTRIBUTEKIND_ANYX86NOCALLERSAVEDREGISTERS = 100, ATTRIBUTEKIND_ARCWEAKREFUNAVAILABLE = 101, ATTRIBUTEKIND_ARGUMENTWITHTYPETAG = 102, ATTRIBUTEKIND_ARMBUILTINALIAS = 103, ATTRIBUTEKIND_ARMLOCALLYSTREAMING = 104, ATTRIBUTEKIND_ARMNEW = 105, ATTRIBUTEKIND_ARTIFICIAL = 106, ATTRIBUTEKIND_ASMLABEL = 107, ATTRIBUTEKIND_ASSERTCAPABILITY = 108, ATTRIBUTEKIND_ASSERTEXCLUSIVELOCK = 109, ATTRIBUTEKIND_ASSERTSHAREDLOCK = 110, ATTRIBUTEKIND_ASSUMEALIGNED = 111, ATTRIBUTEKIND_ASSUMPTION = 112, ATTRIBUTEKIND_AVAILABILITY = 113, ATTRIBUTEKIND_AVAILABLEONLYINDEFAULTEVALMETHOD = 114, ATTRIBUTEKIND_BPFPRESERVEACCESSINDEX = 115, ATTRIBUTEKIND_BPFPRESERVESTATICOFFSET = 116, ATTRIBUTEKIND_BTFDECLTAG = 117, ATTRIBUTEKIND_BLOCKS = 118, ATTRIBUTEKIND_BUILTIN = 119, ATTRIBUTEKIND_C11NORETURN = 120, ATTRIBUTEKIND_CFAUDITEDTRANSFER = 121, ATTRIBUTEKIND_CFGUARD = 122, ATTRIBUTEKIND_CFICANONICALJUMPTABLE = 123, ATTRIBUTEKIND_CFRETURNSNOTRETAINED = 124, ATTRIBUTEKIND_CFRETURNSRETAINED = 125, ATTRIBUTEKIND_CFUNKNOWNTRANSFER = 126, ATTRIBUTEKIND_CPUDISPATCH = 127, ATTRIBUTEKIND_CPUSPECIFIC = 128, ATTRIBUTEKIND_CUDACONSTANT = 129, ATTRIBUTEKIND_CUDADEVICE = 130, ATTRIBUTEKIND_CUDADEVICEBUILTINSURFACETYPE = 131, ATTRIBUTEKIND_CUDADEVICEBUILTINTEXTURETYPE = 132, ATTRIBUTEKIND_CUDAGLOBAL = 133, ATTRIBUTEKIND_CUDAHOST = 134, ATTRIBUTEKIND_CUDAINVALIDTARGET = 135, ATTRIBUTEKIND_CUDALAUNCHBOUNDS = 136, ATTRIBUTEKIND_CUDASHARED = 137, ATTRIBUTEKIND_CXX11NORETURN = 138, ATTRIBUTEKIND_CALLABLEWHEN = 139, ATTRIBUTEKIND_CALLBACK = 140, ATTRIBUTEKIND_CAPABILITY = 141, ATTRIBUTEKIND_CAPTUREDRECORD = 142, ATTRIBUTEKIND_CLEANUP = 143, ATTRIBUTEKIND_CMSENSENTRY = 144, ATTRIBUTEKIND_CODEMODEL = 145, ATTRIBUTEKIND_CODESEG = 146, ATTRIBUTEKIND_COLD = 147, ATTRIBUTEKIND_COMMON = 148, ATTRIBUTEKIND_CONST = 149, ATTRIBUTEKIND_CONSTINIT = 150, ATTRIBUTEKIND_CONSTRUCTOR = 151, ATTRIBUTEKIND_CONSUMABLE = 152, ATTRIBUTEKIND_CONSUMABLEAUTOCAST = 153, ATTRIBUTEKIND_CONSUMABLESETONREAD = 154, ATTRIBUTEKIND_CONVERGENT = 155, ATTRIBUTEKIND_CORODISABLELIFETIMEBOUND = 156, ATTRIBUTEKIND_COROLIFETIMEBOUND = 157, ATTRIBUTEKIND_COROONLYDESTROYWHENCOMPLETE = 158, ATTRIBUTEKIND_CORORETURNTYPE = 159, ATTRIBUTEKIND_COROWRAPPER = 160, ATTRIBUTEKIND_COUNTEDBY = 161, ATTRIBUTEKIND_DLLEXPORT = 162, ATTRIBUTEKIND_DLLEXPORTSTATICLOCAL = 163, ATTRIBUTEKIND_DLLIMPORT = 164, ATTRIBUTEKIND_DLLIMPORTSTATICLOCAL = 165, ATTRIBUTEKIND_DEPRECATED = 166, ATTRIBUTEKIND_DESTRUCTOR = 167, ATTRIBUTEKIND_DIAGNOSEASBUILTIN = 168, ATTRIBUTEKIND_DIAGNOSEIF = 169, ATTRIBUTEKIND_DISABLESANITIZERINSTRUMENTATION = 170, ATTRIBUTEKIND_DISABLETAILCALLS = 171, ATTRIBUTEKIND_EMPTYBASES = 172, ATTRIBUTEKIND_ENABLEIF = 173, ATTRIBUTEKIND_ENFORCETCB = 174, ATTRIBUTEKIND_ENFORCETCBLEAF = 175, ATTRIBUTEKIND_ENUMEXTENSIBILITY = 176, ATTRIBUTEKIND_ERROR = 177, ATTRIBUTEKIND_EXCLUDEFROMEXPLICITINSTANTIATION = 178, ATTRIBUTEKIND_EXCLUSIVETRYLOCKFUNCTION = 179, ATTRIBUTEKIND_EXTERNALSOURCESYMBOL = 180, ATTRIBUTEKIND_FINAL = 181, ATTRIBUTEKIND_FLAGENUM = 182, ATTRIBUTEKIND_FLATTEN = 183, ATTRIBUTEKIND_FORMAT = 184, ATTRIBUTEKIND_FORMATARG = 185, ATTRIBUTEKIND_FUNCTIONRETURNTHUNKS = 186, ATTRIBUTEKIND_GNUINLINE = 187, ATTRIBUTEKIND_GUARDEDBY = 188, ATTRIBUTEKIND_GUARDEDVAR = 189, ATTRIBUTEKIND_HIPMANAGED = 190, ATTRIBUTEKIND_HLSLNUMTHREADS = 191, ATTRIBUTEKIND_HLSLRESOURCE = 192, ATTRIBUTEKIND_HLSLRESOURCEBINDING = 193, ATTRIBUTEKIND_HLSLSHADER = 194, ATTRIBUTEKIND_HOT = 195, ATTRIBUTEKIND_IBACTION = 196, ATTRIBUTEKIND_IBOUTLET = 197, ATTRIBUTEKIND_IBOUTLETCOLLECTION = 198, ATTRIBUTEKIND_INITPRIORITY = 199, ATTRIBUTEKIND_INTERNALLINKAGE = 200, ATTRIBUTEKIND_LTOVISIBILITYPUBLIC = 201, ATTRIBUTEKIND_LAYOUTVERSION = 202, ATTRIBUTEKIND_LEAF = 203, ATTRIBUTEKIND_LOCKRETURNED = 204, ATTRIBUTEKIND_LOCKSEXCLUDED = 205, ATTRIBUTEKIND_M68KINTERRUPT = 206, ATTRIBUTEKIND_MIGSERVERROUTINE = 207, ATTRIBUTEKIND_MSALLOCATOR = 208, ATTRIBUTEKIND_MSCONSTEXPR = 209, ATTRIBUTEKIND_MSINHERITANCE = 210, ATTRIBUTEKIND_MSNOVTABLE = 211, ATTRIBUTEKIND_MSP430INTERRUPT = 212, ATTRIBUTEKIND_MSSTRUCT = 213, ATTRIBUTEKIND_MSVTORDISP = 214, ATTRIBUTEKIND_MAXFIELDALIGNMENT = 215, ATTRIBUTEKIND_MAYALIAS = 216, ATTRIBUTEKIND_MAYBEUNDEF = 217, ATTRIBUTEKIND_MICROMIPS = 218, ATTRIBUTEKIND_MINSIZE = 219, ATTRIBUTEKIND_MINVECTORWIDTH = 220, ATTRIBUTEKIND_MIPS16 = 221, ATTRIBUTEKIND_MIPSINTERRUPT = 222, ATTRIBUTEKIND_MIPSLONGCALL = 223, ATTRIBUTEKIND_MIPSSHORTCALL = 224, ATTRIBUTEKIND_NSCONSUMESSELF = 225, ATTRIBUTEKIND_NSERRORDOMAIN = 226, ATTRIBUTEKIND_NSRETURNSAUTORELEASED = 227, ATTRIBUTEKIND_NSRETURNSNOTRETAINED = 228, ATTRIBUTEKIND_NVPTXKERNEL = 229, ATTRIBUTEKIND_NAKED = 230, ATTRIBUTEKIND_NOALIAS = 231, ATTRIBUTEKIND_NOCOMMON = 232, ATTRIBUTEKIND_NODEBUG = 233, ATTRIBUTEKIND_NODESTROY = 234, ATTRIBUTEKIND_NODUPLICATE = 235, ATTRIBUTEKIND_NOINSTRUMENTFUNCTION = 236, ATTRIBUTEKIND_NOMICROMIPS = 237, ATTRIBUTEKIND_NOMIPS16 = 238, ATTRIBUTEKIND_NOPROFILEFUNCTION = 239, ATTRIBUTEKIND_NORANDOMIZELAYOUT = 240, ATTRIBUTEKIND_NORETURN = 241, ATTRIBUTEKIND_NOSANITIZE = 242, ATTRIBUTEKIND_NOSPECULATIVELOADHARDENING = 243, ATTRIBUTEKIND_NOSPLITSTACK = 244, ATTRIBUTEKIND_NOSTACKPROTECTOR = 245, ATTRIBUTEKIND_NOTHREADSAFETYANALYSIS = 246, ATTRIBUTEKIND_NOTHROW = 247, ATTRIBUTEKIND_NOUNIQUEADDRESS = 248, ATTRIBUTEKIND_NOUWTABLE = 249, ATTRIBUTEKIND_NOTTAILCALLED = 250, ATTRIBUTEKIND_OMPALLOCATEDECL = 251, ATTRIBUTEKIND_OMPCAPTURENOINIT = 252, ATTRIBUTEKIND_OMPDECLARETARGETDECL = 253, ATTRIBUTEKIND_OMPDECLAREVARIANT = 254, ATTRIBUTEKIND_OMPTHREADPRIVATEDECL = 255, ATTRIBUTEKIND_OSCONSUMESTHIS = 256, ATTRIBUTEKIND_OSRETURNSNOTRETAINED = 257, ATTRIBUTEKIND_OSRETURNSRETAINED = 258, ATTRIBUTEKIND_OSRETURNSRETAINEDONNONZERO = 259, ATTRIBUTEKIND_OSRETURNSRETAINEDONZERO = 260, ATTRIBUTEKIND_OBJCBRIDGE = 261, ATTRIBUTEKIND_OBJCBRIDGEMUTABLE = 262, ATTRIBUTEKIND_OBJCBRIDGERELATED = 263, ATTRIBUTEKIND_OBJCEXCEPTION = 264, ATTRIBUTEKIND_OBJCEXPLICITPROTOCOLIMPL = 265, ATTRIBUTEKIND_OBJCEXTERNALLYRETAINED = 266, ATTRIBUTEKIND_OBJCINDEPENDENTCLASS = 267, ATTRIBUTEKIND_OBJCMETHODFAMILY = 268, ATTRIBUTEKIND_OBJCNSOBJECT = 269, ATTRIBUTEKIND_OBJCPRECISELIFETIME = 270, ATTRIBUTEKIND_OBJCREQUIRESPROPERTYDEFS = 271, ATTRIBUTEKIND_OBJCREQUIRESSUPER = 272, ATTRIBUTEKIND_OBJCRETURNSINNERPOINTER = 273, ATTRIBUTEKIND_OBJCROOTCLASS = 274, ATTRIBUTEKIND_OBJCSUBCLASSINGRESTRICTED = 275, ATTRIBUTEKIND_OPENCLINTELREQDSUBGROUPSIZE = 276, ATTRIBUTEKIND_OPENCLKERNEL = 277, ATTRIBUTEKIND_OPTIMIZENONE = 278, ATTRIBUTEKIND_OVERRIDE = 279, ATTRIBUTEKIND_OWNER = 280, ATTRIBUTEKIND_OWNERSHIP = 281, ATTRIBUTEKIND_PACKED = 282, ATTRIBUTEKIND_PARAMTYPESTATE = 283, ATTRIBUTEKIND_PATCHABLEFUNCTIONENTRY = 284, ATTRIBUTEKIND_POINTER = 285, ATTRIBUTEKIND_PRAGMACLANGBSSSECTION = 286, ATTRIBUTEKIND_PRAGMACLANGDATASECTION = 287, ATTRIBUTEKIND_PRAGMACLANGRELROSECTION = 288, ATTRIBUTEKIND_PRAGMACLANGRODATASECTION = 289, ATTRIBUTEKIND_PRAGMACLANGTEXTSECTION = 290, ATTRIBUTEKIND_PREFERREDNAME = 291, ATTRIBUTEKIND_PREFERREDTYPE = 292, ATTRIBUTEKIND_PTGUARDEDBY = 293, ATTRIBUTEKIND_PTGUARDEDVAR = 294, ATTRIBUTEKIND_PURE = 295, ATTRIBUTEKIND_RISCVINTERRUPT = 296, ATTRIBUTEKIND_RANDOMIZELAYOUT = 297, ATTRIBUTEKIND_READONLYPLACEMENT = 298, ATTRIBUTEKIND_REINITIALIZES = 299, ATTRIBUTEKIND_RELEASECAPABILITY = 300, ATTRIBUTEKIND_REQDWORKGROUPSIZE = 301, ATTRIBUTEKIND_REQUIRESCAPABILITY = 302, ATTRIBUTEKIND_RESTRICT = 303, ATTRIBUTEKIND_RETAIN = 304, ATTRIBUTEKIND_RETURNTYPESTATE = 305, ATTRIBUTEKIND_RETURNSNONNULL = 306, ATTRIBUTEKIND_RETURNSTWICE = 307, ATTRIBUTEKIND_SYCLKERNEL = 308, ATTRIBUTEKIND_SYCLSPECIALCLASS = 309, ATTRIBUTEKIND_SCOPEDLOCKABLE = 310, ATTRIBUTEKIND_SECTION = 311, ATTRIBUTEKIND_SELECTANY = 312, ATTRIBUTEKIND_SENTINEL = 313, ATTRIBUTEKIND_SETTYPESTATE = 314, ATTRIBUTEKIND_SHAREDTRYLOCKFUNCTION = 315, ATTRIBUTEKIND_SPECULATIVELOADHARDENING = 316, ATTRIBUTEKIND_STANDALONEDEBUG = 317, ATTRIBUTEKIND_STRICTFP = 318, ATTRIBUTEKIND_STRICTGUARDSTACKCHECK = 319, ATTRIBUTEKIND_SWIFTASYNC = 320, ATTRIBUTEKIND_SWIFTASYNCERROR = 321, ATTRIBUTEKIND_SWIFTASYNCNAME = 322, ATTRIBUTEKIND_SWIFTATTR = 323, ATTRIBUTEKIND_SWIFTBRIDGE = 324, ATTRIBUTEKIND_SWIFTBRIDGEDTYPEDEF = 325, ATTRIBUTEKIND_SWIFTERROR = 326, ATTRIBUTEKIND_SWIFTIMPORTASNONGENERIC = 327, ATTRIBUTEKIND_SWIFTIMPORTPROPERTYASACCESSORS = 328, ATTRIBUTEKIND_SWIFTNAME = 329, ATTRIBUTEKIND_SWIFTNEWTYPE = 330, ATTRIBUTEKIND_SWIFTPRIVATE = 331, ATTRIBUTEKIND_TLSMODEL = 332, ATTRIBUTEKIND_TARGET = 333, ATTRIBUTEKIND_TARGETCLONES = 334, ATTRIBUTEKIND_TARGETVERSION = 335, ATTRIBUTEKIND_TESTTYPESTATE = 336, ATTRIBUTEKIND_TRANSPARENTUNION = 337, ATTRIBUTEKIND_TRIVIALABI = 338, ATTRIBUTEKIND_TRYACQUIRECAPABILITY = 339, ATTRIBUTEKIND_TYPETAGFORDATATYPE = 340, ATTRIBUTEKIND_TYPEVISIBILITY = 341, ATTRIBUTEKIND_UNAVAILABLE = 342, ATTRIBUTEKIND_UNINITIALIZED = 343, ATTRIBUTEKIND_UNSAFEBUFFERUSAGE = 344, ATTRIBUTEKIND_UNUSED = 345, ATTRIBUTEKIND_USED = 346, ATTRIBUTEKIND_USINGIFEXISTS = 347, ATTRIBUTEKIND_UUID = 348, ATTRIBUTEKIND_VECRETURN = 349, ATTRIBUTEKIND_VECTYPEHINT = 350, ATTRIBUTEKIND_VISIBILITY = 351, ATTRIBUTEKIND_WARNUNUSED = 352, ATTRIBUTEKIND_WARNUNUSEDRESULT = 353, ATTRIBUTEKIND_WEAK = 354, ATTRIBUTEKIND_WEAKIMPORT = 355, ATTRIBUTEKIND_WEAKREF = 356, ATTRIBUTEKIND_WEBASSEMBLYEXPORTNAME = 357, ATTRIBUTEKIND_WEBASSEMBLYIMPORTMODULE = 358, ATTRIBUTEKIND_WEBASSEMBLYIMPORTNAME = 359, ATTRIBUTEKIND_WORKGROUPSIZEHINT = 360, ATTRIBUTEKIND_X86FORCEALIGNARGPOINTER = 361, ATTRIBUTEKIND_XRAYINSTRUMENT = 362, ATTRIBUTEKIND_XRAYLOGARGS = 363, ATTRIBUTEKIND_ZEROCALLUSEDREGS = 364, ATTRIBUTEKIND_ABITAG = 365, ATTRIBUTEKIND_ALIAS = 366, ATTRIBUTEKIND_ALIGNVALUE = 367, ATTRIBUTEKIND_BUILTINALIAS = 368, ATTRIBUTEKIND_CALLEDONCE = 369, ATTRIBUTEKIND_IFUNC = 370, ATTRIBUTEKIND_INITSEG = 371, ATTRIBUTEKIND_LOADERUNINITIALIZED = 372, ATTRIBUTEKIND_LOOPHINT = 373, ATTRIBUTEKIND_MODE = 374, ATTRIBUTEKIND_NOBUILTIN = 375, ATTRIBUTEKIND_NOESCAPE = 376, ATTRIBUTEKIND_OMPCAPTUREKIND = 377, ATTRIBUTEKIND_OMPDECLARESIMDDECL = 378, ATTRIBUTEKIND_OMPREFERENCEDVAR = 379, ATTRIBUTEKIND_OBJCBOXABLE = 380, ATTRIBUTEKIND_OBJCCLASSSTUB = 381, ATTRIBUTEKIND_OBJCDESIGNATEDINITIALIZER = 382, ATTRIBUTEKIND_OBJCDIRECT = 383, ATTRIBUTEKIND_OBJCDIRECTMEMBERS = 384, ATTRIBUTEKIND_OBJCNONLAZYCLASS = 385, ATTRIBUTEKIND_OBJCNONRUNTIMEPROTOCOL = 386, ATTRIBUTEKIND_OBJCRUNTIMENAME = 387, ATTRIBUTEKIND_OBJCRUNTIMEVISIBLE = 388, ATTRIBUTEKIND_OPENCLACCESS = 389, ATTRIBUTEKIND_OVERLOADABLE = 390, ATTRIBUTEKIND_RENDERSCRIPTKERNEL = 391, ATTRIBUTEKIND_SWIFTOBJCMEMBERS = 392, ATTRIBUTEKIND_SWIFTVERSIONEDADDITION = 393, ATTRIBUTEKIND_SWIFTVERSIONEDREMOVAL = 394, ATTRIBUTEKIND_THREAD = 395, ATTRIBUTEKIND_FIRSTATTR = 396, ATTRIBUTEKIND_LASTATTR = 397, ATTRIBUTEKIND_FIRSTTYPEATTR = 398, ATTRIBUTEKIND_LASTTYPEATTR = 399, ATTRIBUTEKIND_FIRSTSTMTATTR = 400, ATTRIBUTEKIND_LASTSTMTATTR = 401, ATTRIBUTEKIND_FIRSTDECLORSTMTATTR = 402, ATTRIBUTEKIND_LASTDECLORSTMTATTR = 403, ATTRIBUTEKIND_FIRSTINHERITABLEATTR = 404, ATTRIBUTEKIND_LASTINHERITABLEATTR = 405, ATTRIBUTEKIND_FIRSTDECLORTYPEATTR = 406, ATTRIBUTEKIND_LASTDECLORTYPEATTR = 407, ATTRIBUTEKIND_FIRSTINHERITABLEPARAMATTR = 408, ATTRIBUTEKIND_LASTINHERITABLEPARAMATTR = 409, ATTRIBUTEKIND_FIRSTPARAMETERABIATTR = 410, ATTRIBUTEKIND_LASTPARAMETERABIATTR = 411, ATTRIBUTEKIND_FIRSTHLSLANNOTATIONATTR = 412, ATTRIBUTEKIND_LASTHLSLANNOTATIONATTR = 413, };
+enum class FormatAttrKind : int32_t { FORMATATTRKIND_PRINTF = 0, FORMATATTRKIND_SCANF = 1, FORMATATTRKIND_STRFTIME = 2, FORMATATTRKIND_GNU_PRINTF = 3, FORMATATTRKIND_GNU_SCANF = 4, FORMATATTRKIND_GNU_STRFTIME = 5, FORMATATTRKIND_STRFMON = 6, FORMATATTRKIND_MS_PRINTF = 7, FORMATATTRKIND_MS_SCANF = 8, FORMATATTRKIND_MS_STRFTIME = 9, FORMATATTRKIND_NSSTRING = 10, };
+enum class VisibilityType : int32_t { VISIBILITYTYPE_DEFAULT = 0, VISIBILITYTYPE_HIDDEN = 1, VISIBILITYTYPE_PROTECTED = 2, };
+enum class ExplicitSpecKind : int32_t { EXPLICITSPECKIND_RESOLVEDFALSE = 0, EXPLICITSPECKIND_RESOLVEDTRUE = 1, EXPLICITSPECKIND_UNRESOLVED = 2, };
+enum class InitializationStyle : int32_t { INITIALIZATIONSTYLE_CINIT = 0, INITIALIZATIONSTYLE_CALL_INIT = 1, INITIALIZATIONSTYLE_LIST_INIT = 2, INITIALIZATIONSTYLE_PARENLISTINIT = 3, };
+enum class LanguageId : int32_t { LANGUAGEID_C = 0, LANGUAGEID_CXX = 1, };
+enum class Linkage : int32_t { LINKAGE_INVALID = 0, LINKAGE_NONE = 1, LINKAGE_INTERNAL = 2, LINKAGE_UNIQUEEXTERNAL = 3, LINKAGE_VISIBLENONE = 4, LINKAGE_MODULE = 5, LINKAGE_EXTERNAL = 6, };
+enum class NameKind : int32_t { NAMEKIND_IDENTIFIER = 0, NAMEKIND_OBJ_C_ZERO_ARG_SELECTOR = 1, NAMEKIND_OBJ_C_ONE_ARG_SELECTOR = 2, NAMEKIND_OBJ_C_MULTI_ARG_SELECTOR = 3, NAMEKIND_CXX_CONSTRUCTOR_NAME = 4, NAMEKIND_CXX_DESTRUCTOR_NAME = 5, NAMEKIND_CXX_CONVERSION_FUNCTION_NAME = 6, NAMEKIND_CXX_DEDUCTION_GUIDE_NAME = 7, NAMEKIND_CXX_OPERATOR_NAME = 8, NAMEKIND_CXX_LITERAL_OPERATOR_NAME = 9, NAMEKIND_CXX_USING_DIRECTIVE = 10, };
+enum class StorageClass : int32_t { STORAGECLASS_NONE = 0, STORAGECLASS_EXTERN = 1, STORAGECLASS_STATIC = 2, STORAGECLASS_PRIVATEEXTERN = 3, STORAGECLASS_AUTO = 4, STORAGECLASS_REGISTER = 5, };
+enum class TemplateKind : int32_t { TEMPLATEKIND_NON_TEMPLATE = 0, TEMPLATEKIND_FUNCTION_TEMPLATE = 1, TEMPLATEKIND_MEMBER_SPECIALIZATION = 2, TEMPLATEKIND_FUNCTION_TEMPLATE_SPECIALIZATION = 3, TEMPLATEKIND_DEPENDENT_FUNCTION_TEMPLATE_SPECIALIZATION = 4, };
+enum class TemplateSpecializationKind : int32_t { TEMPLATESPECIALIZATIONKIND_UNDECLARED = 0, TEMPLATESPECIALIZATIONKIND_IMPLICITINSTANTIATION = 1, TEMPLATESPECIALIZATIONKIND_EXPLICITSPECIALIZATION = 2, TEMPLATESPECIALIZATIONKIND_EXPLICITINSTANTIATIONDECLARATION = 3, TEMPLATESPECIALIZATIONKIND_EXPLICITINSTANTIATIONDEFINITION = 4, };
+enum class Visibility : int32_t { VISIBILITY_HIDDEN = 0, VISIBILITY_PROTECTED = 1, VISIBILITY_DEFAULT = 2, };
+enum class BinaryOperatorKind : int32_t { BINARYOPERATORKIND_PTRMEMD = 0, BINARYOPERATORKIND_PTRMEMI = 1, BINARYOPERATORKIND_MUL = 2, BINARYOPERATORKIND_DIV = 3, BINARYOPERATORKIND_REM = 4, BINARYOPERATORKIND_ADD = 5, BINARYOPERATORKIND_SUB = 6, BINARYOPERATORKIND_SHL = 7, BINARYOPERATORKIND_SHR = 8, BINARYOPERATORKIND_CMP = 9, BINARYOPERATORKIND_LT = 10, BINARYOPERATORKIND_GT = 11, BINARYOPERATORKIND_LE = 12, BINARYOPERATORKIND_GE = 13, BINARYOPERATORKIND_EQ = 14, BINARYOPERATORKIND_NE = 15, BINARYOPERATORKIND_AND = 16, BINARYOPERATORKIND_XOR = 17, BINARYOPERATORKIND_OR = 18, BINARYOPERATORKIND_LAND = 19, BINARYOPERATORKIND_LOR = 20, BINARYOPERATORKIND_ASSIGN = 21, BINARYOPERATORKIND_MULASSIGN = 22, BINARYOPERATORKIND_DIVASSIGN = 23, BINARYOPERATORKIND_REMASSIGN = 24, BINARYOPERATORKIND_ADDASSIGN = 25, BINARYOPERATORKIND_SUBASSIGN = 26, BINARYOPERATORKIND_SHLASSIGN = 27, BINARYOPERATORKIND_SHRASSIGN = 28, BINARYOPERATORKIND_ANDASSIGN = 29, BINARYOPERATORKIND_XORASSIGN = 30, BINARYOPERATORKIND_ORASSIGN = 31, BINARYOPERATORKIND_COMMA = 32, };
+enum class CharacterKind : int32_t { CHARACTERKIND_ASCII = 0, CHARACTERKIND_WIDE = 1, CHARACTERKIND_UTF8 = 2, CHARACTERKIND_UTF16 = 3, CHARACTERKIND_UTF32 = 4, };
+enum class ConstructionKind : int32_t { CONSTRUCTIONKIND_COMPLETE = 0, CONSTRUCTIONKIND_NONVIRTUALBASE = 1, CONSTRUCTIONKIND_VIRTUALBASE = 2, CONSTRUCTIONKIND_DELEGATING = 3, };
+enum class LambdaCaptureDefault : int32_t { LAMBDACAPTUREDEFAULT_NONE = 0, LAMBDACAPTUREDEFAULT_BYCOPY = 1, LAMBDACAPTUREDEFAULT_BYREF = 2, };
+enum class LambdaCaptureKind : int32_t { LAMBDACAPTUREKIND_THIS = 0, LAMBDACAPTUREKIND_STARTHIS = 1, LAMBDACAPTUREKIND_BYCOPY = 2, LAMBDACAPTUREKIND_BYREF = 3, LAMBDACAPTUREKIND_VLATYPE = 4, };
+enum class NewInitStyle : int32_t { NEWINITSTYLE_NO_INIT = 0, NEWINITSTYLE_CALL_INIT = 1, NEWINITSTYLE_LIST_INIT = 2, };
+enum class ObjectKind : int32_t { OBJECTKIND_ORDINARY = 0, OBJECTKIND_BIT_FIELD = 1, OBJECTKIND_OBJ_C_PROPERTY = 2, OBJECTKIND_OBJ_C_SUBSCRIPT = 3, OBJECTKIND_VECTOR_COMPONENT = 4, };
+enum class PredefinedIdType : int32_t { PREDEFINEDIDTYPE_FUNC = 0, PREDEFINEDIDTYPE_FUNCTION = 1, PREDEFINEDIDTYPE_LFUNCTION = 2, PREDEFINEDIDTYPE_FUNCDNAME = 3, PREDEFINEDIDTYPE_FUNCSIG = 4, PREDEFINEDIDTYPE_LFUNCSIG = 5, PREDEFINEDIDTYPE_PRETTYFUNCTION = 6, PREDEFINEDIDTYPE_PRETTYFUNCTIONNOVIRTUAL = 7, };
+enum class StringKind : int32_t { STRINGKIND_ORDINARY = 0, STRINGKIND_WIDE = 1, STRINGKIND_UTF8 = 2, STRINGKIND_UTF16 = 3, STRINGKIND_UTF32 = 4, STRINGKIND_UNEVALUATED = 5, };
+enum class UnaryOperatorKind : int32_t { UNARYOPERATORKIND_POSTINC = 0, UNARYOPERATORKIND_POSTDEC = 1, UNARYOPERATORKIND_PREINC = 2, UNARYOPERATORKIND_PREDEC = 3, UNARYOPERATORKIND_ADDROF = 4, UNARYOPERATORKIND_DEREF = 5, UNARYOPERATORKIND_PLUS = 6, UNARYOPERATORKIND_MINUS = 7, UNARYOPERATORKIND_NOT = 8, UNARYOPERATORKIND_LNOT = 9, UNARYOPERATORKIND_REAL = 10, UNARYOPERATORKIND_IMAG = 11, UNARYOPERATORKIND_EXTENSION = 12, UNARYOPERATORKIND_COAWAIT = 13, };
+enum class UnaryOperatorPosition : int32_t { UNARYOPERATORPOSITION_PREFIX = 0, UNARYOPERATORPOSITION_POSTFIX = 1, };
+enum class ValueKind : int32_t { VALUEKIND_R_VALUE = 0, VALUEKIND_L_VALUE = 1, VALUEKIND_X_VALUE = 2, };
+enum class AddressSpaceQualifierV2 : int32_t { ADDRESSSPACEQUALIFIERV2_NONE = 0, ADDRESSSPACEQUALIFIERV2_GLOBAL = 1, ADDRESSSPACEQUALIFIERV2_LOCAL = 2, ADDRESSSPACEQUALIFIERV2_CONSTANT = 3, ADDRESSSPACEQUALIFIERV2_GENERIC = 4, ADDRESSSPACEQUALIFIERV2_DEFAULT = 5, ADDRESSSPACEQUALIFIERV2_PRIVATE = 6, ADDRESSSPACEQUALIFIERV2_CUDA_CONSTANT = 7, ADDRESSSPACEQUALIFIERV2_CUDA_DEVICE = 8, ADDRESSSPACEQUALIFIERV2_CUDA_SHARED = 9, };
+enum class ArraySizeModifier : int32_t { ARRAYSIZEMODIFIER_NORMAL = 0, ARRAYSIZEMODIFIER_STATIC = 1, ARRAYSIZEMODIFIER_STAR = 2, };
+enum class BuiltinKind : int32_t { BUILTINKIND_OCLIMAGE1DRO = 0, BUILTINKIND_OCLIMAGE1DARRAYRO = 1, BUILTINKIND_OCLIMAGE1DBUFFERRO = 2, BUILTINKIND_OCLIMAGE2DRO = 3, BUILTINKIND_OCLIMAGE2DARRAYRO = 4, BUILTINKIND_OCLIMAGE2DDEPTHRO = 5, BUILTINKIND_OCLIMAGE2DARRAYDEPTHRO = 6, BUILTINKIND_OCLIMAGE2DMSAARO = 7, BUILTINKIND_OCLIMAGE2DARRAYMSAARO = 8, BUILTINKIND_OCLIMAGE2DMSAADEPTHRO = 9, BUILTINKIND_OCLIMAGE2DARRAYMSAADEPTHRO = 10, BUILTINKIND_OCLIMAGE3DRO = 11, BUILTINKIND_OCLIMAGE1DWO = 12, BUILTINKIND_OCLIMAGE1DARRAYWO = 13, BUILTINKIND_OCLIMAGE1DBUFFERWO = 14, BUILTINKIND_OCLIMAGE2DWO = 15, BUILTINKIND_OCLIMAGE2DARRAYWO = 16, BUILTINKIND_OCLIMAGE2DDEPTHWO = 17, BUILTINKIND_OCLIMAGE2DARRAYDEPTHWO = 18, BUILTINKIND_OCLIMAGE2DMSAAWO = 19, BUILTINKIND_OCLIMAGE2DARRAYMSAAWO = 20, BUILTINKIND_OCLIMAGE2DMSAADEPTHWO = 21, BUILTINKIND_OCLIMAGE2DARRAYMSAADEPTHWO = 22, BUILTINKIND_OCLIMAGE3DWO = 23, BUILTINKIND_OCLIMAGE1DRW = 24, BUILTINKIND_OCLIMAGE1DARRAYRW = 25, BUILTINKIND_OCLIMAGE1DBUFFERRW = 26, BUILTINKIND_OCLIMAGE2DRW = 27, BUILTINKIND_OCLIMAGE2DARRAYRW = 28, BUILTINKIND_OCLIMAGE2DDEPTHRW = 29, BUILTINKIND_OCLIMAGE2DARRAYDEPTHRW = 30, BUILTINKIND_OCLIMAGE2DMSAARW = 31, BUILTINKIND_OCLIMAGE2DARRAYMSAARW = 32, BUILTINKIND_OCLIMAGE2DMSAADEPTHRW = 33, BUILTINKIND_OCLIMAGE2DARRAYMSAADEPTHRW = 34, BUILTINKIND_OCLIMAGE3DRW = 35, BUILTINKIND_OCLINTELSUBGROUPAVCMCEPAYLOAD = 36, BUILTINKIND_OCLINTELSUBGROUPAVCIMEPAYLOAD = 37, BUILTINKIND_OCLINTELSUBGROUPAVCREFPAYLOAD = 38, BUILTINKIND_OCLINTELSUBGROUPAVCSICPAYLOAD = 39, BUILTINKIND_OCLINTELSUBGROUPAVCMCERESULT = 40, BUILTINKIND_OCLINTELSUBGROUPAVCIMERESULT = 41, BUILTINKIND_OCLINTELSUBGROUPAVCREFRESULT = 42, BUILTINKIND_OCLINTELSUBGROUPAVCSICRESULT = 43, BUILTINKIND_OCLINTELSUBGROUPAVCIMERESULTSINGLEREFSTREAMOUT = 44, BUILTINKIND_OCLINTELSUBGROUPAVCIMERESULTDUALREFSTREAMOUT = 45, BUILTINKIND_OCLINTELSUBGROUPAVCIMESINGLEREFSTREAMIN = 46, BUILTINKIND_OCLINTELSUBGROUPAVCIMEDUALREFSTREAMIN = 47, BUILTINKIND_SVEINT8 = 48, BUILTINKIND_SVEINT16 = 49, BUILTINKIND_SVEINT32 = 50, BUILTINKIND_SVEINT64 = 51, BUILTINKIND_SVEUINT8 = 52, BUILTINKIND_SVEUINT16 = 53, BUILTINKIND_SVEUINT32 = 54, BUILTINKIND_SVEUINT64 = 55, BUILTINKIND_SVEFLOAT16 = 56, BUILTINKIND_SVEFLOAT32 = 57, BUILTINKIND_SVEFLOAT64 = 58, BUILTINKIND_SVEBFLOAT16 = 59, BUILTINKIND_SVEINT8X2 = 60, BUILTINKIND_SVEINT16X2 = 61, BUILTINKIND_SVEINT32X2 = 62, BUILTINKIND_SVEINT64X2 = 63, BUILTINKIND_SVEUINT8X2 = 64, BUILTINKIND_SVEUINT16X2 = 65, BUILTINKIND_SVEUINT32X2 = 66, BUILTINKIND_SVEUINT64X2 = 67, BUILTINKIND_SVEFLOAT16X2 = 68, BUILTINKIND_SVEFLOAT32X2 = 69, BUILTINKIND_SVEFLOAT64X2 = 70, BUILTINKIND_SVEBFLOAT16X2 = 71, BUILTINKIND_SVEINT8X3 = 72, BUILTINKIND_SVEINT16X3 = 73, BUILTINKIND_SVEINT32X3 = 74, BUILTINKIND_SVEINT64X3 = 75, BUILTINKIND_SVEUINT8X3 = 76, BUILTINKIND_SVEUINT16X3 = 77, BUILTINKIND_SVEUINT32X3 = 78, BUILTINKIND_SVEUINT64X3 = 79, BUILTINKIND_SVEFLOAT16X3 = 80, BUILTINKIND_SVEFLOAT32X3 = 81, BUILTINKIND_SVEFLOAT64X3 = 82, BUILTINKIND_SVEBFLOAT16X3 = 83, BUILTINKIND_SVEINT8X4 = 84, BUILTINKIND_SVEINT16X4 = 85, BUILTINKIND_SVEINT32X4 = 86, BUILTINKIND_SVEINT64X4 = 87, BUILTINKIND_SVEUINT8X4 = 88, BUILTINKIND_SVEUINT16X4 = 89, BUILTINKIND_SVEUINT32X4 = 90, BUILTINKIND_SVEUINT64X4 = 91, BUILTINKIND_SVEFLOAT16X4 = 92, BUILTINKIND_SVEFLOAT32X4 = 93, BUILTINKIND_SVEFLOAT64X4 = 94, BUILTINKIND_SVEBFLOAT16X4 = 95, BUILTINKIND_SVEBOOL = 96, BUILTINKIND_VECTORQUAD = 97, BUILTINKIND_VECTORPAIR = 98, BUILTINKIND_RVVINT8MF8 = 99, BUILTINKIND_RVVINT8MF4 = 100, BUILTINKIND_RVVINT8MF2 = 101, BUILTINKIND_RVVINT8M1 = 102, BUILTINKIND_RVVINT8M2 = 103, BUILTINKIND_RVVINT8M4 = 104, BUILTINKIND_RVVINT8M8 = 105, BUILTINKIND_RVVUINT8MF8 = 106, BUILTINKIND_RVVUINT8MF4 = 107, BUILTINKIND_RVVUINT8MF2 = 108, BUILTINKIND_RVVUINT8M1 = 109, BUILTINKIND_RVVUINT8M2 = 110, BUILTINKIND_RVVUINT8M4 = 111, BUILTINKIND_RVVUINT8M8 = 112, BUILTINKIND_RVVINT16MF4 = 113, BUILTINKIND_RVVINT16MF2 = 114, BUILTINKIND_RVVINT16M1 = 115, BUILTINKIND_RVVINT16M2 = 116, BUILTINKIND_RVVINT16M4 = 117, BUILTINKIND_RVVINT16M8 = 118, BUILTINKIND_RVVUINT16MF4 = 119, BUILTINKIND_RVVUINT16MF2 = 120, BUILTINKIND_RVVUINT16M1 = 121, BUILTINKIND_RVVUINT16M2 = 122, BUILTINKIND_RVVUINT16M4 = 123, BUILTINKIND_RVVUINT16M8 = 124, BUILTINKIND_RVVINT32MF2 = 125, BUILTINKIND_RVVINT32M1 = 126, BUILTINKIND_RVVINT32M2 = 127, BUILTINKIND_RVVINT32M4 = 128, BUILTINKIND_RVVINT32M8 = 129, BUILTINKIND_RVVUINT32MF2 = 130, BUILTINKIND_RVVUINT32M1 = 131, BUILTINKIND_RVVUINT32M2 = 132, BUILTINKIND_RVVUINT32M4 = 133, BUILTINKIND_RVVUINT32M8 = 134, BUILTINKIND_RVVINT64M1 = 135, BUILTINKIND_RVVINT64M2 = 136, BUILTINKIND_RVVINT64M4 = 137, BUILTINKIND_RVVINT64M8 = 138, BUILTINKIND_RVVUINT64M1 = 139, BUILTINKIND_RVVUINT64M2 = 140, BUILTINKIND_RVVUINT64M4 = 141, BUILTINKIND_RVVUINT64M8 = 142, BUILTINKIND_RVVFLOAT16MF4 = 143, BUILTINKIND_RVVFLOAT16MF2 = 144, BUILTINKIND_RVVFLOAT16M1 = 145, BUILTINKIND_RVVFLOAT16M2 = 146, BUILTINKIND_RVVFLOAT16M4 = 147, BUILTINKIND_RVVFLOAT16M8 = 148, BUILTINKIND_RVVFLOAT32MF2 = 149, BUILTINKIND_RVVFLOAT32M1 = 150, BUILTINKIND_RVVFLOAT32M2 = 151, BUILTINKIND_RVVFLOAT32M4 = 152, BUILTINKIND_RVVFLOAT32M8 = 153, BUILTINKIND_RVVFLOAT64M1 = 154, BUILTINKIND_RVVFLOAT64M2 = 155, BUILTINKIND_RVVFLOAT64M4 = 156, BUILTINKIND_RVVFLOAT64M8 = 157, BUILTINKIND_RVVBOOL1 = 158, BUILTINKIND_RVVBOOL2 = 159, BUILTINKIND_RVVBOOL4 = 160, BUILTINKIND_RVVBOOL8 = 161, BUILTINKIND_RVVBOOL16 = 162, BUILTINKIND_RVVBOOL32 = 163, BUILTINKIND_RVVBOOL64 = 164, BUILTINKIND_VOID = 165, BUILTINKIND_BOOL = 166, BUILTINKIND_CHAR_U = 167, BUILTINKIND_UCHAR = 168, BUILTINKIND_WCHAR_U = 169, BUILTINKIND_CHAR8 = 170, BUILTINKIND_CHAR16 = 171, BUILTINKIND_CHAR32 = 172, BUILTINKIND_USHORT = 173, BUILTINKIND_UINT = 174, BUILTINKIND_ULONG = 175, BUILTINKIND_ULONGLONG = 176, BUILTINKIND_UINT128 = 177, BUILTINKIND_CHAR_S = 178, BUILTINKIND_SCHAR = 179, BUILTINKIND_WCHAR_S = 180, BUILTINKIND_SHORT = 181, BUILTINKIND_INT = 182, BUILTINKIND_LONG = 183, BUILTINKIND_LONGLONG = 184, BUILTINKIND_INT128 = 185, BUILTINKIND_SHORTACCUM = 186, BUILTINKIND_ACCUM = 187, BUILTINKIND_LONGACCUM = 188, BUILTINKIND_USHORTACCUM = 189, BUILTINKIND_UACCUM = 190, BUILTINKIND_ULONGACCUM = 191, BUILTINKIND_SHORTFRACT = 192, BUILTINKIND_FRACT = 193, BUILTINKIND_LONGFRACT = 194, BUILTINKIND_USHORTFRACT = 195, BUILTINKIND_UFRACT = 196, BUILTINKIND_ULONGFRACT = 197, BUILTINKIND_SATSHORTACCUM = 198, BUILTINKIND_SATACCUM = 199, BUILTINKIND_SATLONGACCUM = 200, BUILTINKIND_SATUSHORTACCUM = 201, BUILTINKIND_SATUACCUM = 202, BUILTINKIND_SATULONGACCUM = 203, BUILTINKIND_SATSHORTFRACT = 204, BUILTINKIND_SATFRACT = 205, BUILTINKIND_SATLONGFRACT = 206, BUILTINKIND_SATUSHORTFRACT = 207, BUILTINKIND_SATUFRACT = 208, BUILTINKIND_SATULONGFRACT = 209, BUILTINKIND_HALF = 210, BUILTINKIND_FLOAT = 211, BUILTINKIND_DOUBLE = 212, BUILTINKIND_LONGDOUBLE = 213, BUILTINKIND_FLOAT16 = 214, BUILTINKIND_BFLOAT16 = 215, BUILTINKIND_FLOAT128 = 216, BUILTINKIND_IBM128 = 217, BUILTINKIND_NULLPTR = 218, BUILTINKIND_OBJCID = 219, BUILTINKIND_OBJCCLASS = 220, BUILTINKIND_OBJCSEL = 221, BUILTINKIND_OCLSAMPLER = 222, BUILTINKIND_OCLEVENT = 223, BUILTINKIND_OCLCLKEVENT = 224, BUILTINKIND_OCLQUEUE = 225, BUILTINKIND_OCLRESERVEID = 226, BUILTINKIND_DEPENDENT = 227, BUILTINKIND_OVERLOAD = 228, BUILTINKIND_BOUNDMEMBER = 229, BUILTINKIND_PSEUDOOBJECT = 230, BUILTINKIND_UNKNOWNANY = 231, BUILTINKIND_BUILTINFN = 232, BUILTINKIND_ARCUNBRIDGEDCAST = 233, BUILTINKIND_INCOMPLETEMATRIXIDX = 234, BUILTINKIND_OMPARRAYSECTION = 235, BUILTINKIND_OMPARRAYSHAPING = 236, BUILTINKIND_OMPITERATOR = 237, };
+enum class C99Qualifier : int32_t { C99QUALIFIER_CONST = 0, C99QUALIFIER_RESTRICT = 1, C99QUALIFIER_RESTRICT_C99 = 2, C99QUALIFIER_VOLATILE = 3, };
+enum class CallingConvention : int32_t { CALLINGCONVENTION_C = 0, CALLINGCONVENTION_X86STDCALL = 1, CALLINGCONVENTION_X86FASTCALL = 2, CALLINGCONVENTION_X86THISCALL = 3, CALLINGCONVENTION_X86VECTORCALL = 4, CALLINGCONVENTION_X86PASCAL = 5, CALLINGCONVENTION_WIN64 = 6, CALLINGCONVENTION_X86_64SYSV = 7, CALLINGCONVENTION_X86REGCALL = 8, CALLINGCONVENTION_AAPCS = 9, CALLINGCONVENTION_AAPCS_VFP = 10, CALLINGCONVENTION_INTELOCLBICC = 11, CALLINGCONVENTION_SPIRFUNCTION = 12, CALLINGCONVENTION_OPENCLKERNEL = 13, CALLINGCONVENTION_SWIFT = 14, CALLINGCONVENTION_SWIFTASYNC = 15, CALLINGCONVENTION_PRESERVEMOST = 16, CALLINGCONVENTION_PRESERVEALL = 17, CALLINGCONVENTION_AARCH64VECTORCALL = 18, CALLINGCONVENTION_AARCH64SVEPCS = 19, CALLINGCONVENTION_AMDGPUKERNELCALL = 20, CALLINGCONVENTION_M68KRTD = 21, };
+enum class ElaboratedTypeKeyword : int32_t { ELABORATEDTYPEKEYWORD_STRUCT = 0, ELABORATEDTYPEKEYWORD_INTERFACE = 1, ELABORATEDTYPEKEYWORD_UNION = 2, ELABORATEDTYPEKEYWORD_CLASS = 3, ELABORATEDTYPEKEYWORD_ENUM = 4, ELABORATEDTYPEKEYWORD_TYPENAME = 5, ELABORATEDTYPEKEYWORD_NONE = 6, };
+enum class ExceptionSpecificationType : int32_t { EXCEPTIONSPECIFICATIONTYPE_NONE = 0, EXCEPTIONSPECIFICATIONTYPE_DYNAMICNONE = 1, EXCEPTIONSPECIFICATIONTYPE_DYNAMIC = 2, EXCEPTIONSPECIFICATIONTYPE_MSANY = 3, EXCEPTIONSPECIFICATIONTYPE_NOTHROW = 4, EXCEPTIONSPECIFICATIONTYPE_BASICNOEXCEPT = 5, EXCEPTIONSPECIFICATIONTYPE_DEPENDENTNOEXCEPT = 6, EXCEPTIONSPECIFICATIONTYPE_NOEXCEPTFALSE = 7, EXCEPTIONSPECIFICATIONTYPE_NOEXCEPTTRUE = 8, EXCEPTIONSPECIFICATIONTYPE_UNEVALUATED = 9, EXCEPTIONSPECIFICATIONTYPE_UNINSTANTIATED = 10, EXCEPTIONSPECIFICATIONTYPE_UNPARSED = 11, };
+enum class TypeDependency : int32_t { TYPEDEPENDENCY_DEPENDENT = 0, TYPEDEPENDENCY_INSTANTIATION_DEPENDENT = 1, TYPEDEPENDENCY_NONE = 2, };
+enum class UnaryTransformTypeKind : int32_t { UNARYTRANSFORMTYPEKIND_ADDLVALUEREFERENCE = 0, UNARYTRANSFORMTYPEKIND_ADDPOINTER = 1, UNARYTRANSFORMTYPEKIND_ADDRVALUEREFERENCE = 2, UNARYTRANSFORMTYPEKIND_DECAY = 3, UNARYTRANSFORMTYPEKIND_MAKESIGNED = 4, UNARYTRANSFORMTYPEKIND_MAKEUNSIGNED = 5, UNARYTRANSFORMTYPEKIND_REMOVEALLEXTENTS = 6, UNARYTRANSFORMTYPEKIND_REMOVECONST = 7, UNARYTRANSFORMTYPEKIND_REMOVECV = 8, UNARYTRANSFORMTYPEKIND_REMOVECVREF = 9, UNARYTRANSFORMTYPEKIND_REMOVEEXTENT = 10, UNARYTRANSFORMTYPEKIND_REMOVEPOINTER = 11, UNARYTRANSFORMTYPEKIND_REMOVEREFERENCE = 12, UNARYTRANSFORMTYPEKIND_REMOVERESTRICT = 13, UNARYTRANSFORMTYPEKIND_REMOVEVOLATILE = 14, UNARYTRANSFORMTYPEKIND_ENUMUNDERLYINGTYPE = 15, };
+enum class AccessSpecifier : int32_t { ACCESSSPECIFIER_PUBLIC = 0, ACCESSSPECIFIER_PROTECTED = 1, ACCESSSPECIFIER_PRIVATE = 2, ACCESSSPECIFIER_NONE = 3, };
+enum class CastKind : int32_t { CASTKIND_DEPENDENT = 0, CASTKIND_BITCAST = 1, CASTKIND_LVALUEBITCAST = 2, CASTKIND_LVALUETORVALUEBITCAST = 3, CASTKIND_LVALUETORVALUE = 4, CASTKIND_NOOP = 5, CASTKIND_BASETODERIVED = 6, CASTKIND_DERIVEDTOBASE = 7, CASTKIND_UNCHECKEDDERIVEDTOBASE = 8, CASTKIND_DYNAMIC = 9, CASTKIND_TOUNION = 10, CASTKIND_ARRAYTOPOINTERDECAY = 11, CASTKIND_FUNCTIONTOPOINTERDECAY = 12, CASTKIND_NULLTOPOINTER = 13, CASTKIND_NULLTOMEMBERPOINTER = 14, CASTKIND_BASETODERIVEDMEMBERPOINTER = 15, CASTKIND_DERIVEDTOBASEMEMBERPOINTER = 16, CASTKIND_MEMBERPOINTERTOBOOLEAN = 17, CASTKIND_REINTERPRETMEMBERPOINTER = 18, CASTKIND_USERDEFINEDCONVERSION = 19, CASTKIND_CONSTRUCTORCONVERSION = 20, CASTKIND_INTEGRALTOPOINTER = 21, CASTKIND_POINTERTOINTEGRAL = 22, CASTKIND_POINTERTOBOOLEAN = 23, CASTKIND_TOVOID = 24, CASTKIND_MATRIXCAST = 25, CASTKIND_VECTORSPLAT = 26, CASTKIND_INTEGRALCAST = 27, CASTKIND_INTEGRALTOBOOLEAN = 28, CASTKIND_INTEGRALTOFLOATING = 29, CASTKIND_FLOATINGTOFIXEDPOINT = 30, CASTKIND_FIXEDPOINTTOFLOATING = 31, CASTKIND_FIXEDPOINTCAST = 32, CASTKIND_FIXEDPOINTTOINTEGRAL = 33, CASTKIND_INTEGRALTOFIXEDPOINT = 34, CASTKIND_FIXEDPOINTTOBOOLEAN = 35, CASTKIND_FLOATINGTOINTEGRAL = 36, CASTKIND_FLOATINGTOBOOLEAN = 37, CASTKIND_BOOLEANTOSIGNEDINTEGRAL = 38, CASTKIND_FLOATINGCAST = 39, CASTKIND_CPOINTERTOOBJCPOINTERCAST = 40, CASTKIND_BLOCKPOINTERTOOBJCPOINTERCAST = 41, CASTKIND_ANYPOINTERTOBLOCKPOINTERCAST = 42, CASTKIND_OBJCOBJECTLVALUECAST = 43, CASTKIND_FLOATINGREALTOCOMPLEX = 44, CASTKIND_FLOATINGCOMPLEXTOREAL = 45, CASTKIND_FLOATINGCOMPLEXTOBOOLEAN = 46, CASTKIND_FLOATINGCOMPLEXCAST = 47, CASTKIND_FLOATINGCOMPLEXTOINTEGRALCOMPLEX = 48, CASTKIND_INTEGRALREALTOCOMPLEX = 49, CASTKIND_INTEGRALCOMPLEXTOREAL = 50, CASTKIND_INTEGRALCOMPLEXTOBOOLEAN = 51, CASTKIND_INTEGRALCOMPLEXCAST = 52, CASTKIND_INTEGRALCOMPLEXTOFLOATINGCOMPLEX = 53, CASTKIND_ARCPRODUCEOBJECT = 54, CASTKIND_ARCCONSUMEOBJECT = 55, CASTKIND_ARCRECLAIMRETURNEDOBJECT = 56, CASTKIND_ARCEXTENDBLOCKOBJECT = 57, CASTKIND_ATOMICTONONATOMIC = 58, CASTKIND_NONATOMICTOATOMIC = 59, CASTKIND_COPYANDAUTORELEASEBLOCKOBJECT = 60, CASTKIND_BUILTINFNTOFNPTR = 61, CASTKIND_ZEROTOOCLOPAQUETYPE = 62, CASTKIND_ADDRESSSPACECONVERSION = 63, CASTKIND_INTTOOCLSAMPLER = 64, };
+enum class ReferenceQualifier : int32_t { REFERENCEQUALIFIER_LVALUE = 0, REFERENCEQUALIFIER_RVALUE = 1, REFERENCEQUALIFIER_NONE = 2, };
+enum class TLSKind : int32_t { TLSKIND_NONE = 0, TLSKIND_STATIC = 1, TLSKIND_DYNAMIC = 2, };
+enum class TagKind : int32_t { TAGKIND_STRUCT = 0, TAGKIND_INTERFACE = 1, TAGKIND_UNION = 2, TAGKIND_CLASS = 3, TAGKIND_ENUM = 4, TAGKIND_NO_KIND = 5, };
+enum class TemplateTypeParmKind : int32_t { TEMPLATETYPEPARMKIND_TYPENAME = 0, TEMPLATETYPEPARMKIND_CLASS = 1, };
+enum class UnaryExprOrTypeTrait : int32_t { UNARYEXPRORTYPETRAIT_SIZEOF = 0, UNARYEXPRORTYPETRAIT_ALIGNOF = 1, UNARYEXPRORTYPETRAIT_PREFERREDALIGNOF = 2, UNARYEXPRORTYPETRAIT_VECSTEP = 3, UNARYEXPRORTYPETRAIT_OPENMPREQUIREDSIMDALIGN = 4, };
+enum class EnumScopeType : int32_t { ENUMSCOPETYPE_CLASS = 0, ENUMSCOPETYPE_STRUCT = 1, ENUMSCOPETYPE_NO_SCOPE = 2, };
 
 struct RangeT {
   uint32_t file{};
@@ -147,15 +248,18 @@ struct RangeT {
   uint32_t end_line{};
   uint32_t end_column{};
 };
+
 struct SourceInfoT {
   std::unique_ptr<RangeT> expansion{};
   bool is_macro{};
   std::unique_ptr<RangeT> spelling{};
   bool system_header{};
 };
+
 struct NodeDataT {
   std::unique_ptr<SourceInfoT> source{};
 };
+
 struct CXXBaseSpecifierT {
   bool is_virtual{};
   bool is_pack_expansion{};
@@ -163,149 +267,193 @@ struct CXXBaseSpecifierT {
   AccessSpecifier access_specifier_semantic{};
   int64_t type{};
 };
+
 struct ExplicitSpecifierT {
   ExplicitSpecKind kind{};
   int64_t expr{};
   bool is_specified{};
 };
+
 struct TemplateDeclarationT {
   int64_t decl{};
 };
+
 struct TemplateNullPtrT {
   int64_t type{};
 };
+
 struct TemplateTypeT {
   int64_t type{};
 };
+
 struct TemplateExpressionT {
   int64_t expr{};
 };
+
 struct TemplatePackT {
-  std::vector<std::unique_ptr<TemplateArgumentT>> arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> arguments{};
 };
+
 struct TemplateIntegralT {
   std::string integral{};
 };
+
 struct TemplateExpansionT {
   uint32_t num_expansions{};
   std::unique_ptr<TemplateNameT> template_name{};
 };
+
 struct TemplateStructuralValueT {
   int64_t type{};
 };
+
 struct TemplateArgumentT {
   UnionValue value;
 };
+
 struct DirectTemplateNameT {
   int64_t template_decl{};
 };
+
 struct QualifiedTemplateNameT {
   std::string qualifier{};
   bool has_template_keyword{};
   int64_t template_decl{};
 };
+
 struct SubstitutedTemplateNameT {
   int64_t parameter{};
   std::unique_ptr<TemplateNameT> replacement{};
 };
+
 struct UsingTemplateNameT {
   int64_t using_shadow_decl{};
 };
+
 struct DependentTemplateNameT {
   std::string qualifier{};
   std::string name{};
 };
+
 struct TemplateNameT {
   UnionValue value;
 };
+
 struct AnyMemberInitializerT {
   int64_t any_member_decl{};
 };
+
 struct BaseInitializerT {
   int64_t base_class{};
 };
+
 struct DelegatingInitializerT {
   int64_t delegated_type{};
 };
+
 struct CXXCtorInitializerT {
-  UnionValue target;
   int64_t init_expr{};
   bool is_in_class_member_initializer{};
   bool is_written{};
+  UnionValue target;
 };
+
 struct NoExceptionDetailsT {
 };
+
 struct ComputedExceptionDetailsT {
   int64_t noexcept_expr{};
 };
+
 struct UnevaluatedExceptionDetailsT {
   int64_t source_decl{};
 };
+
 struct UninstantiatedExceptionDetailsT {
   int64_t source_decl{};
   int64_t source_template{};
 };
+
 struct ExceptionSpecificationT {
   ExceptionSpecificationType kind{};
-  std::vector<int64_t> exception_types;
+  std::vector<int64_t> exception_types{};
   UnionValue details;
 };
+
 struct OffsetArrayT {
   int64_t expr{};
 };
+
 struct OffsetFieldT {
   std::string field_name{};
 };
+
 struct OffsetIdentifierT {
   std::string field_name{};
 };
+
 struct OffsetBaseT {
   int64_t type{};
 };
+
 struct OffsetOfComponentT {
   UnionValue value;
 };
+
 struct FieldDesignatorT {
   std::string field_name{};
 };
+
 struct ArrayDesignatorT {
   int32_t index{};
 };
+
 struct ArrayRangeDesignatorT {
   int32_t index{};
 };
+
 struct DesignatorT {
   UnionValue value;
 };
+
 struct AsmInputT {
   int64_t expr{};
   std::string constraint{};
 };
+
 struct AsmOutputT {
   int64_t expr{};
   std::string constraint{};
   bool is_plus_constraint{};
 };
+
 struct NamespaceSpecifierT {
   int64_t namespace_decl{};
 };
+
 struct NamespaceAliasSpecifierT {
   int64_t namespace_alias{};
 };
+
 struct TypeSpecifierT {
   int64_t type{};
 };
+
 struct TypeWithTemplateSpecifierT {
   int64_t type{};
 };
+
 struct GlobalSpecifierT {
 };
+
 struct SuperSpecifierT {
   int64_t super_decl{};
 };
+
 struct NestedNameSpecifierT {
   UnionValue value;
 };
+
 struct DeclDataT {
   std::unique_ptr<NodeDataT> base{};
   bool is_implicit{};
@@ -313,8 +461,9 @@ struct DeclDataT {
   bool is_referenced{};
   bool is_invalid_decl{};
   bool is_module_private{};
-  std::vector<int64_t> attributes;
+  std::vector<int64_t> attributes{};
 };
+
 struct NamedDeclDataT {
   std::unique_ptr<DeclDataT> base{};
   std::string qualified_prefix{};
@@ -325,32 +474,39 @@ struct NamedDeclDataT {
   Linkage linkage{};
   Visibility visibility{};
 };
+
 struct TypeDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   int64_t type_for_decl{};
 };
+
 struct TagDeclDataT {
   std::unique_ptr<TypeDeclDataT> base{};
   TagKind tag_kind{};
   bool is_complete_definition{};
 };
+
 struct RecordDeclDataT {
   std::unique_ptr<TagDeclDataT> base{};
   bool is_anonymous{};
 };
+
 struct ValueDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   int64_t type{};
   bool is_weak{};
 };
+
 struct DeclaratorDeclDataT {
   std::unique_ptr<ValueDeclDataT> base{};
 };
+
 struct TemplateDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
-  std::vector<int64_t> template_parameters;
+  std::vector<int64_t> template_parameters{};
   int64_t templated_decl{};
 };
+
 struct FunctionDeclDataT {
   std::unique_ptr<DeclaratorDeclDataT> base{};
   bool is_constexpr{};
@@ -364,12 +520,13 @@ struct FunctionDeclDataT {
   int64_t previous_decl{};
   int64_t canonical_decl{};
   int64_t primary_template_decl{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
 };
+
 struct CXXMethodDeclDataT {
   std::unique_ptr<FunctionDeclDataT> base{};
   int64_t record{};
-  std::vector<int64_t> overridden_methods;
+  std::vector<int64_t> overridden_methods{};
   bool is_static{};
   bool is_instance{};
   bool is_const{};
@@ -382,27 +539,32 @@ struct CXXMethodDeclDataT {
   bool has_inline_body{};
   bool is_lambda_static_invoker{};
 };
+
 struct CXXConstructorDeclDataT {
   std::unique_ptr<CXXMethodDeclDataT> base{};
-  std::vector<std::unique_ptr<CXXCtorInitializerT>> constructor_inits;
+  std::vector<std::unique_ptr<CXXCtorInitializerT>> constructor_inits{};
   bool is_default_constructor{};
   bool is_explicit{};
   std::unique_ptr<ExplicitSpecifierT> explicit_specifier{};
 };
+
 struct CXXConversionDeclDataT {
   std::unique_ptr<CXXMethodDeclDataT> base{};
   bool is_explicit{};
   bool is_lambda_to_block_pointer_conversion{};
   int64_t conversion_type{};
 };
+
 struct FieldDeclDataT {
   std::unique_ptr<DeclaratorDeclDataT> base{};
   bool is_mutable{};
 };
+
 struct ParmVarDeclDataT {
   std::unique_ptr<VarDeclDataT> base{};
   bool has_inherited_default_arg{};
 };
+
 struct VarDeclDataT {
   std::unique_ptr<ValueDeclDataT> base{};
   StorageClass storage_class{};
@@ -414,33 +576,39 @@ struct VarDeclDataT {
   bool is_out_of_line{};
   bool has_global_storage{};
 };
+
 struct TemplateTypeParmDeclDataT {
   std::unique_ptr<TypeDeclDataT> base{};
   TemplateTypeParmKind kind{};
   bool is_parameter_pack{};
   int64_t default_argument{};
 };
+
 struct UnresolvedUsingTypenameDeclDataT {
   std::unique_ptr<TypeDeclDataT> base{};
   std::string qualifier{};
   bool is_pack_expansion{};
 };
+
 struct EnumDeclDataT {
   std::unique_ptr<TagDeclDataT> base{};
   EnumScopeType enum_scope_kind{};
   int64_t integer_type{};
 };
+
 struct CXXRecordDeclDataT {
   std::unique_ptr<RecordDeclDataT> base{};
-  std::vector<std::unique_ptr<CXXBaseSpecifierT>> record_bases;
+  std::vector<std::unique_ptr<CXXBaseSpecifierT>> record_bases{};
   int64_t record_definition{};
 };
+
 struct ClassTemplateSpecializationDeclDataT {
   std::unique_ptr<CXXRecordDeclDataT> base{};
   int64_t specialized_template{};
   TemplateSpecializationKind specialization_kind{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
 };
+
 struct NonTypeTemplateParmDeclDataT {
   std::unique_ptr<DeclaratorDeclDataT> base{};
   int64_t default_argument{};
@@ -448,43 +616,52 @@ struct NonTypeTemplateParmDeclDataT {
   bool is_parameter_pack{};
   bool is_pack_expansion{};
   bool is_expanded_parameter_pack{};
-  std::vector<int64_t> expansion_types;
+  std::vector<int64_t> expansion_types{};
 };
+
 struct TypedefNameDeclDataT {
   std::unique_ptr<TypeDeclDataT> base{};
   int64_t underlying_type{};
 };
+
 struct AccessSpecDeclDataT {
   std::unique_ptr<DeclDataT> base{};
   AccessSpecifier access_specifier{};
 };
+
 struct UsingDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   std::unique_ptr<NestedNameSpecifierT> nested_name_specifier{};
 };
+
 struct UsingDirectiveDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   std::string qualifier{};
   int64_t namespace_{};
   int64_t namespace_as_written{};
 };
+
 struct NamespaceDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   std::string source_literal{};
 };
+
 struct NamespaceAliasDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   std::string nested_prefix{};
   int64_t aliased_namespace{};
 };
+
 struct LinkageSpecDeclDataT {
   std::unique_ptr<DeclDataT> base{};
   LanguageId linkage_type{};
 };
+
 struct StaticAssertDeclDataT {
   std::unique_ptr<DeclDataT> base{};
   bool is_failed{};
 };
+
 struct TemplateTemplateParmDeclDataT {
   std::unique_ptr<TemplateDeclDataT> base{};
   std::unique_ptr<TemplateArgumentT> default_argument{};
@@ -492,14 +669,17 @@ struct TemplateTemplateParmDeclDataT {
   bool is_pack_expansion{};
   bool is_expanded_parameter_pack{};
 };
+
 struct MSPropertyDeclDataT {
   std::unique_ptr<DeclaratorDeclDataT> base{};
   std::string getter_name{};
   std::string setter_name{};
 };
+
 struct ClassTemplatePartialSpecializationDeclDataT {
   std::unique_ptr<ClassTemplateSpecializationDeclDataT> base{};
 };
+
 struct TypeDataT {
   std::string type_as_string{};
   TypeDependency type_dependency{};
@@ -508,22 +688,26 @@ struct TypeDataT {
   bool is_from_ast{};
   int64_t unqualified_desugared_type{};
 };
+
 struct QualTypeDataT {
   std::unique_ptr<TypeDataT> base{};
-  std::vector<C99Qualifier> c99_qualifiers;
+  std::vector<C99Qualifier> c99_qualifiers{};
   AddressSpaceQualifierV2 address_space_qualifier{};
   int64_t address_space{};
   int64_t unqualified_type{};
 };
+
 struct BuiltinTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   BuiltinKind kind{};
   std::string kind_literal{};
 };
+
 struct PointerTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t pointee_type{};
 };
+
 struct FunctionTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   bool is_const{};
@@ -536,46 +720,55 @@ struct FunctionTypeDataT {
   CallingConvention calling_convention{};
   int64_t return_type{};
 };
+
 struct FunctionProtoTypeDataT {
   std::unique_ptr<FunctionTypeDataT> base{};
   int32_t num_parameters{};
-  std::vector<int64_t> parameters_types;
+  std::vector<int64_t> parameters_types{};
   bool has_trailing_returns{};
   bool is_variadic{};
   ReferenceQualifier reference_qualifier{};
   std::unique_ptr<ExceptionSpecificationT> exception_specification{};
 };
+
 struct ArrayTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   ArraySizeModifier array_size_modifier{};
-  std::vector<C99Qualifier> index_type_qualifiers;
+  std::vector<C99Qualifier> index_type_qualifiers{};
   int64_t element_type{};
 };
+
 struct ConstantArrayTypeDataT {
   std::unique_ptr<ArrayTypeDataT> base{};
   std::string array_size{};
 };
+
 struct VariableArrayTypeDataT {
   std::unique_ptr<ArrayTypeDataT> base{};
   int64_t size_expr{};
 };
+
 struct DependentSizedArrayTypeDataT {
   std::unique_ptr<ArrayTypeDataT> base{};
   int64_t size_expr{};
 };
+
 struct TagTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t decl{};
 };
+
 struct TypeWithKeywordDataT {
   std::unique_ptr<TypeDataT> base{};
   ElaboratedTypeKeyword elaborated_type_keyword{};
 };
+
 struct ElaboratedTypeDataT {
   std::unique_ptr<TypeWithKeywordDataT> base{};
   std::string qualifier{};
   int64_t named_type{};
 };
+
 struct TemplateTypeParmTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int32_t depth{};
@@ -583,71 +776,85 @@ struct TemplateTypeParmTypeDataT {
   bool is_packed{};
   int64_t decl{};
 };
+
 struct TemplateSpecializationTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   bool is_type_alias{};
   int64_t aliased_type{};
   std::string template_name{};
   int64_t template_decl{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
 };
+
 struct TypedefTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t decl{};
 };
+
 struct AdjustedTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t original_type{};
   int64_t adjusted_type{};
 };
+
 struct DecayedTypeDataT {
   std::unique_ptr<AdjustedTypeDataT> base{};
   int64_t decayed_type{};
   int64_t pointee_type{};
 };
+
 struct DecltypeTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   bool is_sugared{};
   int64_t underlying_expr{};
 };
+
 struct AutoTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t deduced_type{};
 };
+
 struct ReferenceTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t pointee_type_as_written{};
 };
+
 struct TypeOfExprTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   bool is_sugared{};
   int64_t underlying_expr{};
 };
+
 struct PackExpansionTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int32_t num_expansions{};
   int64_t pattern{};
 };
+
 struct UnaryTransformTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   UnaryTransformTypeKind kind{};
   int64_t underlying_type{};
   int64_t base_type{};
 };
+
 struct AttributedTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t modified_type{};
   int64_t equivalent_type{};
 };
+
 struct SubstTemplateTypeParmTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t replaced_parameter{};
   int64_t replacement_type{};
 };
+
 struct ComplexTypeDataT {
   std::unique_ptr<TypeDataT> base{};
   int64_t element_type{};
 };
+
 struct ExprDataT {
   std::unique_ptr<StmtDataT> base{};
   int64_t type{};
@@ -655,42 +862,51 @@ struct ExprDataT {
   ObjectKind object_kind{};
   bool is_default_argument{};
 };
+
 struct CastExprDataT {
   std::unique_ptr<ExprDataT> base{};
   CastKind cast_kind{};
 };
+
 struct LiteralDataT {
   std::unique_ptr<ExprDataT> base{};
   std::string source_literal{};
 };
+
 struct CharacterLiteralDataT {
   std::unique_ptr<LiteralDataT> base{};
   int64_t value{};
   CharacterKind kind{};
 };
+
 struct IntegerLiteralDataT {
   std::unique_ptr<LiteralDataT> base{};
   std::string value{};
 };
+
 struct FloatingLiteralDataT {
   std::unique_ptr<LiteralDataT> base{};
   double value{};
 };
+
 struct StringLiteralDataT {
   std::unique_ptr<LiteralDataT> base{};
   StringKind string_kind{};
   int64_t length{};
   int32_t char_byte_width{};
-  std::vector<uint8_t> string_bytes;
+  std::vector<uint32_t> string_bytes{};
 };
+
 struct CXXBoolLiteralExprDataT {
   std::unique_ptr<LiteralDataT> base{};
   bool value{};
 };
+
 struct CompoundLiteralExprDataT {
   std::unique_ptr<LiteralDataT> base{};
   bool is_file_scope{};
 };
+
 struct InitListExprDataT {
   std::unique_ptr<ExprDataT> base{};
   int64_t array_filler{};
@@ -699,19 +915,22 @@ struct InitListExprDataT {
   int64_t syntactic_form{};
   int64_t semantic_form{};
 };
+
 struct DeclRefExprDataT {
   std::unique_ptr<ExprDataT> base{};
   std::string qualifier{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
   int64_t decl{};
 };
+
 struct OverloadExprDataT {
   std::unique_ptr<ExprDataT> base{};
   std::string qualifier{};
   std::string name{};
-  std::vector<int64_t> unresolved_decls;
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<int64_t> unresolved_decls{};
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
 };
+
 struct CXXConstructExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_elidable{};
@@ -722,9 +941,11 @@ struct CXXConstructExprDataT {
   bool is_temporary_object{};
   int64_t constructor_decl{};
 };
+
 struct CXXTemporaryObjectExprDataT {
   std::unique_ptr<CXXConstructExprDataT> base{};
 };
+
 struct MemberExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_arrow{};
@@ -733,42 +954,52 @@ struct MemberExprDataT {
   int64_t found_decl{};
   AccessSpecifier found_decl_access_specifier{};
 };
+
 struct MaterializeTemporaryExprDataT {
   std::unique_ptr<ExprDataT> base{};
   int64_t extending_decl{};
 };
+
 struct BinaryOperatorDataT {
   std::unique_ptr<ExprDataT> base{};
   BinaryOperatorKind op{};
 };
+
 struct UnresolvedMemberExprDataT {
   std::unique_ptr<OverloadExprDataT> base{};
 };
+
 struct UnresolvedLookupExprDataT {
   std::unique_ptr<OverloadExprDataT> base{};
   bool requires_adl{};
 };
+
 struct CallExprDataT {
   std::unique_ptr<ExprDataT> base{};
   int64_t direct_callee{};
 };
+
 struct CXXMemberCallExprDataT {
   std::unique_ptr<CallExprDataT> base{};
   int64_t method_decl{};
 };
+
 struct CXXTypeidExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_type_operand{};
   int64_t operand{};
 };
+
 struct ExplicitCastExprDataT {
   std::unique_ptr<CastExprDataT> base{};
   int64_t type_as_written{};
 };
+
 struct CXXNamedCastExprDataT {
   std::unique_ptr<ExplicitCastExprDataT> base{};
   std::string cast_name{};
 };
+
 struct CXXDependentScopeMemberExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_arrow{};
@@ -776,13 +1007,15 @@ struct CXXDependentScopeMemberExprDataT {
   bool is_implicit_access{};
   std::string qualifier{};
   bool has_template_keyword{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
 };
+
 struct UnaryOperatorDataT {
   std::unique_ptr<ExprDataT> base{};
   UnaryOperatorKind op{};
   UnaryOperatorPosition position{};
 };
+
 struct UnaryExprOrTypeTraitExprDataT {
   std::unique_ptr<ExprDataT> base{};
   UnaryExprOrTypeTrait kind{};
@@ -790,6 +1023,7 @@ struct UnaryExprOrTypeTraitExprDataT {
   int64_t arg_type{};
   std::string source_literal{};
 };
+
 struct CXXNewExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_global{};
@@ -801,17 +1035,20 @@ struct CXXNewExprDataT {
   int64_t array_size{};
   int64_t operator_new{};
 };
+
 struct CXXDeleteExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_global{};
   bool is_array{};
   bool is_array_as_written{};
 };
+
 struct OffsetOfExprDataT {
   std::unique_ptr<ExprDataT> base{};
   int64_t source_type{};
-  std::vector<std::unique_ptr<OffsetOfComponentT>> components;
+  std::vector<std::unique_ptr<OffsetOfComponentT>> components{};
 };
+
 struct LambdaExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_generic_lambda{};
@@ -820,47 +1057,56 @@ struct LambdaExprDataT {
   bool has_explicit_result_type{};
   LambdaCaptureDefault capture_default{};
   int64_t lambda_class{};
-  std::vector<LambdaCaptureKind> capture_kinds;
+  std::vector<LambdaCaptureKind> capture_kinds{};
 };
+
 struct PredefinedExprDataT {
   std::unique_ptr<ExprDataT> base{};
   PredefinedIdType predefined_type{};
 };
+
 struct SizeOfPackExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool is_partially_substituted{};
   int64_t pack{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> partial_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> partial_arguments{};
 };
+
 struct ArrayInitLoopExprDataT {
   std::unique_ptr<ExprDataT> base{};
 };
+
 struct DesignatedInitExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool uses_gnu_syntax{};
-  std::vector<std::unique_ptr<DesignatorT>> designators;
+  std::vector<std::unique_ptr<DesignatorT>> designators{};
 };
+
 struct DependentScopeDeclRefExprDataT {
   std::unique_ptr<ExprDataT> base{};
   std::string decl_name{};
   std::string qualifier{};
   bool has_template_keyword{};
-  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments;
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
 };
+
 struct CXXNoexceptExprDataT {
   std::unique_ptr<ExprDataT> base{};
   bool value{};
 };
+
 struct CXXPseudoDestructorExprDataT {
   std::unique_ptr<ExprDataT> base{};
   std::string qualifier{};
   bool is_arrow{};
   int64_t destroyed_type{};
 };
+
 struct PseudoObjectExprDataT {
   std::unique_ptr<ExprDataT> base{};
   int32_t result_expr_index{};
 };
+
 struct MSPropertyRefExprDataT {
   std::unique_ptr<ExprDataT> base{};
   int64_t base_expr{};
@@ -868,37 +1114,45 @@ struct MSPropertyRefExprDataT {
   bool is_implicit_access{};
   bool is_arrow{};
 };
+
 struct StmtDataT {
   std::unique_ptr<NodeDataT> base{};
 };
+
 struct LabelStmtDataT {
   std::unique_ptr<StmtDataT> base{};
   int64_t label{};
 };
+
 struct GotoStmtDataT {
   std::unique_ptr<StmtDataT> base{};
   int64_t label{};
 };
+
 struct AttributedStmtDataT {
   std::unique_ptr<StmtDataT> base{};
-  std::vector<int64_t> stmt_attributes;
+  std::vector<int64_t> stmt_attributes{};
 };
+
 struct AsmStmtDataT {
   std::unique_ptr<StmtDataT> base{};
   bool is_simple{};
   bool is_volatile{};
-  std::vector<std::string> clobbers;
-  std::vector<std::unique_ptr<AsmOutputT>> outputs;
-  std::vector<std::unique_ptr<AsmInputT>> inputs;
+  std::vector<std::string> clobbers{};
+  std::vector<std::unique_ptr<AsmOutputT>> outputs{};
+  std::vector<std::unique_ptr<AsmInputT>> inputs{};
 };
+
 struct GCCAsmStmtDataT {
   std::unique_ptr<AsmStmtDataT> base{};
   std::string asm_string{};
 };
+
 struct MSAsmStmtDataT {
   std::unique_ptr<AsmStmtDataT> base{};
   std::string asm_string{};
 };
+
 struct AttributeDataT {
   std::unique_ptr<NodeDataT> base{};
   AttributeKind kind{};
@@ -907,64 +1161,78 @@ struct AttributeDataT {
   bool is_late_parsed{};
   bool is_pack_expansion{};
 };
+
 struct AlignedAttrDataT {
   std::unique_ptr<AttributeDataT> base{};
   std::string spelling{};
   bool is_expression{};
   int64_t alignment{};
 };
+
 struct OpenCLUnrollHintAttrDataT {
   std::unique_ptr<AttributeDataT> base{};
   int32_t unroll_hint{};
 };
+
 struct FormatAttrDataT {
   std::unique_ptr<AttributeDataT> base{};
   FormatAttrKind type{};
   int32_t format_index{};
   int32_t first_arg{};
 };
+
 struct NonNullAttrDataT {
   std::unique_ptr<AttributeDataT> base{};
-  std::vector<int32_t> arguments;
+  std::vector<int32_t> arguments{};
 };
+
 struct VisibilityAttrDataT {
   std::unique_ptr<AttributeDataT> base{};
   VisibilityType visibility_type{};
 };
+
 struct FileT {
   uint32_t id{};
   std::string path{};
 };
+
 struct ChildrenT {
   int64_t node{};
-  std::vector<int64_t> children;
+  std::vector<int64_t> children{};
 };
+
 struct NodeClassT {
   int64_t node{};
   std::string class_name{};
 };
+
 struct TopLevelT {
   TopLevelKind kind{};
   int64_t node{};
 };
+
 struct IncludeT {
   std::string source{};
   std::string name{};
   uint32_t line{};
   bool angled{};
 };
+
 struct PragmaT {
   std::string source{};
   uint32_t line{};
   uint32_t column{};
 };
+
 struct TranslationUnitFileT {
   int32_t id{};
   std::string path{};
 };
+
 struct CounterT {
   int32_t value{};
 };
+
 struct LanguageT {
   std::string file{};
   bool line_comment{};
@@ -998,6 +1266,7 @@ struct LanguageT {
   uint32_t long_width{};
   uint32_t long_long_width{};
 };
+
 struct NodeT {
   int64_t id{};
   std::string class_name{};

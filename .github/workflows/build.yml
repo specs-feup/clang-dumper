@@ -95,7 +95,8 @@ jobs:
             libzstd-dev \
             zstd \
             ccache \
-            libxml2-dev
+            libxml2-dev \
+            python3-protobuf
           if [ -n "${{ matrix.accelerator-packages }}" ]; then
             sudo apt-get install -y --no-install-recommends ${{ matrix.accelerator-packages }}
           fi
@@ -248,6 +249,7 @@ jobs:
       - name: Install LLVM
         run: |
           brew install llvm@${LLVM_VERSION} libomp zstd ccache
+          python3 -m pip install --user protobuf==4.28.3
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
           ZSTD_ROOT="$(brew --prefix zstd)"
@@ -421,6 +423,7 @@ jobs:
             curl \
             dpkg \
             python3 \
+            python3-protobuf \
             rsync \
             tar \
             zstd

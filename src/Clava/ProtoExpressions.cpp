@@ -12,11 +12,11 @@ namespace {
 obj::ValueKind valueKind(clang::ExprValueKind kind) {
   switch (kind) {
   case clang::VK_PRValue:
-    return obj::ValueKind::R_VALUE;
+    return obj::ValueKind::VALUEKIND_R_VALUE;
   case clang::VK_LValue:
-    return obj::ValueKind::L_VALUE;
+    return obj::ValueKind::VALUEKIND_L_VALUE;
   case clang::VK_XValue:
-    return obj::ValueKind::X_VALUE;
+    return obj::ValueKind::VALUEKIND_X_VALUE;
   }
   throw std::invalid_argument("Unsupported Clang expression value kind");
 }
@@ -24,15 +24,15 @@ obj::ValueKind valueKind(clang::ExprValueKind kind) {
 obj::ObjectKind objectKind(clang::ExprObjectKind kind) {
   switch (kind) {
   case clang::OK_Ordinary:
-    return obj::ObjectKind::ORDINARY;
+    return obj::ObjectKind::OBJECTKIND_ORDINARY;
   case clang::OK_BitField:
-    return obj::ObjectKind::BIT_FIELD;
+    return obj::ObjectKind::OBJECTKIND_BIT_FIELD;
   case clang::OK_ObjCProperty:
-    return obj::ObjectKind::OBJ_C_PROPERTY;
+    return obj::ObjectKind::OBJECTKIND_OBJ_C_PROPERTY;
   case clang::OK_ObjCSubscript:
-    return obj::ObjectKind::OBJ_C_SUBSCRIPT;
+    return obj::ObjectKind::OBJECTKIND_OBJ_C_SUBSCRIPT;
   case clang::OK_VectorComponent:
-    return obj::ObjectKind::VECTOR_COMPONENT;
+    return obj::ObjectKind::OBJECTKIND_VECTOR_COMPONENT;
   }
   throw std::invalid_argument("Unsupported Clang expression object kind");
 }

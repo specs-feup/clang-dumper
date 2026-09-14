@@ -127,7 +127,7 @@ void ClangAstDumper::dumpIdToClassMap(const void *pointer,
 void ClangAstDumper::dumpTopLevelType(const QualType &type) {
   if (auto *stream = clava::proto::ProtoStream::active()) {
     obj::TopLevelT record;
-    record.kind = obj::TopLevelKind::Type;
+    record.kind = obj::TopLevelKind::TOPLEVELKIND_TYPE;
     record.node = clava::proto::wireId(clava::getId(type, id));
     stream->record(record);
     return;
@@ -138,7 +138,7 @@ void ClangAstDumper::dumpTopLevelType(const QualType &type) {
 void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
   if (auto *stream = clava::proto::ProtoStream::active()) {
     obj::TopLevelT record;
-    record.kind = obj::TopLevelKind::Attr;
+    record.kind = obj::TopLevelKind::TOPLEVELKIND_ATTR;
     record.node = clava::proto::wireId(clava::getId(attr, id));
     stream->record(record);
     return;

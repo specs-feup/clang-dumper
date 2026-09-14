@@ -40,7 +40,6 @@ inline obj::NodeT makeNode(const clang::Decl *node, Context &c) {
   recordHandlerFallback("decl data", out.class_name);
   out.payload.Set(std::move(*makeDeclData(node, c))); return out;
 }
-
 inline obj::NodeT makeNode(const clang::Stmt *node, Context &c) {
   obj::NodeT out; out.id = wireId(clava::getId(node, c.id)); out.class_name = clava::getClassName(node);
   if (out.class_name == "LabelStmt") { out.payload.Set(std::move(*makeLabelStmtData(static_cast<const clang::LabelStmt *>(node), c))); return out; }
@@ -149,4 +148,3 @@ inline obj::NodeT makeNode(const clang::QualType &node, Context &c) {
   obj::NodeT out; out.id = wireId(clava::getId(node, c.id)); out.class_name = "QualType";
   out.payload.Set(std::move(*makeQualTypeData(node, c))); return out;
 }
-

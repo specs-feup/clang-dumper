@@ -141,6 +141,15 @@ add_definitions(${CLANG_DEFINITIONS})
 
 # Find Python3 for enum generation
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" -c "import google.protobuf.descriptor_pb2"
+    RESULT_VARIABLE PYTHON_PROTOBUF_RESULT
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(PYTHON_PROTOBUF_RESULT)
+    message(FATAL_ERROR
+        "Python protobuf runtime is required (install protobuf 4.28.3 or a compatible package)")
+endif()
 
 # -----------------------------------------------------------------------------
 # Protobuf wire protocol
@@ -210,6 +219,10 @@ set(PROTO_HPP "${PROTO_GEN_DIR}/clava_ast_wire.pb.h")
 set(PROTO_DESCRIPTOR "${PROTO_GEN_DIR}/clava_ast_wire.pb")
 set(PROTO_SCHEMA_HASH "${PROTO_GEN_DIR}/ProtoSchemaHash.h")
 set(PROTO_HASH_SCRIPT "${CMAKE_SOURCE_DIR}/cmake/generate_proto_hash.py")
+set(PROTO_ADAPTER_SCRIPT "${CMAKE_SOURCE_DIR}/cmake/generate_proto_adapters.py")
+set(PROTO_ADAPTER_OBJECTS "${PROTO_GEN_DIR}/ProtoObjects.h")
+set(PROTO_ADAPTER_ENCODE "${PROTO_GEN_DIR}/ProtoEncode.h")
+set(PROTO_ADAPTER_STAMP "${PROTO_GEN_DIR}/adapters.verified")
 
 # A cross build cannot execute the target protoc.exe.  Use a reproducibly
 # pinned host protoc for code generation while linking the target protobuf
@@ -272,6 +285,38 @@ add_custom_command(
 
 add_custom_target(ast_wire_proto
     DEPENDS "${PROTO_CPP}" "${PROTO_HPP}" "${PROTO_DESCRIPTOR}" "${PROTO_SCHEMA_HASH}")
+
+# ProtoObjects.h and ProtoEncode.h are intentionally checked in beside the
+# native emitters, but are generated from protoc's descriptor rather than from
+# a second schema.  A normal build regenerates them in the build tree and
+# compares the result, so a schema edit cannot silently leave a stale adapter.
+add_custom_command(
+    OUTPUT "${PROTO_ADAPTER_OBJECTS}" "${PROTO_ADAPTER_ENCODE}"
+    COMMAND ${Python3_EXECUTABLE} "${PROTO_ADAPTER_SCRIPT}"
+        --descriptor "${PROTO_DESCRIPTOR}"
+        --objects "${PROTO_ADAPTER_OBJECTS}"
+        --encode "${PROTO_ADAPTER_ENCODE}"
+        --native-source "${CMAKE_SOURCE_DIR}/src/Clava/ProtoStream.cpp"
+    DEPENDS "${PROTO_DESCRIPTOR}" "${PROTO_ADAPTER_SCRIPT}"
+            "${CMAKE_SOURCE_DIR}/src/Clava/ProtoStream.cpp"
+    COMMENT "Generate native protobuf adapter headers from descriptor"
+    VERBATIM)
+
+add_custom_command(
+    OUTPUT "${PROTO_ADAPTER_STAMP}"
+    COMMAND ${CMAKE_COMMAND} -E compare_files
+        "${PROTO_ADAPTER_OBJECTS}" "${CMAKE_SOURCE_DIR}/src/Clava/ProtoObjects.h"
+    COMMAND ${CMAKE_COMMAND} -E compare_files
+        "${PROTO_ADAPTER_ENCODE}" "${CMAKE_SOURCE_DIR}/src/Clava/ProtoEncode.h"
+    COMMAND ${CMAKE_COMMAND} -E touch "${PROTO_ADAPTER_STAMP}"
+    DEPENDS "${PROTO_ADAPTER_OBJECTS}" "${PROTO_ADAPTER_ENCODE}"
+            "${CMAKE_SOURCE_DIR}/src/Clava/ProtoObjects.h"
+            "${CMAKE_SOURCE_DIR}/src/Clava/ProtoEncode.h"
+    COMMENT "Verify checked-in native protobuf adapters match descriptor"
+    VERBATIM)
+
+add_custom_target(proto_adapter_verify DEPENDS "${PROTO_ADAPTER_STAMP}")
+add_dependencies(ast_wire_proto proto_adapter_verify)
 
 enable_testing()
 add_executable(proto_wire_test test/proto_wire_test.cpp "${PROTO_CPP}")

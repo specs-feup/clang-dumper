@@ -1,4 +1,5 @@
 #pragma once
+// Generated from protoc's FileDescriptorSet; do not edit by hand.
 #include "clava_ast_wire.pb.h"
 #include "ProtoObjects.h"
 #include <stdexcept>
@@ -229,7 +230,9 @@ inline void encode(const obj::TemplateExpressionT &src, pb::TemplateExpression *
 }
 
 inline void encode(const obj::TemplatePackT &src, pb::TemplatePack *dst) {
-  for (const auto &value : src.arguments) { if (value) encode(*value, dst->add_arguments()); }
+  for (const auto &value : src.arguments) {
+    if (value) encode(*value, dst->add_arguments());
+  }
 }
 
 inline void encode(const obj::TemplateIntegralT &src, pb::TemplateIntegral *dst) {
@@ -302,12 +305,12 @@ inline void encode(const obj::DelegatingInitializerT &src, pb::DelegatingInitial
 }
 
 inline void encode(const obj::CXXCtorInitializerT &src, pb::CXXCtorInitializer *dst) {
-  if (const auto *value = src.target.get<obj::AnyMemberInitializerT>()) encode(*value, dst->mutable_any_member_initializer());
-  if (const auto *value = src.target.get<obj::BaseInitializerT>()) encode(*value, dst->mutable_base_initializer());
-  if (const auto *value = src.target.get<obj::DelegatingInitializerT>()) encode(*value, dst->mutable_delegating_initializer());
   dst->set_init_expr(src.init_expr);
   dst->set_is_in_class_member_initializer(src.is_in_class_member_initializer);
   dst->set_is_written(src.is_written);
+  if (const auto *value = src.target.get<obj::AnyMemberInitializerT>()) encode(*value, dst->mutable_any_member_initializer());
+  if (const auto *value = src.target.get<obj::BaseInitializerT>()) encode(*value, dst->mutable_base_initializer());
+  if (const auto *value = src.target.get<obj::DelegatingInitializerT>()) encode(*value, dst->mutable_delegating_initializer());
 }
 
 inline void encode(const obj::NoExceptionDetailsT &src, pb::NoExceptionDetails *dst) {
@@ -328,7 +331,9 @@ inline void encode(const obj::UninstantiatedExceptionDetailsT &src, pb::Uninstan
 
 inline void encode(const obj::ExceptionSpecificationT &src, pb::ExceptionSpecification *dst) {
   dst->set_kind(static_cast<pb::ExceptionSpecificationType>(static_cast<int>(src.kind) + 1));
-  for (const auto &value : src.exception_types) dst->add_exception_types(value);
+  for (const auto &value : src.exception_types) {
+    dst->add_exception_types(value);
+  }
   if (const auto *value = src.details.get<obj::NoExceptionDetailsT>()) encode(*value, dst->mutable_no_exception_details());
   if (const auto *value = src.details.get<obj::ComputedExceptionDetailsT>()) encode(*value, dst->mutable_computed_exception_details());
   if (const auto *value = src.details.get<obj::UnevaluatedExceptionDetailsT>()) encode(*value, dst->mutable_unevaluated_exception_details());
@@ -426,7 +431,9 @@ inline void encode(const obj::DeclDataT &src, pb::DeclData *dst) {
   dst->set_is_referenced(src.is_referenced);
   dst->set_is_invalid_decl(src.is_invalid_decl);
   dst->set_is_module_private(src.is_module_private);
-  for (const auto &value : src.attributes) dst->add_attributes(value);
+  for (const auto &value : src.attributes) {
+    dst->add_attributes(value);
+  }
 }
 
 inline void encode(const obj::NamedDeclDataT &src, pb::NamedDeclData *dst) {
@@ -468,7 +475,9 @@ inline void encode(const obj::DeclaratorDeclDataT &src, pb::DeclaratorDeclData *
 
 inline void encode(const obj::TemplateDeclDataT &src, pb::TemplateDeclData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  for (const auto &value : src.template_parameters) dst->add_template_parameters(value);
+  for (const auto &value : src.template_parameters) {
+    dst->add_template_parameters(value);
+  }
   dst->set_templated_decl(src.templated_decl);
 }
 
@@ -485,13 +494,17 @@ inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst)
   dst->set_previous_decl(src.previous_decl);
   dst->set_canonical_decl(src.canonical_decl);
   dst->set_primary_template_decl(src.primary_template_decl);
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
 }
 
 inline void encode(const obj::CXXMethodDeclDataT &src, pb::CXXMethodDeclData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_record(src.record);
-  for (const auto &value : src.overridden_methods) dst->add_overridden_methods(value);
+  for (const auto &value : src.overridden_methods) {
+    dst->add_overridden_methods(value);
+  }
   dst->set_is_static(src.is_static);
   dst->set_is_instance(src.is_instance);
   dst->set_is_const(src.is_const);
@@ -507,7 +520,9 @@ inline void encode(const obj::CXXMethodDeclDataT &src, pb::CXXMethodDeclData *ds
 
 inline void encode(const obj::CXXConstructorDeclDataT &src, pb::CXXConstructorDeclData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  for (const auto &value : src.constructor_inits) { if (value) encode(*value, dst->add_constructor_inits()); }
+  for (const auto &value : src.constructor_inits) {
+    if (value) encode(*value, dst->add_constructor_inits());
+  }
   dst->set_is_default_constructor(src.is_default_constructor);
   dst->set_is_explicit(src.is_explicit);
   if (src.explicit_specifier) encode(*src.explicit_specifier, dst->mutable_explicit_specifier());
@@ -563,7 +578,9 @@ inline void encode(const obj::EnumDeclDataT &src, pb::EnumDeclData *dst) {
 
 inline void encode(const obj::CXXRecordDeclDataT &src, pb::CXXRecordDeclData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  for (const auto &value : src.record_bases) { if (value) encode(*value, dst->add_record_bases()); }
+  for (const auto &value : src.record_bases) {
+    if (value) encode(*value, dst->add_record_bases());
+  }
   dst->set_record_definition(src.record_definition);
 }
 
@@ -571,7 +588,9 @@ inline void encode(const obj::ClassTemplateSpecializationDeclDataT &src, pb::Cla
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_specialized_template(src.specialized_template);
   dst->set_specialization_kind(static_cast<pb::TemplateSpecializationKind>(static_cast<int>(src.specialization_kind) + 1));
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
 }
 
 inline void encode(const obj::NonTypeTemplateParmDeclDataT &src, pb::NonTypeTemplateParmDeclData *dst) {
@@ -581,7 +600,9 @@ inline void encode(const obj::NonTypeTemplateParmDeclDataT &src, pb::NonTypeTemp
   dst->set_is_parameter_pack(src.is_parameter_pack);
   dst->set_is_pack_expansion(src.is_pack_expansion);
   dst->set_is_expanded_parameter_pack(src.is_expanded_parameter_pack);
-  for (const auto &value : src.expansion_types) dst->add_expansion_types(value);
+  for (const auto &value : src.expansion_types) {
+    dst->add_expansion_types(value);
+  }
 }
 
 inline void encode(const obj::TypedefNameDeclDataT &src, pb::TypedefNameDeclData *dst) {
@@ -656,7 +677,9 @@ inline void encode(const obj::TypeDataT &src, pb::TypeData *dst) {
 
 inline void encode(const obj::QualTypeDataT &src, pb::QualTypeData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  for (const auto &value : src.c99_qualifiers) dst->add_c99_qualifiers(static_cast<pb::C99Qualifier>(static_cast<int>(value) + 1));
+  for (const auto &value : src.c99_qualifiers) {
+    dst->add_c99_qualifiers(static_cast<pb::C99Qualifier>(static_cast<int>(value) + 1));
+  }
   dst->set_address_space_qualifier(static_cast<pb::AddressSpaceQualifierV2>(static_cast<int>(src.address_space_qualifier) + 1));
   dst->set_address_space(src.address_space);
   dst->set_unqualified_type(src.unqualified_type);
@@ -689,7 +712,9 @@ inline void encode(const obj::FunctionTypeDataT &src, pb::FunctionTypeData *dst)
 inline void encode(const obj::FunctionProtoTypeDataT &src, pb::FunctionProtoTypeData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_num_parameters(src.num_parameters);
-  for (const auto &value : src.parameters_types) dst->add_parameters_types(value);
+  for (const auto &value : src.parameters_types) {
+    dst->add_parameters_types(value);
+  }
   dst->set_has_trailing_returns(src.has_trailing_returns);
   dst->set_is_variadic(src.is_variadic);
   dst->set_reference_qualifier(static_cast<pb::ReferenceQualifier>(static_cast<int>(src.reference_qualifier) + 1));
@@ -699,7 +724,9 @@ inline void encode(const obj::FunctionProtoTypeDataT &src, pb::FunctionProtoType
 inline void encode(const obj::ArrayTypeDataT &src, pb::ArrayTypeData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_array_size_modifier(static_cast<pb::ArraySizeModifier>(static_cast<int>(src.array_size_modifier) + 1));
-  for (const auto &value : src.index_type_qualifiers) dst->add_index_type_qualifiers(static_cast<pb::C99Qualifier>(static_cast<int>(value) + 1));
+  for (const auto &value : src.index_type_qualifiers) {
+    dst->add_index_type_qualifiers(static_cast<pb::C99Qualifier>(static_cast<int>(value) + 1));
+  }
   dst->set_element_type(src.element_type);
 }
 
@@ -748,7 +775,9 @@ inline void encode(const obj::TemplateSpecializationTypeDataT &src, pb::Template
   dst->set_aliased_type(src.aliased_type);
   dst->set_template_name(src.template_name);
   dst->set_template_decl(src.template_decl);
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
 }
 
 inline void encode(const obj::TypedefTypeDataT &src, pb::TypedefTypeData *dst) {
@@ -859,7 +888,9 @@ inline void encode(const obj::StringLiteralDataT &src, pb::StringLiteralData *ds
   dst->set_string_kind(static_cast<pb::StringKind>(static_cast<int>(src.string_kind) + 1));
   dst->set_length(src.length);
   dst->set_char_byte_width(src.char_byte_width);
-  for (const auto &value : src.string_bytes) dst->add_string_bytes(value);
+  for (const auto &value : src.string_bytes) {
+    dst->add_string_bytes(value);
+  }
 }
 
 inline void encode(const obj::CXXBoolLiteralExprDataT &src, pb::CXXBoolLiteralExprData *dst) {
@@ -884,7 +915,9 @@ inline void encode(const obj::InitListExprDataT &src, pb::InitListExprData *dst)
 inline void encode(const obj::DeclRefExprDataT &src, pb::DeclRefExprData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_qualifier(src.qualifier);
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
   dst->set_decl(src.decl);
 }
 
@@ -892,8 +925,12 @@ inline void encode(const obj::OverloadExprDataT &src, pb::OverloadExprData *dst)
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_qualifier(src.qualifier);
   dst->set_name(src.name);
-  for (const auto &value : src.unresolved_decls) dst->add_unresolved_decls(value);
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.unresolved_decls) {
+    dst->add_unresolved_decls(value);
+  }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
 }
 
 inline void encode(const obj::CXXConstructExprDataT &src, pb::CXXConstructExprData *dst) {
@@ -972,7 +1009,9 @@ inline void encode(const obj::CXXDependentScopeMemberExprDataT &src, pb::CXXDepe
   dst->set_is_implicit_access(src.is_implicit_access);
   dst->set_qualifier(src.qualifier);
   dst->set_has_template_keyword(src.has_template_keyword);
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
 }
 
 inline void encode(const obj::UnaryOperatorDataT &src, pb::UnaryOperatorData *dst) {
@@ -1011,7 +1050,9 @@ inline void encode(const obj::CXXDeleteExprDataT &src, pb::CXXDeleteExprData *ds
 inline void encode(const obj::OffsetOfExprDataT &src, pb::OffsetOfExprData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_source_type(src.source_type);
-  for (const auto &value : src.components) { if (value) encode(*value, dst->add_components()); }
+  for (const auto &value : src.components) {
+    if (value) encode(*value, dst->add_components());
+  }
 }
 
 inline void encode(const obj::LambdaExprDataT &src, pb::LambdaExprData *dst) {
@@ -1022,7 +1063,9 @@ inline void encode(const obj::LambdaExprDataT &src, pb::LambdaExprData *dst) {
   dst->set_has_explicit_result_type(src.has_explicit_result_type);
   dst->set_capture_default(static_cast<pb::LambdaCaptureDefault>(static_cast<int>(src.capture_default) + 1));
   dst->set_lambda_class(src.lambda_class);
-  for (const auto &value : src.capture_kinds) dst->add_capture_kinds(static_cast<pb::LambdaCaptureKind>(value));
+  for (const auto &value : src.capture_kinds) {
+    dst->add_capture_kinds(static_cast<pb::LambdaCaptureKind>(static_cast<int>(value) + 1));
+  }
 }
 
 inline void encode(const obj::PredefinedExprDataT &src, pb::PredefinedExprData *dst) {
@@ -1034,7 +1077,9 @@ inline void encode(const obj::SizeOfPackExprDataT &src, pb::SizeOfPackExprData *
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_is_partially_substituted(src.is_partially_substituted);
   dst->set_pack(src.pack);
-  for (const auto &value : src.partial_arguments) { if (value) encode(*value, dst->add_partial_arguments()); }
+  for (const auto &value : src.partial_arguments) {
+    if (value) encode(*value, dst->add_partial_arguments());
+  }
 }
 
 inline void encode(const obj::ArrayInitLoopExprDataT &src, pb::ArrayInitLoopExprData *dst) {
@@ -1044,7 +1089,9 @@ inline void encode(const obj::ArrayInitLoopExprDataT &src, pb::ArrayInitLoopExpr
 inline void encode(const obj::DesignatedInitExprDataT &src, pb::DesignatedInitExprData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_uses_gnu_syntax(src.uses_gnu_syntax);
-  for (const auto &value : src.designators) { if (value) encode(*value, dst->add_designators()); }
+  for (const auto &value : src.designators) {
+    if (value) encode(*value, dst->add_designators());
+  }
 }
 
 inline void encode(const obj::DependentScopeDeclRefExprDataT &src, pb::DependentScopeDeclRefExprData *dst) {
@@ -1052,7 +1099,9 @@ inline void encode(const obj::DependentScopeDeclRefExprDataT &src, pb::Dependent
   dst->set_decl_name(src.decl_name);
   dst->set_qualifier(src.qualifier);
   dst->set_has_template_keyword(src.has_template_keyword);
-  for (const auto &value : src.template_arguments) { if (value) encode(*value, dst->add_template_arguments()); }
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
 }
 
 inline void encode(const obj::CXXNoexceptExprDataT &src, pb::CXXNoexceptExprData *dst) {
@@ -1096,16 +1145,24 @@ inline void encode(const obj::GotoStmtDataT &src, pb::GotoStmtData *dst) {
 
 inline void encode(const obj::AttributedStmtDataT &src, pb::AttributedStmtData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  for (const auto &value : src.stmt_attributes) dst->add_stmt_attributes(value);
+  for (const auto &value : src.stmt_attributes) {
+    dst->add_stmt_attributes(value);
+  }
 }
 
 inline void encode(const obj::AsmStmtDataT &src, pb::AsmStmtData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_is_simple(src.is_simple);
   dst->set_is_volatile(src.is_volatile);
-  for (const auto &value : src.clobbers) dst->add_clobbers(value);
-  for (const auto &value : src.outputs) { if (value) encode(*value, dst->add_outputs()); }
-  for (const auto &value : src.inputs) { if (value) encode(*value, dst->add_inputs()); }
+  for (const auto &value : src.clobbers) {
+    dst->add_clobbers(value);
+  }
+  for (const auto &value : src.outputs) {
+    if (value) encode(*value, dst->add_outputs());
+  }
+  for (const auto &value : src.inputs) {
+    if (value) encode(*value, dst->add_inputs());
+  }
 }
 
 inline void encode(const obj::GCCAsmStmtDataT &src, pb::GCCAsmStmtData *dst) {
@@ -1148,7 +1205,9 @@ inline void encode(const obj::FormatAttrDataT &src, pb::FormatAttrData *dst) {
 
 inline void encode(const obj::NonNullAttrDataT &src, pb::NonNullAttrData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  for (const auto &value : src.arguments) dst->add_arguments(value);
+  for (const auto &value : src.arguments) {
+    dst->add_arguments(value);
+  }
 }
 
 inline void encode(const obj::VisibilityAttrDataT &src, pb::VisibilityAttrData *dst) {
@@ -1163,7 +1222,9 @@ inline void encode(const obj::FileT &src, pb::File *dst) {
 
 inline void encode(const obj::ChildrenT &src, pb::Children *dst) {
   dst->set_node(src.node);
-  for (const auto &value : src.children) dst->add_children(value);
+  for (const auto &value : src.children) {
+    dst->add_children(value);
+  }
 }
 
 inline void encode(const obj::NodeClassT &src, pb::NodeClass *dst) {

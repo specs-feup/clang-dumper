@@ -75,9 +75,9 @@ std::string sourceText(clang::SourceRange range, Context &c) {
 }
 std::vector<obj::C99Qualifier> c99Qualifiers(clang::Qualifiers q, Context &c) {
   std::vector<obj::C99Qualifier> out;
-  if(q.hasConst())out.push_back(obj::C99Qualifier::CONST);
-  if(q.hasRestrict())out.push_back(c.ast->getPrintingPolicy().Restrict?obj::C99Qualifier::RESTRICT_C99:obj::C99Qualifier::RESTRICT);
-  if(q.hasVolatile())out.push_back(obj::C99Qualifier::VOLATILE);
+  if(q.hasConst())out.push_back(obj::C99Qualifier::C99QUALIFIER_CONST);
+  if(q.hasRestrict())out.push_back(c.ast->getPrintingPolicy().Restrict?obj::C99Qualifier::C99QUALIFIER_RESTRICT_C99:obj::C99Qualifier::C99QUALIFIER_RESTRICT);
+  if(q.hasVolatile())out.push_back(obj::C99Qualifier::C99QUALIFIER_VOLATILE);
   return out;
 }
 std::unique_ptr<obj::TemplateNameT> makeTemplateName(const clang::TemplateName &n, Context &c) {

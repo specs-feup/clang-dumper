@@ -148,4 +148,3 @@ std::unique_ptr<obj::VarDeclDataT> makeVarDeclData(const clang::VarDecl *decl, C
 std::unique_ptr<obj::VarDeclDataT> makeVarTemplateSpecializationDeclData( const clang::VarTemplateSpecializationDecl *decl, Context &c);
 std::unique_ptr<obj::VariableArrayTypeDataT> makeVariableArrayTypeData( const clang::VariableArrayType *type, Context &c);
 std::unique_ptr<obj::VisibilityAttrDataT> makeVisibilityAttrData(const VisibilityAttr *a, Context &c);
-

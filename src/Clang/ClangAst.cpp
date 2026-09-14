@@ -137,7 +137,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
                 if (stream == nullptr)
                     throw std::logic_error("protobuf AST stream is not active");
                 astwire::v1obj::TopLevelT record;
-                record.kind = astwire::v1obj::TopLevelKind::Decl;
+                record.kind = astwire::v1obj::TopLevelKind::TOPLEVELKIND_DECL;
                 record.node = clava::proto::wireId(clava::getId(D, id));
                 stream->record(record);
             }

@@ -34,6 +34,12 @@ and contains varint-delimited `Envelope` messages. Release assets include the
 source schema and its generated descriptor; consumers should verify both
 against the protocol entries in `clang-dumper-release-manifest.json`.
 
+The native `ProtoObjects.h` and `ProtoEncode.h` files are checked-in adapter
+headers regenerated from protoc's descriptor during the build. `ProtoObjects`
+holds only the temporary value for one record; it is never retained as a
+second AST. The build compares regenerated headers with the checked-in files
+and fails on schema drift.
+
 ## Dependencies
 
 **Python3 is required to build this project**
@@ -42,7 +48,7 @@ against the protocol entries in `clang-dumper-release-manifest.json`.
 source llvm-version.env
 
 # Required for all targets
-sudo apt install python3 clang-${LLVM_VERSION} libclang-${LLVM_VERSION}-dev llvm-${LLVM_VERSION}-dev zlib1g-dev libxml2-dev
+sudo apt install python3 python3-protobuf clang-${LLVM_VERSION} libclang-${LLVM_VERSION}-dev llvm-${LLVM_VERSION}-dev zlib1g-dev libxml2-dev
 
 # Required for building the stand-alone tool
 sudo apt install libpolly-${LLVM_VERSION}-dev libedit-dev libzstd-dev
