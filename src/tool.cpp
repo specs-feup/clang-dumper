@@ -4,7 +4,7 @@
 #include <clang/Basic/MakeSupport.h>
 
 #include "Clang/ClangAst.h"
-#include "Clava/DumpStream.h"
+#include "Clava/ProtoStream.h"
 #include "Clava/ZstdStream.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/FileSystem.h"
@@ -144,6 +144,7 @@ int main(int argc, const char *argv[]) {
   llvm::InitializeNativeTarget();
   llvm::InitializeNativeTargetAsmPrinter();
   llvm::InitializeNativeTargetAsmParser();
+  clava::enableDenseIds();
 
   // Errs is the main way we dump information, we tested if making it buffered
   // improved performance but could not detect a significant difference
@@ -200,6 +201,7 @@ int main(int argc, const char *argv[]) {
 
   std::unique_ptr<llvm::raw_fd_ostream> dumpOutput;
   std::unique_ptr<clava::ZstdStream> compressedDumpOutput;
+  std::unique_ptr<clava::proto::ProtoStream> protoDumpOutput;
   if (!AstDumpOutputOption.getValue().empty()) {
     std::error_code ErrorCode;
     dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
@@ -220,10 +222,16 @@ int main(int argc, const char *argv[]) {
         return 1;
       }
       compressedDumpOutput = std::move(*CompressedOutput);
-      clava::setDumpStream(*compressedDumpOutput);
+      protoDumpOutput =
+          std::make_unique<clava::proto::ProtoStream>(*compressedDumpOutput);
     } else {
-      clava::setDumpStream(*dumpOutput);
+      protoDumpOutput = std::make_unique<clava::proto::ProtoStream>(*dumpOutput);
     }
+  } else {
+    // Preserve the standalone tool's historical default destination while
+    // keeping the output exclusively in the protobuf protocol.
+    protoDumpOutput =
+        std::make_unique<clava::proto::ProtoStream>(llvm::errs());
   }
 
   DumpResources::init(UserIdOption.getValue(),
@@ -292,6 +300,10 @@ int main(int argc, const char *argv[]) {
   }
 
   DumpResources::finish();
+
+  if (protoDumpOutput) {
+    protoDumpOutput->finish();
+  }
 
   if (dumpOutput) {
     if (compressedDumpOutput) {

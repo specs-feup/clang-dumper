@@ -38,7 +38,8 @@ void ClangAstDumper::visitChildrenAndData(const Attr *A) {
   visitChildren(A);
 
   // Dump data
-  dataDumper.dump(A);
+  if (!clava::proto::emit(A, Context, id))
+    throw std::logic_error("protobuf AST stream is not active");
 
   // Dump id
   dumpIdToClassMap(A, clava::getClassName(A));

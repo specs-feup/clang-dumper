@@ -5,13 +5,15 @@
 #ifndef CLANGASTDUMPER_CLANGASTDUMPER_H
 #define CLANGASTDUMPER_CLANGASTDUMPER_H
 
-#include "../ClavaDataDumper/ClavaDataDumper.h"
+#include "../Clava/ProtoEmit.h"
 
 #include "clang/AST/DeclVisitor.h"
+#include "clang/AST/Attr.h"
 #include "clang/AST/StmtVisitor.h"
 #include "clang/AST/TypeVisitor.h"
 
 #include "llvm/ADT/SmallPtrSet.h"
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -35,8 +37,6 @@ private:
   llvm::SmallPtrSet<const Stmt *, 32> seenStmts;
   llvm::SmallPtrSet<const Decl *, 32> seenDecls;
   llvm::SmallPtrSet<const Attr *, 16> seenAttrs;
-
-  clava::ClavaDataDumper dataDumper;
 
   // Children visitors are selected directly by the node's class name, as
   // reported on the wire format ("<Id to Class Map>" payloads). Adding a

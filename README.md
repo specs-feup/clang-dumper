@@ -28,6 +28,12 @@ without buffering the AST in memory:
 build/tool -c source.cpp -o source.ast.zst -ast-dump-compression=zstd -- -std=c++17
 ```
 
+The structured output is the versioned protobuf stream defined by
+`wire/clava_ast_wire.proto`. It starts with the eight-byte `CLAVAPB1` magic
+and contains varint-delimited `Envelope` messages. Release assets include the
+source schema and its generated descriptor; consumers should verify both
+against the protocol entries in `clang-dumper-release-manifest.json`.
+
 ## Dependencies
 
 **Python3 is required to build this project**

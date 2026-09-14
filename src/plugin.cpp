@@ -1,11 +1,37 @@
 #include <clang/Frontend/FrontendPluginRegistry.h>
 
 #include "Clang/ClangAst.h"
+#include "Clava/ProtoStream.h"
+
+#include <memory>
+
+namespace {
+std::unique_ptr<clava::proto::ProtoStream> &pluginOutput() {
+  static std::unique_ptr<clava::proto::ProtoStream> output;
+  return output;
+}
+
+size_t &pluginInstances() {
+  static size_t instances = 0;
+  return instances;
+}
+} // namespace
 
 class Plugin : public DumpAstAction, public PluginASTAction {
 public:
-  Plugin() { DumpResources::init(0, 0); }
-  ~Plugin() override { DumpResources::finish(); }
+  Plugin() {
+    if (!pluginOutput())
+      pluginOutput() = std::make_unique<clava::proto::ProtoStream>(llvm::errs());
+    ++pluginInstances();
+    DumpResources::init(0, 0);
+  }
+  ~Plugin() override {
+    DumpResources::finish();
+    if (--pluginInstances() == 0) {
+      pluginOutput()->finish();
+      pluginOutput().reset();
+    }
+  }
 
   // Both DumpAstAction (via ASTFrontendAction) and PluginASTAction declare
   // CreateASTConsumer as a virtual method. PluginASTAction declares it as

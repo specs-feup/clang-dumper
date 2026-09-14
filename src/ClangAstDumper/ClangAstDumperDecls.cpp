@@ -4,7 +4,6 @@
 
 #include "../Clang/ClangNodes.h"
 #include "ClangAstDumper.h"
-#include "ClangAstDumperConstants.h"
 
 #include "clang/AST/AST.h"
 
@@ -17,7 +16,8 @@ void ClangAstDumper::visitChildrenAndData(const Decl *D) {
   visitChildren(D);
 
   // Dump data
-  dataDumper.dump(D);
+  if (!clava::proto::emit(D, Context, id))
+    throw std::logic_error("protobuf AST stream is not active");
 
   // Dump id
   dumpIdToClassMap(D, clava::getClassName(D));

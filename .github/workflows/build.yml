@@ -162,6 +162,10 @@ jobs:
           mkdir -p dist
           cp build/tool dist/clang-dumper-linux-${{ matrix.arch }}
           cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
+          if [ "${{ matrix.arch }}" = "x64" ]; then
+            cp wire/clava_ast_wire.proto dist/clang-dumper-ast-wire.proto
+            cp build/generated/proto/clava_ast_wire.pb dist/clang-dumper-ast-wire.pb
+          fi
 
       - name: Package Linux includes
         run: scripts/package_includes.sh linux ${{ matrix.arch }} dist/${{ matrix.include-package }}
@@ -199,6 +203,17 @@ jobs:
         with:
           name: linux-${{ matrix.arch }}-includes
           path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload protocol schema
+        if: matrix.arch == 'x64'
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-x64-protocol
+          path: |
+            dist/clang-dumper-ast-wire.proto
+            dist/clang-dumper-ast-wire.pb
           retention-days: 1
           if-no-files-found: error
 
@@ -578,6 +593,12 @@ jobs:
           path: release-assets/
           merge-multiple: true
 
+      - name: Download protocol schema
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-x64-protocol
+          path: release-assets/
+
       - name: Download generated enums
         uses: actions/download-artifact@v8
         with:
@@ -617,6 +638,11 @@ jobs:
           def classify(filename):
               if filename == "clang-dumper-generated-enums.zip":
                   return "any", "any", "generated-enums"
+              if filename in {
+                  "clang-dumper-ast-wire.proto",
+                  "clang-dumper-ast-wire.pb",
+              }:
+                  return "any", "any", "protocol"
 
               for pattern, kind in patterns:
                   match = pattern.match(filename)
@@ -650,6 +676,19 @@ jobs:
 
           manifest = {
               "schema_version": 1,
+              "protocol": {
+                  "id": "clava-ast-wire",
+                  "major": 1,
+                  "minor": 0,
+                  "framing": "CLAVAPB1 plus protobuf varint-delimited Envelope",
+                  "max_record_bytes": 64 * 1024 * 1024,
+                  "schema_sha256": hashlib.sha256(
+                      (assets_dir / "clang-dumper-ast-wire.proto").read_bytes()
+                  ).hexdigest(),
+                  "descriptor_sha256": hashlib.sha256(
+                      (assets_dir / "clang-dumper-ast-wire.pb").read_bytes()
+                  ).hexdigest(),
+              },
               "assets": entries,
           }
           (assets_dir / manifest_name).write_text(
