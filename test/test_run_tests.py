@@ -45,20 +45,18 @@ class DumpStreamIntegrationTest(unittest.TestCase):
         command.extend([str(source), "--"])
         return subprocess.run(command, capture_output=True, text=True, check=False)
 
-    def test_file_output_is_byte_identical_to_legacy_protocol(self) -> None:
-        legacy = self.run_tool(self.source)
+    def test_standalone_output_requires_a_file(self) -> None:
+        result = self.run_tool(self.source)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("-o <path> is required for standalone protobuf output", result.stderr)
+        self.assertEqual(result.stdout, "")
+
+    def test_file_output_is_a_separate_protocol_stream(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "ast.dump"
             separated = self.run_tool(self.source, output)
-            self.assertEqual(separated.returncode, legacy.returncode)
-            self.assertEqual(separated.stdout, legacy.stdout)
-            legacy_dump, _ = normalize_captured_output(
-                legacy.stderr, str(self.source.parent.resolve())
-            )
-            separated_dump, _ = normalize_captured_output(
-                output.read_text(encoding="utf-8"), str(self.source.parent.resolve())
-            )
-            self.assertEqual(separated_dump, legacy_dump)
+            self.assertEqual(separated.returncode, 0, separated.stderr)
+            self.assertEqual(output.read_bytes()[:8], b"CLAVAPB1")
             self.assertNotIn("<Compiler Instance Data>", separated.stderr)
 
     @unittest.skipUnless(shutil.which("zstd"), "zstd is required to verify compressed output")

@@ -177,6 +177,11 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
+  if (AstDumpOutputOption.empty()) {
+    llvm::errs() << "-o <path> is required for standalone protobuf output\n";
+    return 1;
+  }
+
   if (DependencyOption && DependencyFileOption.empty()) {
     llvm::errs() << "-MD requires -MF <path>\n";
     return 1;
@@ -194,109 +199,75 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
-  if (AstDumpCompressionOption == "zstd" && AstDumpOutputOption.empty()) {
-    llvm::errs() << "-ast-dump-compression=zstd requires -o <path>\n";
-    return 1;
-  }
-
   std::unique_ptr<llvm::raw_fd_ostream> dumpOutput;
   std::unique_ptr<clava::ZstdStream> compressedDumpOutput;
   std::unique_ptr<clava::proto::ProtoStream> protoDumpOutput;
-  if (!AstDumpOutputOption.getValue().empty()) {
-    std::error_code ErrorCode;
-    dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
-        AstDumpOutputOption, ErrorCode, llvm::sys::fs::OF_None);
-    if (ErrorCode) {
-      llvm::errs() << "Cannot open AST dump output '" << AstDumpOutputOption
-                   << "': " << ErrorCode.message() << "\n";
+  std::error_code ErrorCode;
+  dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
+      AstDumpOutputOption, ErrorCode, llvm::sys::fs::OF_None);
+  if (ErrorCode) {
+    llvm::errs() << "Cannot open AST dump output '" << AstDumpOutputOption
+                 << "': " << ErrorCode.message() << "\n";
+    return 1;
+  }
+
+  if (AstDumpCompressionOption == "zstd") {
+    // Fast level 5 keeps producer overhead close to plain output while still
+    // reducing large text dumps by roughly an order of magnitude.
+    auto CompressedOutput = clava::ZstdStream::create(*dumpOutput, -5);
+    if (!CompressedOutput) {
+      llvm::errs() << "Cannot initialize compressed AST dump output: "
+                   << llvm::toString(CompressedOutput.takeError()) << "\n";
       return 1;
     }
-
-    if (AstDumpCompressionOption == "zstd") {
-      // Fast level 5 keeps producer overhead close to plain output while still
-      // reducing large text dumps by roughly an order of magnitude.
-      auto CompressedOutput = clava::ZstdStream::create(*dumpOutput, -5);
-      if (!CompressedOutput) {
-        llvm::errs() << "Cannot initialize compressed AST dump output: "
-                     << llvm::toString(CompressedOutput.takeError()) << "\n";
-        return 1;
-      }
-      compressedDumpOutput = std::move(*CompressedOutput);
-      protoDumpOutput =
-          std::make_unique<clava::proto::ProtoStream>(*compressedDumpOutput);
-    } else {
-      protoDumpOutput = std::make_unique<clava::proto::ProtoStream>(*dumpOutput);
-    }
-  } else {
-    // Preserve the standalone tool's historical default destination while
-    // keeping the output exclusively in the protobuf protocol.
+    compressedDumpOutput = std::move(*CompressedOutput);
     protoDumpOutput =
-        std::make_unique<clava::proto::ProtoStream>(llvm::errs());
+        std::make_unique<clava::proto::ProtoStream>(*compressedDumpOutput);
+  } else {
+    protoDumpOutput = std::make_unique<clava::proto::ProtoStream>(*dumpOutput);
   }
 
   DumpResources::init(UserIdOption.getValue(),
                       UserSystemHeaderThresholdOption.getValue());
 
   int returnValue;
-  if (!AstDumpOutputOption.empty()) {
-    // ClangTool canonicalizes each source path before constructing the
-    // CompilerInvocation. That is useful for source-to-source tooling, but it
-    // changes the path spelling recorded by SourceManager, diagnostics, and
-    // the dependency scanner. A compiler-style output must retain the path as
-    // written by the caller so that two isolated parse roots with the same
-    // relative layout produce the same cacheable dump.
-    auto CompileCommands = (*OptionsParser)
-                                .getCompilations()
-                                .getCompileCommands(SourcePaths.front());
-    if (CompileCommands.empty()) {
-      llvm::errs() << "No compilation command for source file '"
-                   << SourcePaths.front() << "'\n";
-      returnValue = 1;
-    } else {
-      auto InvocationArguments = clang::tooling::getClangSyntaxOnlyAdjuster()(
-          CompileCommands.front().CommandLine, SourcePaths.front());
-
-      if (DependencyOption) {
-        const std::string DependencyTarget =
-            AstDumpOutputOption.getValue();
-        llvm::SmallVector<char> QuotedDependencyTarget;
-        clang::quoteMakeTarget(DependencyTarget, QuotedDependencyTarget);
-        InvocationArguments.insert(
-            InvocationArguments.end(),
-            {"-Xclang", "-dependency-file", "-Xclang", DependencyFileOption,
-             "-Xclang", "-MT", "-Xclang",
-             std::string(QuotedDependencyTarget.begin(),
-                         QuotedDependencyTarget.end()),
-             "-Xclang", "-sys-header-deps"});
-      }
-
-      llvm::IntrusiveRefCntPtr<clang::FileManager> Files =
-          new clang::FileManager(clang::FileSystemOptions());
-      auto ActionFactory =
-          clang::tooling::newFrontendActionFactory<DumpAstAction>();
-      clang::tooling::ToolInvocation Invocation(
-          std::move(InvocationArguments), ActionFactory->create(), Files.get());
-      returnValue = Invocation.run() ? 0 : 1;
-    }
+  // ClangTool canonicalizes each source path before constructing the
+  // CompilerInvocation. That is useful for source-to-source tooling, but it
+  // changes the path spelling recorded by SourceManager, diagnostics, and
+  // the dependency scanner. A compiler-style output must retain the path as
+  // written by the caller so that two isolated parse roots with the same
+  // relative layout produce the same cacheable dump.
+  auto CompileCommands = (*OptionsParser)
+                              .getCompilations()
+                              .getCompileCommands(SourcePaths.front());
+  if (CompileCommands.empty()) {
+    llvm::errs() << "No compilation command for source file '"
+                 << SourcePaths.front() << "'\n";
+    returnValue = 1;
   } else {
-    clang::tooling::ClangTool Tool((*OptionsParser).getCompilations(),
-                                   SourcePaths);
+    auto InvocationArguments = clang::tooling::getClangSyntaxOnlyAdjuster()(
+        CompileCommands.front().CommandLine, SourcePaths.front());
 
     if (DependencyOption) {
-      const std::string DependencyTarget = SourcePaths.front();
+      const std::string DependencyTarget = AstDumpOutputOption.getValue();
       llvm::SmallVector<char> QuotedDependencyTarget;
       clang::quoteMakeTarget(DependencyTarget, QuotedDependencyTarget);
-      Tool.appendArgumentsAdjuster(clang::tooling::getInsertArgumentAdjuster(
+      InvocationArguments.insert(
+          InvocationArguments.end(),
           {"-Xclang", "-dependency-file", "-Xclang", DependencyFileOption,
            "-Xclang", "-MT", "-Xclang",
            std::string(QuotedDependencyTarget.begin(),
                        QuotedDependencyTarget.end()),
-           "-Xclang", "-sys-header-deps"},
-          clang::tooling::ArgumentInsertPosition::END));
+           "-Xclang", "-sys-header-deps"});
     }
 
-    returnValue =
-        Tool.run(clang::tooling::newFrontendActionFactory<DumpAstAction>().get());
+    llvm::IntrusiveRefCntPtr<clang::FileManager> Files =
+        new clang::FileManager(clang::FileSystemOptions());
+    auto ActionFactory =
+        clang::tooling::newFrontendActionFactory<DumpAstAction>();
+    clang::tooling::ToolInvocation Invocation(
+        std::move(InvocationArguments), ActionFactory->create(), Files.get());
+    returnValue = Invocation.run() ? 0 : 1;
   }
 
   DumpResources::finish();

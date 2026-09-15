@@ -665,6 +665,11 @@ else()
     endif()
 endif()  # end tool linking
 
+add_test(NAME standalone_tool_requires_output
+    COMMAND $<TARGET_FILE:tool> -c ${CMAKE_SOURCE_DIR}/test/inputs/simple_function.cpp --)
+set_tests_properties(standalone_tool_requires_output PROPERTIES
+    WILL_FAIL TRUE)
+
 if(TARGET plugin)
     target_link_libraries(plugin PRIVATE clang-cpp LLVM)
 endif()

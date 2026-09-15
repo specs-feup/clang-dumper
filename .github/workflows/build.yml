@@ -685,6 +685,8 @@ jobs:
                   "minor": 0,
                   "framing": "CLAVAPB1 plus protobuf varint-delimited Envelope",
                   "max_record_bytes": 64 * 1024 * 1024,
+                  "producer_version": f"clang-dumper-{llvm_major}",
+                  "llvm_major": llvm_major,
                   "schema_sha256": hashlib.sha256(
                       (assets_dir / "clang-dumper-ast-wire.proto").read_bytes()
                   ).hexdigest(),

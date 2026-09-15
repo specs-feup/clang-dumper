@@ -13,9 +13,9 @@ executables are cross-compiled from Linux.
 
 ## Stand-alone output
 
-By default, the stand-alone tool writes its structured AST protocol to stderr
-for compatibility with existing consumers. Use `-o` to keep the
-protocol separate from Clang's ordinary stdout and stderr output:
+The stand-alone tool requires `-o` for structured output. It never writes the
+machine protocol to stderr, because Clang diagnostics would make that stream
+unparseable:
 
 ```sh
 build/tool -c source.cpp -o source.ast -- -std=c++17
