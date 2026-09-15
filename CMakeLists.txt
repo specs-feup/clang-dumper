@@ -670,6 +670,10 @@ add_test(NAME standalone_tool_requires_output
 set_tests_properties(standalone_tool_requires_output PROPERTIES
     WILL_FAIL TRUE)
 
+add_test(NAME standalone_tool_syntax_check
+    COMMAND $<TARGET_FILE:tool> -syntax-check-only -c
+            ${CMAKE_SOURCE_DIR}/test/inputs/simple_function.cpp --)
+
 if(TARGET plugin)
     target_link_libraries(plugin PRIVATE clang-cpp LLVM)
 endif()

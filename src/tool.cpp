@@ -23,6 +23,10 @@ static llvm::cl::opt<int> UserSystemHeaderThresholdOption(
 static llvm::cl::opt<bool> CompileOnlyOption(
         "c", llvm::cl::desc("Parse without linking"),
         llvm::cl::cat(MyToolCategory));
+static llvm::cl::opt<bool> SyntaxCheckOnlyOption(
+        "syntax-check-only",
+        llvm::cl::desc("Validate syntax without producing an AST dump"),
+        llvm::cl::cat(MyToolCategory));
 static llvm::cl::opt<std::string> AstDumpOutputOption(
         "o", llvm::cl::value_desc("path"),
         llvm::cl::desc("Write the structured AST dump to path"),
@@ -103,7 +107,8 @@ static std::vector<std::string> normalizeCcacheArguments(
         Argument == "-system-header-threshold" ||
         Argument == "-ast-dump-compression";
     const bool IsToolArgument =
-        Argument == "-c" || Argument == "-MD" || HasSeparateValue ||
+        Argument == "-c" || Argument == "-MD" || Argument == "-syntax-check-only" ||
+        HasSeparateValue ||
         llvm::StringRef(Argument).starts_with("-o=") ||
         llvm::StringRef(Argument).starts_with("-MF=") ||
         llvm::StringRef(Argument).starts_with("-id=") ||
@@ -177,8 +182,25 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
-  if (AstDumpOutputOption.empty()) {
+  if (SyntaxCheckOnlyOption && !AstDumpOutputOption.empty()) {
+    llvm::errs() << "-syntax-check-only cannot be combined with -o\n";
+    return 1;
+  }
+
+  if (SyntaxCheckOnlyOption &&
+      (DependencyOption || !DependencyFileOption.empty() ||
+       AstDumpCompressionOption != "none")) {
+    llvm::errs() << "-syntax-check-only cannot produce dump side files\n";
+    return 1;
+  }
+
+  if (!SyntaxCheckOnlyOption && AstDumpOutputOption.empty()) {
     llvm::errs() << "-o <path> is required for standalone protobuf output\n";
+    return 1;
+  }
+
+  if (SyntaxCheckOnlyOption && SourcePaths.size() != 1) {
+    llvm::errs() << "-syntax-check-only requires exactly one source file\n";
     return 1;
   }
 
@@ -202,33 +224,35 @@ int main(int argc, const char *argv[]) {
   std::unique_ptr<llvm::raw_fd_ostream> dumpOutput;
   std::unique_ptr<clava::ZstdStream> compressedDumpOutput;
   std::unique_ptr<clava::proto::ProtoStream> protoDumpOutput;
-  std::error_code ErrorCode;
-  dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
-      AstDumpOutputOption, ErrorCode, llvm::sys::fs::OF_None);
-  if (ErrorCode) {
-    llvm::errs() << "Cannot open AST dump output '" << AstDumpOutputOption
-                 << "': " << ErrorCode.message() << "\n";
-    return 1;
-  }
-
-  if (AstDumpCompressionOption == "zstd") {
-    // Fast level 5 keeps producer overhead close to plain output while still
-    // reducing large text dumps by roughly an order of magnitude.
-    auto CompressedOutput = clava::ZstdStream::create(*dumpOutput, -5);
-    if (!CompressedOutput) {
-      llvm::errs() << "Cannot initialize compressed AST dump output: "
-                   << llvm::toString(CompressedOutput.takeError()) << "\n";
+  if (!SyntaxCheckOnlyOption) {
+    std::error_code ErrorCode;
+    dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
+        AstDumpOutputOption, ErrorCode, llvm::sys::fs::OF_None);
+    if (ErrorCode) {
+      llvm::errs() << "Cannot open AST dump output '" << AstDumpOutputOption
+                   << "': " << ErrorCode.message() << "\n";
       return 1;
     }
-    compressedDumpOutput = std::move(*CompressedOutput);
-    protoDumpOutput =
-        std::make_unique<clava::proto::ProtoStream>(*compressedDumpOutput);
-  } else {
-    protoDumpOutput = std::make_unique<clava::proto::ProtoStream>(*dumpOutput);
-  }
 
-  DumpResources::init(UserIdOption.getValue(),
-                      UserSystemHeaderThresholdOption.getValue());
+    if (AstDumpCompressionOption == "zstd") {
+      // Fast level 5 keeps producer overhead close to plain output while still
+      // reducing large text dumps by roughly an order of magnitude.
+      auto CompressedOutput = clava::ZstdStream::create(*dumpOutput, -5);
+      if (!CompressedOutput) {
+        llvm::errs() << "Cannot initialize compressed AST dump output: "
+                     << llvm::toString(CompressedOutput.takeError()) << "\n";
+        return 1;
+      }
+      compressedDumpOutput = std::move(*CompressedOutput);
+      protoDumpOutput =
+          std::make_unique<clava::proto::ProtoStream>(*compressedDumpOutput);
+    } else {
+      protoDumpOutput = std::make_unique<clava::proto::ProtoStream>(*dumpOutput);
+    }
+
+    DumpResources::init(UserIdOption.getValue(),
+                        UserSystemHeaderThresholdOption.getValue());
+  }
 
   int returnValue;
   // ClangTool canonicalizes each source path before constructing the
@@ -263,14 +287,17 @@ int main(int argc, const char *argv[]) {
 
     llvm::IntrusiveRefCntPtr<clang::FileManager> Files =
         new clang::FileManager(clang::FileSystemOptions());
-    auto ActionFactory =
-        clang::tooling::newFrontendActionFactory<DumpAstAction>();
+    auto ActionFactory = SyntaxCheckOnlyOption
+        ? clang::tooling::newFrontendActionFactory<clang::SyntaxOnlyAction>()
+        : clang::tooling::newFrontendActionFactory<DumpAstAction>();
     clang::tooling::ToolInvocation Invocation(
         std::move(InvocationArguments), ActionFactory->create(), Files.get());
     returnValue = Invocation.run() ? 0 : 1;
   }
 
-  DumpResources::finish();
+  if (!SyntaxCheckOnlyOption) {
+    DumpResources::finish();
+  }
 
   if (protoDumpOutput) {
     protoDumpOutput->finish();
