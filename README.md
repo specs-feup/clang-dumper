@@ -30,9 +30,13 @@ build/tool -c source.cpp -o source.ast.zst -ast-dump-compression=zstd -- -std=c+
 
 The structured output is the versioned protobuf stream defined by
 `wire/clava_ast_wire.proto`. It starts with the eight-byte `CLAVAPB1` magic
-and contains varint-delimited `Envelope` messages. Release assets include the
-source schema and its generated descriptor; consumers should verify both
-against the protocol entries in `clang-dumper-release-manifest.json`.
+and contains varint-delimited `Envelope` messages. The first envelope is a
+Header, the last is an End, and the middle envelopes are non-empty Chunk
+messages containing ordered Record entries. The native writer targets about
+64 KiB per Chunk; an individual record is still capped at 64 MiB. Release
+assets include the source schema and its generated descriptor; consumers
+should verify both against the protocol entries in
+`clang-dumper-release-manifest.json`.
 
 The native `ProtoObjects.h` and `ProtoEncode.h` files are checked-in adapter
 headers regenerated from protoc's descriptor during the build. `ProtoObjects`

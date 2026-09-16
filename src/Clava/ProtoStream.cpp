@@ -29,6 +29,7 @@ clava::proto::ProtoStream::ProtoStream(llvm::raw_ostream &output)
   output.write(Magic.data(), Magic.size());
   bytes_written = Magic.size();
   writeHeader();
+  flushPending();
 }
 
 clava::proto::ProtoStream::~ProtoStream() {
@@ -47,7 +48,7 @@ void clava::proto::ProtoStream::writeHeader() {
   pb::Envelope envelope;
   auto *header = envelope.mutable_header();
   header->set_protocol_major(1);
-  header->set_protocol_minor(0);
+  header->set_protocol_minor(1);
   header->set_schema_id("clava-ast-wire");
   header->set_producer_version("clang-dumper-18");
   header->set_llvm_major(18);
@@ -59,9 +60,9 @@ void clava::proto::ProtoStream::writeHeader() {
 void clava::proto::ProtoStream::writeEnvelope(const pb::Envelope &envelope) {
   const size_t payload_size = envelope.ByteSizeLong();
   if (payload_size == 0)
-    throw std::logic_error("Cannot write an empty protobuf AST record");
-  if (payload_size > MaxRecordBytes)
-    throw std::length_error("Protobuf AST record exceeds 64 MiB limit");
+    throw std::logic_error("Cannot write an empty protobuf AST frame");
+  if (payload_size > MaxFrameBytes)
+    throw std::length_error("Protobuf AST frame exceeds 64 MiB limit");
 
   std::string payload;
   payload.reserve(payload_size);
@@ -72,6 +73,31 @@ void clava::proto::ProtoStream::writeEnvelope(const pb::Envelope &envelope) {
   pending.append(payload);
   if (pending.size() >= FlushThreshold)
     flushPending();
+}
+
+void clava::proto::ProtoStream::appendRecord(pb::Record record) {
+  const size_t record_size = record.ByteSizeLong();
+  if (record_size > MaxFrameBytes)
+    throw std::length_error("Protobuf AST record exceeds 64 MiB limit");
+
+  if (!pending_chunk.records().empty() &&
+      pending_chunk.ByteSizeLong() + record_size > ChunkTargetBytes)
+    writeChunk();
+
+  *pending_chunk.add_records() = std::move(record);
+  if (pending_chunk.ByteSizeLong() >= ChunkTargetBytes)
+    writeChunk();
+}
+
+void clava::proto::ProtoStream::writeChunk() {
+  if (pending_chunk.records().empty())
+    return;
+
+  pb::Envelope envelope;
+  *envelope.mutable_chunk() = std::move(pending_chunk);
+  pending_chunk.Clear();
+  writeEnvelope(envelope);
+  flushPending();
 }
 
 void clava::proto::ProtoStream::flushPending() {
@@ -100,11 +126,12 @@ void clava::proto::ProtoStream::finish() {
     return;
 
   flush();
+  writeChunk();
   flushPending();
 
   pb::Envelope envelope;
   auto *end = envelope.mutable_end();
-  end->set_records(records + 1);
+  end->set_records(records);
   end->set_nodes(nodes);
   end->set_raw_bytes(bytes_written + pending.size());
   end->set_files(files.size());

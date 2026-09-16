@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 namespace clang {
 class ASTContext;
@@ -24,11 +25,13 @@ namespace clava::proto {
 #include "ProtoDispatch.inc"
 
 class ProtoStream final : public llvm::raw_ostream {
+  static constexpr size_t ChunkTargetBytes = 64 * 1024;
   static constexpr size_t FlushThreshold = 64 * 1024;
-  static constexpr size_t MaxRecordBytes = 64 * 1024 * 1024;
+  static constexpr size_t MaxFrameBytes = 64 * 1024 * 1024;
 
   llvm::raw_ostream &output;
   std::string pending;
+  pb::Chunk pending_chunk;
   std::unordered_map<std::string, uint32_t> files;
   uint64_t bytes_written = 0;
   uint64_t records = 0;
@@ -37,6 +40,8 @@ class ProtoStream final : public llvm::raw_ostream {
 
   void writeHeader();
   void writeEnvelope(const pb::Envelope &envelope);
+  void writeChunk();
+  void appendRecord(pb::Record record);
   void flushPending();
   uint32_t fileId(llvm::StringRef path);
 
@@ -52,9 +57,9 @@ public:
   static ProtoStream *active();
 
   template <typename T> void record(const T &value) {
-    pb::Envelope envelope;
-    setEnvelope(value, &envelope);
-    writeEnvelope(envelope);
+    pb::Record record;
+    setRecord(value, &record);
+    appendRecord(std::move(record));
     ++records;
   }
 

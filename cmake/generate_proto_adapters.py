@@ -20,7 +20,7 @@ except ImportError as exc:  # pragma: no cover - exercised by build configuratio
     ) from exc
 
 
-TRANSPORT_MESSAGES = {"Header", "End", "Envelope", "Record"}
+TRANSPORT_MESSAGES = {"Header", "End", "Envelope", "Chunk", "Record"}
 REQUIRED_HEADER_FIELDS = {
     "protocol_major",
     "protocol_minor",
@@ -300,7 +300,7 @@ def validate_encoder_coverage(file_desc: descriptor_pb2.FileDescriptorProto) -> 
     missing_record = [
         field.name
         for field in record.field
-        if f"mutable_record()->mutable_{cpp_field(field.name)}(" not in envelope
+        if f"mutable_{cpp_field(field.name)}(" not in envelope
     ]
     if missing_record:
         raise ValueError(
@@ -331,16 +331,16 @@ def encoder_header(file_desc: descriptor_pb2.FileDescriptorProto) -> str:
         lines.extend(encode_body(item))
         lines.extend(["}", ""])
     lines.extend([
-        "template <typename T> inline void setEnvelope(const T &, pb::Envelope *) {",
-        "  static_assert(sizeof(T) == 0, \"No protobuf envelope mapping for this record\");",
+        "template <typename T> inline void setRecord(const T &, pb::Record *) {",
+        "  static_assert(sizeof(T) == 0, \"No protobuf record mapping for this object\");",
         "}",
     ])
     record = next(item for item in file_desc.message_type if item.name == "Record")
     for field in record.field:
         target = short_name(field.type_name)
         lines.extend([
-            f"inline void setEnvelope(const obj::{target}T &src, pb::Envelope *dst) {{",
-            f"  encode(src, dst->mutable_record()->mutable_{cpp_field(field.name)}());",
+            f"inline void setRecord(const obj::{target}T &src, pb::Record *dst) {{",
+            f"  encode(src, dst->mutable_{cpp_field(field.name)}());",
             "}",
         ])
     lines.extend(["", "} // namespace clava::proto", ""])

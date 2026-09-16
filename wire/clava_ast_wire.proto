@@ -2352,6 +2352,12 @@ message Record {
   }
 }
 
+// A bounded batch of ordered records. The native writer targets approximately
+// 64 KiB per chunk and flushes full chunks incrementally; a single oversized
+// record is still limited by the framed message limit.
+message Chunk {
+  repeated Record records = 1;
+}
 
 message Header {
   optional uint32 protocol_major = 1;
@@ -2362,6 +2368,7 @@ message Header {
   optional bytes schema_sha256 = 6;
 }
 message End {
+  // Number of Record entries across all Chunk messages, excluding Header and End.
   optional uint64 records = 1;
   optional uint64 nodes = 2;
   optional uint64 raw_bytes = 3;
@@ -2369,9 +2376,10 @@ message End {
   optional uint64 ids = 5;
 }
 message Envelope {
+  reserved 2;
   oneof payload {
     Header header = 1;
-    Record record = 2;
     End end = 3;
+    Chunk chunk = 4;
   }
 }

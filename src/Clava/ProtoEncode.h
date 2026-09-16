@@ -1410,38 +1410,38 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::VisibilityAttrDataT>()) encode(*value, dst->mutable_visibility_attr_data());
 }
 
-template <typename T> inline void setEnvelope(const T &, pb::Envelope *) {
-  static_assert(sizeof(T) == 0, "No protobuf envelope mapping for this record");
+template <typename T> inline void setRecord(const T &, pb::Record *) {
+  static_assert(sizeof(T) == 0, "No protobuf record mapping for this object");
 }
-inline void setEnvelope(const obj::FileT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_file());
+inline void setRecord(const obj::FileT &src, pb::Record *dst) {
+  encode(src, dst->mutable_file());
 }
-inline void setEnvelope(const obj::NodeT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_node());
+inline void setRecord(const obj::NodeT &src, pb::Record *dst) {
+  encode(src, dst->mutable_node());
 }
-inline void setEnvelope(const obj::ChildrenT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_children());
+inline void setRecord(const obj::ChildrenT &src, pb::Record *dst) {
+  encode(src, dst->mutable_children());
 }
-inline void setEnvelope(const obj::NodeClassT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_node_class());
+inline void setRecord(const obj::NodeClassT &src, pb::Record *dst) {
+  encode(src, dst->mutable_node_class());
 }
-inline void setEnvelope(const obj::TopLevelT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_top_level());
+inline void setRecord(const obj::TopLevelT &src, pb::Record *dst) {
+  encode(src, dst->mutable_top_level());
 }
-inline void setEnvelope(const obj::IncludeT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_include());
+inline void setRecord(const obj::IncludeT &src, pb::Record *dst) {
+  encode(src, dst->mutable_include());
 }
-inline void setEnvelope(const obj::PragmaT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_pragma());
+inline void setRecord(const obj::PragmaT &src, pb::Record *dst) {
+  encode(src, dst->mutable_pragma());
 }
-inline void setEnvelope(const obj::TranslationUnitFileT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_translation_unit_file());
+inline void setRecord(const obj::TranslationUnitFileT &src, pb::Record *dst) {
+  encode(src, dst->mutable_translation_unit_file());
 }
-inline void setEnvelope(const obj::CounterT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_counter());
+inline void setRecord(const obj::CounterT &src, pb::Record *dst) {
+  encode(src, dst->mutable_counter());
 }
-inline void setEnvelope(const obj::LanguageT &src, pb::Envelope *dst) {
-  encode(src, dst->mutable_record()->mutable_language());
+inline void setRecord(const obj::LanguageT &src, pb::Record *dst) {
+  encode(src, dst->mutable_language());
 }
 
 } // namespace clava::proto
