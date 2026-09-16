@@ -54,7 +54,6 @@ void clava::proto::ProtoStream::writeHeader() {
   header->set_llvm_major(18);
   header->set_schema_sha256(clava::proto::ProtoSchemaHash);
   writeEnvelope(envelope);
-  ++records;
 }
 
 void clava::proto::ProtoStream::writeEnvelope(const pb::Envelope &envelope) {
@@ -137,7 +136,6 @@ void clava::proto::ProtoStream::finish() {
   end->set_files(files.size());
   end->set_ids(clava::denseIdCount());
   writeEnvelope(envelope);
-  ++records;
   flushPending();
   output.flush();
   finished = true;
