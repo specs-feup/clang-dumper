@@ -48,7 +48,7 @@ void clava::proto::ProtoStream::writeHeader() {
   pb::Envelope envelope;
   auto *header = envelope.mutable_header();
   header->set_protocol_major(1);
-  header->set_protocol_minor(1);
+  header->set_protocol_minor(0);
   header->set_schema_id("clava-ast-wire");
   header->set_producer_version("clang-dumper-18");
   header->set_llvm_major(18);

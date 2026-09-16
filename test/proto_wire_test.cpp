@@ -11,7 +11,7 @@ namespace {
 constexpr std::string_view Magic = "CLAVAPB1";
 constexpr uint64_t MaxFrameBytes = 64 * 1024 * 1024;
 constexpr uint32_t ProtocolMajor = 1;
-constexpr uint32_t ProtocolMinor = 1;
+constexpr uint32_t ProtocolMinor = 0;
 
 void appendVarint(std::string &output, uint64_t value) {
   while (value >= 0x80) {
