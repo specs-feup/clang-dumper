@@ -17,6 +17,15 @@ void appendVarint(std::string &target, uint64_t value) {
   }
   target.push_back(static_cast<char>(value));
 }
+
+size_t varintSize(uint64_t value) {
+  size_t size = 1;
+  while (value >= 0x80) {
+    value >>= 7;
+    ++size;
+  }
+  return size;
+}
 } // namespace
 
 clava::proto::ProtoStream::ProtoStream(llvm::raw_ostream &output)
@@ -78,13 +87,18 @@ void clava::proto::ProtoStream::appendRecord(pb::Record record) {
   const size_t record_size = record.ByteSizeLong();
   if (record_size > MaxFrameBytes)
     throw std::length_error("Protobuf AST record exceeds 64 MiB limit");
+  // Chunk.records is field 1, so each entry adds a one-byte tag, its varint
+  // length, and the serialized Record. Tracking that increment avoids an
+  // O(records-per-chunk^2) ByteSizeLong() walk while the chunk is assembled.
+  const size_t encoded_size = 1 + varintSize(record_size) + record_size;
 
   if (!pending_chunk.records().empty() &&
-      pending_chunk.ByteSizeLong() + record_size > ChunkTargetBytes)
+      pending_chunk_bytes + encoded_size > ChunkTargetBytes)
     writeChunk();
 
   *pending_chunk.add_records() = std::move(record);
-  if (pending_chunk.ByteSizeLong() >= ChunkTargetBytes)
+  pending_chunk_bytes += encoded_size;
+  if (pending_chunk_bytes >= ChunkTargetBytes)
     writeChunk();
 }
 
@@ -95,6 +109,7 @@ void clava::proto::ProtoStream::writeChunk() {
   pb::Envelope envelope;
   *envelope.mutable_chunk() = std::move(pending_chunk);
   pending_chunk.Clear();
+  pending_chunk_bytes = 0;
   writeEnvelope(envelope);
   flushPending();
 }

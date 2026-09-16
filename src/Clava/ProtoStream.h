@@ -32,6 +32,7 @@ class ProtoStream final : public llvm::raw_ostream {
   llvm::raw_ostream &output;
   std::string pending;
   pb::Chunk pending_chunk;
+  size_t pending_chunk_bytes = 0;
   std::unordered_map<std::string, uint32_t> files;
   uint64_t bytes_written = 0;
   uint64_t records = 0;
