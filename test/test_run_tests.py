@@ -45,10 +45,11 @@ class DumpStreamIntegrationTest(unittest.TestCase):
         command.extend([str(source), "--"])
         return subprocess.run(command, capture_output=True, text=True, check=False)
 
-    def run_syntax_check(self, source: Path) -> subprocess.CompletedProcess[str]:
+    def run_syntax_check(self, source: Path, *options: str) -> subprocess.CompletedProcess[str]:
         command = [
             str(clang_dumper_tool()),
             "-syntax-check-only",
+            *options,
             "-id=42",
             str(source),
             "--",
@@ -59,7 +60,34 @@ class DumpStreamIntegrationTest(unittest.TestCase):
         result = self.run_syntax_check(self.source)
 
         self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual("", result.stdout)
         self.assertNotIn("<Compiler Instance Data>", result.stderr)
+
+    def test_syntax_only_rejects_dump_output_and_side_file_options(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "ast.dump"
+            dependencies = root / "ast.d"
+            cases = [
+                (["-o", str(output)], "-syntax-check-only cannot be combined with -o"),
+                (["-MD", "-MF", str(dependencies)],
+                 "-syntax-check-only cannot produce dump side files"),
+                (["-MF", str(dependencies)],
+                 "-syntax-check-only cannot produce dump side files"),
+                (["-ast-dump-compression=zstd"],
+                 "-syntax-check-only cannot produce dump side files"),
+            ]
+
+            for options, expected_error in cases:
+                with self.subTest(options=options):
+                    result = self.run_syntax_check(self.source, *options)
+
+                    self.assertNotEqual(0, result.returncode)
+                    self.assertIn(expected_error, result.stderr)
+                    self.assertEqual("", result.stdout)
+
+            self.assertFalse(output.exists())
+            self.assertFalse(dependencies.exists())
 
     def test_syntax_only_invalid_source_preserves_diagnostics_and_failure_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

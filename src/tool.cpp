@@ -188,6 +188,23 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
+  if (SyntaxCheckOnlyOption && !AstDumpOutputOption.empty()) {
+    llvm::errs() << "-syntax-check-only cannot be combined with -o\n";
+    return 1;
+  }
+
+  if (SyntaxCheckOnlyOption &&
+      (DependencyOption || !DependencyFileOption.empty() ||
+       AstDumpCompressionOption != "none")) {
+    llvm::errs() << "-syntax-check-only cannot produce dump side files\n";
+    return 1;
+  }
+
+  if (SyntaxCheckOnlyOption && SourcePaths.size() != 1) {
+    llvm::errs() << "-syntax-check-only requires exactly one source file\n";
+    return 1;
+  }
+
   if (DependencyOption && DependencyFileOption.empty()) {
     llvm::errs() << "-MD requires -MF <path>\n";
     return 1;
@@ -267,8 +284,10 @@ int main(int argc, const char *argv[]) {
     completeDumpOutput=std::make_unique<clava::flat::FlatStream>(destination);
     clava::setDumpStream(*completeDumpOutput);
   }
-  DumpResources::init(UserIdOption.getValue(),
-                      UserSystemHeaderThresholdOption.getValue());
+  if (!SyntaxCheckOnlyOption) {
+    DumpResources::init(UserIdOption.getValue(),
+                        UserSystemHeaderThresholdOption.getValue());
+  }
 
   int returnValue;
   if (!AstDumpOutputOption.empty()) {
@@ -334,7 +353,9 @@ int main(int argc, const char *argv[]) {
     returnValue = Tool.run(ActionFactory.get());
   }
 
-  DumpResources::finish();
+  if (!SyntaxCheckOnlyOption) {
+    DumpResources::finish();
+  }
 
   if (dumpOutput) {
     if (completeDumpOutput) completeDumpOutput->finish();
