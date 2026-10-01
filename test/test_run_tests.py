@@ -110,6 +110,40 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertNotIn("<Compiler Instance Data>", result.stderr)
             self.assertIn("<Compiler Instance Data>", dump)
 
+    def test_syntax_check_does_not_emit_an_ast_dump(self) -> None:
+        command = [
+            str(clang_dumper_tool()),
+            "-syntax-check-only",
+            "-c",
+            str(self.source),
+            "-id=42",
+            "-system-header-threshold=1",
+            "--",
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertNotIn("<Compiler Instance Data>", result.stderr)
+
+    def test_syntax_check_keeps_malformed_input_diagnostics(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            invalid_source = Path(directory) / "invalid.cpp"
+            invalid_source.write_text("int main( {\n", encoding="utf-8")
+            command = [
+                str(clang_dumper_tool()),
+                "-syntax-check-only",
+                "-c",
+                str(invalid_source),
+                "-id=42",
+                "-system-header-threshold=1",
+                "--",
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(result.stdout, "")
+            self.assertIn("error:", result.stderr)
+            self.assertNotIn("<Compiler Instance Data>", result.stderr)
+
     def test_file_output_truncates_existing_contents(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "ast.dump"
