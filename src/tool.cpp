@@ -26,6 +26,10 @@ static llvm::cl::opt<int> UserSystemHeaderThresholdOption(
 static llvm::cl::opt<bool> CompileOnlyOption(
         "c", llvm::cl::desc("Parse without linking"),
         llvm::cl::cat(MyToolCategory));
+static llvm::cl::opt<bool> SyntaxCheckOnlyOption(
+        "syntax-check-only",
+        llvm::cl::desc("Validate syntax without producing an AST dump"),
+        llvm::cl::cat(MyToolCategory));
 static llvm::cl::opt<std::string> AstDumpOutputOption(
         "o", llvm::cl::value_desc("path"),
         llvm::cl::desc("Write the structured AST dump to path"),
@@ -109,7 +113,8 @@ static std::vector<std::string> normalizeCcacheArguments(
         Argument == "-system-header-threshold" ||
         Argument == "-ast-dump-compression" || Argument == "-ast-dump-format";
     const bool IsToolArgument =
-        Argument == "-c" || Argument == "-MD" || HasSeparateValue ||
+        Argument == "-c" || Argument == "-MD" ||
+        Argument == "-syntax-check-only" || HasSeparateValue ||
         llvm::StringRef(Argument).starts_with("-o=") ||
         llvm::StringRef(Argument).starts_with("-MF=") ||
         llvm::StringRef(Argument).starts_with("-id=") ||
@@ -323,8 +328,10 @@ int main(int argc, const char *argv[]) {
           clang::tooling::ArgumentInsertPosition::END));
     }
 
-    returnValue =
-        Tool.run(clang::tooling::newFrontendActionFactory<DumpAstAction>().get());
+    auto ActionFactory = SyntaxCheckOnlyOption
+        ? clang::tooling::newFrontendActionFactory<clang::SyntaxOnlyAction>()
+        : clang::tooling::newFrontendActionFactory<DumpAstAction>();
+    returnValue = Tool.run(ActionFactory.get());
   }
 
   DumpResources::finish();

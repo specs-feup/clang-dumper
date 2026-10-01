@@ -45,6 +45,32 @@ class DumpStreamIntegrationTest(unittest.TestCase):
         command.extend([str(source), "--"])
         return subprocess.run(command, capture_output=True, text=True, check=False)
 
+    def run_syntax_check(self, source: Path) -> subprocess.CompletedProcess[str]:
+        command = [
+            str(clang_dumper_tool()),
+            "-syntax-check-only",
+            "-id=42",
+            str(source),
+            "--",
+        ]
+        return subprocess.run(command, capture_output=True, text=True, check=False)
+
+    def test_syntax_only_valid_source_does_not_emit_ast_dump(self) -> None:
+        result = self.run_syntax_check(self.source)
+
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertNotIn("<Compiler Instance Data>", result.stderr)
+
+    def test_syntax_only_invalid_source_preserves_diagnostics_and_failure_status(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "invalid.cpp"
+            source.write_text("int broken( { return 0; }\n", encoding="utf-8")
+            result = self.run_syntax_check(source)
+
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("error:", result.stderr)
+        self.assertNotIn("<Compiler Instance Data>", result.stderr)
+
     def test_file_output_is_byte_identical_to_legacy_protocol(self) -> None:
         legacy = self.run_tool(self.source)
         with tempfile.TemporaryDirectory() as directory:
