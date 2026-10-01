@@ -180,6 +180,13 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
+  if (SyntaxCheckOnlyOption &&
+      (DependencyOption || !DependencyFileOption.empty() ||
+       AstDumpCompressionOption != "none")) {
+    llvm::errs() << "-syntax-check-only cannot produce dump side files\n";
+    return 1;
+  }
+
   if (SyntaxCheckOnlyOption && SourcePaths.size() != 1) {
     llvm::errs() << "-syntax-check-only requires exactly one source file\n";
     return 1;

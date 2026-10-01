@@ -144,6 +144,26 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertIn("error:", result.stderr)
             self.assertNotIn("<Compiler Instance Data>", result.stderr)
 
+    def test_syntax_check_rejects_dump_side_files(self) -> None:
+        for side_file_arguments in (
+            ["-MD", "-MF", "dependencies.d"],
+            ["-MF", "dependencies.d"],
+            ["-ast-dump-compression=zstd"],
+        ):
+            command = [
+                str(clang_dumper_tool()),
+                "-syntax-check-only",
+                *side_file_arguments,
+                "-c",
+                str(self.source),
+                "-id=42",
+                "-system-header-threshold=1",
+                "--",
+            ]
+            result = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("cannot produce dump side files", result.stderr)
+
     def test_file_output_truncates_existing_contents(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "ast.dump"
