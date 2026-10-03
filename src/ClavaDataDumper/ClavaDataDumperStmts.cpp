@@ -4,7 +4,7 @@
 
 #include "../Clang/ClangNodes.h"
 #include "../ClangEnums/ClangEnums.h"
-#include "../Clava/WireStream.h"
+#include "../Clava/FlatStream.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
 #include "llvm/ADT/STLForwardCompat.h"
@@ -98,17 +98,11 @@ void clava::ClavaDataDumper::dumpTemplateArguments(
 }
 
 void clava::ClavaDataDumper::dump(const Stmt *S) {
-    if (clava::wire::emit(S, Context, id)) {
-        return;
-    }
     dumpNode(S, clava::getClassName(S), STMT_DATA_DUMPERS, "stmt data",
              "Stmt", &ClavaDataDumper::DumpStmtData);
 }
 
 void clava::ClavaDataDumper::dump(const Expr *E) {
-    if (clava::wire::emit(E, Context, id)) {
-        return;
-    }
     dumpNode(E, clava::getClassName(E), EXPR_DATA_DUMPERS, "expr data",
              "Expr", &ClavaDataDumper::DumpExprData);
 }

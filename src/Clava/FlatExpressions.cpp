@@ -33,6 +33,8 @@ fb::ObjectKind objectKind(clang::ExprObjectKind kind) {
     return fb::ObjectKind::OBJ_C_SUBSCRIPT;
   case clang::OK_VectorComponent:
     return fb::ObjectKind::VECTOR_COMPONENT;
+  case clang::OK_MatrixComponent:
+    return fb::ObjectKind::MATRIX_COMPONENT;
   }
   throw std::invalid_argument("Unsupported Clang expression object kind");
 }
@@ -103,7 +105,7 @@ std::unique_ptr<fb::FloatingLiteralDataT> makeFloatingLiteralData(
     const clang::FloatingLiteral *node, Context &c) {
   auto out = std::make_unique<fb::FloatingLiteralDataT>();
   out->base = makeLiteralData(node, c);
-  // Match raw_ostream's decimal precision in the existing text protocol.
+  // Preserve the decimal precision expected by existing Clava consumers.
   // The source spelling remains separately preserved in LiteralData.
   std::string text;
   llvm::raw_string_ostream stream(text);

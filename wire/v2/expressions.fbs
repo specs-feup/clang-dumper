@@ -2,263 +2,263 @@ include "statements.fbs";
 namespace astwire.v2;
 
 // Expression handlers use explicit base composition. Every concrete payload
-// carries the complete NodeData -> StmtData -> ExprData ancestry through base.
-table ExprData (java_class: "pt.up.fe.specs.clava.ast.expr.Expr") {
+// carries the complete ClavaNodeData -> StmtData -> ExprData ancestry through base.
+table ExprData  {
   base:StmtData (required);
-  type:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.Expr.TYPE", java_ref: "optional");
-  value_kind:ValueKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.Expr.VALUE_KIND");
-  object_kind:ObjectKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.Expr.OBJECT_KIND");
-  is_default_argument:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.Expr.IS_DEFAULT_ARGUMENT");
+  type:long = null;
+  value_kind:ValueKind = null;
+  object_kind:ObjectKind = null;
+  is_default_argument:bool = null;
 }
 
-table CastExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CastExpr") {
+table CastExprData  {
   base:ExprData (required);
-  cast_kind:CastKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.CastExpr.CAST_KIND");
+  cast_kind:CastKind = null;
 }
 
-table LiteralData (java_class: "pt.up.fe.specs.clava.ast.expr.Literal") {
+table LiteralData  {
   base:ExprData (required);
-  source_literal:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.Literal.SOURCE_LITERAL", java_codec: "literalSource");
+  source_literal:string (required);
 }
 
-table CharacterLiteralData (java_class: "pt.up.fe.specs.clava.ast.expr.CharacterLiteral") {
+table CharacterLiteralData  {
   base:LiteralData (required);
-  value:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CharacterLiteral.VALUE");
-  kind:CharacterKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.CharacterLiteral.KIND");
+  value:long = null;
+  kind:CharacterKind = null;
 }
 
-table IntegerLiteralData (java_class: "pt.up.fe.specs.clava.ast.expr.IntegerLiteral") {
+table IntegerLiteralData  {
   base:LiteralData (required);
-  value:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.IntegerLiteral.VALUE", java_codec: "bigint");
+  value:string (required);
 }
 
-table FloatingLiteralData (java_class: "pt.up.fe.specs.clava.ast.expr.FloatingLiteral") {
+table FloatingLiteralData  {
   base:LiteralData (required);
-  value:double = null (java_key: "pt.up.fe.specs.clava.ast.expr.FloatingLiteral.VALUE");
+  value:double = null;
 }
 
-table StringLiteralData (java_class: "pt.up.fe.specs.clava.ast.expr.StringLiteral") {
+table StringLiteralData  {
   base:LiteralData (required);
-  string_kind:StringKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.StringLiteral.STRING_KIND");
-  length:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.StringLiteral.LENGTH");
-  char_byte_width:int = null (java_key: "pt.up.fe.specs.clava.ast.expr.StringLiteral.CHAR_BYTE_WIDTH");
-  string_bytes:[ubyte] (required, java_key: "pt.up.fe.specs.clava.ast.expr.StringLiteral.STRING_BYTES");
+  string_kind:StringKind = null;
+  length:long = null;
+  char_byte_width:int = null;
+  string_bytes:[ubyte] (required);
 }
 
-table CXXBoolLiteralExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXBoolLiteralExpr") {
+table CXXBoolLiteralExprData  {
   base:LiteralData (required);
-  value:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXBoolLiteralExpr.VALUE");
+  value:bool = null;
 }
 
-table CompoundLiteralExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CompoundLiteralExpr") {
+table CompoundLiteralExprData  {
   base:LiteralData (required);
-  is_file_scope:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CompoundLiteralExpr.IS_FILE_SCOPE");
+  is_file_scope:bool = null;
 }
 
-table InitListExprData (java_class: "pt.up.fe.specs.clava.ast.expr.InitListExpr") {
+table InitListExprData  {
   base:ExprData (required);
-  array_filler:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.InitListExpr.ARRAY_FILLER", java_ref: "optional");
-  is_explicit:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.InitListExpr.IS_EXPLICIT");
-  is_string_literal_init:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.InitListExpr.IS_STRING_LITERAL_INIT");
-  syntactic_form:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.InitListExpr.SYNTACTIC_FORM", java_ref: "optional");
-  semantic_form:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.InitListExpr.SEMANTIC_FORM", java_ref: "optional");
+  array_filler:long = null;
+  is_explicit:bool = null;
+  is_string_literal_init:bool = null;
+  syntactic_form:long = null;
+  semantic_form:long = null;
 }
 
-table DeclRefExprData (java_class: "pt.up.fe.specs.clava.ast.expr.DeclRefExpr") {
+table DeclRefExprData  {
   base:ExprData (required);
-  qualifier:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.DeclRefExpr.QUALIFIER");
-  template_arguments:[TemplateArgument] (required, java_key: "pt.up.fe.specs.clava.ast.expr.DeclRefExpr.TEMPLATE_ARGUMENTS", java_codec: "compoundList");
-  decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.DeclRefExpr.DECL", java_ref: "node");
+  qualifier:string (required);
+  template_arguments:[TemplateArgument] (required);
+  decl:long = null;
 }
 
-table OverloadExprData (java_class: "pt.up.fe.specs.clava.ast.expr.OverloadExpr") {
+table OverloadExprData  {
   base:ExprData (required);
-  qualifier:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.OverloadExpr.QUALIFIER");
-  name:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.OverloadExpr.NAME");
-  unresolved_decls:[long] (required, java_key: "pt.up.fe.specs.clava.ast.expr.OverloadExpr.UNRESOLVED_DECLS", java_ref: "list");
-  template_arguments:[TemplateArgument] (required, java_key: "pt.up.fe.specs.clava.ast.expr.OverloadExpr.TEMPLATE_ARGUMENTS", java_codec: "compoundList");
+  qualifier:string (required);
+  name:string (required);
+  unresolved_decls:[long] (required);
+  template_arguments:[TemplateArgument] (required);
 }
 
-table CXXConstructExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr") {
+table CXXConstructExprData  {
   base:ExprData (required);
-  is_elidable:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.IS_ELIDABLE");
-  requires_zero_initialization:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.REQUIRES_ZERO_INITIALIZATION");
-  is_list_initialization:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.IS_LIST_INITIALIZATION");
-  is_std_list_initialization:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.IS_STD_LIST_INITIALIZATION");
-  construction_kind:ConstructionKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.CONSTRUCTION_KIND");
-  is_temporary_object:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.IS_TEMPORARY_OBJECT");
-  constructor_decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXConstructExpr.CONSTRUCTOR_DECL", java_ref: "node");
+  is_elidable:bool = null;
+  requires_zero_initialization:bool = null;
+  is_list_initialization:bool = null;
+  is_std_list_initialization:bool = null;
+  construction_kind:ConstructionKind = null;
+  is_temporary_object:bool = null;
+  constructor_decl:long = null;
 }
 
-table CXXTemporaryObjectExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXTemporaryObjectExpr") {
+table CXXTemporaryObjectExprData  {
   base:CXXConstructExprData (required);
 }
 
-table MemberExprData (java_class: "pt.up.fe.specs.clava.ast.expr.MemberExpr") {
+table MemberExprData  {
   base:ExprData (required);
-  is_arrow:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.MemberExpr.IS_ARROW");
-  member_name:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.MemberExpr.MEMBER_NAME");
-  member_decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.MemberExpr.MEMBER_DECL", java_ref: "node");
-  found_decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.MemberExpr.FOUND_DECL", java_ref: "node");
-  found_decl_access_specifier:AccessSpecifier = null (java_key: "pt.up.fe.specs.clava.ast.expr.MemberExpr.FOUND_DECL_ACCESS_SPECIFIER");
+  is_arrow:bool = null;
+  member_name:string (required);
+  member_decl:long = null;
+  found_decl:long = null;
+  found_decl_access_specifier:AccessSpecifier = null;
 }
 
-table MaterializeTemporaryExprData (java_class: "pt.up.fe.specs.clava.ast.expr.MaterializeTemporaryExpr") {
+table MaterializeTemporaryExprData  {
   base:ExprData (required);
-  extending_decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.MaterializeTemporaryExpr.EXTENDING_DECL", java_ref: "optional");
+  extending_decl:long = null;
 }
 
-table BinaryOperatorData (java_class: "pt.up.fe.specs.clava.ast.expr.BinaryOperator") {
+table BinaryOperatorData  {
   base:ExprData (required);
-  op:BinaryOperatorKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.BinaryOperator.OP");
+  op:BinaryOperatorKind = null;
 }
 
-table UnresolvedMemberExprData (java_class: "pt.up.fe.specs.clava.ast.expr.UnresolvedMemberExpr") {
+table UnresolvedMemberExprData  {
   base:OverloadExprData (required);
 }
 
-table UnresolvedLookupExprData (java_class: "pt.up.fe.specs.clava.ast.expr.UnresolvedLookupExpr") {
+table UnresolvedLookupExprData  {
   base:OverloadExprData (required);
-  requires_adl:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.UnresolvedLookupExpr.REQUIRES_ADL");
+  requires_adl:bool = null;
 }
 
-table CallExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CallExpr") {
+table CallExprData  {
   base:ExprData (required);
-  direct_callee:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CallExpr.DIRECT_CALLEE", java_ref: "optional");
+  direct_callee:long = null;
 }
 
-table CXXMemberCallExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXMemberCallExpr") {
+table CXXMemberCallExprData  {
   base:CallExprData (required);
-  method_decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXMemberCallExpr.METHOD_DECL", java_ref: "optional");
+  method_decl:long = null;
 }
 
-table CXXTypeidExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXTypeidExpr") {
+table CXXTypeidExprData  {
   base:ExprData (required);
-  is_type_operand:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXTypeidExpr.IS_TYPE_OPERAND");
-  operand:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXTypeidExpr.OPERAND", java_ref: "node");
+  is_type_operand:bool = null;
+  operand:long = null;
 }
 
-table ExplicitCastExprData (java_class: "pt.up.fe.specs.clava.ast.expr.ExplicitCastExpr") {
+table ExplicitCastExprData  {
   base:CastExprData (required);
-  type_as_written:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.ExplicitCastExpr.TYPE_AS_WRITTEN", java_ref: "node");
+  type_as_written:long = null;
 }
 
-table CXXNamedCastExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXNamedCastExpr") {
+table CXXNamedCastExprData  {
   base:ExplicitCastExprData (required);
-  cast_name:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.CXXNamedCastExpr.CAST_NAME");
+  cast_name:string (required);
 }
 
-table CXXDependentScopeMemberExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr") {
+table CXXDependentScopeMemberExprData  {
   base:ExprData (required);
-  is_arrow:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr.IS_ARROW");
-  member_name:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr.MEMBER_NAME");
-  is_implicit_access:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr.IS_IMPLICIT_ACCESS");
-  qualifier:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr.QUALIFIER");
-  has_template_keyword:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr.HAS_TEMPLATE_KEYWORD");
-  template_arguments:[TemplateArgument] (required, java_key: "pt.up.fe.specs.clava.ast.expr.CXXDependentScopeMemberExpr.TEMPLATE_ARGUMENTS", java_codec: "compoundList");
+  is_arrow:bool = null;
+  member_name:string (required);
+  is_implicit_access:bool = null;
+  qualifier:string (required);
+  has_template_keyword:bool = null;
+  template_arguments:[TemplateArgument] (required);
 }
 
-table UnaryOperatorData (java_class: "pt.up.fe.specs.clava.ast.expr.UnaryOperator") {
+table UnaryOperatorData  {
   base:ExprData (required);
-  op:UnaryOperatorKind = null (java_key: "pt.up.fe.specs.clava.ast.expr.UnaryOperator.OP");
-  position:UnaryOperatorPosition = null (java_key: "pt.up.fe.specs.clava.ast.expr.UnaryOperator.POSITION");
+  op:UnaryOperatorKind = null;
+  position:UnaryOperatorPosition = null;
 }
 
-table UnaryExprOrTypeTraitExprData (java_class: "pt.up.fe.specs.clava.ast.expr.UnaryExprOrTypeTraitExpr") {
+table UnaryExprOrTypeTraitExprData  {
   base:ExprData (required);
-  kind:UnaryExprOrTypeTrait = null (java_key: "pt.up.fe.specs.clava.ast.expr.UnaryExprOrTypeTraitExpr.KIND");
-  is_argument_type:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.UnaryExprOrTypeTraitExpr.IS_ARGUMENT_TYPE");
-  arg_type:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.UnaryExprOrTypeTraitExpr.ARG_TYPE", java_ref: "optional");
-  source_literal:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.UnaryExprOrTypeTraitExpr.SOURCE_LITERAL", java_codec: "literalSource");
+  kind:UnaryExprOrTypeTrait = null;
+  is_argument_type:bool = null;
+  arg_type:long = null;
+  source_literal:string (required);
 }
 
-table CXXNewExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr") {
+table CXXNewExprData  {
   base:ExprData (required);
-  is_global:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.IS_GLOBAL");
-  is_array:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.IS_ARRAY");
-  initialization_present:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.HAS_INITIALIZER");
-  init_style:NewInitStyle = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.INIT_STYLE");
-  initializer:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.INITIALIZER", java_ref: "optional");
-  construct_expr:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.CONSTRUCT_EXPR", java_ref: "optional");
-  array_size:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.ARRAY_SIZE", java_ref: "optional");
-  operator_new:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNewExpr.OPERATOR_NEW", java_ref: "optional");
+  is_global:bool = null;
+  is_array:bool = null;
+  initialization_present:bool = null;
+  init_style:NewInitStyle = null;
+  initializer:long = null;
+  construct_expr:long = null;
+  array_size:long = null;
+  operator_new:long = null;
 }
 
-table CXXDeleteExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXDeleteExpr") {
+table CXXDeleteExprData  {
   base:ExprData (required);
-  is_global:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXDeleteExpr.IS_GLOBAL");
-  is_array:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXDeleteExpr.IS_ARRAY");
-  is_array_as_written:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXDeleteExpr.IS_ARRAY_AS_WRITTEN");
+  is_global:bool = null;
+  is_array:bool = null;
+  is_array_as_written:bool = null;
 }
 
-table OffsetOfExprData (java_class: "pt.up.fe.specs.clava.ast.expr.OffsetOfExpr") {
+table OffsetOfExprData  {
   base:ExprData (required);
-  source_type:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.OffsetOfExpr.SOURCE_TYPE", java_ref: "node");
-  components:[OffsetOfComponent] (required, java_key: "pt.up.fe.specs.clava.ast.expr.OffsetOfExpr.COMPONENTS", java_codec: "compoundList");
+  source_type:long = null;
+  components:[OffsetOfComponent] (required);
 }
 
-table LambdaExprData (java_class: "pt.up.fe.specs.clava.ast.expr.LambdaExpr") {
+table LambdaExprData  {
   base:ExprData (required);
-  is_generic_lambda:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.IS_GENERIC_LAMBDA");
-  is_mutable:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.IS_MUTABLE");
-  has_explicit_parameters:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.HAS_EXPLICIT_PARAMETERS");
-  has_explicit_result_type:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.HAS_EXPLICIT_RESULT_TYPE");
-  capture_default:LambdaCaptureDefault = null (java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.CAPTURE_DEFAULT");
-  lambda_class:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.LAMBDA_CLASS", java_ref: "node");
-  capture_kinds:[LambdaCaptureKind] (required, java_key: "pt.up.fe.specs.clava.ast.expr.LambdaExpr.CAPTURE_KINDS");
+  is_generic_lambda:bool = null;
+  is_mutable:bool = null;
+  has_explicit_parameters:bool = null;
+  has_explicit_result_type:bool = null;
+  capture_default:LambdaCaptureDefault = null;
+  lambda_class:long = null;
+  capture_kinds:[LambdaCaptureKind] (required);
 }
 
-table PredefinedExprData (java_class: "pt.up.fe.specs.clava.ast.expr.PredefinedExpr") {
+table PredefinedExprData  {
   base:ExprData (required);
-  predefined_type:PredefinedIdType = null (java_key: "pt.up.fe.specs.clava.ast.expr.PredefinedExpr.PREDEFINED_TYPE");
+  predefined_type:PredefinedIdType = null;
 }
 
-table SizeOfPackExprData (java_class: "pt.up.fe.specs.clava.ast.expr.SizeOfPackExpr") {
+table SizeOfPackExprData  {
   base:ExprData (required);
-  is_partially_substituted:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.SizeOfPackExpr.IS_PARTIALLY_SUBSTITUTED");
-  pack:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.SizeOfPackExpr.PACK", java_ref: "node");
-  partial_arguments:[TemplateArgument] (required, java_key: "pt.up.fe.specs.clava.ast.expr.SizeOfPackExpr.PARTIAL_ARGUMENTS", java_codec: "compoundList");
+  is_partially_substituted:bool = null;
+  pack:long = null;
+  partial_arguments:[TemplateArgument] (required);
 }
 
-table ArrayInitLoopExprData (java_class: "pt.up.fe.specs.clava.ast.expr.ArrayInitLoopExpr") {
+table ArrayInitLoopExprData  {
   base:ExprData (required);
 }
 
-table DesignatedInitExprData (java_class: "pt.up.fe.specs.clava.ast.expr.DesignatedInitExpr") {
+table DesignatedInitExprData  {
   base:ExprData (required);
-  uses_gnu_syntax:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.DesignatedInitExpr.USES_GNU_SYNTAX");
-  designators:[Designator] (required, java_key: "pt.up.fe.specs.clava.ast.expr.DesignatedInitExpr.DESIGNATORS", java_codec: "compoundList");
+  uses_gnu_syntax:bool = null;
+  designators:[Designator] (required);
 }
 
-table DependentScopeDeclRefExprData (java_class: "pt.up.fe.specs.clava.ast.expr.DependentScopeDeclRefExpr") {
+table DependentScopeDeclRefExprData  {
   base:ExprData (required);
-  decl_name:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.DependentScopeDeclRefExpr.DECL_NAME");
-  qualifier:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.DependentScopeDeclRefExpr.QUALIFIER");
-  has_template_keyword:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.DependentScopeDeclRefExpr.HAS_TEMPLATE_KEYWORD");
-  template_arguments:[TemplateArgument] (required, java_key: "pt.up.fe.specs.clava.ast.expr.DependentScopeDeclRefExpr.TEMPLATE_ARGUMENTS", java_codec: "compoundList");
+  decl_name:string (required);
+  qualifier:string (required);
+  has_template_keyword:bool = null;
+  template_arguments:[TemplateArgument] (required);
 }
 
-table CXXNoexceptExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXNoexceptExpr") {
+table CXXNoexceptExprData  {
   base:ExprData (required);
-  value:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXNoexceptExpr.VALUE");
+  value:bool = null;
 }
 
-table CXXPseudoDestructorExprData (java_class: "pt.up.fe.specs.clava.ast.expr.CXXPseudoDestructorExpr") {
+table CXXPseudoDestructorExprData  {
   base:ExprData (required);
-  qualifier:string (required, java_key: "pt.up.fe.specs.clava.ast.expr.CXXPseudoDestructorExpr.QUALIFIER", java_codec: "optionalEmptyString");
-  is_arrow:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXPseudoDestructorExpr.IS_ARROW");
-  destroyed_type:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.CXXPseudoDestructorExpr.DESTROYED_TYPE", java_ref: "node");
+  qualifier:string (required);
+  is_arrow:bool = null;
+  destroyed_type:long = null;
 }
 
-table PseudoObjectExprData (java_class: "pt.up.fe.specs.clava.ast.expr.PseudoObjectExpr") {
+table PseudoObjectExprData  {
   base:ExprData (required);
-  result_expr_index:int = null (java_key: "pt.up.fe.specs.clava.ast.expr.PseudoObjectExpr.RESULT_EXPR_INDEX");
+  result_expr_index:int = null;
 }
 
-table MSPropertyRefExprData (java_class: "pt.up.fe.specs.clava.ast.expr.MSPropertyRefExpr") {
+table MSPropertyRefExprData  {
   base:ExprData (required);
-  base_expr:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.MSPropertyRefExpr.BASE_EXPR", java_ref: "node");
-  property_decl:long = null (java_key: "pt.up.fe.specs.clava.ast.expr.MSPropertyRefExpr.PROPERTY_DECL", java_ref: "node");
-  is_implicit_access:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.MSPropertyRefExpr.IS_IMPLICIT_ACCESS");
-  is_arrow:bool = null (java_key: "pt.up.fe.specs.clava.ast.expr.MSPropertyRefExpr.IS_ARROW");
+  base_expr:long = null;
+  property_decl:long = null;
+  is_implicit_access:bool = null;
+  is_arrow:bool = null;
 }

@@ -93,7 +93,6 @@ jobs:
             zlib1g-dev \
             libedit-dev \
             libzstd-dev \
-            zstd \
             ccache \
             libxml2-dev
           if [ -n "${{ matrix.accelerator-packages }}" ]; then
@@ -109,7 +108,11 @@ jobs:
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
-        run: cmake --build build --target tool plugin --parallel
+        run: cmake --build build --target tool plugin verify_flatbuffers --parallel
+
+      - name: Test pinned schema toolchain and generated-output drift
+        if: matrix.arch == 'x64'
+        run: python3 test/test_wire_toolchain.py --flatbuffers-source build/_deps/flatbuffers-src --flatc build/_deps/flatbuffers-build/flatc
 
       - name: Test output streams
         run: python3 test/test_run_tests.py
@@ -117,8 +120,7 @@ jobs:
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
-            --baseline-platform linux-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode tool --path build/tool --verifier build/verify_flatbuffers ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
@@ -126,8 +128,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} ${{ matrix.feature-args }} \
-            --baseline-platform linux-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} --verifier build/verify_flatbuffers ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
 
@@ -232,14 +233,12 @@ jobs:
 
       - name: Install LLVM
         run: |
-          brew install llvm@${LLVM_VERSION} libomp zstd ccache
+          brew install llvm@${LLVM_VERSION} libomp ccache
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
-          ZSTD_ROOT="$(brew --prefix zstd)"
           CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
           echo "LIBOMP_PREFIX=${LIBOMP_PREFIX}" >> "$GITHUB_ENV"
-          echo "ZSTD_ROOT=${ZSTD_ROOT}" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
           echo "CLANG_RESOURCE_DIR=${CLANG_RESOURCE_DIR}" >> "$GITHUB_ENV"
           echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
@@ -257,7 +256,7 @@ jobs:
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
-        run: cmake --build build --target tool plugin --parallel
+        run: cmake --build build --target tool plugin verify_flatbuffers --parallel
 
       - name: Test output streams
         run: python3 test/test_run_tests.py
@@ -265,8 +264,7 @@ jobs:
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
-            --baseline-platform macos-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode tool --path build/tool --verifier build/verify_flatbuffers ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
@@ -282,8 +280,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.feature-args }} \
-            --baseline-platform macos-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" --verifier build/verify_flatbuffers ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
@@ -434,6 +431,7 @@ jobs:
         run: |
           mkdir -p dist
           cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
+          cp ${{ matrix.build-dir }}/verify_flatbuffers.exe dist/verify_flatbuffers.exe
 
       - name: Package Windows includes
         run: scripts/package_includes.sh windows ${{ matrix.arch }} dist/${{ matrix.include-package }}
@@ -462,6 +460,14 @@ jobs:
         with:
           name: windows-${{ matrix.arch }}-includes
           path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload Windows FlatBuffers verifier for CI
+        uses: actions/upload-artifact@v7
+        with:
+          name: ci-windows-${{ matrix.arch }}-verifier
+          path: dist/verify_flatbuffers.exe
           retention-days: 1
           if-no-files-found: error
 
@@ -502,6 +508,12 @@ jobs:
           name: windows-${{ matrix.arch }}-includes
           path: dist/
 
+      - name: Download Windows FlatBuffers verifier
+        uses: actions/download-artifact@v8
+        with:
+          name: ci-windows-${{ matrix.arch }}-verifier
+          path: dist/
+
       - name: Test Windows tool
         shell: bash
         env:
@@ -521,8 +533,7 @@ jobs:
             INCLUDE_ARGS+=(--extra-clang-arg "${INCLUDE_ROOT}/${include_path}")
           done < windows-includes/entrypoints.txt
 
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
-            --baseline-platform windows-${{ matrix.arch }} \
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --verifier "dist/verify_flatbuffers.exe" --jobs 1 \
             --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
             "${INCLUDE_ARGS[@]}"
@@ -557,6 +568,9 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout schema and manifest generators
+        uses: actions/checkout@v6
+
       - name: Download Linux release assets
         uses: actions/download-artifact@v8
         with:
@@ -591,72 +605,10 @@ jobs:
             python3 -m zipfile -c ../../release-assets/clang-dumper-generated-enums.zip .
           )
 
-      - name: Generate release manifest
+      - name: Generate release schema bundle and manifest
         env:
           LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
-        run: |
-          python3 - <<'PY'
-          import hashlib
-          import json
-          import os
-          import re
-          from pathlib import Path
-
-          assets_dir = Path("release-assets")
-          manifest_name = "clang-dumper-release-manifest.json"
-          llvm_major = int(os.environ["LLVM_VERSION"])
-
-          patterns = [
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-plugin[.]so$"), "plugin"),
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-includes[.]zip$"), "includes"),
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+)$"), "tool"),
-              (re.compile(r"^clang-dumper-windows-(.+?)[.]exe$"), "tool"),
-              (re.compile(r"^clang-dumper-windows-(.+?)-includes[.]zip$"), "includes"),
-          ]
-
-          def classify(filename):
-              if filename == "clang-dumper-generated-enums.zip":
-                  return "any", "any", "generated-enums"
-
-              for pattern, kind in patterns:
-                  match = pattern.match(filename)
-                  if not match:
-                      continue
-
-                  if filename.startswith("clang-dumper-windows-"):
-                      return "windows", match.group(1), kind
-
-                  return match.group(1), match.group(2), kind
-
-              raise ValueError(f"Unrecognized release asset filename: {filename}")
-
-          entries = []
-          for asset in sorted(assets_dir.iterdir()):
-              if not asset.is_file() or asset.name == manifest_name:
-                  continue
-
-              platform, arch, kind = classify(asset.name)
-              digest = hashlib.sha256(asset.read_bytes()).hexdigest()
-              entries.append(
-                  {
-                      "filename": asset.name,
-                      "platform": platform,
-                      "arch": arch,
-                      "kind": kind,
-                      "llvm_major": llvm_major,
-                      "sha256": digest,
-                  }
-              )
-
-          manifest = {
-              "schema_version": 1,
-              "assets": entries,
-          }
-          (assets_dir / manifest_name).write_text(
-              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
-          )
-          PY
+        run: python3 scripts/write_release_manifest.py --asset-dir release-assets --llvm-major "${LLVM_VERSION}"
 
       - name: Publish release
         uses: softprops/action-gh-release@v2

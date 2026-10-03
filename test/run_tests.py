@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
 """
-Test runner for clang-dumper tool and plugin.
+Test runner for the eager FlatBuffers clang-dumper tool and plugin.
 
-Runs the tool or plugin on sample C/C++ source files, normalizes memory addresses
-in the output, and compares against expected baseline files.
+Runs both producers on the registered C/C++ corpus and validates each complete
+size-prefixed FlatBuffers stream with the native schema verifier.
 
 Usage:
     # Tool mode (default)
     python run_tests.py --mode tool --path /path/to/tool
-    python run_tests.py --mode tool --path /path/to/tool --generate
+    python run_tests.py --mode tool --path /path/to/tool --verifier /path/to/verify_flatbuffers
 
     # Plugin mode
     python run_tests.py --mode plugin --path /path/to/plugin.so --clang-path /path/to/clang
-    python run_tests.py --mode plugin --path /path/to/plugin.so --clang-path /path/to/clang --generate
+    python run_tests.py --mode plugin --path /path/to/plugin.so --clang-path /path/to/clang --verifier /path/to/verify_flatbuffers
 """
 
 import argparse
 import json
 import os
 import platform
-import re
 import shlex
 import subprocess
 import sys
@@ -27,10 +26,11 @@ import tempfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Literal, Optional, get_args
+from typing import Literal, Optional, get_args
 
 # Type alias for mode
 Mode = Literal["tool", "plugin"]
+TEST_INPUTS_DIR = Path(__file__).resolve().parent / "inputs"
 
 
 @dataclass
@@ -40,8 +40,6 @@ class TestConfig:
     id: int = 0
     flags: list[str] = field(default_factory=list)
     requires: set[str] = field(default_factory=set)
-    validate_node_closure: bool = False
-    forbidden_exact_lines: set[str] = field(default_factory=set)
     system_header_threshold: Optional[int] = None
 
 
@@ -50,8 +48,6 @@ def T(
     id: int = 0,
     flags: Optional[list[str]] = None,
     requires: Optional[set[str]] = None,
-    validate_node_closure: bool = False,
-    forbidden_exact_lines: Optional[set[str]] = None,
     system_header_threshold: Optional[int] = None,
 ) -> TestConfig:
     """Shorthand for creating TestConfig instances."""
@@ -59,8 +55,6 @@ def T(
         id=id,
         flags=flags or [],
         requires=requires or set(),
-        validate_node_closure=validate_node_closure,
-        forbidden_exact_lines=forbidden_exact_lines or set(),
         system_header_threshold=system_header_threshold,
     )
 
@@ -68,9 +62,6 @@ def T(
 # Test registry with per-test configuration
 # Every test file MUST have an entry here - no default fallback to catch typos
 # Use T() helper: T(id, flags=[...], requires={...})
-TEST_INPUTS_DIR = Path(__file__).resolve().parent / "inputs"
-
-
 TEST_REGISTRY: dict[str, TestConfig] = {
     "simple_function.cpp": T(42),
     "source_locations.cpp": T(),
@@ -211,11 +202,9 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "strings.cpp": T(),
     "system_header_threshold.cpp": T(
         flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],
-        validate_node_closure=True,
     ),
     "system_header_threshold_option.cpp": T(
         flags=["-isystem", str(TEST_INPUTS_DIR / "system_headers")],
-        validate_node_closure=True,
         system_header_threshold=-1,
     ),
     "struct.c": T(),
@@ -238,683 +227,7 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "while.cpp": T(),
 }
 
-# Placeholders for normalized paths
-PATH_PLACEHOLDER = "<TEST_DIR>"
-SYSTEM_INCLUDE_PLACEHOLDER = "<SYSTEM_INCLUDE>"
-CLANG_INCLUDE_PLACEHOLDER = "<CLANG_INCLUDE>"
-GCC_INCLUDE_PLACEHOLDER = "<GCC_INCLUDE>"
 CUDA_TEST_FLAGS = ["--no-cuda-version-check", "--cuda-host-only"]
-
-# System header path normalization patterns
-# These patterns replace platform-specific paths with portable placeholders
-# Organized as (pattern, replacement) tuples - order matters for specificity
-_SYSTEM_PATH_PATTERNS: list[tuple[str, str]] = [
-    # ==================== CLANG BUILTIN HEADERS ====================
-    # Linux: Various Clang installation layouts
-    (r"/usr/lib/llvm-\d+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/usr/include/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/usr/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-
-    # macOS: Homebrew and Xcode Clang installations
-    (r"/usr/local/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/usr/local/Cellar/llvm@?\d*/[\d.]+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/opt/homebrew/opt/llvm@?\d*/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/opt/homebrew/Cellar/llvm@?\d*/[\d.]+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"/Applications/Xcode[^/]*\.app/.+/lib/clang/[\d.]+/include", CLANG_INCLUDE_PLACEHOLDER),
-
-    # Windows: MSYS2/MinGW and LLVM installations
-    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\]Program Files[/\\]LLVM[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-    # Windows: Custom LLVM installation paths (e.g., CI environments)
-    (r"[A-Za-z]:[/\\]llvm[/\\]lib[/\\]clang[/\\][\d.]+[/\\]include", CLANG_INCLUDE_PLACEHOLDER),
-
-    # Windows packaged include bundles used by CI and releases.
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]01-libcxx", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]02-clang", CLANG_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]03-mingw", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]mingw[/\\]c\+\+[/\\]v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]clang", CLANG_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\][^\r\n]*[/\\]windows-includes[/\\]mingw", SYSTEM_INCLUDE_PLACEHOLDER),
-
-    # ==================== GCC HEADERS ====================
-    # Linux: GCC's libstdc++ headers are often reported through a target-triple
-    # relative path rooted under /usr/lib/gcc.
-    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"/usr/bin/\.\./lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"/usr/lib/gcc/[^/]+/[\d.]+/\.\./\.\./\.\./\.\./include", SYSTEM_INCLUDE_PLACEHOLDER),
-    # Linux: Canonicalize remaining GCC lib paths that are not system includes.
-    (r"/usr/bin/\.\./lib/gcc/", "/usr/lib/gcc/"),
-
-    # macOS: GCC from Homebrew
-    (r"/usr/local/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
-    (r"/opt/homebrew/Cellar/gcc/[\d.]+/lib/gcc/.+/include", GCC_INCLUDE_PLACEHOLDER),
-
-    # Windows: MinGW GCC
-    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]lib[/\\]gcc[/\\][^/\\]+[/\\][\d.]+[/\\]include", GCC_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]lib[/\\]gcc[/\\][^/\\]+[/\\][\d.]+[/\\]include", GCC_INCLUDE_PLACEHOLDER),
-
-    # ==================== SYSTEM C/C++ HEADERS ====================
-    # Linux: Standard system includes
-    (r"/usr/include/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/include/[^/]+-linux-gnu/c\+\+/[\d.]+", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/include/[^/]+-linux-gnu", SYSTEM_INCLUDE_PLACEHOLDER),
-
-    # macOS: SDK and system headers
-    (r"/usr/local/opt/llvm@?\d*/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/usr/local/Cellar/llvm@?\d*/[\d.]+/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/opt/homebrew/opt/llvm@?\d*/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/opt/homebrew/Cellar/llvm@?\d*/[\d.]+/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include/(?:arm|i386)", SYSTEM_INCLUDE_PLACEHOLDER + "/arch"),
-    (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/Library/Developer/CommandLineTools/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include/(?:arm|i386)", SYSTEM_INCLUDE_PLACEHOLDER + "/arch"),
-    (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include/c\+\+/v1", SYSTEM_INCLUDE_PLACEHOLDER + "/c++"),
-    (r"/Applications/Xcode[^/]*\.app/.+/SDKs/MacOSX[\d.]*\.sdk/usr/include", SYSTEM_INCLUDE_PLACEHOLDER),
-
-    # Windows: MSVC and Windows SDK headers
-    (r"[A-Za-z]:[/\\]Program Files[/\\]Microsoft Visual Studio[/\\][^/\\]+[/\\][^/\\]+[/\\]VC[/\\]Tools[/\\]MSVC[/\\][\d.]+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\]Program Files \(x86\)[/\\]Windows Kits[/\\]\d+[/\\]Include[/\\][\d.]+[/\\]\w+", SYSTEM_INCLUDE_PLACEHOLDER),
-
-    # Windows: MinGW system includes
-    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\]msys64[/\\]mingw\d+[/\\][^/\\]+-w64-mingw32[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-    (r"[A-Za-z]:[/\\]mingw64-clang-\d+[/\\]include", SYSTEM_INCLUDE_PLACEHOLDER),
-
-    # Generic /usr/include (should be last for Linux paths)
-    (r"/usr/include(?=/[^/])", SYSTEM_INCLUDE_PLACEHOLDER),
-]
-
-# Build a single combined regex pattern at module load time for performance
-# Each pattern becomes a named group, and we use a lookup table for replacements
-def _build_combined_pattern() -> tuple[re.Pattern[str], dict[str, str]]:
-    """
-    Build a single combined regex from all system path patterns AND address pattern.
-    This enables single-pass normalization for better performance on large outputs.
-    
-    Returns:
-        tuple: (compiled_pattern, group_to_replacement_map)
-    """
-    groups = []
-    group_map = {}
-    
-    # Add system path patterns first (more specific, should match before generic patterns)
-    for i, (pattern, replacement) in enumerate(_SYSTEM_PATH_PATTERNS):
-        group_name = f"syspath{i}"
-        groups.append(f"(?P<{group_name}>{pattern})")
-        group_map[group_name] = replacement
-    
-    # Add address pattern - replacement is dynamic, so we use a sentinel
-    # Matches both formats:
-    #   - Linux/macOS: 0x7f1234abcd_0 (with 0x prefix, variable length)
-    #   - Windows: 0000022070407AD0_0 (no prefix, exactly 16 hex digits for 64-bit pointers)
-    # The Windows pattern requires exactly 16 hex digits to avoid false positives like "x86_64"
-    groups.append(r"(?P<addr>(?:0x[0-9a-fA-F]+|[0-9a-fA-F]{16})_\d+)")
-    group_map["addr"] = None  # Sentinel: handled specially in replacement function
-    
-    combined = "|".join(groups)
-    return re.compile(combined), group_map
-
-# Pre-compiled at module load time
-_UNIFIED_REGEX, _UNIFIED_REPLACEMENTS = _build_combined_pattern()
-
-# Line offsets (0-indexed from <Compiler Instance Data>) for platform-specific type widths
-# These widths can differ between platforms and need normalization
-_TYPE_WIDTH_LINE_OFFSETS = {
-    26: "<LONG_DOUBLE_WIDTH>",  # LongDoubleWidth: 128 (Linux x86_64) vs 64 (Windows MSVC)
-    30: "<LONG_WIDTH>",         # LongWidth: 64 (Linux LP64) vs 32 (Windows LLP64)
-}
-
-_ADDR_PLACEHOLDER_RE = re.compile(r"^ADDR_\d+$")
-
-_TARGET_ATTR_WARNING_RE = re.compile(
-    r"warning: (?:unknown CPU 'hiss'|duplicate 'arch=') in the 'target' "
-    r"attribute string; 'target' attribute ignored \[-Wignored-attributes\]"
-)
-_CLANG_DIAGNOSTIC_PREFIX_RE = re.compile(
-    r"^clang(?:\+\+)?-\d+:\s+(?=(?:error|warning|note):)"
-)
-
-# AArch64 treats plain char as unsigned by default, while x86_64 treats it as
-# signed. The tests exercise AST shape, not the host default-char ABI.
-_PLAIN_CHAR_KIND_RE = re.compile(r"^Char_[SU]$", re.MULTILINE)
-_WIDE_CHAR_KIND_RE = re.compile(r"^WChar_[SU]$", re.MULTILINE)
-_UNSIGNED_INT_ARRAY_RE = re.compile(r"^unsigned int\[(\d+)\]$")
-_DRIVE_PREFIXED_PLACEHOLDER_RE = re.compile(
-    rf"\b[A-Za-z]:(?={re.escape(PATH_PLACEHOLDER)}|"
-    rf"{re.escape(SYSTEM_INCLUDE_PLACEHOLDER)}|"
-    rf"{re.escape(CLANG_INCLUDE_PLACEHOLDER)}|"
-    rf"{re.escape(GCC_INCLUDE_PLACEHOLDER)})"
-)
-_DIAGNOSTIC_RE = re.compile(
-    r"^<TEST_DIR>/[^\n]+: warning: [^\n]+\n"
-    r"(?:[ \t]*\d+ \|[^\n]*\n)?"
-    r"(?:[ \t]*\|[^\n]*\n)*",
-    re.MULTILINE,
-)
-_INTERNAL_BUFFER_LINE_RE = re.compile(
-    r"^(<(?:built-in|command line|scratch space)>)\n\d+\n(\d+)$",
-    re.MULTILINE,
-)
-_ANON_DECL_NAME_RE = re.compile(r"^(\n)(\d+)(\n12\n)", re.MULTILINE)
-_WINDOWS_ADDR_CANDIDATE_RE = re.compile(r"\b[0-9a-fA-F]{16}_\d+\b")
-_EXTERNAL_SOURCE_PREFIXES = (
-    SYSTEM_INCLUDE_PLACEHOLDER,
-    CLANG_INCLUDE_PLACEHOLDER,
-    GCC_INCLUDE_PLACEHOLDER,
-)
-_INTERNAL_SOURCE_PATHS = {"<built-in>", "<command line>", "<scratch space>"}
-_SOURCE_BEGIN = "%CLAVA_SOURCE_BEGIN%"
-_SOURCE_END = "%CLAVA_SOURCE_END%"
-_SYSTEM_SOURCE_BLOCK = "%CLAVA_SYSTEM_SOURCE_BLOCK%"
-
-
-def canonical_raw_address(raw_address: str) -> str:
-    """Return a stable key for raw address tokens across platform spellings."""
-    pointer, suffix = raw_address.rsplit("_", 1)
-    pointer = pointer.lower()
-    if pointer.startswith("0x"):
-        pointer = pointer[2:]
-    pointer = pointer.lstrip("0") or "0"
-    return f"{pointer}_{suffix}"
-
-
-def normalize_wide_string_literals(output: str) -> str:
-    """
-    Normalize target-dependent WIDE string literal byte payloads.
-
-    Clang reports wide character byte width and bytes according to the target
-    ABI. The tests care about AST shape and string kind/length, not whether the
-    target uses 2-byte or 4-byte wide characters.
-    """
-    lines = output.split("\n")
-    normalized: list[str] = []
-    i = 0
-    while i < len(lines):
-        normalized.append(lines[i])
-
-        if (
-            lines[i] == "WIDE"
-            and i + 3 < len(lines)
-            and lines[i + 1].isdigit()
-            and lines[i + 2].isdigit()
-            and lines[i + 3].isdigit()
-        ):
-            byte_count = int(lines[i + 3])
-            normalized.append(lines[i + 1])
-            normalized.append("<WIDE_CHAR_WIDTH>")
-            normalized.append("<WIDE_STRING_BYTES>")
-            i += 4 + byte_count
-            continue
-
-        i += 1
-
-    return "\n".join(normalized)
-
-def normalize_type_widths(output: str) -> str:
-    """
-    Normalize platform-specific type width values in the output.
-    
-    Different platforms have different type sizes:
-    - LongDoubleWidth (line 27): 128 bits on Linux x86_64, 64 bits on Windows MSVC
-    - LongWidth (line 31): 64 bits on Linux (LP64), 32 bits on Windows (LLP64)
-    
-    The output format has these values as bare numbers at specific line offsets
-    from the <Compiler Instance Data> marker. This function replaces those
-    values with placeholders to ensure cross-platform test compatibility.
-    """
-    marker = "<Compiler Instance Data>\n"
-    marker_idx = output.find(marker)
-    if marker_idx < 0:
-        return output
-
-    rest_start = marker_idx + len(marker)
-    max_offset = max(_TYPE_WIDTH_LINE_OFFSETS)
-    # Offsets are relative to the marker line. Split only the small prefix that
-    # contains the fields we patch, not the whole AST dump.
-    lines = output[rest_start:].split("\n", max_offset + 1)
-    changed = False
-    for offset, placeholder in _TYPE_WIDTH_LINE_OFFSETS.items():
-        target_idx = offset - 1
-        if target_idx < len(lines) and lines[target_idx].strip().isdigit():
-            lines[target_idx] = placeholder
-            changed = True
-
-    if not changed:
-        return output
-    return output[:rest_start] + "\n".join(lines)
-
-
-def normalize_plain_char_arrays(output: str) -> str:
-    """
-    Normalize host-dependent plain-char array spellings without rewriting real
-    unsigned-int arrays. A ConstantArrayType spelling is only treated as a
-    plain-char artifact when its element type points at a BuiltinType for char.
-    """
-    lines = output.split("\n")
-    plain_char_type_ids: set[str] = set()
-
-    for i, line in enumerate(lines):
-        if (
-            line == "<BuiltinTypeData>"
-            and i + 11 < len(lines)
-            and lines[i + 2] == "BuiltinType"
-            and lines[i + 3] == "char"
-            and lines[i + 10] == "char"
-        ):
-            plain_char_type_ids.add(lines[i + 1])
-
-    if not plain_char_type_ids:
-        return output
-
-    for i, line in enumerate(lines):
-        match = _UNSIGNED_INT_ARRAY_RE.fullmatch(line)
-        if (
-            match
-            and i >= 3
-            and lines[i - 3] == "<ConstantArrayTypeData>"
-            and i + 8 < len(lines)
-            and lines[i + 8] in plain_char_type_ids
-        ):
-            lines[i] = f"char[{match.group(1)}]"
-
-    return "\n".join(lines)
-
-
-def parse_source_range(
-    lines: list[str],
-    start: int,
-) -> Optional[tuple[Optional[str], int]]:
-    """Parse one dumpSourceRange payload and return its path and next index."""
-    if start >= len(lines):
-        return None
-    if lines[start] == "<invalid>":
-        return None, start + 1
-    if start + 3 >= len(lines):
-        return None
-
-    path = lines[start]
-    if lines[start + 3] == "<end>":
-        return path, start + 4
-    if start + 5 >= len(lines):
-        return None
-    return path, start + 6
-
-
-def source_block_provenance(
-    lines: list[str],
-    data_start: int,
-    source_start: int,
-) -> Optional[tuple[Optional[str], bool]]:
-    """
-    Return the source path used by getSource() and the system-header flag.
-
-    Data records begin with the data marker, node id, and node class, followed
-    by dumpSourceInfo(). For macros, getSource() extracts text from the spelling
-    range, so that range determines the source block's provenance.
-    """
-    source_info_start = data_start + 3
-    expansion = parse_source_range(lines, source_info_start)
-    if expansion is None:
-        return None
-    expansion_path, index = expansion
-    if index >= source_start or lines[index] not in {"0", "1"}:
-        return None
-
-    is_macro = lines[index] == "1"
-    index += 1
-    source_path = expansion_path
-    if is_macro:
-        spelling = parse_source_range(lines, index)
-        if spelling is None:
-            return None
-        source_path, index = spelling
-
-    if index >= source_start or lines[index] not in {"0", "1"}:
-        return None
-    return source_path, lines[index] == "1"
-
-
-def is_external_source_path(path: Optional[str]) -> bool:
-    """Return true for system, compiler-resource, and internal source paths."""
-    if path is None:
-        return False
-    return path.startswith(_EXTERNAL_SOURCE_PREFIXES) or path in _INTERNAL_SOURCE_PATHS
-
-
-def data_record_is_external_source(lines: list[str], data_start: int) -> bool:
-    """Return true when a data record was expanded from non-test source."""
-    source_info_start = data_start + 3
-    expansion = parse_source_range(lines, source_info_start)
-    if expansion is None:
-        return False
-    source_path, index = expansion
-    if index >= len(lines) or lines[index] not in {"0", "1"}:
-        return False
-
-    is_macro = lines[index] == "1"
-    index += 1
-    if is_macro:
-        spelling = parse_source_range(lines, index)
-        if spelling is None:
-            return False
-        source_path, index = spelling
-
-    if index >= len(lines) or lines[index] not in {"0", "1"}:
-        return False
-
-    is_system_header = lines[index] == "1"
-    is_test_source = source_path is not None and source_path.startswith(PATH_PLACEHOLDER)
-    return is_external_source_path(source_path) or (
-        source_path is not None and is_system_header and not is_test_source
-    )
-
-
-def next_data_record_start(lines: list[str], start: int) -> Optional[int]:
-    """Return the next output data-record marker after start."""
-    for index in range(start + 1, len(lines)):
-        line = lines[index]
-        if line.startswith("<") and line.endswith("Data>"):
-            return index
-    return None
-
-
-def normalize_unsigned_long_long_typedefs(output: str) -> str:
-    """
-    Normalize platform typedef spellings without collapsing real unsigned long long.
-
-    Some platform typedefs are backed by unsigned long long on one target and
-    unsigned long on another. Only the external typedef declaration shape is
-    normalized; standalone BuiltinTypeData records from test code keep their real
-    C/C++ type.
-    """
-    lines = output.split("\n")
-    changed = False
-
-    for index, line in enumerate(lines):
-        if (
-            line == "<BuiltinTypeData>"
-            and index + 10 < len(lines)
-            and lines[index + 2] == "BuiltinType"
-            and lines[index + 3] == "unsigned long long"
-            and lines[index + 9] == "ULongLong"
-            and lines[index + 10] == "unsigned long long"
-        ):
-            next_record = next_data_record_start(lines, index)
-            if (
-                next_record is not None
-                and lines[next_record] == "<TypedefNameDeclData>"
-                and data_record_is_external_source(lines, next_record)
-            ):
-                lines[index + 3] = "unsigned long"
-                lines[index + 9] = "ULong"
-                lines[index + 10] = "unsigned long"
-                changed = True
-
-    return "\n".join(lines) if changed else output
-
-
-def normalize_system_source_blocks(output: str) -> str:
-    """Replace only source blocks whose extracted text comes from external headers."""
-    lines = output.split("\n")
-    data_start: Optional[int] = None
-    index = 0
-    changed = False
-
-    while index < len(lines):
-        line = lines[index]
-        if line.startswith("<") and line.endswith("Data>"):
-            data_start = index
-            index += 1
-            continue
-        if line != _SOURCE_BEGIN or data_start is None:
-            index += 1
-            continue
-
-        try:
-            source_end = lines.index(_SOURCE_END, index + 1)
-        except ValueError:
-            break
-
-        provenance = source_block_provenance(lines, data_start, index)
-        if provenance is not None:
-            source_path, is_system_header = provenance
-            is_test_source = source_path is not None and source_path.startswith(
-                PATH_PLACEHOLDER
-            )
-            if is_external_source_path(source_path) or (
-                source_path is not None and is_system_header and not is_test_source
-            ):
-                lines[index : source_end + 1] = [_SYSTEM_SOURCE_BLOCK]
-                changed = True
-                index += 1
-                continue
-
-        index = source_end + 1
-
-    return "\n".join(lines) if changed else output
-
-
-def normalize_static_output(output: str) -> str:
-    """
-    Normalize architecture- and installation-dependent text that can appear in
-    freshly generated output.
-    """
-    output = output.replace("\r\n", "\n").replace("\r", "\n")
-    if "Char_U" in output:
-        output = _PLAIN_CHAR_KIND_RE.sub("Char_S", output)
-    if "WChar_U" in output:
-        output = _WIDE_CHAR_KIND_RE.sub("WChar_S", output)
-    if "unsigned int[" in output and "<BuiltinTypeData>" in output:
-        output = normalize_plain_char_arrays(output)
-    if "\nWIDE\n" in output or output.startswith("WIDE\n"):
-        output = normalize_wide_string_literals(output)
-    if "unsigned long long" in output and "ULongLong" in output:
-        output = normalize_unsigned_long_long_typedefs(output)
-    if "basic_string<char>" in output:
-        output = output.replace("std::basic_string<char>", "std::string")
-        output = output.replace("basic_string<char>", "string")
-    if "basic_ostream<char>" in output:
-        output = output.replace("std::basic_ostream<char>", "std::ostream")
-        output = output.replace("basic_ostream<char>", "ostream")
-    if "basic_istream<char>" in output:
-        output = output.replace("std::basic_istream<char>", "std::istream")
-        output = output.replace("basic_istream<char>", "istream")
-    if (
-        "<built-in>" in output
-        or "<command line>" in output
-        or "<scratch space>" in output
-    ):
-        output = _INTERNAL_BUFFER_LINE_RE.sub(
-            r"\1\n<INTERNAL_BUFFER_LINE>\n\2", output
-        )
-    if "\n12\n" in output:
-        output = _ANON_DECL_NAME_RE.sub(r"\1<ANON_DECL_NAME>\3", output)
-    if ":<" in output:
-        output = _DRIVE_PREFIXED_PLACEHOLDER_RE.sub("", output)
-    if "target attribute ignored [-Wignored-attributes]" in output:
-        output = _TARGET_ATTR_WARNING_RE.sub(
-            "warning: target attribute diagnostic normalized; "
-            "target attribute ignored [-Wignored-attributes]",
-            output,
-        )
-    if " warning: " in output and PATH_PLACEHOLDER in output:
-        output = _DIAGNOSTIC_RE.sub("", output)
-    if _SOURCE_BEGIN in output:
-        output = normalize_system_source_blocks(output)
-    if "<Compiler Instance Data>" in output:
-        output = normalize_type_widths(output)
-    return output
-
-
-def line_needs_unified_regex(line: str) -> bool:
-    """Return true when a raw line can contain a path or address token."""
-    if "0x" in line or "/" in line or "\\" in line:
-        return True
-    return "_" in line and _WINDOWS_ADDR_CANDIDATE_RE.search(line) is not None
-
-
-def normalize_captured_lines(
-    raw_lines: Iterable[str],
-    inputs_dir_str: str,
-) -> tuple[str, dict[str, list[str]]]:
-    """Normalize captured raw stderr lines from a dumper invocation."""
-    address_map: dict[str, str] = {}
-    placeholder_to_raw: dict[str, list[str]] = {}
-    counter = [1]
-
-    def unified_replacer(match: re.Match[str]) -> str:
-        """Single-pass replacement function for both paths and addresses."""
-        group_name = match.lastgroup
-        if group_name is None:
-            return match.group(0)
-
-        if group_name == "addr":
-            raw_address = match.group(0)
-            address_key = canonical_raw_address(raw_address)
-            if address_key not in address_map:
-                placeholder = f"ADDR_{counter[0]:03d}"
-                address_map[address_key] = placeholder
-                placeholder_to_raw[placeholder] = [raw_address]
-                counter[0] += 1
-            else:
-                placeholder = address_map[address_key]
-                if raw_address not in placeholder_to_raw[placeholder]:
-                    placeholder_to_raw[placeholder].append(raw_address)
-            return placeholder
-
-        replacement = _UNIFIED_REPLACEMENTS.get(group_name)
-        if replacement is not None:
-            return replacement
-        return match.group(0)
-
-    inputs_dir_str_bwd = inputs_dir_str.replace("/", "\\")
-    normalized_lines: list[str] = []
-    for line in raw_lines:
-        line = _CLANG_DIAGNOSTIC_PREFIX_RE.sub("", line)
-        line = line.replace(inputs_dir_str, PATH_PLACEHOLDER)
-        line = line.replace(inputs_dir_str_bwd, PATH_PLACEHOLDER)
-        line = line.replace(PATH_PLACEHOLDER + "\\", PATH_PLACEHOLDER + "/")
-        if line_needs_unified_regex(line):
-            line = _UNIFIED_REGEX.sub(unified_replacer, line)
-        normalized_lines.append(line)
-
-    return (
-        normalize_static_output("".join(normalized_lines)),
-        placeholder_to_raw,
-    )
-
-
-def normalize_captured_output(
-    raw_output: str,
-    inputs_dir_str: str,
-) -> tuple[str, dict[str, list[str]]]:
-    """Normalize one captured raw stderr stream from a dumper invocation."""
-    return normalize_captured_lines(raw_output.splitlines(keepends=True), inputs_dir_str)
-
-
-def lines_equivalent(
-    expected_line: str,
-    actual_line: str,
-    expected_to_actual_addr: dict[str, str],
-    actual_to_expected_addr: dict[str, str],
-) -> bool:
-    """Return True when two normalized lines are equivalent across hosts."""
-    expected = expected_line.rstrip("\r\n")
-    actual = actual_line.rstrip("\r\n")
-
-    if expected == actual:
-        return True
-
-    if _ADDR_PLACEHOLDER_RE.fullmatch(expected) and _ADDR_PLACEHOLDER_RE.fullmatch(
-        actual
-    ):
-        mapped_actual = expected_to_actual_addr.get(expected)
-        mapped_expected = actual_to_expected_addr.get(actual)
-        if mapped_actual is not None:
-            return mapped_actual == actual
-        if mapped_expected is not None:
-            return mapped_expected == expected
-
-        expected_to_actual_addr[expected] = actual
-        actual_to_expected_addr[actual] = expected
-        return True
-
-    return False
-
-
-def compare_normalized_outputs(
-    test_name: str,
-    expected_output: str,
-    normalized_output: str,
-) -> Optional[str]:
-    """Return a failure message when two already-normalized outputs differ."""
-    if normalized_output == expected_output:
-        return None
-
-    normalized_lines = normalized_output.splitlines(keepends=True)
-    expected_lines = expected_output.splitlines(keepends=True)
-    expected_to_actual_addr: dict[str, str] = {}
-    actual_to_expected_addr: dict[str, str] = {}
-
-    for i, (norm_line, exp_line) in enumerate(zip(normalized_lines, expected_lines), 1):
-        if not lines_equivalent(
-            exp_line,
-            norm_line,
-            expected_to_actual_addr,
-            actual_to_expected_addr,
-        ):
-            return (
-                f"Mismatch at line {i}:\n"
-                f"  Expected: {exp_line.rstrip()!r}\n"
-                f"  Got:      {norm_line.rstrip()!r}"
-            )
-
-    if len(normalized_lines) != len(expected_lines):
-        return (
-            f"Line count mismatch: expected {len(expected_lines)}, "
-            f"got {len(normalized_lines)}"
-        )
-
-    return "Unknown difference"
-
-
-def platform_expected_dir(test_dir: Path, baseline_platform: Optional[str]) -> Optional[Path]:
-    """Return the platform baseline directory for a requested CI target."""
-    if not baseline_platform:
-        return None
-    return test_dir / "expected-platforms" / baseline_platform
-
-
-def platform_expected_dirs(test_dir: Path, baseline_platform: Optional[str]) -> list[Path]:
-    """Return exact and OS-family platform baseline directories in lookup order."""
-    exact_dir = platform_expected_dir(test_dir, baseline_platform)
-    if exact_dir is None:
-        return []
-
-    dirs = [exact_dir]
-    os_family = baseline_platform.split("-", 1)[0]
-    if os_family != baseline_platform:
-        dirs.append(test_dir / "expected-platforms" / os_family)
-    return dirs
-
-
-def resolve_expected_file(
-    expected_dir: Path,
-    platform_dirs: Iterable[Path],
-    test_name: str,
-) -> tuple[Path, str]:
-    """Prefer a platform baseline when present, otherwise use the shared one."""
-    for platform_dir in platform_dirs:
-        platform_file = platform_dir / f"{test_name}.expected"
-        if platform_file.exists():
-            return platform_file, platform_dir.name
-    return expected_dir / f"{test_name}.expected", "shared"
 
 
 def get_test_config(test_name: str) -> TestConfig:
@@ -932,174 +245,54 @@ def get_test_config(test_name: str) -> TestConfig:
     return TEST_REGISTRY[test_name]
 
 
-def check_address_consistency(placeholder_to_raw: dict[str, list[str]]) -> list[str]:
-    """
-    Verify that each placeholder maps to exactly one raw address.
-
-    Returns:
-        List of error messages (empty if consistent)
-    """
-    errors = []
-    for placeholder, raw_addresses in placeholder_to_raw.items():
-        unique_addresses = {canonical_raw_address(address) for address in raw_addresses}
-        if len(unique_addresses) > 1:
-            errors.append(
-                f"Inconsistent address for {placeholder}: "
-                f"found {len(unique_addresses)} different addresses: {unique_addresses}"
-            )
-    return errors
-
-
-def unresolved_node_ids(output: str) -> list[str]:
-    """Return normalized addresses that are used but have no node definition."""
-    lines = output.splitlines()
-    used_ids = set(re.findall(r"\bADDR_\d+\b", output))
-    defined_ids = {
-        lines[index + 1]
-        for index, line in enumerate(lines[:-1])
-        if line == "<Id to Class Map>"
-        and re.fullmatch(r"ADDR_\d+", lines[index + 1])
-    }
-    return sorted(used_ids - defined_ids)
-
-
-def run_tool_and_normalize(
+def run_flatbuffers_and_verify(
     mode: Mode,
     path: str,
+    verifier: str,
     input_file: str,
     test_id: int,
-    inputs_dir_str: str,
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
-) -> tuple[int, str, str, str, str, dict[str, list[str]]]:
-    """
-    Run the clang-dumper tool or plugin and normalize its AST dump.
-
-    Args:
-        mode: Either "tool" or "plugin"
-        path: Path to the tool executable or plugin shared library
-        input_file: Path to the input source file
-        test_id: The test ID for address disambiguation
-        inputs_dir_str: Pre-resolved inputs directory path for normalization
-        clang_path: Path to clang executable (required for plugin mode)
-        extra_flags: Additional compiler flags to pass
-        system_header_threshold: Positive system-header expansion threshold.
-            Level N is expanded and its immediate children are serialized as
-            boundary leaves. A non-positive value disables the threshold.
-
-    Returns:
-        tuple: (return_code, stdout, raw_dump, raw_stderr, normalized_dump,
-            address_mapping)
-    """
+) -> tuple[int, str, str, bytes, str]:
+    """Run one producer and verify every framed record in its output stream."""
     flags = extra_flags or []
-
-    dump_directory = None
-    dump_path = None
-    if mode == "tool":
-        dump_directory = tempfile.TemporaryDirectory(prefix="clang-dumper-")
-        dump_path = Path(dump_directory.name) / "ast.dump"
-        cmd = [path, f"-id={test_id}"]
-        if system_header_threshold is not None:
-            cmd.append(f"-system-header-threshold={system_header_threshold}")
-        cmd += ["-c", input_file, "-o", str(dump_path), "--"] + flags
-    else:
-        # Plugin mode - invoke clang with the plugin loaded
-        assert clang_path is not None, "clang_path required for plugin mode"
-        cmd = [
-            clang_path,
-            f"-fplugin={path}",
-            "-Xclang",
-            "-plugin",
-            "-Xclang",
-            "DumpAst",
-            "-Xclang",
-            "-plugin-arg-DumpAst",
-            "-Xclang",
-            f"-file-id={test_id}",
-        ]
-        if system_header_threshold is not None:
-            cmd += [
-                "-Xclang",
-                "-plugin-arg-DumpAst",
-                "-Xclang",
-                f"-system-header-threshold={system_header_threshold}",
-            ]
-        cmd += flags + [
-            "-fsyntax-only",
-            input_file,
-        ]
-
-    try:
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-
-        stdout, raw_stderr = proc.communicate()
-        if dump_path is not None:
-            raw_dump = (
-                dump_path.read_text(encoding="utf-8")
-                if dump_path.exists()
-                else ""
-            )
+    with tempfile.TemporaryDirectory(prefix="clang-dumper-flatbuffers-") as directory:
+        dump_path = Path(directory) / "ast.clv2"
+        if mode == "tool":
+            cmd = [path, f"-id={test_id}"]
+            if system_header_threshold is not None:
+                cmd.append(f"-system-header-threshold={system_header_threshold}")
+            cmd += ["-c", input_file, "-o", str(dump_path), "--"] + flags
         else:
-            raw_dump = strip_clang_diagnostics(raw_stderr)
-    finally:
-        if dump_directory is not None:
-            dump_directory.cleanup()
+            assert clang_path is not None, "clang_path required for plugin mode"
+            cmd = [
+                clang_path,
+                f"-fplugin={path}",
+                "-Xclang", "-plugin", "-Xclang", "DumpAst",
+                "-Xclang", "-plugin-arg-DumpAst",
+                "-Xclang", f"-file-id={test_id}",
+                "-Xclang", "-plugin-arg-DumpAst",
+                "-Xclang", f"-output={dump_path}",
+            ]
+            if system_header_threshold is not None:
+                cmd += [
+                    "-Xclang", "-plugin-arg-DumpAst",
+                    "-Xclang", f"-system-header-threshold={system_header_threshold}",
+                ]
+            cmd += flags + ["-fsyntax-only", input_file]
 
-    normalized_dump, placeholder_to_raw = normalize_captured_output(
-        raw_dump,
-        inputs_dir_str,
-    )
-    return (
-        proc.returncode,
-        stdout,
-        raw_dump,
-        raw_stderr,
-        normalized_dump,
-        placeholder_to_raw,
-    )
-
-
-_CLANG_DIAGNOSTIC_HEADER = re.compile(
-    r"^.+:\d+:\d+: (?:fatal error|error|warning|remark|note):"
-)
-_CLANG_DIAGNOSTIC_SOURCE = re.compile(r"^\s*\d+\s+\|")
-_CLANG_DIAGNOSTIC_MARKER = re.compile(r"^\s*\|")
-_CLANG_DIAGNOSTIC_SUMMARY = re.compile(
-    r"^\d+ (?:warnings?|errors?) generated\.$"
-)
-
-
-def strip_clang_diagnostics(output: str) -> str:
-    """Remove Clang diagnostics interleaved with the plugin's legacy dump."""
-    protocol_lines = []
-    in_diagnostic = False
-
-    for line in output.splitlines(keepends=True):
-        stripped_line = line.rstrip("\r\n")
-        if _CLANG_DIAGNOSTIC_HEADER.match(stripped_line):
-            in_diagnostic = True
-            continue
-
-        if in_diagnostic and (
-            not stripped_line
-            or _CLANG_DIAGNOSTIC_SOURCE.match(stripped_line)
-            or _CLANG_DIAGNOSTIC_MARKER.match(stripped_line)
-        ):
-            continue
-
-        in_diagnostic = False
-        if _CLANG_DIAGNOSTIC_SUMMARY.match(stripped_line):
-            continue
-
-        protocol_lines.append(line)
-
-    return "".join(protocol_lines)
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        dump = dump_path.read_bytes() if dump_path.is_file() else b""
+        verification = ""
+        if proc.returncode == 0:
+            verified = subprocess.run(
+                [verifier, str(dump_path)], capture_output=True, text=True, check=False
+            )
+            verification = verified.stdout + verified.stderr
+            if verified.returncode != 0:
+                return verified.returncode, proc.stdout, proc.stderr, dump, verification
+        return proc.returncode, proc.stdout, proc.stderr, dump, verification
 
 
 def discover_tests(inputs_dir: Path) -> list[Path]:
@@ -1130,75 +323,40 @@ class TestStatus:
     PASS = "PASS"
     FAIL = "FAIL"
     SKIP = "SKIP"
-    GENERATED = "GENERATED"
 
 
 def run_single_test(
     mode: Mode,
     path: str,
+    verifier: str,
     input_file: Path,
-    expected_dir: Path,
-    platform_expected_dirs: list[Path],
     failure_output_dir: Optional[Path],
     raw_output_dir: Optional[Path],
-    inputs_dir_str: str,
-    generate: bool,
     enabled_features: set[str],
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
 ) -> tuple[str, str]:
-    """
-    Run a single test case.
-
-    Returns:
-        tuple: (status, message) where status is one of TestStatus values
-    """
+    """Run one corpus case and validate its full FlatBuffers record stream."""
     test_name = input_file.name
-
-    # Verify test is registered in TEST_REGISTRY
     try:
         config = get_test_config(test_name)
-    except KeyError as e:
-        return TestStatus.FAIL, str(e)
+    except KeyError as error:
+        return TestStatus.FAIL, str(error)
 
-    # Check if test requirements are met
     missing_features = config.requires - enabled_features
     if missing_features:
-        return (
-            TestStatus.SKIP,
-            f"Missing features: {', '.join(sorted(missing_features))}",
-        )
+        return TestStatus.SKIP, f"Missing features: {', '.join(sorted(missing_features))}"
 
-    expected_file_name = f"{test_name}.expected"
-    expected_file = expected_dir / expected_file_name
-    expected_source = "shared"
-    if not generate:
-        expected_file, expected_source = resolve_expected_file(
-            expected_dir,
-            platform_expected_dirs,
-            test_name,
-        )
-
-    missing_expected = not generate and not expected_file.exists()
-
-    # Run the tool/plugin with streaming normalization
     flags = list(global_flags or []) + config.flags
     if input_file.suffix == ".cu":
         flags.extend(flag for flag in CUDA_TEST_FLAGS if flag not in flags)
-    (
-        return_code,
-        stdout,
-        raw_dump,
-        raw_stderr,
-        normalized_output,
-        placeholder_to_raw,
-    ) = run_tool_and_normalize(
+    return_code, stdout, stderr, dump, verification = run_flatbuffers_and_verify(
         mode,
         path,
+        verifier,
         str(input_file),
         config.id,
-        inputs_dir_str,
         clang_path,
         flags,
         config.system_header_threshold
@@ -1208,83 +366,23 @@ def run_single_test(
 
     if raw_output_dir is not None:
         raw_output_dir.mkdir(parents=True, exist_ok=True)
-        (raw_output_dir / f"{test_name}.dump").write_text(
-            raw_dump, encoding="utf-8"
-        )
-        (raw_output_dir / f"{test_name}.stderr").write_text(
-            raw_stderr, encoding="utf-8"
-        )
+        (raw_output_dir / f"{test_name}.clv2").write_bytes(dump)
+        (raw_output_dir / f"{test_name}.stderr").write_text(stderr, encoding="utf-8")
 
     if return_code != 0:
         if failure_output_dir is not None:
             failure_output_dir.mkdir(parents=True, exist_ok=True)
-            failure_output_file = failure_output_dir / expected_file_name
-            failure_output_file.write_text(normalized_output, encoding="utf-8")
-        # Include both the normalized dump and the real stderr diagnostics.
-        stderr_lines = raw_stderr.splitlines()
-        if stderr_lines:
-            head_excerpt = "\n".join(stderr_lines[:50])
-            tail_excerpt = "\n".join(stderr_lines[-50:])
-        else:
-            head_excerpt = "(empty)"
-            tail_excerpt = "(empty)"
+            (failure_output_dir / f"{test_name}.stderr").write_text(stderr, encoding="utf-8")
+            (failure_output_dir / f"{test_name}.clv2").write_bytes(dump)
         return TestStatus.FAIL, (
-            f"Tool exited with code {return_code}\n"
-            f"Stderr (first 50 lines):\n{head_excerpt}\n"
-            f"Stderr (last 50 lines):\n{tail_excerpt}\n"
-            f"Dump contained {len(normalized_output.splitlines())} lines"
+            f"Producer or FlatBuffers verifier exited with code {return_code}\n"
+            f"Verifier: {verification or '(no verifier output)'}\n"
+            f"Stderr:\n{stderr or '(empty)'}"
         )
 
-    # Check address consistency
-    consistency_errors = check_address_consistency(placeholder_to_raw)
-    if consistency_errors:
-        return TestStatus.FAIL, "Address consistency errors:\n" + "\n".join(
-            consistency_errors
-        )
-
-    if config.validate_node_closure:
-        unresolved_ids = unresolved_node_ids(normalized_output)
-        if unresolved_ids:
-            return TestStatus.FAIL, (
-                "Unresolved node IDs: " + ", ".join(unresolved_ids)
-            )
-
-    output_lines = set(normalized_output.splitlines())
-    present_forbidden_lines = sorted(config.forbidden_exact_lines & output_lines)
-    if present_forbidden_lines:
-        return TestStatus.FAIL, (
-            "Forbidden output lines: " + ", ".join(present_forbidden_lines)
-        )
-
-    if missing_expected:
-        return TestStatus.FAIL, (
-            f"Expected file not found: {expected_file}\n"
-            f"Run with --generate to create it, or check if the test is properly registered."
-        )
-
-    if generate:
-        # Generate mode: save normalized output as expected
-        expected_file.parent.mkdir(parents=True, exist_ok=True)
-        expected_file.write_text(normalized_output, encoding="utf-8")
-        return TestStatus.GENERATED, f"Generated {expected_file}"
-
-    mismatch = compare_normalized_outputs(
-        test_name,
-        expected_file.read_text(encoding="utf-8"),
-        normalized_output,
-    )
-    if mismatch is None:
-        return TestStatus.PASS, "PASSED"
-
-    if failure_output_dir is not None:
-        failure_output_dir.mkdir(parents=True, exist_ok=True)
-        failure_output_file = failure_output_dir / expected_file_name
-        failure_output_file.write_text(normalized_output, encoding="utf-8")
-
-    return TestStatus.FAIL, (
-        f"{mismatch}\n"
-        f"  Expected file: {expected_file} ({expected_source} baseline)"
-    )
+    if not dump:
+        return TestStatus.FAIL, "Producer returned success without writing a FlatBuffers stream"
+    return TestStatus.PASS, verification.strip() or "complete FlatBuffers stream verified"
 
 
 def main():
@@ -1304,14 +402,14 @@ def main():
         help="Path to the clang-dumper tool executable or plugin shared library",
     )
     parser.add_argument(
+        "--verifier",
+        required=True,
+        help="Path to verify_flatbuffers built against the pinned v2 schema",
+    )
+    parser.add_argument(
         "--clang-path",
         default=None,
         help="Path to clang executable (required for plugin mode)",
-    )
-    parser.add_argument(
-        "--generate",
-        action="store_true",
-        help="Generate expected output files instead of comparing",
     )
     parser.add_argument(
         "--test-dir",
@@ -1354,33 +452,24 @@ def main():
     parser.add_argument(
         "--failure-output-dir",
         default=None,
-        help=(
-            "Write normalized outputs for failed comparisons to this directory. "
-            "Useful for reviewing CI differences and replaying normalization changes."
-        ),
+        help="Write failed FlatBuffers dumps and diagnostics for inspection.",
     )
     parser.add_argument(
         "--raw-output-dir",
         default=None,
         help=(
-            "Write raw AST dumps and stderr for every executed test to this "
-            "directory, plus a _manifest.json file for offline replay."
+            "Write raw FlatBuffers dumps and stderr for each test to this "
+            "directory, plus a _manifest.json file."
         ),
     )
-    parser.add_argument(
-        "--baseline-platform",
-        default=None,
-        help=(
-            "Use test/expected-platforms/<platform>/<test>.expected when it "
-            "exists, falling back to test/expected/<test>.expected."
-        ),
-    )
-
     args = parser.parse_args()
 
     # Validate plugin mode requirements
     if args.mode == "plugin" and args.clang_path is None:
         parser.error("--clang-path is required when using --mode plugin")
+    verifier_path = Path(args.verifier)
+    if not verifier_path.is_file():
+        parser.error(f"FlatBuffers verifier not found: {verifier_path}")
 
     # Resolve paths
     if args.test_dir:
@@ -1389,18 +478,9 @@ def main():
         test_dir = Path(__file__).resolve().parent
 
     inputs_dir = test_dir / "inputs"
-    expected_dir = test_dir / "expected"
-    target_platform_expected_dirs = platform_expected_dirs(
-        test_dir,
-        args.baseline_platform,
-    )
 
     if not inputs_dir.exists():
         print(f"ERROR: Inputs directory not found: {inputs_dir}", file=sys.stderr)
-        sys.exit(1)
-
-    if not args.generate and not expected_dir.exists():
-        print(f"ERROR: Expected directory not found: {expected_dir}", file=sys.stderr)
         sys.exit(1)
 
     failure_output_dir: Optional[Path] = None
@@ -1479,20 +559,16 @@ def main():
         )
         sys.exit(1)
 
-    # Pre-resolve inputs_dir to string once (avoid repeated Path.resolve() calls)
-    # Use forward slashes for cross-platform consistency (matches normalization in run_tool_and_normalize)
-    inputs_dir_str = str(inputs_dir.resolve()).replace("\\", "/")
-
     if raw_output_dir is not None:
         raw_output_dir.mkdir(parents=True, exist_ok=True)
         manifest = {
-            "format": 1,
+            "format": "flatbuffers-v2",
             "mode": args.mode,
-            "inputs_dir": inputs_dir_str,
+            "inputs_dir": str(inputs_dir.resolve()),
             "enabled_features": sorted(enabled_features),
             "extra_clang_args": global_flags,
             "system_header_threshold": args.system_header_threshold,
-            "baseline_platform": args.baseline_platform,
+            "verifier": str(verifier_path.resolve()),
         }
         (raw_output_dir / "_manifest.json").write_text(
             json.dumps(manifest, indent=2, sort_keys=True) + "\n",
@@ -1503,15 +579,13 @@ def main():
     if num_workers < 1:
         parser.error("--jobs must be at least 1")
     print(
-        f"{'Generating' if args.generate else 'Running'} {len(tests)} test(s) "
+        f"Validating {len(tests)} test(s) "
         f"in {args.mode} mode using {num_workers} parallel workers..."
     )
     if enabled_features:
         print(f"Enabled features: {', '.join(sorted(enabled_features))}")
     if global_flags:
         print(f"Extra compiler args: {shlex.join(global_flags)}")
-    if args.baseline_platform:
-        print(f"Baseline platform: {args.baseline_platform}")
     print()
 
     passed = 0
@@ -1542,7 +616,6 @@ def main():
         return f"\033[{code}m{text}\033[0m" if use_color else text
 
     PASS_LABEL = _color("PASS", "32")
-    GENERATED_LABEL = PASS_LABEL
     SKIP_LABEL = _color("SKIP", "33")
     FAIL_LABEL = _color("FAIL", "31")
 
@@ -1557,13 +630,10 @@ def main():
                 run_single_test,
                 mode=args.mode,
                 path=str(target_path),
+                verifier=str(verifier_path),
                 input_file=test_file,
-                expected_dir=expected_dir,
-                platform_expected_dirs=target_platform_expected_dirs,
                 failure_output_dir=failure_output_dir,
                 raw_output_dir=raw_output_dir,
-                inputs_dir_str=inputs_dir_str,
-                generate=args.generate,
                 enabled_features=enabled_features,
                 clang_path=clang_path,
                 global_flags=global_flags,
@@ -1590,10 +660,6 @@ def main():
         if status == TestStatus.PASS:
             passed += 1
             print(f"  [{PASS_LABEL}] {test_name}")
-        elif status == TestStatus.GENERATED:
-            passed += 1
-            print(f"  [{GENERATED_LABEL}] {test_name}")
-            print(f"         {message}")
         elif status == TestStatus.SKIP:
             skipped += 1
             print(f"  [{SKIP_LABEL}] {test_name}")

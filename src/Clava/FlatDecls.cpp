@@ -16,8 +16,8 @@ std::unique_ptr<T> declBase(const clang::Decl *decl, Context &c) {
   return std::make_unique<T>();
 }
 
-// Preserve the numeric NameKind values exported by the existing text protocol.
-// Its Java enum predates Clang's ordering changes; fixing that is a separate API change.
+// Preserve the numeric NameKind values expected by existing Clava consumers.
+// Their enum predates Clang's ordering changes; fixing that is a separate API change.
 fb::NameKind nameKind(clang::DeclarationName::NameKind kind) {
   return static_cast<fb::NameKind>(kind);
 }
@@ -123,7 +123,7 @@ std::unique_ptr<fb::TemplateDeclDataT> makeTemplateDeclData(
     for (auto *param : *params)
       out->template_parameters.push_back(wireId(clava::getId(param, c.id)));
   }
-  out->templated_decl = wireId(clava::getId(decl->getTemplatedDecl(), c.id));
+  out->template_decl = wireId(clava::getId(decl->getTemplatedDecl(), c.id));
   return out;
 }
 

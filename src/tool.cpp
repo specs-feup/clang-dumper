@@ -5,15 +5,12 @@
 
 #include "Clang/ClangAst.h"
 #include "Clava/DumpStream.h"
-#include "Clava/WireStream.h"
 #include "Clava/FlatStream.h"
-#include "Clava/ZstdStream.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/TargetSelect.h"
 
 #include <memory>
-#include <cstdlib>
 #include <system_error>
 #include <vector>
 
@@ -34,9 +31,6 @@ static llvm::cl::opt<std::string> AstDumpOutputOption(
         "o", llvm::cl::value_desc("path"),
         llvm::cl::desc("Write the structured AST dump to path"),
         llvm::cl::cat(MyToolCategory));
-static llvm::cl::opt<std::string> AstDumpFormatOption(
-        "ast-dump-format", llvm::cl::value_desc("text|flatbuffers-v2"),
-        llvm::cl::init("text"), llvm::cl::cat(MyToolCategory));
 static llvm::cl::opt<bool> DependencyOption(
         "MD", llvm::cl::desc("Write a Make dependency file including system headers"),
         llvm::cl::cat(MyToolCategory));
@@ -44,12 +38,6 @@ static llvm::cl::opt<std::string> DependencyFileOption(
         "MF", llvm::cl::value_desc("path"),
         llvm::cl::desc("Write dependencies to path"),
         llvm::cl::cat(MyToolCategory));
-static llvm::cl::opt<std::string> AstDumpCompressionOption(
-        "ast-dump-compression", llvm::cl::value_desc("none|zstd"),
-        llvm::cl::desc("Compress the structured AST output"),
-        llvm::cl::init("none"), llvm::cl::cat(MyToolCategory));
-
-
 /**
  * Newer ccache versions canonicalize a compiler invocation to put compiler
  * flags before `--` and the source after it. Older versions preserve the
@@ -110,17 +98,14 @@ static std::vector<std::string> normalizeCcacheArguments(
     const std::string Argument = argv[Index];
     const bool HasSeparateValue =
         Argument == "-o" || Argument == "-MF" || Argument == "-id" ||
-        Argument == "-system-header-threshold" ||
-        Argument == "-ast-dump-compression" || Argument == "-ast-dump-format";
+        Argument == "-system-header-threshold";
     const bool IsToolArgument =
         Argument == "-c" || Argument == "-MD" ||
         Argument == "-syntax-check-only" || HasSeparateValue ||
         llvm::StringRef(Argument).starts_with("-o=") ||
         llvm::StringRef(Argument).starts_with("-MF=") ||
         llvm::StringRef(Argument).starts_with("-id=") ||
-        llvm::StringRef(Argument).starts_with("-system-header-threshold=") ||
-        llvm::StringRef(Argument).starts_with("-ast-dump-compression=") ||
-        llvm::StringRef(Argument).starts_with("-ast-dump-format=");
+        llvm::StringRef(Argument).starts_with("-system-header-threshold=");
 
     if (!IsToolArgument) {
       CompilerArguments.push_back(Argument);
@@ -182,9 +167,14 @@ int main(int argc, const char *argv[]) {
   }
 
   const auto &SourcePaths = (*OptionsParser).getSourcePathList();
-  if ((!AstDumpOutputOption.empty() || DependencyOption) &&
+  if ((!AstDumpOutputOption.empty() || DependencyOption || SyntaxCheckOnlyOption) &&
       SourcePaths.size() != 1) {
-    llvm::errs() << "-o and -MD require exactly one source file\n";
+    llvm::errs() << "AST output, dependencies, and syntax checks require one source file\n";
+    return 1;
+  }
+
+  if (!SyntaxCheckOnlyOption && AstDumpOutputOption.empty()) {
+    llvm::errs() << "-o <path> is required for AST output\n";
     return 1;
   }
 
@@ -194,14 +184,8 @@ int main(int argc, const char *argv[]) {
   }
 
   if (SyntaxCheckOnlyOption &&
-      (DependencyOption || !DependencyFileOption.empty() ||
-       AstDumpCompressionOption != "none")) {
+      (DependencyOption || !DependencyFileOption.empty())) {
     llvm::errs() << "-syntax-check-only cannot produce dump side files\n";
-    return 1;
-  }
-
-  if (SyntaxCheckOnlyOption && SourcePaths.size() != 1) {
-    llvm::errs() << "-syntax-check-only requires exactly one source file\n";
     return 1;
   }
 
@@ -215,28 +199,8 @@ int main(int argc, const char *argv[]) {
     return 1;
   }
 
-  if (AstDumpCompressionOption != "none" &&
-      AstDumpCompressionOption != "zstd") {
-    llvm::errs() << "Unsupported AST dump compression '"
-                 << AstDumpCompressionOption << "'\n";
-    return 1;
-  }
-
-  if (AstDumpCompressionOption == "zstd" && AstDumpOutputOption.empty()) {
-    llvm::errs() << "-ast-dump-compression=zstd requires -o <path>\n";
-    return 1;
-  }
-
-  if (AstDumpFormatOption != "text" && AstDumpFormatOption != "flatbuffers-v2") {
-    llvm::errs() << "Unsupported AST dump format\n"; return 1;
-  }
-  if (AstDumpFormatOption == "flatbuffers-v2" && AstDumpOutputOption.empty()) {
-    llvm::errs() << "FlatBuffers output requires -o <path>\n"; return 1;
-  }
-  std::unique_ptr<clava::flat::FlatStream> completeDumpOutput;
+  std::unique_ptr<clava::flat::FlatStream> dumpStream;
   std::unique_ptr<llvm::raw_fd_ostream> dumpOutput;
-  std::unique_ptr<clava::ZstdStream> compressedDumpOutput;
-  std::unique_ptr<clava::WireStream> wireDumpOutput;
   if (!AstDumpOutputOption.getValue().empty()) {
     std::error_code ErrorCode;
     dumpOutput = std::make_unique<llvm::raw_fd_ostream>(
@@ -247,43 +211,11 @@ int main(int argc, const char *argv[]) {
       return 1;
     }
 
-    if (AstDumpCompressionOption == "zstd") {
-      // Fast level 5 keeps producer overhead close to plain output while still
-      // reducing large text dumps by roughly an order of magnitude.
-      auto CompressedOutput = clava::ZstdStream::create(*dumpOutput, -5);
-      if (!CompressedOutput) {
-        llvm::errs() << "Cannot initialize compressed AST dump output: "
-                     << llvm::toString(CompressedOutput.takeError()) << "\n";
-        return 1;
-      }
-      compressedDumpOutput = std::move(*CompressedOutput);
-      const char *flat = std::getenv("AST_WIRE_FLAT");
-      if (flat != nullptr && std::string(flat) == "1") {
-        wireDumpOutput = std::make_unique<clava::WireStream>(
-            *compressedDumpOutput);
-        clava::setDumpStream(*wireDumpOutput);
-      } else {
-        clava::setDumpStream(*compressedDumpOutput);
-      }
-    } else {
-      const char *flat = std::getenv("AST_WIRE_FLAT");
-      if (flat != nullptr && std::string(flat) == "1") {
-        wireDumpOutput =
-            std::make_unique<clava::WireStream>(*dumpOutput);
-        clava::setDumpStream(*wireDumpOutput);
-      } else {
-        clava::setDumpStream(*dumpOutput);
-      }
-    }
+    clava::enableDenseIds();
+    dumpStream = std::make_unique<clava::flat::FlatStream>(*dumpOutput);
+    clava::setDumpStream(*dumpStream);
   }
 
-  if (AstDumpFormatOption == "flatbuffers-v2") {
-    if (wireDumpOutput) {llvm::errs() << "Cannot combine legacy and complete FlatBuffers modes\n"; return 1;}
-    clava::enableDenseIds();
-    llvm::raw_ostream &destination=compressedDumpOutput?static_cast<llvm::raw_ostream&>(*compressedDumpOutput):*dumpOutput;
-    completeDumpOutput=std::make_unique<clava::flat::FlatStream>(destination);
-    clava::setDumpStream(*completeDumpOutput);
-  }
   if (!SyntaxCheckOnlyOption) {
     DumpResources::init(UserIdOption.getValue(),
                         UserSystemHeaderThresholdOption.getValue());
@@ -358,18 +290,7 @@ int main(int argc, const char *argv[]) {
   }
 
   if (dumpOutput) {
-    if (completeDumpOutput) completeDumpOutput->finish();
-    if (wireDumpOutput) {
-      wireDumpOutput->finish();
-    }
-    if (compressedDumpOutput) {
-      if (auto Error = compressedDumpOutput->finish()) {
-        llvm::errs() << "Cannot compress AST dump output '"
-                     << AstDumpOutputOption << "': "
-                     << llvm::toString(std::move(Error)) << "\n";
-        returnValue = 1;
-      }
-    }
+    dumpStream->finish();
 
     dumpOutput->flush();
     if (dumpOutput->has_error()) {

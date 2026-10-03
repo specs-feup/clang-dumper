@@ -1,6 +1,12 @@
 #ifndef CLAVA_FLAT_SUPPORT_H
 #define CLAVA_FLAT_SUPPORT_H
 
+#include "flatbuffers/base.h"
+#if FLATBUFFERS_VERSION_MAJOR != 25 || FLATBUFFERS_VERSION_MINOR != 12 || \
+    FLATBUFFERS_VERSION_REVISION != 19
+#error "clang-dumper requires FlatBuffers runtime 25.12.19"
+#endif
+
 #include "complete_generated.h"
 #include "FlatEnumSupport.h"
 #include "../Clang/ClangNodes.h"
@@ -21,7 +27,7 @@ struct Context {
   std::function<uint32_t(llvm::StringRef)> fileId;
 };
 int64_t wireId(const std::string &value);
-std::unique_ptr<fb::NodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c);
+std::unique_ptr<fb::ClavaNodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c);
 std::string qualifierString(clang::NestedNameSpecifier *qualifier, Context &c);
 std::string sourceText(clang::SourceRange range, Context &c);
 std::vector<fb::C99Qualifier> c99Qualifiers(clang::Qualifiers qualifiers, Context &c);

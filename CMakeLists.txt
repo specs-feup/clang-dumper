@@ -24,6 +24,64 @@ project(ClangAstDumper LANGUAGES C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(FetchContent)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers-version.env")
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers-version.env" _flatbuffers_version_line
+    REGEX "^FLATBUFFERS_VERSION=")
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers-version.env" _flatbuffers_commit_line
+    REGEX "^FLATBUFFERS_COMMIT=")
+string(REPLACE "FLATBUFFERS_VERSION=" "" CLANG_DUMPER_FLATBUFFERS_VERSION
+    "${_flatbuffers_version_line}")
+string(REPLACE "FLATBUFFERS_COMMIT=" "" CLANG_DUMPER_FLATBUFFERS_COMMIT
+    "${_flatbuffers_commit_line}")
+if(NOT CLANG_DUMPER_FLATBUFFERS_VERSION OR NOT CLANG_DUMPER_FLATBUFFERS_COMMIT)
+    message(FATAL_ERROR "Invalid flatbuffers-version.env")
+endif()
+set(FLATBUFFERS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(FLATBUFFERS_BUILD_FLATHASH OFF CACHE BOOL "" FORCE)
+if(CMAKE_CROSSCOMPILING)
+    set(FLATBUFFERS_BUILD_FLATC OFF CACHE BOOL "" FORCE)
+else()
+    set(FLATBUFFERS_BUILD_FLATC ON CACHE BOOL "" FORCE)
+endif()
+FetchContent_Declare(flatbuffers
+    GIT_REPOSITORY https://github.com/google/flatbuffers.git
+    GIT_TAG "${CLANG_DUMPER_FLATBUFFERS_COMMIT}"
+    GIT_SHALLOW FALSE
+)
+FetchContent_MakeAvailable(flatbuffers)
+
+find_package(Git REQUIRED)
+execute_process(
+    COMMAND "${GIT_EXECUTABLE}" -C "${flatbuffers_SOURCE_DIR}" rev-parse HEAD
+    OUTPUT_VARIABLE _flatbuffers_actual_commit
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE _flatbuffers_git_result
+    ERROR_QUIET)
+if(NOT _flatbuffers_git_result EQUAL 0 OR
+   NOT "${_flatbuffers_actual_commit}" STREQUAL "${CLANG_DUMPER_FLATBUFFERS_COMMIT}")
+    message(FATAL_ERROR
+        "FlatBuffers source commit '${_flatbuffers_actual_commit}' does not match pinned ${CLANG_DUMPER_FLATBUFFERS_COMMIT}")
+endif()
+
+set(CLANG_DUMPER_FLATBUFFERS_INCLUDE_DIR "${flatbuffers_SOURCE_DIR}/include")
+set(CLANG_DUMPER_FLATBUFFERS_BASE "${CLANG_DUMPER_FLATBUFFERS_INCLUDE_DIR}/flatbuffers/base.h")
+foreach(_version_component MAJOR MINOR REVISION)
+    file(STRINGS "${CLANG_DUMPER_FLATBUFFERS_BASE}" _version_line
+        REGEX "^#define FLATBUFFERS_VERSION_${_version_component} +[0-9]+$")
+    if(NOT _version_line)
+        message(FATAL_ERROR "Cannot read FlatBuffers runtime version from ${CLANG_DUMPER_FLATBUFFERS_BASE}")
+    endif()
+    string(REGEX MATCH "[0-9]+$" _version_value "${_version_line}")
+    list(APPEND _flatbuffers_runtime_version "${_version_value}")
+endforeach()
+list(JOIN _flatbuffers_runtime_version "." _flatbuffers_runtime_version_string)
+if(NOT "${_flatbuffers_runtime_version_string}" STREQUAL "${CLANG_DUMPER_FLATBUFFERS_VERSION}")
+    message(FATAL_ERROR
+        "FlatBuffers runtime ${_flatbuffers_runtime_version_string} does not match pinned ${CLANG_DUMPER_FLATBUFFERS_VERSION}")
+endif()
+
 if(WIN32 AND CMAKE_CROSSCOMPILING)
     if(NOT LLVM_WINDOWS_ROOT)
         message(FATAL_ERROR "LLVM_WINDOWS_ROOT is required for Windows cross-compilation")
@@ -219,7 +277,6 @@ set(SOURCE_FILES
     src/ClangEnums/ClangEnums.cpp
     src/Clava/DumpStream.cpp
     src/Clava/HandlerCoverage.cpp
-    src/Clava/WireStream.cpp
     src/Clava/FlatCommon.cpp
     src/Clava/FlatAttributes.cpp
     src/Clava/FlatDecls.cpp
@@ -246,60 +303,52 @@ set(SOURCE_FILES
     "${ENUMS_AGGREGATED_SRC}"
     )
 
-set(AST_WIRE_FLATC "" CACHE FILEPATH
-    "FlatBuffers flatc executable used to generate the AST wire header")
-if(NOT AST_WIRE_FLATC)
-    find_program(AST_WIRE_FLATC_AUTO
-        NAMES flatc
-        HINTS "$ENV{FLATBUFFERS_ROOT}/build-make")
-    set(AST_WIRE_FLATC "${AST_WIRE_FLATC_AUTO}" CACHE FILEPATH
-        "FlatBuffers flatc executable used to generate the AST wire header" FORCE)
-endif()
-if(NOT AST_WIRE_FLATC)
-    message(FATAL_ERROR
-        "FlatBuffers flatc was not found. Set AST_WIRE_FLATC or FLATBUFFERS_ROOT.")
-endif()
-
-set(AST_WIRE_FLATBUFFERS_INCLUDE_DIR "" CACHE PATH
-    "FlatBuffers include directory used by the AST wire pilot")
-if(NOT AST_WIRE_FLATBUFFERS_INCLUDE_DIR)
-    find_path(AST_WIRE_FLATBUFFERS_INCLUDE_DIR_AUTO
-        NAMES flatbuffers/flatbuffers.h
-        HINTS "$ENV{FLATBUFFERS_ROOT}/include"
-        REQUIRED)
-    set(AST_WIRE_FLATBUFFERS_INCLUDE_DIR "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR_AUTO}" CACHE PATH
-        "FlatBuffers include directory used by the AST wire pilot" FORCE)
-endif()
-
-set(AST_WIRE_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated/wire")
-set(AST_WIRE_SCHEMA "${CMAKE_CURRENT_SOURCE_DIR}/wire/wire.fbs")
-set(AST_WIRE_GENERATED_HEADER "${AST_WIRE_GENERATED_DIR}/wire_generated.h")
-add_custom_command(
-    OUTPUT "${AST_WIRE_GENERATED_HEADER}"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${AST_WIRE_GENERATED_DIR}"
-    COMMAND "${AST_WIRE_FLATC}" --cpp --scoped-enums
-        -o "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_SCHEMA}"
-    DEPENDS "${AST_WIRE_SCHEMA}" "${AST_WIRE_FLATC}"
-    COMMENT "Generate FlatBuffers AST wire header"
-    VERBATIM
-    )
-add_custom_target(ast_wire_flatbuffers DEPENDS "${AST_WIRE_GENERATED_HEADER}")
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
-get_filename_component(AST_WIRE_SDK "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}" DIRECTORY)
+if(CMAKE_CROSSCOMPILING)
+    set(AST_WIRE_FLATC_HOST "" CACHE FILEPATH
+        "Host flatc built from the pinned FlatBuffers source for a cross build")
+    if(NOT AST_WIRE_FLATC_HOST OR NOT EXISTS "${AST_WIRE_FLATC_HOST}")
+        message(FATAL_ERROR
+            "Cross builds require AST_WIRE_FLATC_HOST built from FlatBuffers ${CLANG_DUMPER_FLATBUFFERS_VERSION}")
+    endif()
+    set(AST_WIRE_FLATC "${AST_WIRE_FLATC_HOST}")
+    set(AST_WIRE_FLATC_DEPENDENCY "${AST_WIRE_FLATC_HOST}")
+else()
+    set(AST_WIRE_FLATC "$<TARGET_FILE:flatc>")
+    set(AST_WIRE_FLATC_DEPENDENCY flatc)
+endif()
 set(AST_WIRE_V2_DIR "${CMAKE_CURRENT_BINARY_DIR}/wire-v2")
 file(GLOB AST_WIRE_V2_SCHEMAS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/wire/v2/*.fbs")
 file(GLOB AST_WIRE_V2_BUILDERS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/Clava/Flat*.cpp")
 add_custom_command(
     OUTPUT "${AST_WIRE_V2_DIR}/complete.stamp"
-    BYPRODUCTS "${AST_WIRE_V2_DIR}/complete_generated.h" "${AST_WIRE_V2_DIR}/FlatHandlerDeclarations.inc" "${AST_WIRE_V2_DIR}/FlatDispatch.inc"
+    BYPRODUCTS
+        "${AST_WIRE_V2_DIR}/attributes_generated.h"
+        "${AST_WIRE_V2_DIR}/common_generated.h"
+        "${AST_WIRE_V2_DIR}/complete_generated.h"
+        "${AST_WIRE_V2_DIR}/decls_generated.h"
+        "${AST_WIRE_V2_DIR}/enums_generated.h"
+        "${AST_WIRE_V2_DIR}/expressions_generated.h"
+        "${AST_WIRE_V2_DIR}/FlatSchemaHash.h"
+        "${AST_WIRE_V2_DIR}/FlatEnumSupport.h"
+        "${AST_WIRE_V2_DIR}/FlatHandlerDeclarations.inc"
+        "${AST_WIRE_V2_DIR}/FlatDispatch.inc"
+        "${AST_WIRE_V2_DIR}/records_generated.h"
+        "${AST_WIRE_V2_DIR}/statements_generated.h"
+        "${AST_WIRE_V2_DIR}/types_generated.h"
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
-        --flatc "${AST_WIRE_FLATC}" --sdk "${AST_WIRE_SDK}" --out "${AST_WIRE_V2_DIR}"
+        --flatc "${AST_WIRE_FLATC}"
+        --out "${AST_WIRE_V2_DIR}"
+        --manifest "${CMAKE_CURRENT_SOURCE_DIR}/wire/generated.sha256"
     DEPENDS ${AST_WIRE_V2_SCHEMAS} ${AST_WIRE_V2_BUILDERS}
         "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers-version.env"
+        "${CMAKE_CURRENT_SOURCE_DIR}/wire/generated.sha256"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperDecls.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperTypes.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperStmts.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperAttrs.cpp"
+        ${AST_WIRE_FLATC_DEPENDENCY}
     VERBATIM)
 add_custom_target(ast_wire_v2 DEPENDS "${AST_WIRE_V2_DIR}/complete.stamp")
 
@@ -308,38 +357,56 @@ if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
     target_compile_features(plugin PRIVATE cxx_std_20)
     target_include_directories(plugin PRIVATE
-        "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
-        "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_V2_DIR}")
-    add_dependencies(plugin clang_enums ast_wire_flatbuffers ast_wire_v2)
+        "${CLANG_DUMPER_FLATBUFFERS_INCLUDE_DIR}"
+        "${AST_WIRE_V2_DIR}")
+    add_dependencies(plugin clang_enums ast_wire_v2)
 endif()
 
-add_executable(tool ${SOURCE_FILES} src/tool.cpp src/Clava/ZstdStream.cpp)
+add_executable(tool ${SOURCE_FILES} src/tool.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
 target_include_directories(tool PRIVATE
-    "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
-    "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_V2_DIR}")
-add_dependencies(tool clang_enums ast_wire_flatbuffers ast_wire_v2)
+    "${CLANG_DUMPER_FLATBUFFERS_INCLUDE_DIR}"
+    "${AST_WIRE_V2_DIR}")
+add_dependencies(tool clang_enums ast_wire_v2)
 
-add_executable(verify_flat_wire test/verify_flat_wire.cpp)
-target_compile_features(verify_flat_wire PRIVATE cxx_std_20)
-target_include_directories(verify_flat_wire PRIVATE
-    "${AST_WIRE_FLATBUFFERS_INCLUDE_DIR}"
-    "${AST_WIRE_GENERATED_DIR}" "${AST_WIRE_V2_DIR}")
-add_dependencies(verify_flat_wire ast_wire_flatbuffers)
-
-find_path(CLANG_DUMPER_ZSTD_INCLUDE_DIR NAMES zstd.h
-    HINTS "$ENV{ZSTD_ROOT}"
-    PATH_SUFFIXES include
-    REQUIRED)
-target_include_directories(tool PRIVATE "${CLANG_DUMPER_ZSTD_INCLUDE_DIR}")
-
-if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
-    find_library(CLANG_DUMPER_ZSTD_LIBRARY NAMES zstd
-        HINTS "$ENV{ZSTD_ROOT}"
-        PATH_SUFFIXES lib
-        REQUIRED)
-    target_link_libraries(tool PRIVATE "${CLANG_DUMPER_ZSTD_LIBRARY}")
+add_executable(verify_flatbuffers test/verify_flatbuffers.cpp)
+target_compile_features(verify_flatbuffers PRIVATE cxx_std_20)
+target_include_directories(verify_flatbuffers PRIVATE
+    "${CLANG_DUMPER_FLATBUFFERS_INCLUDE_DIR}"
+    "${AST_WIRE_V2_DIR}")
+add_dependencies(verify_flatbuffers ast_wire_v2)
+if(WIN32 AND CMAKE_CROSSCOMPILING)
+    target_link_options(verify_flatbuffers PRIVATE -static -Wl,--stack,16777216)
 endif()
+
+string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" _clang_dumper_processor)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(_clang_dumper_platform macos)
+elseif(WIN32)
+    set(_clang_dumper_platform windows)
+else()
+    set(_clang_dumper_platform linux)
+endif()
+if(_clang_dumper_processor MATCHES "^(aarch64|arm64)$")
+    set(_clang_dumper_arch arm64)
+elseif(_clang_dumper_processor MATCHES "^(x86_64|amd64|x64)$")
+    if(WIN32)
+        set(_clang_dumper_arch x86_64)
+    else()
+        set(_clang_dumper_arch x64)
+    endif()
+else()
+    message(FATAL_ERROR "Unsupported local manifest architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+add_custom_command(TARGET tool POST_BUILD
+    COMMAND "${Python3_EXECUTABLE}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/write_release_manifest.py"
+        --local-output-dir "$<TARGET_FILE_DIR:tool>"
+        --tool "$<TARGET_FILE:tool>"
+        --platform "${_clang_dumper_platform}"
+        --arch "${_clang_dumper_arch}"
+    COMMENT "Write local dumper schema/tool release manifest"
+    VERBATIM)
 
 target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
 
@@ -435,7 +502,6 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
         ucrtbase
         m
         z
-        zstd
         version
         ole32
         oleaut32

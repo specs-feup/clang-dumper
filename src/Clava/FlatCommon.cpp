@@ -41,14 +41,14 @@ static std::unique_ptr<fb::RangeT> range(clang::SourceLocation begin, clang::Sou
   }
   return out;
 }
-std::unique_ptr<fb::NodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c) {
-  auto out=std::make_unique<fb::NodeDataT>();out->source=std::make_unique<fb::SourceInfoT>();
+std::unique_ptr<fb::ClavaNodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c) {
+  auto out=std::make_unique<fb::ClavaNodeDataT>();out->source=std::make_unique<fb::SourceInfoT>();
   auto &s=*out->source;auto &sm=c.ast->getSourceManager();begin=unsplit(sm,begin);end=unsplit(sm,end);
   auto expanded=sm.getExpansionRange(clang::SourceRange(begin,end));
   s.expansion=range(expanded.getBegin(),expanded.getEnd(),c);
   bool macro=begin.isMacroID()||end.isMacroID();s.is_macro=macro;
   if(macro)s.spelling=range(sm.getSpellingLoc(begin),sm.getSpellingLoc(end),c);
-  auto full=c.ast->getFullLoc(begin);s.system_header=full.isValid()&&full.isInSystemHeader();
+  auto full=c.ast->getFullLoc(begin);s.is_in_system_header=full.isValid()&&full.isInSystemHeader();
   return out;
 }
 std::string qualifierString(clang::NestedNameSpecifier *q, Context &c) {

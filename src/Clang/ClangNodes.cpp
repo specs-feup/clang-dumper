@@ -12,7 +12,6 @@
 #include "clang/Lex/Lexer.h"
 
 #include <bitset>
-#include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -61,13 +60,7 @@ std::unordered_map<const void *, uint32_t> &denseIds() {
 
 bool forceDenseIds=false;
 bool denseIdsEnabled() {
-    static const bool enabled = [] {
-        const char *flat = std::getenv("AST_WIRE_FLAT");
-        const char *text = std::getenv("AST_WIRE_DENSE_TEXT");
-        return (flat != nullptr && std::strcmp(flat, "1") == 0) ||
-               (text != nullptr && std::strcmp(text, "1") == 0);
-    }();
-    return forceDenseIds || enabled;
+    return forceDenseIds;
 }
 
 } // namespace

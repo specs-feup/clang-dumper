@@ -1,63 +1,80 @@
-# Complete FlatBuffers AST protocol
+# Eager FlatBuffers AST wire format
 
-The current experiment uses [`v2/complete.fbs`](v2/complete.fbs), selected with
-`-ast-dump-format=flatbuffers-v2`. Text remains the default. The format argument
-participates in ccache invocation identity.
+The production dumper emits the complete eager FlatBuffers v2 stream. AST output
+always requires a file path; format and compression switches are not supported.
+The plugin uses the same protocol and requires `-output=<path>`.
 
 ```sh
-export FLATBUFFERS_ROOT=$HOME/.cache/ast-flatbuffers-planning/flatbuffers
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
-  -DSKIP_ENUM_GENERATION=OFF \
-  -DAST_WIRE_FLATC="$FLATBUFFERS_ROOT/build-make/flatc" \
-  -DAST_WIRE_FLATBUFFERS_INCLUDE_DIR="$FLATBUFFERS_ROOT/include"
-cmake --build build --target tool --parallel 3
-build/tool -c source.cpp -o source.flat -ast-dump-format=flatbuffers-v2 -- -std=c++17
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --target tool plugin verify_flatbuffers --parallel
+build/tool -c source.cpp -o source.clv2 -- -std=c++17
+build/verify_flatbuffers source.clv2
 ```
 
-Use upstream FlatBuffers v25.12.19, commit
-`7e163021e59cca4f8e1e35a7c828b5c6b7915953`. Clava's experiment `bootstrap.py`
-fetches and verifies this SDK. Python 3 runs the build-time adapter generator.
+The native build fetches the FlatBuffers source commit in
+[`flatbuffers-version.env`](../flatbuffers-version.env), builds its own `flatc`,
+and verifies that the compiler and runtime versions match. Cross builds build a
+host `flatc` from that same commit. No adjacent checkout is used.
 
-## Schema organization
+## Schema and consumer naming
 
-The schema defines 112 node payload alternatives, corresponding to the existing
-specialized or generic dumper handlers. It does not claim support for every Clang
-AST class. Declarations, types, expressions, statements and attributes have separate
-schema files. Required `base` tables compose the existing field hierarchy. Compound
-values such as template arguments and constructor targets use tagged unions.
-There is no text or Raw fallback in v2; unexpected legacy output is an error.
+The bundle entrypoint is `wire/v2/complete.fbs`. It includes the record envelope
+and all declaration, type, expression, statement, attribute, and common payloads.
+The schema contains wire-format definitions only; Clava owns its Java reader,
+key and enum mapping, and generated consumer bindings.
 
-The schema is ordinary FlatBuffers. Standard custom attributes attach Clava DataKey,
-Java enum and reference mappings. `scripts/generate_complete_wire.py` reads official
-FlatBuffers reflection data, then generates native dispatch and Java field bindings.
-`flatc` generates the C++ builders and Java binary accessors. Clang getters and the
-adapters for compound Clava values remain handwritten.
+Consumer table names follow one rule: remove the single `Data` suffix to find
+the Java node class (`FunctionDeclData` maps to `FunctionDecl`, and
+`ClavaNodeData` maps to `ClavaNode`). Wire fields use the snake-case form of
+their consumer key names. Do not add aliases or consumer-specific schema
+annotations. Optional-scalar presence is part of the wire contract; mark a field
+`wire_optional` only when absence is semantically valid. Keep structural fields
+that have no consumer key named for their protocol role.
 
-Mandatory strings, vectors and tables use `(required)`. Scalars use explicit presence,
-with generated Java checks rejecting omission unless marked `wire_optional`.
-Reference properties are eager, including those nested inside compound values.
-Java resolves them using existing typed Clava node queues. The generator checks
-presence and enum/union alternatives; this is not a complete hostile-input verifier.
+## Adding or changing a node or field
 
-## File layout and ownership
+1. Edit the relevant schema under `wire/v2/`. Add a payload alternative to
+   `NodePayload` in `complete.fbs` when introducing a node table. Follow the
+   `*Data` naming rule and use strict field names.
+2. Implement the producer mapping in the matching `src/Clava/Flat*.cpp` file.
+   Add Clang visitor coverage in `src/ClavaDataDumper/` when introducing a new
+   Clang node kind.
+3. Regenerate the C++ schema bindings, dispatch, enum support, and declaration
+   includes with the pinned compiler, then update the generated-output
+   inventory:
 
-Each size-prefixed `CLV2` Block contains typed records. The builder flushes at a
-64 KiB target so records share vtables without buffering a whole translation unit.
-One oversized record may exceed that target. Header carries a SHA-256 of the schema;
-End carries counts. Paths are interned. Positive IDs are dense within one TU;
-negative IDs distinguish null type, declaration, expression, statement and attribute
-references. Java adds the parsing scope to IDs before multi-TU normalization.
+   ```sh
+   cmake --build build --target flatc
+   python3 scripts/generate_complete_wire.py \
+     --flatc build/_deps/flatbuffers-build/flatc \
+     --out build/wire-v2 \
+     --manifest wire/generated.sha256 \
+     --update-manifest
+   ```
 
-The Java reader maps 64 MiB windows and retains the relevant buffers for lazy fields.
-Mapped artifacts must be uncompressed and immutable. Clava enables ccache compression
-for persistent binary entries, which ccache restores to an uncompressed file.
-The cache path still waits for native completion before Java import begins.
+   Normal builds omit `--update-manifest`; they fail when committed generated
+   output inventory differs. The Clava consumer independently generates its
+   bindings from the published schema using the naming contract above.
+4. Build and run `verify_flatbuffers`, native tool/plugin corpus validation, and
+   the Clava consumer tests. Check stream fidelity before changing the schema
+   version for an incompatible wire change.
+5. Publish a compatible dumper release. The release job packages every
+   `wire/v2/*.fbs` file, writes `clang-dumper-release-manifest.json`, and uploads
+   the schema bundle with the tools. Consumers select the exact release using
+   `clang-dumper-release.tag` and verify the manifest hashes before compiling
+   their reader.
 
-The companion Clava worktree consumes this schema during its build. Publishing the
-schema and hash through the clang-dumper release manifest is not implemented yet.
+The canonical schema hash is SHA-256 over files sorted by POSIX relative path.
+For each file, hash the UTF-8 path (`wire/v2/<name>`), one NUL byte, exact file
+bytes, and one NUL byte. The manifest also records the archive's own SHA-256 so
+the downloaded bundle can be checked independently. `schema_version` and the
+FlatBuffers version and source commit are recorded beside the v2 entrypoint.
 
-## Historical v1 pilot
+## Stream framing
 
-The original `wire.fbs`, `AST_WIRE_FLAT=1` and `verify_flat_wire` target remain for
-reproducing the earlier ten-payload hybrid experiment. They are not the complete
-protocol and must not be combined with `-ast-dump-format=flatbuffers-v2`.
+Each size-prefixed `CLV2` block contains typed records. Blocks target 64 KiB so
+records can share vtables without buffering a whole translation unit; a single
+large record may exceed that size. The first record carries the schema hash and
+the terminal End record carries stream, node, file, and dense-ID counts. Paths
+are interned. Positive node IDs are dense within one translation unit; negative
+IDs identify typed null references. Every AST reference is eagerly encoded.

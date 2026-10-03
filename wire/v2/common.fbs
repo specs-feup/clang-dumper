@@ -1,13 +1,7 @@
 include "enums.fbs";
 namespace astwire.v2;
 
-// These attributes generate Clava field mapping and validation. Wire types and
-// presence use standard FlatBuffers declarations, not a separate schema grammar.
-attribute "java_key";
-attribute "java_ref";
-attribute "java_ref_alias";
-attribute "java_codec";
-attribute "java_class";
+// This schema uses standard FlatBuffers types and presence declarations.
 attribute "wire_optional";
 
 // References are signed 64-bit IDs: positive values address TU-local nodes;
@@ -28,9 +22,9 @@ table SourceInfo {
   expansion:Range;
   is_macro:bool = null;
   spelling:Range;
-  system_header:bool = null;
+  is_in_system_header:bool = null;
 }
-table NodeData { source:SourceInfo (required); }
+table ClavaNodeData { source:SourceInfo (required); }
 
 table CXXBaseSpecifier {
   is_virtual:bool = null;
