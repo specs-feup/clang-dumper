@@ -374,8 +374,9 @@ def run_single_test(
             ["--expect-gcc-asm-hex", config.expected_gcc_asm.encode("utf-8").hex()]
         )
     if config.expected_ms_asm is not None:
+        expected_ms_asm = config.expected_ms_asm.replace("\n", os.linesep)
         verifier_args.extend(
-            ["--expect-ms-asm-hex", config.expected_ms_asm.encode("utf-8").hex()]
+            ["--expect-ms-asm-hex", expected_ms_asm.encode("utf-8").hex()]
         )
     if input_file.suffix == ".cu":
         flags.extend(flag for flag in CUDA_TEST_FLAGS if flag not in flags)
