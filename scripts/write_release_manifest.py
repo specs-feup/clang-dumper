@@ -27,6 +27,13 @@ def flatbuffers_pin() -> tuple[str, str]:
     return values["FLATBUFFERS_VERSION"], values["FLATBUFFERS_COMMIT"]
 
 
+def llvm_major_pin() -> int:
+    for line in (ROOT / "llvm-version.env").read_text(encoding="utf-8").splitlines():
+        if line.startswith("LLVM_VERSION="):
+            return int(line.partition("=")[2])
+    raise RuntimeError("llvm-version.env has no LLVM_VERSION")
+
+
 def schema_files() -> list[Path]:
     return sorted(SCHEMA_DIR.glob("*.fbs"))
 
@@ -134,9 +141,10 @@ def write_local_build(output_dir: Path, tool_path: Path, platform: str, arch: st
     output_dir.mkdir(parents=True, exist_ok=True)
     schema_path, digest = write_schema_archive(output_dir / SCHEMA_ASSET)
     schema_asset_digest = hashlib.sha256(schema_path.read_bytes()).hexdigest()
+    llvm_major = llvm_major_pin()
     assets = [
         asset_entry(schema_path, "any", "any", "wire-schema"),
-        asset_entry(tool_path, platform, arch, "tool"),
+        asset_entry(tool_path, platform, arch, "tool", llvm_major),
     ]
     write_json(
         output_dir / MANIFEST_NAME,

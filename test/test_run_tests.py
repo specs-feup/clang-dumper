@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import re
 import subprocess
@@ -61,6 +62,15 @@ class FlatBuffersIntegrationTest(unittest.TestCase):
         self.assertIn("blocks=", verified.stdout)
         self.assertIn(" records=", verified.stdout)
         self.assertIn(" nodes=", verified.stdout)
+
+    def test_local_manifest_pins_tool_llvm_major(self) -> None:
+        manifest = clang_dumper_tool().parent / "clang-dumper-release-manifest.json"
+        self.assertTrue(manifest.is_file(), "local build manifest must be generated")
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        tool_assets = [asset for asset in payload["assets"] if asset["kind"] == "tool"]
+        self.assertEqual(1, len(tool_assets))
+        self.assertIsInstance(tool_assets[0].get("llvm_major"), int)
+        self.assertGreater(tool_assets[0]["llvm_major"], 0)
 
     def test_requires_output_path_and_rejects_legacy_selectors(self) -> None:
         no_output = self.run_tool(str(self.source), "--", "-std=c++17")
