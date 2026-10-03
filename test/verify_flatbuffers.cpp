@@ -7,7 +7,10 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <optional>
 #include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 namespace fb = astwire::v2;
@@ -19,9 +22,49 @@ static uint32_t readSize(const uint8_t *data) {
          (static_cast<uint32_t>(data[3]) << 24);
 }
 
+static int hexDigit(char value) {
+  if (value >= '0' && value <= '9') return value - '0';
+  if (value >= 'a' && value <= 'f') return value - 'a' + 10;
+  if (value >= 'A' && value <= 'F') return value - 'A' + 10;
+  return -1;
+}
+
+static bool decodeHex(std::string_view encoded, std::string &decoded) {
+  if (encoded.size() % 2 != 0) return false;
+  decoded.clear();
+  decoded.reserve(encoded.size() / 2);
+  for (size_t i = 0; i < encoded.size(); i += 2) {
+    const int high = hexDigit(encoded[i]);
+    const int low = hexDigit(encoded[i + 1]);
+    if (high < 0 || low < 0) return false;
+    decoded.push_back(static_cast<char>((high << 4) | low));
+  }
+  return true;
+}
+
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    std::cerr << "usage: verify_flatbuffers <dump>\n";
+  if (argc < 2) {
+    std::cerr << "usage: verify_flatbuffers <dump> [--expect-gcc-asm-hex <hex>]"
+                 " [--expect-ms-asm-hex <hex>]\n";
+    return 2;
+  }
+
+  std::optional<std::string> expectedGccAsm;
+  std::optional<std::string> expectedMsAsm;
+  for (int i = 2; i < argc; ++i) {
+    if ((std::string_view(argv[i]) == "--expect-gcc-asm-hex" ||
+         std::string_view(argv[i]) == "--expect-ms-asm-hex") &&
+        i + 1 < argc) {
+      const bool gcc = std::string_view(argv[i]) == "--expect-gcc-asm-hex";
+      std::string decoded;
+      if (!decodeHex(argv[++i], decoded)) {
+        std::cerr << "invalid hexadecimal asm expectation\n";
+        return 2;
+      }
+      (gcc ? expectedGccAsm : expectedMsAsm) = std::move(decoded);
+      continue;
+    }
+    std::cerr << "unknown or incomplete verifier option: " << argv[i] << "\n";
     return 2;
   }
 
@@ -42,6 +85,8 @@ int main(int argc, char **argv) {
   const fb::End *end = nullptr;
   bool sawHeader = false;
   bool sawEnd = false;
+  bool foundExpectedGccAsm = false;
+  bool foundExpectedMsAsm = false;
   size_t offset = 0;
   size_t blocks = 0;
   while (offset < bytes.size()) {
@@ -108,6 +153,18 @@ int main(int argc, char **argv) {
           return 1;
         }
         ++nodes;
+        if (expectedGccAsm &&
+            node->payload_type() == fb::NodePayload::GCCAsmStmtData) {
+          const auto *asmNode = node->payload_as_GCCAsmStmtData();
+          foundExpectedGccAsm |=
+              asmNode->asm_string()->string_view() == *expectedGccAsm;
+        }
+        if (expectedMsAsm &&
+            node->payload_type() == fb::NodePayload::MSAsmStmtData) {
+          const auto *asmNode = node->payload_as_MSAsmStmtData();
+          foundExpectedMsAsm |=
+              asmNode->asm_string()->string_view() == *expectedMsAsm;
+        }
         break;
       }
       case fb::RecordPayload::End:
@@ -143,6 +200,14 @@ int main(int argc, char **argv) {
   if (*end->records() + 1 != records || *end->nodes() != nodes ||
       *end->files() != files) {
     std::cerr << "end-record counts do not match the decoded stream\n";
+    return 1;
+  }
+  if (expectedGccAsm && !foundExpectedGccAsm) {
+    std::cerr << "GCC asm source template did not match expected bytes\n";
+    return 1;
+  }
+  if (expectedMsAsm && !foundExpectedMsAsm) {
+    std::cerr << "MS asm source template did not match expected bytes\n";
     return 1;
   }
   std::cout << "blocks=" << blocks << " records=" << records

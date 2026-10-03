@@ -3,6 +3,8 @@
 #include "clang/AST/Expr.h"
 #include "clang/AST/StmtCXX.h"
 #include "clang/AST/StmtObjC.h"
+#include "clang/Basic/SourceManager.h"
+#include "clang/Lex/Lexer.h"
 
 namespace clava::flat {
 
@@ -69,15 +71,73 @@ std::unique_ptr<fb::GCCAsmStmtDataT> makeGCCAsmStmtData(
     const clang::GCCAsmStmt *node, Context &c) {
   auto out = std::make_unique<fb::GCCAsmStmtDataT>();
   out->base = makeAsmStmtData(node, c);
-  out->asm_string = node->generateAsmString(*c.ast);
+  out->asm_string = node->getAsmString()->getString().str();
   return out;
 }
+
+namespace {
+
+std::string getSourceMSAsmString(const clang::MSAsmStmt *node, Context &c) {
+  const auto &sourceManager = c.ast->getSourceManager();
+  const auto &langOptions = c.ast->getLangOpts();
+
+  clang::SourceLocation begin;
+  clang::SourceLocation end;
+  if (node->hasBraces()) {
+    begin = sourceManager.getSpellingLoc(node->getLBraceLoc())
+                .getLocWithOffset(1);
+    end = sourceManager.getSpellingLoc(node->getEndLoc());
+  } else {
+    // Single-line MS asm has no brace range, so use the first and last retained
+    // source tokens to recover its original spelling.
+    auto *mutableNode = const_cast<clang::MSAsmStmt *>(node);
+    const unsigned count = mutableNode->getNumAsmToks();
+    auto *tokens = mutableNode->getAsmToks();
+    if (count != 0) {
+      begin = sourceManager.getSpellingLoc(tokens[0].getLocation());
+      end = clang::Lexer::getLocForEndOfToken(
+          sourceManager.getSpellingLoc(tokens[count - 1].getLocation()), 0,
+          sourceManager, langOptions);
+    }
+  }
+
+  if (begin.isValid() && end.isValid()) {
+    bool invalid = false;
+    const auto source = clang::Lexer::getSourceText(
+        clang::CharSourceRange::getCharRange(begin, end), sourceManager,
+        langOptions, &invalid);
+    if (!invalid) {
+      return source.str();
+    }
+  }
+
+  // Macro-backed asm can have no contiguous source range. Rebuild from Clang's
+  // retained source tokens rather than its IR-normalized asm string.
+  auto *mutableNode = const_cast<clang::MSAsmStmt *>(node);
+  const unsigned count = mutableNode->getNumAsmToks();
+  auto *tokens = mutableNode->getAsmToks();
+  std::string result;
+  for (unsigned i = 0; i < count; ++i) {
+    const auto &token = tokens[i];
+    if (i != 0) {
+      if (token.isAtStartOfLine()) {
+        result += "\n";
+      } else if (token.hasLeadingSpace()) {
+        result += ' ';
+      }
+    }
+    result += clang::Lexer::getSpelling(token, sourceManager, langOptions);
+  }
+  return result;
+}
+
+} // namespace
 
 std::unique_ptr<fb::MSAsmStmtDataT> makeMSAsmStmtData(
     const clang::MSAsmStmt *node, Context &c) {
   auto out = std::make_unique<fb::MSAsmStmtDataT>();
   out->base = makeAsmStmtData(node, c);
-  out->asm_string = node->generateAsmString(*c.ast);
+  out->asm_string = getSourceMSAsmString(node, c);
   return out;
 }
 

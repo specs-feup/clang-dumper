@@ -41,6 +41,8 @@ class TestConfig:
     flags: list[str] = field(default_factory=list)
     requires: set[str] = field(default_factory=set)
     system_header_threshold: Optional[int] = None
+    expected_gcc_asm: Optional[str] = None
+    expected_ms_asm: Optional[str] = None
 
 
 # Helper to create simple test configs
@@ -49,6 +51,8 @@ def T(
     flags: Optional[list[str]] = None,
     requires: Optional[set[str]] = None,
     system_header_threshold: Optional[int] = None,
+    expected_gcc_asm: Optional[str] = None,
+    expected_ms_asm: Optional[str] = None,
 ) -> TestConfig:
     """Shorthand for creating TestConfig instances."""
     return TestConfig(
@@ -56,6 +60,8 @@ def T(
         flags=flags or [],
         requires=requires or set(),
         system_header_threshold=system_header_threshold,
+        expected_gcc_asm=expected_gcc_asm,
+        expected_ms_asm=expected_ms_asm,
     )
 
 
@@ -77,6 +83,15 @@ TEST_REGISTRY: dict[str, TestConfig] = {
     "TemplateTemplateParmDecl.cpp": T(),
     "VectorType.cpp": T(),
     "array_filler.c": T(),
+    "asm_source.cpp": T(
+        flags=["--target=i686-pc-windows-msvc", "-fms-extensions", "-fasm-blocks"],
+        requires={"x86"},
+        expected_gcc_asm="movl %1, %0\n\taddl $1, %0",
+        expected_ms_asm=(
+            "\n    mov eax, value\n    jmp local_done\n  local_done:\n"
+            "    add eax, 1\n  "
+        ),
+    ),
     "ast-dump-c-attr.c": T(),
     "ast-dump-expr.c": T(requires={"x86"}),
     "ast-dump-records.c": T(),
@@ -254,6 +269,7 @@ def run_flatbuffers_and_verify(
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
+    verifier_args: Optional[list[str]] = None,
 ) -> tuple[int, str, str, bytes, str]:
     """Run one producer and verify every framed record in its output stream."""
     flags = extra_flags or []
@@ -287,7 +303,10 @@ def run_flatbuffers_and_verify(
         verification = ""
         if proc.returncode == 0:
             verified = subprocess.run(
-                [verifier, str(dump_path)], capture_output=True, text=True, check=False
+                [verifier, str(dump_path), *(verifier_args or [])],
+                capture_output=True,
+                text=True,
+                check=False,
             )
             verification = verified.stdout + verified.stderr
             if verified.returncode != 0:
@@ -349,6 +368,15 @@ def run_single_test(
         return TestStatus.SKIP, f"Missing features: {', '.join(sorted(missing_features))}"
 
     flags = list(global_flags or []) + config.flags
+    verifier_args = []
+    if config.expected_gcc_asm is not None:
+        verifier_args.extend(
+            ["--expect-gcc-asm-hex", config.expected_gcc_asm.encode("utf-8").hex()]
+        )
+    if config.expected_ms_asm is not None:
+        verifier_args.extend(
+            ["--expect-ms-asm-hex", config.expected_ms_asm.encode("utf-8").hex()]
+        )
     if input_file.suffix == ".cu":
         flags.extend(flag for flag in CUDA_TEST_FLAGS if flag not in flags)
     return_code, stdout, stderr, dump, verification = run_flatbuffers_and_verify(
@@ -362,6 +390,7 @@ def run_single_test(
         config.system_header_threshold
         if config.system_header_threshold is not None
         else system_header_threshold,
+        verifier_args,
     )
 
     if raw_output_dir is not None:
