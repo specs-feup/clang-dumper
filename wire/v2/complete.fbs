@@ -1,0 +1,14 @@
+include "decls.fbs";
+include "types.fbs";
+include "expressions.fbs";
+include "statements.fbs";
+include "attributes.fbs";
+include "records.fbs";
+namespace astwire.v2;
+union NodePayload { DeclData, NamedDeclData, TypeDeclData, TagDeclData, RecordDeclData, ValueDeclData, DeclaratorDeclData, TemplateDeclData, FunctionDeclData, CXXMethodDeclData, CXXConstructorDeclData, CXXConversionDeclData, FieldDeclData, ParmVarDeclData, VarDeclData, TemplateTypeParmDeclData, UnresolvedUsingTypenameDeclData, EnumDeclData, CXXRecordDeclData, ClassTemplateSpecializationDeclData, NonTypeTemplateParmDeclData, TypedefNameDeclData, AccessSpecDeclData, UsingDeclData, UsingDirectiveDeclData, NamespaceDeclData, NamespaceAliasDeclData, LinkageSpecDeclData, StaticAssertDeclData, TemplateTemplateParmDeclData, MSPropertyDeclData, ClassTemplatePartialSpecializationDeclData, TypeData, QualTypeData, BuiltinTypeData, PointerTypeData, FunctionTypeData, FunctionProtoTypeData, ArrayTypeData, ConstantArrayTypeData, VariableArrayTypeData, DependentSizedArrayTypeData, TagTypeData, TypeWithKeywordData, ElaboratedTypeData, TemplateTypeParmTypeData, TemplateSpecializationTypeData, TypedefTypeData, AdjustedTypeData, DecayedTypeData, DecltypeTypeData, AutoTypeData, ReferenceTypeData, TypeOfExprTypeData, PackExpansionTypeData, UnaryTransformTypeData, AttributedTypeData, SubstTemplateTypeParmTypeData, ComplexTypeData, ExprData, CastExprData, LiteralData, CharacterLiteralData, IntegerLiteralData, FloatingLiteralData, StringLiteralData, CXXBoolLiteralExprData, CompoundLiteralExprData, InitListExprData, DeclRefExprData, OverloadExprData, CXXConstructExprData, CXXTemporaryObjectExprData, MemberExprData, MaterializeTemporaryExprData, BinaryOperatorData, UnresolvedMemberExprData, UnresolvedLookupExprData, CallExprData, CXXMemberCallExprData, CXXTypeidExprData, ExplicitCastExprData, CXXNamedCastExprData, CXXDependentScopeMemberExprData, UnaryOperatorData, UnaryExprOrTypeTraitExprData, CXXNewExprData, CXXDeleteExprData, OffsetOfExprData, LambdaExprData, PredefinedExprData, SizeOfPackExprData, ArrayInitLoopExprData, DesignatedInitExprData, DependentScopeDeclRefExprData, CXXNoexceptExprData, CXXPseudoDestructorExprData, PseudoObjectExprData, MSPropertyRefExprData, StmtData, LabelStmtData, GotoStmtData, AttributedStmtData, AsmStmtData, GCCAsmStmtData, MSAsmStmtData, AttributeData, AlignedAttrData, OpenCLUnrollHintAttrData, FormatAttrData, NonNullAttrData, VisibilityAttrData }
+table Node { id:long = null; class_name:string (required); payload:NodePayload (required); }
+union RecordPayload { Header, File, Node, Children, NodeClass, TopLevel, Include, Pragma, TranslationUnitFile, Counter, Language, End }
+table Record { payload:RecordPayload (required); }
+table Block { records:[Record] (required); }
+root_type Block;
+file_identifier "CLV2";

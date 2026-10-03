@@ -2,30 +2,31 @@
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --target tool plugin --parallel
+cmake --build build --target tool plugin verify_flatbuffers --parallel
 ```
 
-The CMakeLists.txt has two targets, `plugin` and `tool`; pass one or both to
-`cmake --build build --target ...` to select what to build.
+The `tool`, `plugin`, and `verify_flatbuffers` targets are available. The
+FlatBuffers compiler and runtime are fetched from the commit pinned in
+`flatbuffers-version.env`; CMake verifies their version before building.
 
 The target `tool` has been successfully built in Ubuntu and macOS. Windows
 executables are cross-compiled from Linux.
 
 ## Stand-alone output
 
-By default, the stand-alone tool writes its structured AST protocol to stderr
-for compatibility with existing consumers. Use `-o` to keep the
-protocol separate from Clang's ordinary stdout and stderr output:
+The stand-alone tool always writes the eager FlatBuffers v2 protocol to the
+required `-o` file. Clang diagnostics remain on stderr:
 
 ```sh
-build/tool -c source.cpp -o source.ast -- -std=c++17
+build/tool -c source.cpp -o source.clv2 -- -std=c++17
 ```
 
-For large dumps, the tool can stream a Zstandard frame directly to the output
-without buffering the AST in memory:
+The plugin writes the same protocol when loaded with
+`-Xclang -plugin-arg-DumpAst -Xclang -output=source.clv2`. Legacy text and
+compression selectors are rejected. Validate a completed stream with:
 
 ```sh
-build/tool -c source.cpp -o source.ast.zst -ast-dump-compression=zstd -- -std=c++17
+build/verify_flatbuffers source.clv2
 ```
 
 ## Dependencies
@@ -38,12 +39,17 @@ source llvm-version.env
 # Required for all targets
 sudo apt install python3 clang-${LLVM_VERSION} libclang-${LLVM_VERSION}-dev llvm-${LLVM_VERSION}-dev zlib1g-dev libxml2-dev
 
-# Required for building the stand-alone tool
+# Required for the stand-alone tool's static LLVM/Clang link
 sudo apt install libpolly-${LLVM_VERSION}-dev libedit-dev libzstd-dev
 
 # Required for Linux-hosted Windows cross builds
 sudo apt install curl dpkg lld-${LLVM_VERSION} llvm-${LLVM_VERSION}-tools rsync tar zstd
 ```
+
+Release builds include `clang-dumper-release-manifest.json` and the complete
+`clang-dumper-wire-schema-v2.zip` schema bundle. See
+[`wire/README.md`](wire/README.md) for the field/node workflow, generated-output
+drift check, and schema hash contract.
 
 ## Windows Cross Builds
 

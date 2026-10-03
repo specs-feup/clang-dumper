@@ -1,0 +1,209 @@
+include "common.fbs";
+namespace astwire.v2;
+
+// Types have no source node base.  QualTypeData composes TypeData with the
+// qualifier-specific fields used by the top-level QualType records.
+table TypeData {
+  type_as_string:string (required);
+  type_dependency:TypeDependency = null;
+  is_variably_modified:bool = null;
+  contains_unexpanded_parameter_pack:bool = null;
+  is_from_ast:bool = null;
+  unqualified_desugared_type:long = null;
+}
+
+table QualTypeData {
+  base:TypeData (required);
+  c99_qualifiers:[C99Qualifier] (required);
+  address_space_qualifier:AddressSpaceQualifierV2 = null;
+  address_space:long = null;
+  unqualified_type:long = null;
+}
+
+table BuiltinTypeData {
+  base:TypeData (required);
+  kind:BuiltinKind = null;
+  kind_literal:string (required);
+}
+
+table PointerTypeData {
+  base:TypeData (required);
+  pointee_type:long = null;
+}
+
+table FunctionTypeData {
+  base:TypeData (required);
+  is_const:bool = null;
+  is_volatile:bool = null;
+  is_restrict:bool = null;
+  no_return:bool = null;
+  produces_result:bool = null;
+  uses_reg_parm:bool = null;
+  reg_parm:long = null;
+  calling_convention:CallingConvention = null;
+  return_type:long = null;
+}
+
+table FunctionProtoTypeData {
+  base:FunctionTypeData (required);
+  num_parameters:int = null;
+  parameters_types:[long] (required);
+  has_trailing_returns:bool = null;
+  is_variadic:bool = null;
+  reference_qualifier:ReferenceQualifier = null;
+  exception_specification:ExceptionSpecification (required);
+}
+
+table ArrayTypeData {
+  base:TypeData (required);
+  array_size_modifier:ArraySizeModifier = null;
+  index_type_qualifiers:[C99Qualifier] (required);
+  element_type:long = null;
+}
+
+table ConstantArrayTypeData {
+  base:ArrayTypeData (required);
+  array_size:string (required);
+}
+
+table VariableArrayTypeData {
+  base:ArrayTypeData (required);
+  size_expr:long = null;
+}
+
+table DependentSizedArrayTypeData {
+  base:ArrayTypeData (required);
+  size_expr:long = null;
+}
+
+table TagTypeData {
+  base:TypeData (required);
+  decl:long = null;
+}
+
+table TypeWithKeywordData {
+  base:TypeData (required);
+  elaborated_type_keyword:ElaboratedTypeKeyword = null;
+}
+
+table ElaboratedTypeData {
+  base:TypeWithKeywordData (required);
+  qualifier:string (required);
+  named_type:long = null;
+}
+
+table TemplateTypeParmTypeData {
+  base:TypeData (required);
+  depth:int = null;
+  index:int = null;
+  is_packed:bool = null;
+  decl:long = null;
+}
+
+table TemplateSpecializationTypeData {
+  base:TypeData (required);
+  is_type_alias:bool = null;
+  aliased_type:long = null;
+  template_name:string (required);
+  template_decl:long = null;
+  template_arguments:[TemplateArgument] (required);
+}
+
+table TypedefTypeData {
+  base:TypeData (required);
+  decl:long = null;
+}
+
+table AdjustedTypeData {
+  base:TypeData (required);
+  original_type:long = null;
+  adjusted_type:long = null;
+}
+
+table DecayedTypeData {
+  base:AdjustedTypeData (required);
+  decayed_type:long = null;
+  pointee_type:long = null;
+}
+
+table DecltypeTypeData {
+  base:TypeData (required);
+  is_sugared:bool = null;
+  underlying_expr:long = null;
+}
+
+table AutoTypeData {
+  base:TypeData (required);
+  deduced_type:long = null;
+}
+
+table ReferenceTypeData {
+  base:TypeData (required);
+  pointee_type_as_written:long = null;
+}
+
+table TypeOfExprTypeData {
+  base:TypeData (required);
+  is_sugared:bool = null;
+  underlying_expr:long = null;
+}
+
+table PackExpansionTypeData {
+  base:TypeData (required);
+  num_expansions:int = null;
+  pattern:long = null;
+}
+
+table UnaryTransformTypeData {
+  base:TypeData (required);
+  kind:UnaryTransformTypeKind = null;
+  underlying_type:long = null;
+  base_type:long = null;
+}
+
+table AttributedTypeData {
+  base:TypeData (required);
+  modified_type:long = null;
+  equivalent_type:long = null;
+}
+
+table SubstTemplateTypeParmTypeData {
+  base:TypeData (required);
+  replaced_parameter:long = null;
+  replacement_type:long = null;
+}
+
+table ComplexTypeData {
+  base:TypeData (required);
+  element_type:long = null;
+}
+
+union TypePayload {
+  TypeData,
+  QualTypeData,
+  BuiltinTypeData,
+  PointerTypeData,
+  FunctionTypeData,
+  FunctionProtoTypeData,
+  ArrayTypeData,
+  ConstantArrayTypeData,
+  VariableArrayTypeData,
+  DependentSizedArrayTypeData,
+  TagTypeData,
+  TypeWithKeywordData,
+  ElaboratedTypeData,
+  TemplateTypeParmTypeData,
+  TemplateSpecializationTypeData,
+  TypedefTypeData,
+  AdjustedTypeData,
+  DecayedTypeData,
+  DecltypeTypeData,
+  AutoTypeData,
+  ReferenceTypeData,
+  TypeOfExprTypeData,
+  PackExpansionTypeData,
+  UnaryTransformTypeData,
+  AttributedTypeData,
+  SubstTemplateTypeParmTypeData,
+  ComplexTypeData
+}

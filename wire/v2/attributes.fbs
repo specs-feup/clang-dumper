@@ -1,0 +1,26 @@
+include "common.fbs";
+namespace astwire.v2;
+table AttributeData {
+  base:ClavaNodeData (required);
+  kind:AttributeKind = null;
+  is_implicit:bool = null;
+  is_inherited:bool = null;
+  is_late_parsed:bool = null;
+  is_pack_expansion:bool = null;
+}
+table AlignedAttrData { base:AttributeData (required); spelling:string (required); is_expression:bool = null; alignment:long = null; }
+table OpenCLUnrollHintAttrData {
+  base:AttributeData (required);
+  unroll_hint:int = null;
+}
+table FormatAttrData {
+  base:AttributeData (required);
+  type:FormatAttrKind = null;
+  format_index:int = null;
+  first_arg:int = null;
+}
+table NonNullAttrData { base:AttributeData (required); arguments:[int] (required); }
+table VisibilityAttrData {
+  base:AttributeData (required);
+  visibility_type:VisibilityType = null;
+}

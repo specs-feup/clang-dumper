@@ -1,0 +1,46 @@
+include "common.fbs";
+namespace astwire.v2;
+
+// Each table mirrors one native statement handler. Inheritance is explicit
+// because FlatBuffers tables do not inherit: `base` contains the full parent
+// payload and ultimately ClavaNodeData/source information.
+table StmtData  {
+  base:ClavaNodeData (required);
+}
+
+table LabelStmtData  {
+  base:StmtData (required);
+  label:long = null;
+}
+
+table GotoStmtData  {
+  base:StmtData (required);
+  label:long = null;
+}
+
+table AttributedStmtData  {
+  base:StmtData (required);
+  stmt_attributes:[long] (required);
+}
+
+table AsmStmtData  {
+  base:StmtData (required);
+  is_simple:bool = null;
+  is_volatile:bool = null;
+  clobbers:[string] (required);
+  outputs:[AsmOutput] (required);
+  inputs:[AsmInput] (required);
+}
+
+table GCCAsmStmtData  {
+  base:AsmStmtData (required);
+  asm_string:string (required);
+  is_goto:bool = null;
+  labels:[string] (required);
+  is_inline:bool = null;
+}
+
+table MSAsmStmtData  {
+  base:AsmStmtData (required);
+  asm_string:string (required);
+}

@@ -1,3 +1,4 @@
+#include "../Clava/FlatEmit.h"
 
 //
 // Created by JoaoBispo on 18/03/2018.
@@ -82,6 +83,7 @@ class ClavaDataDumper {
                   const Entries &entries, const char *family,
                   const char *defaultDataName,
                   void (ClavaDataDumper::*fallback)(const Node *)) {
+        if (clava::flat::emit(node, Context, id)) return;
         auto it = entries.find(classname);
         const char *dataName =
             it != entries.end() ? it->second.dataName : defaultDataName;

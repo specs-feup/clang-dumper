@@ -4,6 +4,7 @@
 
 #include "../Clang/ClangNodes.h"
 #include "../ClangEnums/ClangEnums.h"
+#include "../Clava/FlatStream.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
 #include "llvm/ADT/STLForwardCompat.h"
