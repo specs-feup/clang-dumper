@@ -35,6 +35,9 @@ table AsmStmtData  {
 table GCCAsmStmtData  {
   base:AsmStmtData (required);
   asm_string:string (required);
+  is_goto:bool = null;
+  labels:[string] (required);
+  is_inline:bool = null;
 }
 
 table MSAsmStmtData  {

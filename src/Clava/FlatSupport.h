@@ -25,6 +25,7 @@ struct Context {
   clang::ASTContext *ast;
   int id;
   std::function<uint32_t(llvm::StringRef)> fileId;
+  std::function<bool(clang::SourceLocation)> isInlineAsm;
 };
 int64_t wireId(const std::string &value);
 std::unique_ptr<fb::ClavaNodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c);

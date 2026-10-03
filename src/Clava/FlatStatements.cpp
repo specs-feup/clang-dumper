@@ -72,6 +72,11 @@ std::unique_ptr<fb::GCCAsmStmtDataT> makeGCCAsmStmtData(
   auto out = std::make_unique<fb::GCCAsmStmtDataT>();
   out->base = makeAsmStmtData(node, c);
   out->asm_string = node->getAsmString()->getString().str();
+  out->is_goto = node->isAsmGoto();
+  for (unsigned i = 0; i < node->getNumLabels(); ++i) {
+    out->labels.push_back(node->getLabelName(i).str());
+  }
+  out->is_inline = c.isInlineAsm(node->getBeginLoc());
   return out;
 }
 

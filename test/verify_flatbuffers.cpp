@@ -4,6 +4,7 @@
 #include <flatbuffers/flatbuffers.h>
 
 #include <cstdint>
+#include <charconv>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -45,23 +46,60 @@ static bool decodeHex(std::string_view encoded, std::string &decoded) {
 int main(int argc, char **argv) {
   if (argc < 2) {
     std::cerr << "usage: verify_flatbuffers <dump> [--expect-gcc-asm-hex <hex>]"
+                 " [--expect-gcc-asm-goto-labels-hex <hex>]"
+                 " [--expect-gcc-asm-inline-count <count>]"
                  " [--expect-ms-asm-hex <hex>]\n";
     return 2;
   }
 
   std::optional<std::string> expectedGccAsm;
+  std::optional<std::vector<std::string>> expectedGccAsmGotoLabels;
+  std::optional<uint64_t> expectedGccAsmInlineCount;
   std::optional<std::string> expectedMsAsm;
   for (int i = 2; i < argc; ++i) {
     if ((std::string_view(argv[i]) == "--expect-gcc-asm-hex" ||
+         std::string_view(argv[i]) == "--expect-gcc-asm-goto-labels-hex" ||
          std::string_view(argv[i]) == "--expect-ms-asm-hex") &&
         i + 1 < argc) {
-      const bool gcc = std::string_view(argv[i]) == "--expect-gcc-asm-hex";
+      const std::string_view option = argv[i];
+      const bool gcc = option == "--expect-gcc-asm-hex";
+      const bool gccLabels = option == "--expect-gcc-asm-goto-labels-hex";
       std::string decoded;
       if (!decodeHex(argv[++i], decoded)) {
         std::cerr << "invalid hexadecimal asm expectation\n";
         return 2;
       }
-      (gcc ? expectedGccAsm : expectedMsAsm) = std::move(decoded);
+      if (gcc) {
+        expectedGccAsm = std::move(decoded);
+      } else if (gccLabels) {
+        expectedGccAsmGotoLabels.emplace();
+        size_t start = 0;
+        while (start < decoded.size()) {
+          const size_t separator = decoded.find('\0', start);
+          const size_t end = separator == std::string::npos
+                                 ? decoded.size()
+                                 : separator;
+          expectedGccAsmGotoLabels->push_back(
+              decoded.substr(start, end - start));
+          if (separator == std::string::npos) break;
+          start = separator + 1;
+        }
+      } else {
+        expectedMsAsm = std::move(decoded);
+      }
+      continue;
+    }
+    if (std::string_view(argv[i]) == "--expect-gcc-asm-inline-count" &&
+        i + 1 < argc) {
+      const std::string_view encoded = argv[++i];
+      uint64_t count = 0;
+      const auto [end, error] =
+          std::from_chars(encoded.data(), encoded.data() + encoded.size(), count);
+      if (error != std::errc{} || end != encoded.data() + encoded.size()) {
+        std::cerr << "invalid GCC asm inline count\n";
+        return 2;
+      }
+      expectedGccAsmInlineCount = count;
       continue;
     }
     std::cerr << "unknown or incomplete verifier option: " << argv[i] << "\n";
@@ -86,6 +124,8 @@ int main(int argc, char **argv) {
   bool sawHeader = false;
   bool sawEnd = false;
   bool foundExpectedGccAsm = false;
+  bool foundExpectedGccAsmGotoLabels = false;
+  uint64_t gccAsmInlineCount = 0;
   bool foundExpectedMsAsm = false;
   size_t offset = 0;
   size_t blocks = 0;
@@ -159,6 +199,24 @@ int main(int argc, char **argv) {
           foundExpectedGccAsm |=
               asmNode->asm_string()->string_view() == *expectedGccAsm;
         }
+        if ((expectedGccAsmGotoLabels || expectedGccAsmInlineCount) &&
+            node->payload_type() == fb::NodePayload::GCCAsmStmtData) {
+          const auto *asmNode = node->payload_as_GCCAsmStmtData();
+          const auto isGoto = asmNode->is_goto();
+          if (expectedGccAsmGotoLabels && isGoto.has_value() && *isGoto &&
+              asmNode->labels()->size() == expectedGccAsmGotoLabels->size()) {
+            bool labelsMatch = true;
+            for (size_t i = 0; i < expectedGccAsmGotoLabels->size(); ++i) {
+              labelsMatch &= asmNode->labels()->Get(i)->string_view() ==
+                             (*expectedGccAsmGotoLabels)[i];
+            }
+            foundExpectedGccAsmGotoLabels |= labelsMatch;
+          }
+          const auto isInline = asmNode->is_inline();
+          if (isInline.has_value() && *isInline) {
+            ++gccAsmInlineCount;
+          }
+        }
         if (expectedMsAsm &&
             node->payload_type() == fb::NodePayload::MSAsmStmtData) {
           const auto *asmNode = node->payload_as_MSAsmStmtData();
@@ -204,6 +262,17 @@ int main(int argc, char **argv) {
   }
   if (expectedGccAsm && !foundExpectedGccAsm) {
     std::cerr << "GCC asm source template did not match expected bytes\n";
+    return 1;
+  }
+  if (expectedGccAsmGotoLabels && !foundExpectedGccAsmGotoLabels) {
+    std::cerr << "GCC asm goto flag or labels did not match expected values\n";
+    return 1;
+  }
+  if (expectedGccAsmInlineCount &&
+      gccAsmInlineCount != *expectedGccAsmInlineCount) {
+    std::cerr << "GCC asm inline qualifier count mismatch: expected "
+              << *expectedGccAsmInlineCount << ", got " << gccAsmInlineCount
+              << "\n";
     return 1;
   }
   if (expectedMsAsm && !foundExpectedMsAsm) {

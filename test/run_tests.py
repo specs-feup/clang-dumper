@@ -42,6 +42,8 @@ class TestConfig:
     requires: set[str] = field(default_factory=set)
     system_header_threshold: Optional[int] = None
     expected_gcc_asm: Optional[str] = None
+    expected_gcc_asm_goto_labels: Optional[list[str]] = None
+    expected_gcc_asm_inline_count: Optional[int] = None
     expected_ms_asm: Optional[str] = None
 
 
@@ -52,6 +54,8 @@ def T(
     requires: Optional[set[str]] = None,
     system_header_threshold: Optional[int] = None,
     expected_gcc_asm: Optional[str] = None,
+    expected_gcc_asm_goto_labels: Optional[list[str]] = None,
+    expected_gcc_asm_inline_count: Optional[int] = None,
     expected_ms_asm: Optional[str] = None,
 ) -> TestConfig:
     """Shorthand for creating TestConfig instances."""
@@ -61,6 +65,8 @@ def T(
         requires=requires or set(),
         system_header_threshold=system_header_threshold,
         expected_gcc_asm=expected_gcc_asm,
+        expected_gcc_asm_goto_labels=expected_gcc_asm_goto_labels,
+        expected_gcc_asm_inline_count=expected_gcc_asm_inline_count,
         expected_ms_asm=expected_ms_asm,
     )
 
@@ -87,11 +93,14 @@ TEST_REGISTRY: dict[str, TestConfig] = {
         flags=["--target=i686-pc-windows-msvc", "-fms-extensions", "-fasm-blocks"],
         requires={"x86"},
         expected_gcc_asm="movl %1, %0\n\taddl $1, %0",
+        expected_gcc_asm_goto_labels=["zero"],
+        expected_gcc_asm_inline_count=6,
         expected_ms_asm=(
             "\n    mov eax, value\n    jmp local_done\n  local_done:\n"
             "    add eax, 1\n  "
         ),
     ),
+    "asm_inline_macro.h": T(flags=["-x", "c++"]),
     "ast-dump-c-attr.c": T(),
     "ast-dump-expr.c": T(requires={"x86"}),
     "ast-dump-records.c": T(),
@@ -372,6 +381,15 @@ def run_single_test(
     if config.expected_gcc_asm is not None:
         verifier_args.extend(
             ["--expect-gcc-asm-hex", config.expected_gcc_asm.encode("utf-8").hex()]
+        )
+    if config.expected_gcc_asm_goto_labels is not None:
+        labels = "\0".join(config.expected_gcc_asm_goto_labels)
+        verifier_args.extend(
+            ["--expect-gcc-asm-goto-labels-hex", labels.encode("utf-8").hex()]
+        )
+    if config.expected_gcc_asm_inline_count is not None:
+        verifier_args.extend(
+            ["--expect-gcc-asm-inline-count", str(config.expected_gcc_asm_inline_count)]
         )
     if config.expected_ms_asm is not None:
         expected_ms_asm = config.expected_ms_asm.replace("\n", os.linesep)

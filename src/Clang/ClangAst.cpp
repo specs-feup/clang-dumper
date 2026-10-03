@@ -181,6 +181,15 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
     // This must be done before AST processing begins
     CI.getPreprocessor().addPPCallbacks(
         std::make_unique<IncludeDumper>(CI.getSourceManager()));
+    if (auto *stream = clava::flat::FlatStream::active()) {
+        stream->beginSourceFile();
+    }
+    CI.getPreprocessor().setTokenWatcher([](const Token &token) {
+        if (auto *stream = clava::flat::FlatStream::active()) {
+            stream->observePreprocessorToken(token.getKind(),
+                                             token.getLocation());
+        }
+    });
 
     dumpCompilerInstanceData(CI, file);
 
