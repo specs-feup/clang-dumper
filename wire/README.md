@@ -58,7 +58,10 @@ that have no consumer key named for their protocol role.
 4. Build and run `verify_flatbuffers`, native tool/plugin corpus validation, and
    the Clava consumer tests. Check stream fidelity before changing the schema
    version for an incompatible wire change.
-5. Publish a compatible dumper release. The release job packages every
+5. Publish an explicitly approved release candidate first, using a tag such as
+   `v18.1.8_5-rc1`. The release job marks `-rc` tags as prereleases. Publishing a
+   stable release requires separate approval after review and integration testing.
+   The release job packages every
    `wire/v2/*.fbs` file, writes `clang-dumper-release-manifest.json`, and uploads
    the schema bundle with the tools. Consumers select the exact release using
    `clang-dumper-release.tag` and verify the manifest hashes before compiling
