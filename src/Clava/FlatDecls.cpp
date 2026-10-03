@@ -468,6 +468,9 @@ makeClassTemplatePartialSpecializationDeclData(
     const clang::ClassTemplatePartialSpecializationDecl *decl, Context &c) {
   auto out = std::make_unique<fb::ClassTemplatePartialSpecializationDeclDataT>();
   out->base = makeClassTemplateSpecializationDeclData(decl, c);
+  if (auto *params = decl->getTemplateParameters())
+    for (auto *param : *params)
+      out->template_parameters.push_back(wireId(clava::getId(param, c.id)));
   return out;
 }
 

@@ -380,9 +380,13 @@ std::unique_ptr<fb::LambdaExprDataT> makeLambdaExprData(
   out->capture_default = enumValue<fb::LambdaCaptureDefault>(
       clava::LAMBDA_CAPTURE_DEFAULT[node->getCaptureDefault()]);
   out->lambda_class = wireId(clava::getId(node->getLambdaClass(), c.id));
-  for (const auto capture : node->captures()) {
+  for (const auto &capture : node->captures()) {
     out->capture_kinds.push_back(enumValue<fb::LambdaCaptureKind>(
         clava::LAMBDA_CAPTURE_KIND[capture.getCaptureKind()]));
+    out->init_capture_names.push_back(
+        node->isInitCapture(&capture)
+            ? capture.getCapturedVar()->getNameAsString()
+            : "");
   }
   return out;
 }

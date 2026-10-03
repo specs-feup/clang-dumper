@@ -177,6 +177,9 @@ private:
   void VisitClassTemplateSpecializationDeclChildren(
       const ClassTemplateSpecializationDecl *D,
       std::vector<std::string> &children);
+  void VisitClassTemplatePartialSpecializationDeclChildren(
+      const ClassTemplatePartialSpecializationDecl *D,
+      std::vector<std::string> &children);
   void VisitValueDeclChildren(const ValueDecl *D,
                               std::vector<std::string> &children);
   void VisitFieldDeclChildren(const FieldDecl *D,

@@ -257,4 +257,7 @@ union DeclPayload {
   MSPropertyDeclData
 }
 
-table ClassTemplatePartialSpecializationDeclData { base:ClassTemplateSpecializationDeclData (required); }
+table ClassTemplatePartialSpecializationDeclData {
+  base:ClassTemplateSpecializationDeclData (required);
+  template_parameters:[long] (required);
+}
