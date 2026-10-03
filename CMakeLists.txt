@@ -502,6 +502,9 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
         ucrtbase
         m
         z
+        # LLVM Support's static Compression.cpp still calls Zstandard even
+        # though AST wire output itself is uncompressed FlatBuffers.
+        zstd
         version
         ole32
         oleaut32
