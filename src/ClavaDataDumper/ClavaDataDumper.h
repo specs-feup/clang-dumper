@@ -156,6 +156,7 @@ class ClavaDataDumper {
 
     // EXPRS
     void DumpExprData(const Expr *E);
+    void DumpCXXUnresolvedConstructExprData(const CXXUnresolvedConstructExpr *E);
     void DumpCastExprData(const CastExpr *E);
     void DumpLiteralData(const Expr *E);
     void DumpCharacterLiteralData(const CharacterLiteral *E);

@@ -16,6 +16,11 @@ table CastExprData  {
   cast_kind:CastKind = null;
 }
 
+table CXXUnresolvedConstructExprData {
+  base:ExprData (required);
+  is_list_initialization:bool = null;
+}
+
 table LiteralData  {
   base:ExprData (required);
   source_literal:string (required);

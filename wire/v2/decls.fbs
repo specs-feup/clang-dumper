@@ -68,6 +68,8 @@ table FunctionDeclData {
   canonical_decl:long = null;
   primary_template_decl:long = null;
   template_arguments:[TemplateArgument] (required);
+  template_parameters:[long] (required);
+  template_parameter_list_sizes:[int] (required);
 }
 
 table CXXMethodDeclData {

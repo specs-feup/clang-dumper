@@ -68,6 +68,15 @@ std::unique_ptr<fb::ExprDataT> makeExprData(const clang::Expr *node,
   return out;
 }
 
+std::unique_ptr<fb::CXXUnresolvedConstructExprDataT>
+makeCXXUnresolvedConstructExprData(const clang::CXXUnresolvedConstructExpr *node,
+                                 Context &c) {
+  auto out = std::make_unique<fb::CXXUnresolvedConstructExprDataT>();
+  out->base = makeExprData(node, c);
+  out->is_list_initialization = node->isListInitialization();
+  return out;
+}
+
 std::unique_ptr<fb::CastExprDataT> makeCastExprData(const clang::CastExpr *node,
                                                    Context &c) {
   auto out = std::make_unique<fb::CastExprDataT>();

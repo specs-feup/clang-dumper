@@ -165,6 +165,17 @@ void ClangAstDumper::VisitFunctionDeclChildren(
         }
     }
 
+    // Function template parameter lists are metadata references rather than AST
+    // children. Visit them so the referenced declaration payloads are emitted.
+    for (unsigned listIndex = 0; listIndex < D->getNumTemplateParameterLists();
+         ++listIndex) {
+        if (const auto *parameters = D->getTemplateParameterList(listIndex)) {
+            for (const auto *parameter : *parameters) {
+                VisitDeclTop(parameter);
+            }
+        }
+    }
+
     // Visit parameters
     for (auto param : D->parameters()) {
         addChild(param, children);

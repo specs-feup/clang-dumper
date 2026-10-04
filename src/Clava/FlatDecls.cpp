@@ -150,6 +150,14 @@ std::unique_ptr<fb::FunctionDeclDataT> makeFunctionDeclData(
     for (const auto &arg : args->asArray())
       out->template_arguments.push_back(makeTemplateArgument(arg, c));
   }
+  for (unsigned listIndex = 0; listIndex < decl->getNumTemplateParameterLists();
+       ++listIndex) {
+    const auto *parameters = decl->getTemplateParameterList(listIndex);
+    out->template_parameter_list_sizes.push_back(parameters->size());
+    for (const auto *parameter : *parameters)
+      out->template_parameters.push_back(
+          wireId(clava::getId(parameter, c.id)));
+  }
   return out;
 }
 

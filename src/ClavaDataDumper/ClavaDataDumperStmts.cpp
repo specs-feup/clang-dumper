@@ -45,6 +45,7 @@ const std::map<std::string, clava::ClavaDataDumper::ExprDataEntry>
         EXPR_DATA_ENTRY(IntegerLiteral),
         EXPR_DATA_ENTRY(FloatingLiteral),
         EXPR_DATA_ENTRY(CastExpr),
+        EXPR_DATA_ENTRY(CXXUnresolvedConstructExpr),
         EXPR_DATA_ENTRY_AS(CXXFunctionalCastExpr, CastExpr),
         EXPR_DATA_ENTRY_AS(CStyleCastExpr, ExplicitCastExpr),
         EXPR_DATA_ENTRY_AS(CXXAddrspaceCastExpr, CXXNamedCastExpr),
@@ -192,6 +193,12 @@ void clava::ClavaDataDumper::DumpExprData(const Expr *E) {
     clava::dump(E->getValueKind());
     clava::dump(E->getObjectKind());
     clava::dump(E->isDefaultArgument());
+}
+
+void clava::ClavaDataDumper::DumpCXXUnresolvedConstructExprData(
+    const CXXUnresolvedConstructExpr *E) {
+    DumpExprData(E);
+    clava::dump(E->isListInitialization());
 }
 
 void clava::ClavaDataDumper::DumpCastExprData(const CastExpr *E) {
