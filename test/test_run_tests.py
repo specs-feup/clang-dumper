@@ -1,22 +1,13 @@
 #!/usr/bin/env python3
 
+import json
 import os
-import shutil
+import re
 import subprocess
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
-
-from run_tests import (
-    normalize_captured_output,
-    normalize_static_output,
-    normalize_system_source_blocks,
-    strip_clang_diagnostics,
-    unresolved_node_ids,
-)
 
 
 def clang_dumper_tool() -> Path:
@@ -28,747 +19,145 @@ def clang_dumper_tool() -> Path:
 
 @unittest.skipUnless(
     clang_dumper_tool().is_file(),
-    "build/tool is required for stream separation integration tests",
+    "build/tool is required for FlatBuffers integration tests",
 )
-class DumpStreamIntegrationTest(unittest.TestCase):
+class FlatBuffersIntegrationTest(unittest.TestCase):
     source = Path(__file__).parent / "inputs" / "simple_function.cpp"
-    throwing_source = Path(__file__).parent / "inputs" / "throw.cpp"
 
-    def run_tool(self, source: Path, output: Path | None = None) -> subprocess.CompletedProcess[str]:
-        command = [
-            str(clang_dumper_tool()),
-            "-id=42",
-            "-system-header-threshold=1",
-        ]
-        if output is not None:
-            command.extend(["-c", "-o", str(output)])
-        command.extend([str(source), "--"])
-        return subprocess.run(command, capture_output=True, text=True, check=False)
+    @staticmethod
+    def verifier() -> Path:
+        configured_path = os.environ.get("CLANG_DUMPER_VERIFIER")
+        if configured_path:
+            return Path(configured_path)
+        return Path(__file__).resolve().parents[1] / "build" / "verify_flatbuffers"
 
-    def test_file_output_is_byte_identical_to_legacy_protocol(self) -> None:
-        legacy = self.run_tool(self.source)
+    def run_tool(self, *arguments: str) -> subprocess.CompletedProcess[bytes]:
+        return subprocess.run(
+            [str(clang_dumper_tool()), *arguments],
+            capture_output=True,
+            check=False,
+        )
+
+    def write_dump(self, directory: str) -> Path:
+        output = Path(directory) / "ast.clv2"
+        result = self.run_tool(
+            "-id=42", "-system-header-threshold=1", "-c", str(self.source),
+            "-o", str(output), "--", "-std=c++17",
+        )
+        self.assertEqual(0, result.returncode, result.stderr.decode(errors="replace"))
+        self.assertTrue(output.is_file())
+        self.assertEqual(b"", result.stdout)
+        return output
+
+    def test_file_output_is_a_complete_verified_stream(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast.dump"
-            separated = self.run_tool(self.source, output)
-            self.assertEqual(separated.returncode, legacy.returncode)
-            self.assertEqual(separated.stdout, legacy.stdout)
-            legacy_dump, _ = normalize_captured_output(
-                legacy.stderr, str(self.source.parent.resolve())
-            )
-            separated_dump, _ = normalize_captured_output(
-                output.read_text(encoding="utf-8"), str(self.source.parent.resolve())
-            )
-            self.assertEqual(separated_dump, legacy_dump)
-            self.assertNotIn("<Compiler Instance Data>", separated.stderr)
-
-    @unittest.skipUnless(shutil.which("zstd"), "zstd is required to verify compressed output")
-    def test_zstd_output_decompresses_to_equivalent_protocol(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            plain_output = Path(directory) / "ast.dump"
-            compressed_output = Path(directory) / "ast.dump.zst"
-
-            plain = self.run_tool(self.source, plain_output)
-            command = [
-                str(clang_dumper_tool()),
-                "-id=42",
-                "-system-header-threshold=1",
-                "-c",
-                "-o",
-                str(compressed_output),
-                "-ast-dump-compression=zstd",
-                str(self.source),
-                "--",
-            ]
-            compressed = subprocess.run(
-                command, capture_output=True, text=True, check=False
-            )
-            decompressed = subprocess.run(
-                ["zstd", "-q", "-d", "-c", str(compressed_output)],
-                capture_output=True,
-                check=False,
-            )
-
-            self.assertEqual(plain.returncode, 0, plain.stderr)
-            self.assertEqual(compressed.returncode, 0, compressed.stderr)
-            self.assertEqual(decompressed.returncode, 0, decompressed.stderr)
-            source_root = str(self.source.parent.resolve())
-            plain_dump, _ = normalize_captured_output(
-                plain_output.read_text(encoding="utf-8"), source_root
-            )
-            compressed_dump, _ = normalize_captured_output(
-                decompressed.stdout.decode("utf-8"), source_root
-            )
-            self.assertEqual(compressed_dump, plain_dump)
-
-    def test_diagnostics_remain_on_stderr(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast dump with spaces.dump"
-            result = self.run_tool(self.throwing_source, output)
-            dump = output.read_text(encoding="utf-8")
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("error:", result.stderr)
-            self.assertNotIn("<Compiler Instance Data>", result.stderr)
-            self.assertIn("<Compiler Instance Data>", dump)
-
-    def test_syntax_check_does_not_emit_an_ast_dump(self) -> None:
-        command = [
-            str(clang_dumper_tool()),
-            "-syntax-check-only",
-            "-c",
-            str(self.source),
-            "-id=42",
-            "-system-header-threshold=1",
-            "--",
-        ]
-        result = subprocess.run(command, capture_output=True, text=True, check=False)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout, "")
-        self.assertNotIn("<Compiler Instance Data>", result.stderr)
-
-    def test_syntax_check_keeps_malformed_input_diagnostics(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            invalid_source = Path(directory) / "invalid.cpp"
-            invalid_source.write_text("int main( {\n", encoding="utf-8")
-            command = [
-                str(clang_dumper_tool()),
-                "-syntax-check-only",
-                "-c",
-                str(invalid_source),
-                "-id=42",
-                "-system-header-threshold=1",
-                "--",
-            ]
-            result = subprocess.run(command, capture_output=True, text=True, check=False)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertEqual(result.stdout, "")
-            self.assertIn("error:", result.stderr)
-            self.assertNotIn("<Compiler Instance Data>", result.stderr)
-
-    def test_syntax_check_rejects_dump_side_files(self) -> None:
-        for side_file_arguments in (
-            ["-MD", "-MF", "dependencies.d"],
-            ["-MF", "dependencies.d"],
-            ["-ast-dump-compression=zstd"],
-        ):
-            command = [
-                str(clang_dumper_tool()),
-                "-syntax-check-only",
-                *side_file_arguments,
-                "-c",
-                str(self.source),
-                "-id=42",
-                "-system-header-threshold=1",
-                "--",
-            ]
-            result = subprocess.run(command, capture_output=True, text=True, check=False)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("cannot produce dump side files", result.stderr)
-
-    def test_file_output_truncates_existing_contents(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast.dump"
-            output.write_text("stale data\n", encoding="utf-8")
-            result = self.run_tool(self.source, output)
-            self.assertEqual(result.returncode, 0)
-            self.assertNotIn("stale data", output.read_text(encoding="utf-8"))
-
-    def test_bad_file_output_path_is_reported(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "missing" / "ast.dump"
-            result = self.run_tool(self.source, output)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("Cannot open AST dump output", result.stderr)
-
-    def test_rejects_multiple_sources_for_one_output(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast.dump"
-            command = [
-                str(clang_dumper_tool()),
-                "-c",
-                str(self.source),
-                str(Path(__file__).parent / "inputs" / "includes.cpp"),
-                "-o",
-                str(output),
-                "--",
-            ]
-            result = subprocess.run(command, capture_output=True, text=True, check=False)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("require exactly one source file", result.stderr)
-
-    def test_writes_make_dependencies_for_ccache_depend_mode(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast dump.output"
-            dependencies = Path(directory) / "ast dump.d"
-            command = [
-                str(clang_dumper_tool()),
-                "-c",
-                str(Path(__file__).parent / "inputs" / "includes.cpp"),
-                "-o",
-                str(output),
-                "-MD",
-                "-MF",
-                str(dependencies),
-                "-id=42",
-                "-system-header-threshold=1",
-                "--",
-            ]
-            result = subprocess.run(command, capture_output=True, text=True, check=False)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            depfile = dependencies.read_text(encoding="utf-8")
-            self.assertIn(str(output).replace(" ", "\\ "), depfile)
-            self.assertIn("includes.cpp", depfile)
-            self.assertIn("includes.h", depfile)
-            self.assertIn("includes2.h", depfile)
-            self.assertIn("data1.dat", depfile)
-
-    def test_accepts_ccache_canonicalized_argument_order(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast.dump"
-            dependencies = Path(directory) / "ast.d"
-            command = [
-                str(clang_dumper_tool()),
-                "-MD",
-                "-MF",
-                str(dependencies),
-                "-id=42",
-                "-system-header-threshold=1",
-                "-std=c++17",
-                "-fcolor-diagnostics",
-                "-c",
-                "-o",
-                str(output),
-                "--",
-                str(self.source),
-            ]
-            result = subprocess.run(command, capture_output=True, text=True, check=False)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertTrue(output.is_file())
-            self.assertTrue(dependencies.is_file())
-
-    def test_accepts_ccache_injected_color_flag_in_tool_arguments(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "ast.dump"
-            command = [
-                str(clang_dumper_tool()),
-                "-fcolor-diagnostics",
-                "-c",
-                str(self.source),
-                "-id=42",
-                "-system-header-threshold=1",
-                "-o",
-                str(output),
-                "--",
-                "-std=c++17",
-            ]
-            result = subprocess.run(command, capture_output=True, text=True, check=False)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertTrue(output.is_file())
-
-    @unittest.skipUnless(shutil.which("ccache"), "ccache is required for cache integration tests")
-    def test_ccache_restores_compressed_dump_without_rerunning_tool(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            output = root / "ast.dump.zst"
-            dependencies = root / "ast.d"
-            environment = os.environ.copy()
-            environment.update(
-                CCACHE_DIR=str(root / "cache"),
-                CCACHE_COMPILERTYPE="clang",
-                CCACHE_DEPEND="true",
-                CCACHE_NOHASHDIR="true",
-                CCACHE_NOCOMPRESS="true",
-            )
-            command = [
-                "ccache",
-                str(clang_dumper_tool()),
-                "-c",
-                str(self.source),
-                "-id=42",
-                "-system-header-threshold=1",
-                "-o",
-                str(output),
-                "-ast-dump-compression=zstd",
-                "-MD",
-                "-MF",
-                str(dependencies),
-                "--",
-            ]
-
-            first = subprocess.run(
-                command, capture_output=True, text=True, check=False, env=environment
-            )
-            self.assertEqual(first.returncode, 0, first.stderr)
-            first_dump = output.read_bytes()
-            output.unlink()
-            dependencies.unlink()
-            second = subprocess.run(
-                command, capture_output=True, text=True, check=False, env=environment
-            )
-            stats = subprocess.run(
-                ["ccache", "--print-stats"],
-                capture_output=True,
-                text=True,
-                check=True,
-                env=environment,
-            ).stdout
-
-            self.assertEqual(second.returncode, 0, second.stderr)
-            self.assertEqual(output.read_bytes(), first_dump)
-            self.assertIn("direct_cache_hit\t1", stats)
-            self.assertIn("cache_miss\t1", stats)
-
-    def test_generated_roots_keep_relative_paths_across_invocations(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            roots = [root / "A", root / "C"]
-            for parse_root in roots:
-                (parse_root / "include").mkdir(parents=True)
-                (parse_root / "include" / "value.h").write_text(
-                    "#define VALUE 7\n", encoding="utf-8"
-                )
-                (parse_root / "src.cpp").write_text(
-                    '#include "include/value.h"\n'
-                    '#warning generated-root-warning\n'
-                    'const char *path = __FILE__;\n'
-                    'const char *base = __BASE_FILE__;\n'
-                    "int value = VALUE;\n",
-                    encoding="utf-8",
-                )
-
-            dumps: list[str] = []
-            dump_paths: list[str] = []
-            diagnostics: list[str] = []
-            dependencies: list[str] = []
-            for parse_root in roots:
-                output = root / f"{parse_root.name}.dump"
-                dependency = root / f"{parse_root.name}.d"
-                result = subprocess.run(
-                    [
-                        str(clang_dumper_tool()),
-                        "-c",
-                        "-o",
-                        str(output),
-                        "-MD",
-                        "-MF",
-                        str(dependency),
-                        "src.cpp",
-                        "--",
-                        "-I.",
-                    ],
-                    cwd=parse_root,
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                )
-                self.assertEqual(result.returncode, 0, result.stderr)
-                dump_text = output.read_text(encoding="utf-8")
-                normalized_dump, _ = normalize_captured_output(
-                    dump_text, str(parse_root.resolve())
-                )
-                dumps.append(normalized_dump)
-                dump_paths.append(dump_text)
-                diagnostics.append(result.stderr)
-                dependencies.append(dependency.read_text(encoding="utf-8"))
-
-            self.assertEqual(dumps[0], dumps[1])
-            self.assertEqual(diagnostics[0], diagnostics[1])
-            self.assertEqual(
-                dependencies[0].split(": ", 1)[1],
-                dependencies[1].split(": ", 1)[1],
-            )
-            self.assertIn("src.cpp", diagnostics[0])
-            self.assertNotIn(str(root / "A"), diagnostics[0])
-            self.assertIn("src.cpp", dependencies[0])
-            self.assertNotIn(str(root / "A" / "src.cpp"), dependencies[0])
-            self.assertNotIn(str(root / "A"), dump_paths[0])
-            self.assertNotIn(str(root / "C"), dump_paths[1])
-            self.assertIn('"src.cpp"', dump_paths[0])
-
-            cache = root / "cache"
-            cache_environment = os.environ.copy()
-            cache_environment.update(
-                CCACHE_DIR=str(cache),
-                CCACHE_COMPILERTYPE="clang",
-                CCACHE_DEPEND="true",
-                CCACHE_NOHASHDIR="true",
-                CCACHE_NOCOMPRESS="true",
-            )
-            cache_commands = []
-            for parse_root in roots:
-                output = parse_root / "ast.dump"
-                dependency = parse_root / "ast.d"
-                self.assertFalse(output.exists())
-                self.assertFalse(dependency.exists())
-                cache_commands.append(
-                    (
-                        parse_root,
-                        output,
-                        dependency,
-                    )
-                )
-
-            first_root, first_output, first_dependency = cache_commands[0]
-            first = subprocess.run(
-                [
-                    "ccache",
-                    str(clang_dumper_tool()),
-                    "-c",
-                    "-o",
-                    "ast.dump",
-                    "-MD",
-                    "-MF",
-                    "ast.d",
-                    "src.cpp",
-                    "--",
-                    "-I.",
-                ],
-                cwd=first_root,
+            output = self.write_dump(directory)
+            verified = subprocess.run(
+                [str(self.verifier()), str(output)],
                 capture_output=True,
                 text=True,
                 check=False,
-                env=cache_environment,
             )
-            self.assertEqual(first.returncode, 0, first.stderr)
-            first_dump = first_output.read_bytes()
-            self.assertTrue(first_dependency.is_file())
+        self.assertEqual(0, verified.returncode, verified.stderr)
+        self.assertIn("blocks=", verified.stdout)
+        self.assertIn(" records=", verified.stdout)
+        self.assertIn(" nodes=", verified.stdout)
 
-            second_root, second_output, second_dependency = cache_commands[1]
-            self.assertFalse(second_output.exists())
-            self.assertFalse(second_dependency.exists())
-            second = subprocess.run(
-                [
-                    "ccache",
-                    str(clang_dumper_tool()),
-                    "-c",
-                    "-o",
-                    "ast.dump",
-                    "-MD",
-                    "-MF",
-                    "ast.d",
-                    "src.cpp",
-                    "--",
-                    "-I.",
-                ],
-                cwd=second_root,
-                capture_output=True,
-                text=True,
-                check=False,
-                env=cache_environment,
+    def test_local_manifest_pins_tool_llvm_major(self) -> None:
+        manifest = clang_dumper_tool().parent / "clang-dumper-release-manifest.json"
+        self.assertTrue(manifest.is_file(), "local build manifest must be generated")
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        tool_assets = [asset for asset in payload["assets"] if asset["kind"] == "tool"]
+        self.assertEqual(1, len(tool_assets))
+        self.assertIsInstance(tool_assets[0].get("llvm_major"), int)
+        self.assertGreater(tool_assets[0]["llvm_major"], 0)
+
+    def test_requires_output_path_and_rejects_legacy_selectors(self) -> None:
+        no_output = self.run_tool(str(self.source), "--", "-std=c++17")
+        self.assertNotEqual(0, no_output.returncode)
+        self.assertIn(b"-o <path> is required", no_output.stderr)
+        for legacy in ("-ast-dump-format=text", "-ast-dump-format=flatbuffers-v2",
+                       "-ast-dump-compression=zstd"):
+            with self.subTest(legacy=legacy), tempfile.TemporaryDirectory() as directory:
+                result = self.run_tool(
+                    "-c", str(self.source), "-o", str(Path(directory) / "out.clv2"),
+                    legacy, "--", "-std=c++17",
+                )
+                self.assertNotEqual(0, result.returncode)
+
+    def test_verifier_rejects_truncation_and_schema_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            original = self.write_dump(directory).read_bytes()
+            truncated = Path(directory) / "truncated.clv2"
+            truncated.write_bytes(original[:-1])
+            rejected_truncated = subprocess.run(
+                [str(self.verifier()), str(truncated)], capture_output=True, text=True
             )
-            stats = subprocess.run(
-                ["ccache", "--print-stats"],
-                capture_output=True,
-                text=True,
-                check=True,
-                env=cache_environment,
-            ).stdout
+            self.assertNotEqual(0, rejected_truncated.returncode)
 
-            self.assertEqual(second.returncode, 0, second.stderr)
-            self.assertEqual(second_output.read_bytes(), first_dump)
-            self.assertTrue(second_dependency.is_file())
-            self.assertIn("cache_miss\t1", stats)
-            self.assertIn("direct_cache_hit\t1", stats)
-            self.assertNotIn(str(root / "A"), second_output.read_text(encoding="utf-8"))
+            changed = bytearray(original)
+            match = re.search(rb"[0-9a-f]{64}", changed)
+            self.assertIsNotNone(match, "header must contain its schema digest")
+            assert match is not None
+            changed[match.start()] = ord("0") if changed[match.start()] != ord("0") else ord("1")
+            mismatch = Path(directory) / "wrong-schema.clv2"
+            mismatch.write_bytes(changed)
+            rejected_schema = subprocess.run(
+                [str(self.verifier()), str(mismatch)], capture_output=True, text=True
+            )
+        self.assertNotEqual(0, rejected_schema.returncode)
+        self.assertIn("schema hash mismatch", rejected_schema.stderr)
 
+    def test_verifier_rejects_a_missing_terminal_end_record(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            changed = bytearray(self.write_dump(directory).read_bytes())
 
-class ClangDiagnosticFilteringTest(unittest.TestCase):
-    def test_removes_interleaved_diagnostics_without_touching_protocol(self) -> None:
-        output = """protocol before
-/tmp/input.c:3:4: warning: example warning
-    3 | bad();
-      | ^~~~~
-protocol after
-1 warning generated.
-"""
-        self.assertEqual(
-            "protocol before\nprotocol after\n",
-            strip_clang_diagnostics(output),
-        )
+            def u16(offset: int) -> int:
+                return int.from_bytes(changed[offset : offset + 2], "little")
 
+            def u32(offset: int) -> int:
+                return int.from_bytes(changed[offset : offset + 4], "little")
 
-def source_record(
-    expansion_path: str,
-    source: str,
-    *,
-    spelling_path: str | None = None,
-    system_header: bool = False,
-) -> str:
-    lines = [
-        "<IntegerLiteralData>",
-        "ADDR_001",
-        "IntegerLiteral",
-        expansion_path,
-        "4",
-        "8",
-        "<end>",
-        "1" if spelling_path is not None else "0",
-    ]
-    if spelling_path is not None:
-        lines.extend([spelling_path, "2", "3", "<end>"])
-    lines.extend(
-        [
-            "1" if system_header else "0",
-            "ADDR_002",
-            "0",
-            "0",
-            "0",
-            "%CLAVA_SOURCE_BEGIN%",
-            source,
-            "%CLAVA_SOURCE_END%",
-            "42",
-        ]
-    )
-    return "\n".join(lines)
+            def table_vtable(table: int) -> int:
+                return table - int.from_bytes(changed[table : table + 4], "little", signed=True)
 
+            block = 4 + u32(4)
+            block_vtable = table_vtable(block)
+            records_field = u16(block_vtable + 4)
+            records_vector = block + records_field + u32(block + records_field)
+            record_count = u32(records_vector)
+            last_record_offset = records_vector + 4 + (record_count - 1) * 4
+            last_record = last_record_offset + u32(last_record_offset)
+            record_vtable = table_vtable(last_record)
+            payload_type_field = u16(record_vtable + 4)
+            payload_type_offset = last_record + payload_type_field
+            self.assertEqual(12, changed[payload_type_offset])
+            changed[payload_type_offset] = 10  # End -> Counter; valid union, missing terminator.
 
-class NormalizeSystemSourceBlocksTest(unittest.TestCase):
-    def test_preserves_test_file_source(self) -> None:
-        output = source_record("<TEST_DIR>/literal.c", "1.2")
-        self.assertEqual(normalize_system_source_blocks(output), output)
+            malformed = Path(directory) / "missing-end.clv2"
+            malformed.write_bytes(changed)
+            result = subprocess.run(
+                [str(self.verifier()), str(malformed)], capture_output=True, text=True
+            )
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("missing its header or end record", result.stderr)
 
-    def test_normalizes_direct_system_header_source(self) -> None:
-        output = source_record(
-            "<SYSTEM_INCLUDE>/stdlib.h",
-            "system\nheader\ntext",
-            system_header=True,
-        )
-        self.assertIn(
-            "%CLAVA_SYSTEM_SOURCE_BLOCK%",
-            normalize_system_source_blocks(output),
-        )
-        self.assertNotIn(
-            "system\nheader\ntext",
-            normalize_system_source_blocks(output),
-        )
+    def test_output_truncates_existing_contents_and_path_errors_are_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "ast.clv2"
+            output.write_bytes(b"stale data")
+            result = self.run_tool(
+                "-c", str(self.source), "-o", str(output), "--", "-std=c++17"
+            )
+            self.assertEqual(0, result.returncode, result.stderr.decode(errors="replace"))
+            self.assertFalse(output.read_bytes().startswith(b"stale"))
 
-    def test_normalizes_macro_spelled_in_compiler_header(self) -> None:
-        output = source_record(
-            "<TEST_DIR>/boolean.c",
-            "1",
-            spelling_path="<CLANG_INCLUDE>/stdbool.h",
-        )
-        self.assertIn(
-            "%CLAVA_SYSTEM_SOURCE_BLOCK%",
-            normalize_system_source_blocks(output),
-        )
-
-    def test_normalizes_internal_compiler_source(self) -> None:
-        output = source_record("<built-in>", "__DBL_MAX__")
-        self.assertIn(
-            "%CLAVA_SYSTEM_SOURCE_BLOCK%",
-            normalize_system_source_blocks(output),
-        )
-
-    def test_uses_system_header_flag_for_unrecognized_paths(self) -> None:
-        output = source_record(
-            "/vendor/sdk/header.h",
-            "VENDOR_MACRO",
-            system_header=True,
-        )
-        self.assertIn(
-            "%CLAVA_SYSTEM_SOURCE_BLOCK%",
-            normalize_system_source_blocks(output),
-        )
-
-    def test_preserves_macro_spelled_in_test_file(self) -> None:
-        output = source_record(
-            "<built-in>",
-            "TEST_MACRO",
-            spelling_path="<TEST_DIR>/macro.h",
-        )
-        self.assertEqual(normalize_system_source_blocks(output), output)
-
-    def test_preserves_invalid_empty_source(self) -> None:
-        output = "\n".join(
-            [
-                "<IntegerLiteralData>",
-                "ADDR_001",
-                "IntegerLiteral",
-                "<invalid>",
-                "0",
-                "1",
-                "ADDR_002",
-                "0",
-                "0",
-                "0",
-                "%CLAVA_SOURCE_BEGIN%",
-                "",
-                "%CLAVA_SOURCE_END%",
-            ]
-        )
-        self.assertEqual(normalize_system_source_blocks(output), output)
-
-    def test_does_not_apply_previous_record_provenance(self) -> None:
-        system_record = source_record(
-            "<SYSTEM_INCLUDE>/stdlib.h",
-            "SYSTEM_TEXT",
-            system_header=True,
-        )
-        test_record = source_record("<TEST_DIR>/literal.c", "LOCAL_TEXT")
-        normalized = normalize_system_source_blocks(system_record + "\n" + test_record)
-        self.assertNotIn("SYSTEM_TEXT", normalized)
-        self.assertIn("LOCAL_TEXT", normalized)
-
-
-class NormalizeSystemPathsTest(unittest.TestCase):
-    def test_normalizes_entrypoint_windows_include_archive_paths(self) -> None:
-        output = "\n".join(
-            [
-                r"C:\a\clang-dumper\clang-dumper\windows-includes\mingw\c++\v1\vector",
-                r"C:\a\clang-dumper\clang-dumper\windows-includes\clang\stddef.h",
-                r"C:\a\clang-dumper\clang-dumper\windows-includes\mingw\stdio.h",
-            ]
-        )
-
-        normalized, _ = normalize_captured_output(output, "<TEST_DIR>")
-
-        self.assertIn("<SYSTEM_INCLUDE>/c++", normalized)
-        self.assertIn("<CLANG_INCLUDE>", normalized)
-        self.assertIn("<SYSTEM_INCLUDE>", normalized)
-        self.assertNotIn("windows-includes", normalized)
-
-
-class NormalizeUnsignedLongLongTest(unittest.TestCase):
-    def test_preserves_real_unsigned_long_long_builtin(self) -> None:
-        output = "\n".join(
-            [
-                "<BuiltinTypeData>",
-                "ADDR_001",
-                "BuiltinType",
-                "unsigned long long",
-                "NONE",
-                "0",
-                "0",
-                "0",
-                "nullptr_type",
-                "ULongLong",
-                "unsigned long long",
-                "<Id to Class Map>",
-                "ADDR_001",
-                "BuiltinType",
-                "<Visited Children>",
-                "ADDR_002",
-                "0",
-                "<VarDeclData>",
-                "ADDR_002",
-                "VarDecl",
-                "<TEST_DIR>/builtin_types.cpp",
-                "12",
-                "2",
-                "<TEST_DIR>/builtin_types.cpp",
-                "12",
-                "21",
-                "0",
-                "0",
-                "0",
-                "0",
-                "0",
-                "0",
-                "0",
-                "0",
-                "",
-                "unsignedLongLong",
-                "0",
-                "0",
-                "0",
-                "None",
-                "Default",
-                "ADDR_001",
-            ]
-        )
-
-        self.assertEqual(normalize_static_output(output), output)
-
-    def test_normalizes_external_unsigned_long_long_typedef_builtin(self) -> None:
-        output = "\n".join(
-            [
-                "<BuiltinTypeData>",
-                "ADDR_001",
-                "BuiltinType",
-                "unsigned long long",
-                "NONE",
-                "0",
-                "0",
-                "0",
-                "nullptr_type",
-                "ULongLong",
-                "unsigned long long",
-                "<Id to Class Map>",
-                "ADDR_001",
-                "BuiltinType",
-                "<Visited Children>",
-                "ADDR_002",
-                "0",
-                "<TypedefNameDeclData>",
-                "ADDR_002",
-                "TypedefDecl",
-                "<SYSTEM_INCLUDE>/stdint.h",
-                "27",
-                "1",
-                "<SYSTEM_INCLUDE>/stdint.h",
-                "27",
-                "20",
-                "0",
-                "1",
-                "0",
-                "0",
-                "1",
-                "0",
-                "0",
-                "0",
-                "",
-                "uint64_t",
-                "0",
-                "0",
-                "0",
-                "None",
-                "Default",
-                "ADDR_003",
-                "ADDR_001",
-            ]
-        )
-
-        normalized = normalize_static_output(output)
-
-        self.assertIn("\nunsigned long\n", normalized)
-        self.assertIn("\nULong\n", normalized)
-        self.assertNotIn("\nunsigned long long\n", normalized)
-        self.assertNotIn("\nULongLong\n", normalized)
-
-
-class NodeClosureTest(unittest.TestCase):
-    def test_accepts_resolved_node_ids(self) -> None:
-        output = "\n".join(
-            [
-                "<TypedefNameDeclData>",
-                "ADDR_001",
-                "ADDR_002",
-                "<Id to Class Map>",
-                "ADDR_001",
-                "TypedefDecl",
-                "<Id to Class Map>",
-                "ADDR_002",
-                "BuiltinType",
-            ]
-        )
-
-        self.assertEqual(unresolved_node_ids(output), [])
-
-    def test_reports_unresolved_node_ids(self) -> None:
-        output = "\n".join(
-            [
-                "<TypedefNameDeclData>",
-                "ADDR_001",
-                "ADDR_002",
-                "<Top Level Attributes>",
-                "ADDR_003",
-                "<Id to Class Map>",
-                "ADDR_001",
-                "TypedefDecl",
-            ]
-        )
-
-        self.assertEqual(unresolved_node_ids(output), ["ADDR_002", "ADDR_003"])
+            missing_parent = Path(directory) / "missing" / "ast.clv2"
+            failed = self.run_tool(
+                "-c", str(self.source), "-o", str(missing_parent), "--", "-std=c++17"
+            )
+            self.assertNotEqual(0, failed.returncode)
+            self.assertIn(b"Cannot open AST dump output", failed.stderr)
 
 
 if __name__ == "__main__":

@@ -13,8 +13,10 @@
 
 #include <bitset>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 
 using namespace clang;
 
@@ -49,6 +51,16 @@ SourceLocation resolveTokenSplitLocation(const SourceManager &SM,
 StringRef getLocationFilename(const SourceManager &SM, SourceLocation loc) {
     StringRef filename = SM.getFilename(loc);
     return filename.empty() ? SM.getBufferName(loc) : filename;
+}
+
+std::unordered_map<const void *, uint32_t> &denseIds() {
+    static std::unordered_map<const void *, uint32_t> ids;
+    return ids;
+}
+
+bool forceDenseIds=false;
+bool denseIdsEnabled() {
+    return forceDenseIds;
 }
 
 } // namespace
@@ -165,11 +177,24 @@ const std::string clava::getId(const void *addr, int id) {
         return "0_" + std::to_string(id);
     }
 
+    if (denseIdsEnabled()) {
+        auto &ids = denseIds();
+        const auto entry =
+            ids.try_emplace(addr, static_cast<uint32_t>(ids.size() + 1)).first;
+        return "@" + std::to_string(entry->second);
+    }
+
     char buffer[64];
     std::snprintf(buffer, sizeof(buffer), "%p_%d", addr, id);
 
     return buffer;
 }
+
+void clava::enableDenseIds() {forceDenseIds=true;}
+
+void clava::resetDenseIds() { denseIds().clear(); }
+
+size_t clava::denseIdCount() { return denseIds().size(); }
 
 const std::string clava::getId(const Decl *addr, int id) {
     if (addr == nullptr) {
@@ -347,6 +372,11 @@ const std::string clava::getSource(ASTContext *Context,
     const SourceManager &sm = Context->getSourceManager();
 
     return buildSourceText(sm, sourceRange) + "\n%CLAVA_SOURCE_END%";
+}
+
+const std::string clava::getSourceText(ASTContext *Context,
+                                       SourceRange sourceRange) {
+    return buildSourceText(Context->getSourceManager(), sourceRange);
 }
 
 void clava::dump(NestedNameSpecifier *qualifier, ASTContext *Context) {

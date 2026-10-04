@@ -22,6 +22,7 @@ INIT_STYLE_MAP = {
     "CInit": "CINIT",
     "CallInit": "CALL_INIT",
     "ListInit": "LIST_INIT",
+    "ParenListInit": "ParenListInit",
 }
 
 NEW_INIT_STYLE_MAP = {

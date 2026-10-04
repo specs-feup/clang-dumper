@@ -1,3 +1,4 @@
+#include "../Clava/FlatEmit.h"
 
 //
 // Created by JoaoBispo on 18/03/2018.
@@ -82,6 +83,7 @@ class ClavaDataDumper {
                   const Entries &entries, const char *family,
                   const char *defaultDataName,
                   void (ClavaDataDumper::*fallback)(const Node *)) {
+        if (clava::flat::emit(node, Context, id)) return;
         auto it = entries.find(classname);
         const char *dataName =
             it != entries.end() ? it->second.dataName : defaultDataName;
@@ -154,6 +156,7 @@ class ClavaDataDumper {
 
     // EXPRS
     void DumpExprData(const Expr *E);
+    void DumpCXXUnresolvedConstructExprData(const CXXUnresolvedConstructExpr *E);
     void DumpCastExprData(const CastExpr *E);
     void DumpLiteralData(const Expr *E);
     void DumpCharacterLiteralData(const CharacterLiteral *E);
@@ -200,6 +203,7 @@ class ClavaDataDumper {
     void DumpTypeData(const Type *T, Qualifiers &qualifiers);
     void DumpBuiltinTypeData(const BuiltinType *T);
     void DumpPointerTypeData(const PointerType *T);
+    void DumpMemberPointerTypeData(const MemberPointerType *T);
     void DumpFunctionTypeData(const FunctionType *T);
     void DumpFunctionProtoTypeData(const FunctionProtoType *T);
     void DumpTagTypeData(const TagType *T);

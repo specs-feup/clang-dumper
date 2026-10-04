@@ -1,0 +1,265 @@
+include "common.fbs";
+namespace astwire.v2;
+
+// Declaration payloads follow the native dumper inheritance walk. Each
+// handler owns a table and embeds its parent payload in `base`.
+table DeclData {
+  base:ClavaNodeData (required);
+  is_implicit:bool = null;
+  is_used:bool = null;
+  is_referenced:bool = null;
+  is_invalid_decl:bool = null;
+  is_module_private:bool = null;
+  attributes:[long] (required);
+}
+
+table NamedDeclData {
+  base:DeclData (required);
+  qualified_prefix:string (required);
+  decl_name:string (required);
+  name_kind:NameKind = null;
+  is_cxx_class_member:bool = null;
+  is_cxx_instance_member:bool = null;
+  linkage:Linkage = null;
+  visibility:Visibility = null;
+}
+
+table TypeDeclData {
+  base:NamedDeclData (required);
+  type_for_decl:long = null;
+}
+
+table TagDeclData {
+  base:TypeDeclData (required);
+  tag_kind:TagKind = null;
+  is_complete_definition:bool = null;
+}
+
+table RecordDeclData {
+  base:TagDeclData (required);
+  is_anonymous:bool = null;
+}
+
+table ValueDeclData {
+  base:NamedDeclData (required);
+  type:long = null;
+  is_weak:bool = null;
+}
+
+table DeclaratorDeclData { base:ValueDeclData (required); }
+
+table TemplateDeclData {
+  base:NamedDeclData (required);
+  template_parameters:[long] (required);
+  template_decl:long = null;
+}
+
+table FunctionDeclData {
+  base:DeclaratorDeclData (required);
+  is_constexpr:bool = null;
+  template_kind:TemplateKind = null;
+  storage_class:StorageClass = null;
+  is_inline_specified:bool = null;
+  is_virtual_as_written:bool = null;
+  is_pure:bool = null;
+  is_deleted:bool = null;
+  is_explicitly_defaulted:bool = null;
+  previous_decl:long = null;
+  canonical_decl:long = null;
+  primary_template_decl:long = null;
+  template_arguments:[TemplateArgument] (required);
+  template_parameters:[long] (required);
+  template_parameter_list_sizes:[int] (required);
+}
+
+table CXXMethodDeclData {
+  base:FunctionDeclData (required);
+  record:long = null;
+  overridden_methods:[long] (required);
+  is_static:bool = null;
+  is_instance:bool = null;
+  is_const:bool = null;
+  is_volatile:bool = null;
+  is_virtual:bool = null;
+  is_copy_assignment_operator:bool = null;
+  is_move_assignment_operator:bool = null;
+  this_type:long = null;
+  this_object_type:long = null;
+  has_inline_body:bool = null;
+  is_lambda_static_invoker:bool = null;
+}
+
+table CXXConstructorDeclData {
+  base:CXXMethodDeclData (required);
+  constructor_inits:[CXXCtorInitializer] (required);
+  is_default_constructor:bool = null;
+  is_explicit:bool = null;
+  explicit_specifier:ExplicitSpecifier (required);
+}
+
+table CXXConversionDeclData {
+  base:CXXMethodDeclData (required);
+  is_explicit:bool = null;
+  is_lambda_to_block_pointer_conversion:bool = null;
+  conversion_type:long = null;
+}
+
+table FieldDeclData {
+  base:DeclaratorDeclData (required);
+  is_mutable:bool = null;
+}
+
+table ParmVarDeclData {
+  base:VarDeclData (required);
+  has_inherited_default_arg:bool = null;
+}
+
+table VarDeclData {
+  base:ValueDeclData (required);
+  storage_class:StorageClass = null;
+  tls_kind:TLSKind = null;
+  is_nrvo_variable:bool = null;
+  init_style:InitializationStyle = null;
+  is_constexpr:bool = null;
+  is_static_data_member:bool = null;
+  is_out_of_line:bool = null;
+  has_global_storage:bool = null;
+}
+
+table TemplateTypeParmDeclData {
+  base:TypeDeclData (required);
+  kind:TemplateTypeParmKind = null;
+  is_parameter_pack:bool = null;
+  default_argument:long = null;
+}
+
+table UnresolvedUsingTypenameDeclData {
+  base:TypeDeclData (required);
+  qualifier:string (required);
+  is_pack_expansion:bool = null;
+}
+
+table EnumDeclData {
+  base:TagDeclData (required);
+  enum_scope_kind:EnumScopeType = null;
+  integer_type:long = null;
+}
+
+table CXXRecordDeclData {
+  base:RecordDeclData (required);
+  record_bases:[CXXBaseSpecifier] (required);
+  record_definition:long = null;
+}
+
+table ClassTemplateSpecializationDeclData {
+  base:CXXRecordDeclData (required);
+  specialized_template:long = null;
+  specialization_kind:TemplateSpecializationKind = null;
+  template_arguments:[TemplateArgument] (required);
+}
+
+table NonTypeTemplateParmDeclData {
+  base:DeclaratorDeclData (required);
+  default_argument:long = null;
+  default_argument_was_inherited:bool = null;
+  is_parameter_pack:bool = null;
+  is_pack_expansion:bool = null;
+  is_expanded_parameter_pack:bool = null;
+  expansion_types:[long] (required);
+}
+
+table TypedefNameDeclData {
+  base:TypeDeclData (required);
+  underlying_type:long = null;
+}
+
+table AccessSpecDeclData {
+  base:DeclData (required);
+  access_specifier:AccessSpecifier = null;
+}
+
+table UsingDeclData {
+  base:NamedDeclData (required);
+  nested_name_specifier:NestedNameSpecifier (required);
+}
+
+table UsingDirectiveDeclData {
+  base:NamedDeclData (required);
+  qualifier:string (required);
+  namespace:long = null;
+  namespace_as_written:long = null;
+}
+
+table NamespaceDeclData {
+  base:NamedDeclData (required);
+  source_literal:string (required);
+}
+
+table NamespaceAliasDeclData {
+  base:NamedDeclData (required);
+  nested_prefix:string (required);
+  aliased_namespace:long = null;
+}
+
+table LinkageSpecDeclData {
+  base:DeclData (required);
+  linkage_type:LanguageId = null;
+}
+
+table StaticAssertDeclData {
+  base:DeclData (required);
+  is_failed:bool = null;
+}
+
+table TemplateTemplateParmDeclData {
+  base:TemplateDeclData (required);
+  default_argument:TemplateArgument;
+  is_parameter_pack:bool = null;
+  is_pack_expansion:bool = null;
+  is_expanded_parameter_pack:bool = null;
+}
+
+table MSPropertyDeclData {
+  base:DeclaratorDeclData (required);
+  getter_name:string;
+  setter_name:string;
+}
+
+union DeclPayload {
+  DeclData,
+  NamedDeclData,
+  TypeDeclData,
+  TagDeclData,
+  RecordDeclData,
+  ValueDeclData,
+  DeclaratorDeclData,
+  TemplateDeclData,
+  FunctionDeclData,
+  CXXMethodDeclData,
+  CXXConstructorDeclData,
+  CXXConversionDeclData,
+  FieldDeclData,
+  ParmVarDeclData,
+  VarDeclData,
+  TemplateTypeParmDeclData,
+  UnresolvedUsingTypenameDeclData,
+  EnumDeclData,
+  CXXRecordDeclData,
+  ClassTemplateSpecializationDeclData,
+  NonTypeTemplateParmDeclData,
+  TypedefNameDeclData,
+  AccessSpecDeclData,
+  UsingDeclData,
+  UsingDirectiveDeclData,
+  NamespaceDeclData,
+  NamespaceAliasDeclData,
+  LinkageSpecDeclData,
+  StaticAssertDeclData,
+  TemplateTemplateParmDeclData,
+  MSPropertyDeclData
+}
+
+table ClassTemplatePartialSpecializationDeclData {
+  base:ClassTemplateSpecializationDeclData (required);
+  template_parameters:[long] (required);
+}

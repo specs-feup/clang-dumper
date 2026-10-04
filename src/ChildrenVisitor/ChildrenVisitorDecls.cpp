@@ -29,7 +29,7 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(ClassTemplateSpecializationDecl,
                             VisitClassTemplateSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(ClassTemplatePartialSpecializationDecl,
-                            VisitClassTemplateSpecializationDeclChildren),
+                            VisitClassTemplatePartialSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(FunctionDecl, VisitFunctionDeclChildren),
         DECL_CHILDREN_ENTRY(VarDecl, VisitVarDeclChildren),
         DECL_CHILDREN_ENTRY(ParmVarDecl, VisitVarDeclChildren),
@@ -165,6 +165,17 @@ void ClangAstDumper::VisitFunctionDeclChildren(
         }
     }
 
+    // Function template parameter lists are metadata references rather than AST
+    // children. Visit them so the referenced declaration payloads are emitted.
+    for (unsigned listIndex = 0; listIndex < D->getNumTemplateParameterLists();
+         ++listIndex) {
+        if (const auto *parameters = D->getTemplateParameterList(listIndex)) {
+            for (const auto *parameter : *parameters) {
+                VisitDeclTop(parameter);
+            }
+        }
+    }
+
     // Visit parameters
     for (auto param : D->parameters()) {
         addChild(param, children);
@@ -271,6 +282,23 @@ void ClangAstDumper::VisitClassTemplateSpecializationDeclChildren(
     auto &templateArgs = D->getTemplateArgs();
     for (auto &templateArg : templateArgs.asArray()) {
         VisitTemplateArgument(templateArg);
+    }
+}
+
+void ClangAstDumper::VisitClassTemplatePartialSpecializationDeclChildren(
+    const ClassTemplatePartialSpecializationDecl *D,
+    std::vector<std::string> &children) {
+    // Hierarchy and specialization arguments
+    VisitClassTemplateSpecializationDeclChildren(D, children);
+
+    if (auto *templateParams = D->getTemplateParameters()) {
+        for (auto I = templateParams->begin(), E = templateParams->end();
+             I != E; ++I) {
+            // The partial specialization refers to these declarations through
+            // template_parameters metadata; keep their records available
+            // without making them class-body children.
+            VisitDeclTop(*I);
+        }
     }
 }
 
