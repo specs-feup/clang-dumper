@@ -1,8 +1,12 @@
 #include "FlatSupport.h"
 
+#include "../ClangEnums/ClangEnums.h"
+
+#include "clang/AST/Decl.h"
 #include "clang/AST/ExprCXX.h"
 #include "clang/AST/StmtCXX.h"
 #include "llvm/ADT/STLForwardCompat.h"
+#include "llvm/Support/Casting.h"
 
 #include <stdexcept>
 
@@ -383,10 +387,28 @@ std::unique_ptr<fb::LambdaExprDataT> makeLambdaExprData(
   for (const auto &capture : node->captures()) {
     out->capture_kinds.push_back(enumValue<fb::LambdaCaptureKind>(
         clava::LAMBDA_CAPTURE_KIND[capture.getCaptureKind()]));
-    out->init_capture_names.push_back(
-        node->isInitCapture(&capture)
-            ? capture.getCapturedVar()->getNameAsString()
-            : "");
+    const bool isInitCapture = node->isInitCapture(&capture);
+    out->init_capture_names.push_back(isInitCapture
+                                          ? capture.getCapturedVar()->getNameAsString()
+                                          : "");
+    const auto *capturedVar = isInitCapture
+                                  ? llvm::dyn_cast<clang::VarDecl>(
+                                        capture.getCapturedVar())
+                                  : nullptr;
+    if (isInitCapture && !capturedVar) {
+      throw std::invalid_argument(
+          "An init-capture must reference a VarDecl");
+    }
+    const auto initStyle = capturedVar ? capturedVar->getInitStyle()
+                                       : clang::VarDecl::CInit;
+    out->capture_init_styles.push_back(enumValue<fb::InitializationStyle>(
+        clava::INIT_STYLE[initStyle]));
+    // Init-capture packs put the ellipsis before the new variable name;
+    // LambdaCapture::isPackExpansion() describes trailing capture ellipses.
+    out->capture_pack_expansions.push_back(
+        capture.isPackExpansion() ||
+        (capturedVar && capturedVar->isParameterPack()));
+    out->capture_is_implicit.push_back(capture.isImplicit());
   }
   return out;
 }

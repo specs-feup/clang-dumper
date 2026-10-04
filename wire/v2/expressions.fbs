@@ -207,6 +207,9 @@ table LambdaExprData  {
   lambda_class:long = null;
   capture_kinds:[LambdaCaptureKind] (required);
   init_capture_names:[string] (required);
+  capture_init_styles:[InitializationStyle] (required);
+  capture_pack_expansions:[bool] (required);
+  capture_is_implicit:[bool] (required);
 }
 
 table PredefinedExprData  {

@@ -31,6 +31,12 @@ table PointerTypeData {
   pointee_type:long = null;
 }
 
+table MemberPointerTypeData {
+  base:TypeData (required);
+  class_type:long = null;
+  pointee_type:long = null;
+}
+
 table FunctionTypeData {
   base:TypeData (required);
   is_const:bool = null;
@@ -183,6 +189,7 @@ union TypePayload {
   QualTypeData,
   BuiltinTypeData,
   PointerTypeData,
+  MemberPointerTypeData,
   FunctionTypeData,
   FunctionProtoTypeData,
   ArrayTypeData,

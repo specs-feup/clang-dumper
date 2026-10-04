@@ -202,6 +202,7 @@ class ClavaDataDumper {
     void DumpTypeData(const Type *T, Qualifiers &qualifiers);
     void DumpBuiltinTypeData(const BuiltinType *T);
     void DumpPointerTypeData(const PointerType *T);
+    void DumpMemberPointerTypeData(const MemberPointerType *T);
     void DumpFunctionTypeData(const FunctionType *T);
     void DumpFunctionProtoTypeData(const FunctionProtoType *T);
     void DumpTagTypeData(const TagType *T);

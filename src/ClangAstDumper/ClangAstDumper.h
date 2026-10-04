@@ -348,6 +348,9 @@ public:
       std::vector<std::string> &visitedChildren);
   void VisitPointerTypeChildren(const PointerType *T,
                                 std::vector<std::string> &visitedChildren);
+  void VisitMemberPointerTypeChildren(
+      const MemberPointerType *T,
+      std::vector<std::string> &visitedChildren);
   void VisitElaboratedTypeChildren(const ElaboratedType *T,
                                    std::vector<std::string> &visitedChildren);
   void VisitReferenceTypeChildren(const ReferenceType *T,

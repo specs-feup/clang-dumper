@@ -27,6 +27,7 @@ const std::map<std::string, clava::ClavaDataDumper::TypeDataEntry>
     clava::ClavaDataDumper::TYPE_DATA_DUMPERS = {
         TYPE_DATA_ENTRY(BuiltinType),
         TYPE_DATA_ENTRY(PointerType),
+        TYPE_DATA_ENTRY(MemberPointerType),
         TYPE_DATA_ENTRY(FunctionProtoType),
         TYPE_DATA_ENTRY_AS(FunctionNoProtoType, FunctionType),
         TYPE_DATA_ENTRY(ConstantArrayType),
@@ -175,6 +176,14 @@ void clava::ClavaDataDumper::DumpBuiltinTypeData(const BuiltinType *T) {
 void clava::ClavaDataDumper::DumpPointerTypeData(const PointerType *T) {
   DumpTypeData(T);
 
+  clava::dump(clava::getId(T->getPointeeType(), id));
+}
+
+void clava::ClavaDataDumper::DumpMemberPointerTypeData(
+    const MemberPointerType *T) {
+  DumpTypeData(T);
+
+  clava::dump(clava::getId(T->getClass(), id));
   clava::dump(clava::getId(T->getPointeeType(), id));
 }
 
