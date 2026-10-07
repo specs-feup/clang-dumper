@@ -23,6 +23,7 @@ inline obj::NodeT makeNode(const clang::Decl *node, Context &c) {
   if (out.class_name == "FriendDecl") { out.payload.Set(std::move(*makeFriendDeclData(static_cast<const clang::FriendDecl *>(node), c))); return out; }
   if (out.class_name == "VarDecl") { out.payload.Set(std::move(*makeVarDeclData(static_cast<const clang::VarDecl *>(node), c))); return out; }
   if (out.class_name == "EnumConstantDecl") { out.payload.Set(std::move(*makeValueDeclData(static_cast<const clang::EnumConstantDecl *>(node), c))); return out; }
+  if (out.class_name == "IndirectFieldDecl") { out.payload.Set(std::move(*makeIndirectFieldDeclData(static_cast<const clang::IndirectFieldDecl *>(node), c))); return out; }
   if (out.class_name == "NonTypeTemplateParmDecl") { out.payload.Set(std::move(*makeNonTypeTemplateParmDeclData(static_cast<const clang::NonTypeTemplateParmDecl *>(node), c))); return out; }
   if (out.class_name == "UsingShadowDecl") { out.payload.Set(std::move(*makeNamedDeclData(static_cast<const clang::UsingShadowDecl *>(node), c))); return out; }
   if (out.class_name == "TypeAliasDecl") { out.payload.Set(std::move(*makeTypedefNameDeclData(static_cast<const clang::TypeAliasDecl *>(node), c))); return out; }

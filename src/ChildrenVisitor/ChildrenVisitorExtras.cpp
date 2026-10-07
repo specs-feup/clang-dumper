@@ -28,6 +28,10 @@ void ClangAstDumper::VisitNestedNameSpecifierChildren(
         break;
     case clang::NestedNameSpecifier::Global:
         break;
+    case clang::NestedNameSpecifier::Identifier:
+        // A dependent identifier has no declaration or type to visit. Its
+        // spelling is retained by the enclosing dependent type's TypeData.
+        break;
     case clang::NestedNameSpecifier::Super:
         VisitDeclTop(qualifier->getAsRecordDecl());
         break;

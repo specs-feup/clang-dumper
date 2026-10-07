@@ -15,6 +15,8 @@ from google.protobuf import descriptor_pb2, message_factory
 SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_metadata.cpp"
 DENSE_ID_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_dense_ids.cpp"
 CUDA_KERNEL_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_cuda_kernel_call.cu"
+SYSTEM_HEADER_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_system_header_top_level.cpp"
+INDIRECT_FIELD_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_indirect_field_decl.cpp"
 
 
 def read_varint(data: bytes, offset: int) -> tuple[int, int]:
@@ -284,6 +286,109 @@ class ProtoMetadataTest(unittest.TestCase):
             node_ids,
             set(range(1, ends[0].ids + 1)),
             "End.ids must describe the exact dense set of emitted AST nodes",
+        )
+
+    def test_system_header_top_level_references_have_nodes(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-system-roots-") as temp:
+            dump = Path(temp) / "system-roots.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(SYSTEM_HEADER_SOURCE),
+                    "-id=42",
+                    "-system-header-threshold=1",
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=c++17",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertNotIn("ERROR", result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        node_ids = {
+            record.node.id
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+        }
+        top_level_ids = {
+            record.top_level.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "top_level"
+            and record.top_level.node > 0
+        }
+        self.assertTrue(top_level_ids, "the fixture must emit top-level roots")
+        self.assertEqual(
+            top_level_ids - node_ids,
+            set(),
+            "every non-null top-level reference must name an emitted Node",
+        )
+
+    def test_indirect_field_uses_value_decl_payload(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-indirect-field-") as temp:
+            dump = Path(temp) / "indirect-field.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(INDIRECT_FIELD_SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=c++17",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        indirect_fields = [
+            record.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+            and record.node.class_name == "IndirectFieldDecl"
+        ]
+        self.assertTrue(indirect_fields, "fixture must emit an IndirectFieldDecl")
+        self.assertTrue(
+            all(node.WhichOneof("node") == "value_decl_data" for node in indirect_fields),
+            "IndirectFieldDecl must use its nearest ValueDecl payload",
         )
 
     def test_cuda_kernel_call_uses_call_expr_payload(self) -> None:

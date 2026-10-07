@@ -146,6 +146,7 @@ std::unique_ptr<obj::UnresolvedUsingTypenameDeclDataT> makeUnresolvedUsingTypena
 std::unique_ptr<obj::UsingDeclDataT> makeUsingDeclData( const clang::UsingDecl *decl, Context &c);
 std::unique_ptr<obj::UsingDirectiveDeclDataT> makeUsingDirectiveDeclData( const clang::UsingDirectiveDecl *decl, Context &c);
 std::unique_ptr<obj::ValueDeclDataT> makeEnumConstantDeclData( const clang::EnumConstantDecl *decl, Context &c);
+std::unique_ptr<obj::ValueDeclDataT> makeIndirectFieldDeclData( const clang::IndirectFieldDecl *decl, Context &c);
 std::unique_ptr<obj::ValueDeclDataT> makeValueDeclData( const clang::ValueDecl *decl, Context &c);
 std::unique_ptr<obj::VarDeclDataT> makeVarDeclData(const clang::VarDecl *decl, Context &c);
 std::unique_ptr<obj::VarDeclDataT> makeVarTemplateSpecializationDeclData( const clang::VarTemplateSpecializationDecl *decl, Context &c);

@@ -451,6 +451,10 @@ std::unique_ptr<obj::ValueDeclDataT> makeEnumConstantDeclData(
     const clang::EnumConstantDecl *decl, Context &c) {
   return makeValueDeclData(decl, c);
 }
+std::unique_ptr<obj::ValueDeclDataT> makeIndirectFieldDeclData(
+    const clang::IndirectFieldDecl *decl, Context &c) {
+  return makeValueDeclData(decl, c);
+}
 std::unique_ptr<obj::NamedDeclDataT> makeUsingShadowDeclData(
     const clang::UsingShadowDecl *decl, Context &c) {
   return makeNamedDeclData(decl, c);
