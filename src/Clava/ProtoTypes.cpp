@@ -128,6 +128,15 @@ std::unique_ptr<obj::PointerTypeDataT> makePointerTypeData(
   return out;
 }
 
+std::unique_ptr<obj::MemberPointerTypeDataT> makeMemberPointerTypeData(
+    const clang::MemberPointerType *type, Context &c) {
+  auto out = std::make_unique<obj::MemberPointerTypeDataT>();
+  out->base = makeTypeData(type, c);
+  out->class_type = wireId(clava::getId(type->getClass(), c.id));
+  out->pointee_type = wireId(clava::getId(type->getPointeeType(), c.id));
+  return out;
+}
+
 std::unique_ptr<obj::FunctionTypeDataT> makeFunctionTypeData(
     const clang::FunctionType *type, Context &c) {
   auto out = typeBase<obj::FunctionTypeDataT>(type);

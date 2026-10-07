@@ -77,6 +77,8 @@ const std::map<std::string, ClangAstDumper::ExprChildrenFn>
         EXPR_CHILDREN_ENTRY(DesignatedInitExpr,
                             VisitDesignatedInitExprChildren),
         EXPR_CHILDREN_ENTRY(CXXConstructExpr, VisitCXXConstructExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXUnresolvedConstructExpr,
+                            VisitCXXUnresolvedConstructExprChildren),
         EXPR_CHILDREN_ENTRY(CXXTemporaryObjectExpr,
                             VisitCXXTemporaryObjectExprChildren),
         EXPR_CHILDREN_ENTRY(CXXDependentScopeMemberExpr,
@@ -485,6 +487,13 @@ void ClangAstDumper::VisitCXXConstructExprChildren(
     VisitExprChildren(E, children);
 
     VisitDeclTop(E->getConstructor());
+}
+
+void ClangAstDumper::VisitCXXUnresolvedConstructExprChildren(
+    const CXXUnresolvedConstructExpr *E,
+    std::vector<std::string> &children) {
+    VisitExprChildren(E, children);
+    VisitTypeTop(E->getTypeAsWritten());
 }
 
 void ClangAstDumper::VisitCXXTemporaryObjectExprChildren(

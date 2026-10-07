@@ -26,9 +26,16 @@ def clang_dumper_tool() -> Path:
     return Path(__file__).resolve().parents[1] / "build" / "tool"
 
 
+def protobuf_verifier() -> Path:
+    configured_path = os.environ.get("CLANG_DUMPER_VERIFY_PROTOBUF")
+    if configured_path:
+        return Path(configured_path)
+    return Path(__file__).resolve().parents[1] / "build" / "verify_protobuf"
+
+
 @unittest.skipUnless(
-    clang_dumper_tool().is_file(),
-    "build/tool is required for stream separation integration tests",
+    clang_dumper_tool().is_file() and protobuf_verifier().is_file(),
+    "build/tool and build/verify_protobuf are required for stream integration tests",
 )
 class DumpStreamIntegrationTest(unittest.TestCase):
     source = Path(__file__).parent / "inputs" / "simple_function.cpp"
@@ -44,6 +51,18 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             command.extend(["-c", "-o", str(output)])
         command.extend([str(source), "--"])
         return subprocess.run(command, capture_output=True, text=True, check=False)
+
+    def assert_valid_dump(self, path: Path) -> bytes:
+        dump = path.read_bytes()
+        self.assertTrue(dump.startswith(b"CLAVAPB1"), "missing Protobuf AST stream magic")
+        result = subprocess.run(
+            [str(protobuf_verifier()), str(path)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return dump
 
     def test_standalone_output_requires_a_file(self) -> None:
         result = self.run_tool(self.source)
@@ -123,24 +142,20 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertEqual(plain.returncode, 0, plain.stderr)
             self.assertEqual(compressed.returncode, 0, compressed.stderr)
             self.assertEqual(decompressed.returncode, 0, decompressed.stderr)
-            source_root = str(self.source.parent.resolve())
-            plain_dump, _ = normalize_captured_output(
-                plain_output.read_text(encoding="utf-8"), source_root
-            )
-            compressed_dump, _ = normalize_captured_output(
-                decompressed.stdout.decode("utf-8"), source_root
-            )
-            self.assertEqual(compressed_dump, plain_dump)
+            plain_dump = self.assert_valid_dump(plain_output)
+            decompressed_path = Path(directory) / "decompressed.pb"
+            decompressed_path.write_bytes(decompressed.stdout)
+            self.assertEqual(self.assert_valid_dump(decompressed_path), plain_dump)
 
     def test_diagnostics_remain_on_stderr(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "ast dump with spaces.dump"
             result = self.run_tool(self.throwing_source, output)
-            dump = output.read_text(encoding="utf-8")
+            dump = self.assert_valid_dump(output)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("error:", result.stderr)
             self.assertNotIn("<Compiler Instance Data>", result.stderr)
-            self.assertIn("<Compiler Instance Data>", dump)
+            self.assertTrue(dump.startswith(b"CLAVAPB1"))
 
     def test_file_output_truncates_existing_contents(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -148,7 +163,8 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             output.write_text("stale data\n", encoding="utf-8")
             result = self.run_tool(self.source, output)
             self.assertEqual(result.returncode, 0)
-            self.assertNotIn("stale data", output.read_text(encoding="utf-8"))
+            self.assert_valid_dump(output)
+            self.assertNotIn(b"stale data", output.read_bytes())
 
     def test_bad_file_output_path_is_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -313,8 +329,8 @@ class DumpStreamIntegrationTest(unittest.TestCase):
                     encoding="utf-8",
                 )
 
-            dumps: list[str] = []
-            dump_paths: list[str] = []
+            dumps: list[bytes] = []
+            dump_paths: list[bytes] = []
             diagnostics: list[str] = []
             dependencies: list[str] = []
             for parse_root in roots:
@@ -339,12 +355,12 @@ class DumpStreamIntegrationTest(unittest.TestCase):
                     check=False,
                 )
                 self.assertEqual(result.returncode, 0, result.stderr)
-                dump_text = output.read_text(encoding="utf-8")
-                normalized_dump, _ = normalize_captured_output(
-                    dump_text, str(parse_root.resolve())
+                dump_bytes = self.assert_valid_dump(output)
+                normalized_dump = dump_bytes.replace(
+                    str(parse_root.resolve()).encode(), b"<PARSE_ROOT>"
                 )
                 dumps.append(normalized_dump)
-                dump_paths.append(dump_text)
+                dump_paths.append(dump_bytes)
                 diagnostics.append(result.stderr)
                 dependencies.append(dependency.read_text(encoding="utf-8"))
 
@@ -358,9 +374,9 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertNotIn(str(root / "A"), diagnostics[0])
             self.assertIn("src.cpp", dependencies[0])
             self.assertNotIn(str(root / "A" / "src.cpp"), dependencies[0])
-            self.assertNotIn(str(root / "A"), dump_paths[0])
-            self.assertNotIn(str(root / "C"), dump_paths[1])
-            self.assertIn('"src.cpp"', dump_paths[0])
+            self.assertNotIn(str(root / "A").encode(), dump_paths[0])
+            self.assertNotIn(str(root / "C").encode(), dump_paths[1])
+            self.assertIn(b"src.cpp", dump_paths[0])
 
             cache = root / "cache"
             cache_environment = os.environ.copy()
@@ -446,7 +462,8 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertTrue(second_dependency.is_file())
             self.assertIn("cache_miss\t1", stats)
             self.assertIn("direct_cache_hit\t1", stats)
-            self.assertNotIn(str(root / "A"), second_output.read_text(encoding="utf-8"))
+            self.assert_valid_dump(second_output)
+            self.assertNotIn(str(root / "A").encode(), second_output.read_bytes())
 
 
 class ClangDiagnosticFilteringTest(unittest.TestCase):

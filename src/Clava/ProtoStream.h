@@ -4,10 +4,13 @@
 #include "ProtoEncode.h"
 #include "HandlerCoverage.h"
 #include "llvm/Support/raw_ostream.h"
+#include "clang/Basic/TokenKinds.h"
+#include "clang/Basic/SourceLocation.h"
 
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 
 namespace clang {
@@ -37,6 +40,10 @@ class ProtoStream final : public llvm::raw_ostream {
   uint64_t bytes_written = 0;
   uint64_t records = 0;
   uint64_t nodes = 0;
+  std::unordered_set<unsigned> inlineAsmLocations;
+  clang::SourceLocation pendingAsmLocation;
+  bool trackingAsmQualifiers = false;
+  bool pendingAsmInline = false;
   bool finished = false;
 
   void writeHeader();
@@ -57,6 +64,11 @@ public:
 
   static ProtoStream *active();
 
+  void beginSourceFile();
+  void observePreprocessorToken(clang::tok::TokenKind kind,
+                                clang::SourceLocation location);
+  bool isInlineAsm(clang::SourceLocation location) const;
+
   template <typename T> void record(const T &value) {
     pb::Record record;
     setRecord(value, &record);
@@ -68,6 +80,8 @@ public:
                                   int id) {
     Context context{ast, id, [this](llvm::StringRef path) {
                       return fileId(path);
+                    }, [this](clang::SourceLocation location) {
+                      return isInlineAsm(location);
                     }};
     record(makeNode(node, context));
     ++nodes;
@@ -76,6 +90,8 @@ public:
   void node(const clang::QualType &node, clang::ASTContext *ast, int id) {
     Context context{ast, id, [this](llvm::StringRef path) {
                       return fileId(path);
+                    }, [this](clang::SourceLocation location) {
+                      return isInlineAsm(location);
                     }};
     record(makeNode(node, context));
     ++nodes;

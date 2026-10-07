@@ -2,11 +2,13 @@
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --target tool plugin --parallel
+cmake --build build --parallel
 ```
 
-The CMakeLists.txt has two targets, `plugin` and `tool`; pass one or both to
-`cmake --build build --target ...` to select what to build.
+The CMakeLists.txt has two main targets, `plugin` and `tool`; pass one or
+both to `cmake --build build --target ...` to select what to build. A normal
+build also refreshes the local release manifest and its verified schema,
+descriptor, tool, and plugin assets in the build directory.
 
 The target `tool` has been successfully built in Ubuntu and macOS. Windows
 executables are cross-compiled from Linux.
@@ -42,7 +44,37 @@ The native `ProtoObjects.h` and `ProtoEncode.h` files are checked-in adapter
 headers regenerated from protoc's descriptor during the build. `ProtoObjects`
 holds only the temporary value for one record; it is never retained as a
 second AST. The build compares regenerated headers with the checked-in files
-and fails on schema drift.
+and fails on schema drift. Schema and descriptor artifacts are checked against
+the pinned native `protoc` on every build, including cached builds.
+
+## Protocol maintenance
+
+`wire/clava_ast_wire.proto` is the canonical, Java-independent schema. Recent
+wire fields retain the links needed to emit out-of-line function and partial
+specialization template parameters, lambda init-capture names and forms,
+GCC-assembly inline/goto labels, member-pointer class/pointee types, unresolved
+dependent construction list-initialization, and FriendDecl owner/target
+references. Function parameter-list sizes keep the flattened parameter IDs
+grouped. Generic `AttributeData` is limited to names from the closed
+`AttributeKind` enum; the release manifest lists the pinned LLVM OpenMP
+statement classes that intentionally share `StmtData`.
+
+After editing the schema, regenerate the checked-in adapters and run the normal
+build checks:
+
+```sh
+cmake --build build --target ast_wire_proto
+cmake --build build --target proto_adapter_regenerate
+cmake --build build --parallel
+```
+
+The protocol source hash is embedded in each stream header. Publish the
+canonical `.proto`, its descriptor, and the platform binaries from the same
+compatible native build. `clang-dumper-release-manifest.json` binds their
+SHA-256 hashes to the LLVM major, native Protobuf/protoc versions, semantic
+contract, and minimum Java compiler/runtime versions. Update the pinned tool
+and consumer dependencies explicitly when that manifest requires newer Java
+Protobuf support. CI publishes only tags containing `-rc` as prereleases.
 
 ## Dependencies
 

@@ -14,6 +14,7 @@ std::unique_ptr<obj::BuiltinTypeDataT> makeBuiltinTypeData( const clang::Builtin
 std::unique_ptr<obj::CXXBaseSpecifierT> makeCXXBaseSpecifier(const clang::CXXBaseSpecifier &b, Context &c);
 std::unique_ptr<obj::CXXBoolLiteralExprDataT> makeCXXBoolLiteralExprData( const clang::CXXBoolLiteralExpr *node, Context &c);
 std::unique_ptr<obj::CXXConstructExprDataT> makeCXXConstructExprData( const clang::CXXConstructExpr *node, Context &c);
+std::unique_ptr<obj::CXXUnresolvedConstructExprDataT> makeCXXUnresolvedConstructExprData(const clang::CXXUnresolvedConstructExpr *node, Context &c);
 std::unique_ptr<obj::CXXConstructorDeclDataT> makeCXXConstructorDeclData( const clang::CXXConstructorDecl *decl, Context &c);
 std::unique_ptr<obj::CXXConversionDeclDataT> makeCXXConversionDeclData( const clang::CXXConversionDecl *decl, Context &c);
 std::unique_ptr<obj::CXXCtorInitializerT> makeCXXCtorInitializer(const clang::CXXCtorInitializer *i, Context &c);
@@ -41,6 +42,7 @@ std::unique_ptr<obj::CastExprDataT> makeCXXFunctionalCastExprData( const clang::
 std::unique_ptr<obj::CastExprDataT> makeCastExprData(const clang::CastExpr *node, Context &c);
 std::unique_ptr<obj::CharacterLiteralDataT> makeCharacterLiteralData( const clang::CharacterLiteral *node, Context &c);
 std::unique_ptr<obj::ClassTemplatePartialSpecializationDeclDataT> makeClassTemplatePartialSpecializationDeclData( const clang::ClassTemplatePartialSpecializationDecl *decl, Context &c);
+std::unique_ptr<obj::FriendDeclDataT> makeFriendDeclData(const clang::FriendDecl *decl, Context &c);
 std::unique_ptr<obj::ClassTemplateSpecializationDeclDataT> makeClassTemplateSpecializationDeclData( const clang::ClassTemplateSpecializationDecl *decl, Context &c);
 std::unique_ptr<obj::ComplexTypeDataT> makeComplexTypeData( const clang::ComplexType *type, Context &c);
 std::unique_ptr<obj::CompoundLiteralExprDataT> makeCompoundLiteralExprData( const clang::CompoundLiteralExpr *node, Context &c);
@@ -98,6 +100,7 @@ std::unique_ptr<obj::OverloadExprDataT> makeOverloadExprData( const clang::Overl
 std::unique_ptr<obj::PackExpansionTypeDataT> makePackExpansionTypeData( const clang::PackExpansionType *type, Context &c);
 std::unique_ptr<obj::ParmVarDeclDataT> makeParmVarDeclData( const clang::ParmVarDecl *decl, Context &c);
 std::unique_ptr<obj::PointerTypeDataT> makePointerTypeData( const clang::PointerType *type, Context &c);
+std::unique_ptr<obj::MemberPointerTypeDataT> makeMemberPointerTypeData(const clang::MemberPointerType *type, Context &c);
 std::unique_ptr<obj::PredefinedExprDataT> makePredefinedExprData( const clang::PredefinedExpr *node, Context &c);
 std::unique_ptr<obj::PseudoObjectExprDataT> makePseudoObjectExprData( const clang::PseudoObjectExpr *node, Context &c);
 std::unique_ptr<obj::QualTypeDataT> makeQualTypeData(const clang::QualType &type, Context &c);

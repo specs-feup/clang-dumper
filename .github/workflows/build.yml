@@ -166,6 +166,7 @@ jobs:
           if [ "${{ matrix.arch }}" = "x64" ]; then
             cp wire/clava_ast_wire.proto dist/clang-dumper-ast-wire.proto
             cp build/generated/proto/clava_ast_wire.pb dist/clang-dumper-ast-wire.pb
+            cp "$(cat build/protobuf-protoc-path.txt)" dist/clang-dumper-protoc-28.3
           fi
 
       - name: Package Linux includes
@@ -215,6 +216,7 @@ jobs:
           path: |
             dist/clang-dumper-ast-wire.proto
             dist/clang-dumper-ast-wire.pb
+            dist/clang-dumper-protoc-28.3
           retention-days: 1
           if-no-files-found: error
 
@@ -600,7 +602,12 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: linux-x64-protocol
-          path: release-assets/
+          path: release-staging/protocol/
+
+      - name: Stage verified protocol artifacts
+        run: |
+          cp release-staging/protocol/clang-dumper-ast-wire.proto release-assets/
+          cp release-staging/protocol/clang-dumper-ast-wire.pb release-assets/
 
       - name: Download generated enums
         uses: actions/download-artifact@v8
@@ -619,90 +626,14 @@ jobs:
         env:
           LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
         run: |
-          python3 - <<'PY'
-          import hashlib
-          import json
-          import os
-          import re
-          from pathlib import Path
-
-          assets_dir = Path("release-assets")
-          manifest_name = "clang-dumper-release-manifest.json"
-          llvm_major = int(os.environ["LLVM_VERSION"])
-
-          patterns = [
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-plugin[.]so$"), "plugin"),
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-includes[.]zip$"), "includes"),
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+)$"), "tool"),
-              (re.compile(r"^clang-dumper-windows-(.+?)[.]exe$"), "tool"),
-              (re.compile(r"^clang-dumper-windows-(.+?)-includes[.]zip$"), "includes"),
-          ]
-
-          def classify(filename):
-              if filename == "clang-dumper-generated-enums.zip":
-                  return "any", "any", "generated-enums"
-              if filename in {
-                  "clang-dumper-ast-wire.proto",
-                  "clang-dumper-ast-wire.pb",
-              }:
-                  return "any", "any", "protocol"
-
-              for pattern, kind in patterns:
-                  match = pattern.match(filename)
-                  if not match:
-                      continue
-
-                  if filename.startswith("clang-dumper-windows-"):
-                      return "windows", match.group(1), kind
-
-                  return match.group(1), match.group(2), kind
-
-              raise ValueError(f"Unrecognized release asset filename: {filename}")
-
-          entries = []
-          for asset in sorted(assets_dir.iterdir()):
-              if not asset.is_file() or asset.name == manifest_name:
-                  continue
-
-              platform, arch, kind = classify(asset.name)
-              digest = hashlib.sha256(asset.read_bytes()).hexdigest()
-              entries.append(
-                  {
-                      "filename": asset.name,
-                      "platform": platform,
-                      "arch": arch,
-                      "kind": kind,
-                      "llvm_major": llvm_major,
-                      "sha256": digest,
-                  }
-              )
-
-          manifest = {
-              "schema_version": 1,
-              "protocol": {
-                  "id": "clava-ast-wire",
-                  "major": 1,
-                  "minor": 0,
-                  "framing": "CLAVAPB1 plus protobuf varint-delimited Envelope(Chunk)",
-                  "max_record_bytes": 64 * 1024 * 1024,
-                  "producer_version": f"clang-dumper-{llvm_major}",
-                  "llvm_major": llvm_major,
-                  "schema_sha256": hashlib.sha256(
-                      (assets_dir / "clang-dumper-ast-wire.proto").read_bytes()
-                  ).hexdigest(),
-                  "descriptor_sha256": hashlib.sha256(
-                      (assets_dir / "clang-dumper-ast-wire.pb").read_bytes()
-                  ).hexdigest(),
-              },
-              "assets": entries,
-          }
-          (assets_dir / manifest_name).write_text(
-              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
-          )
-          PY
+          python3 -m pip install --user protobuf==4.28.3
+          python3 scripts/write_release_manifest.py \
+            --asset-dir release-assets \
+            --llvm-major "$LLVM_VERSION" \
+            --protoc release-staging/protocol/clang-dumper-protoc-28.3
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           files: release-assets/*
+          prerelease: ${{ contains(github.ref_name, '-rc') }}

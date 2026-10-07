@@ -2,9 +2,6 @@ syntax = "proto3";
 
 package astwire.v1;
 
-option java_package = "pt.up.fe.specs.clang.wire";
-option java_multiple_files = true;
-
 // Clava AST wire protocol. The source inventory is the audited direct native
 // extraction used by the dumper. Singular scalars use proto3 optional so a
 // decoder can distinguish absent fields from explicit defaults.
@@ -622,6 +619,7 @@ enum ObjectKind {
   OBJECTKIND_OBJ_C_PROPERTY = 3;
   OBJECTKIND_OBJ_C_SUBSCRIPT = 4;
   OBJECTKIND_VECTOR_COMPONENT = 5;
+  OBJECTKIND_MATRIX_COMPONENT = 6;
 }
 
 enum PredefinedIdType {
@@ -1455,7 +1453,7 @@ message DeclaratorDeclData {
 message TemplateDeclData {
   NamedDeclData base = 1;
   repeated sint64 template_parameters = 2;
-  optional sint64 templated_decl = 3;
+  optional sint64 template_decl = 3;
 }
 
 message FunctionDeclData {
@@ -1472,6 +1470,8 @@ message FunctionDeclData {
   optional sint64 canonical_decl = 11;
   optional sint64 primary_template_decl = 12;
   repeated TemplateArgument template_arguments = 13;
+  repeated sint64 template_parameters = 14;
+  repeated uint32 template_parameter_list_sizes = 15;
 }
 
 message CXXMethodDeclData {
@@ -1629,6 +1629,17 @@ message MSPropertyDeclData {
 
 message ClassTemplatePartialSpecializationDeclData {
   ClassTemplateSpecializationDeclData base = 1;
+  repeated sint64 template_parameters = 2;
+}
+
+// A FriendDecl is owned by its enclosing record even though Clang exposes the
+// declaration or type named by the friend as a separate reference. Keeping
+// both links structured lets consumers regenerate edits from the current AST.
+message FriendDeclData {
+  DeclData base = 1;
+  optional sint64 owner_record = 2;
+  optional sint64 friend_decl = 3;
+  optional sint64 friend_type = 4;
 }
 
 message TypeData {
@@ -1657,6 +1668,12 @@ message BuiltinTypeData {
 message PointerTypeData {
   TypeData base = 1;
   optional sint64 pointee_type = 2;
+}
+
+message MemberPointerTypeData {
+  TypeData base = 1;
+  optional sint64 class_type = 2;
+  optional sint64 pointee_type = 3;
 }
 
 message FunctionTypeData {
@@ -1893,6 +1910,11 @@ message CXXConstructExprData {
   optional sint64 constructor_decl = 8;
 }
 
+message CXXUnresolvedConstructExprData {
+  ExprData base = 1;
+  optional bool is_list_initialization = 2;
+}
+
 message CXXTemporaryObjectExprData {
   CXXConstructExprData base = 1;
 }
@@ -2009,6 +2031,10 @@ message LambdaExprData {
   optional LambdaCaptureDefault capture_default = 6;
   optional sint64 lambda_class = 7;
   repeated LambdaCaptureKind capture_kinds = 8;
+  repeated string init_capture_names = 9;
+  repeated InitializationStyle capture_init_styles = 10;
+  repeated bool capture_pack_expansions = 11;
+  repeated bool capture_is_implicit = 12;
 }
 
 message PredefinedExprData {
@@ -2097,6 +2123,9 @@ message AsmStmtData {
 message GCCAsmStmtData {
   AsmStmtData base = 1;
   optional string asm_string = 2;
+  optional bool is_goto = 3;
+  repeated string labels = 4;
+  optional bool is_inline = 5;
 }
 
 message MSAsmStmtData {
@@ -2334,6 +2363,9 @@ message Node {
     FormatAttrData format_attr_data = 112;
     NonNullAttrData non_null_attr_data = 113;
     VisibilityAttrData visibility_attr_data = 114;
+    MemberPointerTypeData member_pointer_type_data = 115;
+    CXXUnresolvedConstructExprData c_x_x_unresolved_construct_expr_data = 116;
+    FriendDeclData friend_decl_data = 117;
   }
 }
 

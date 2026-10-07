@@ -20,16 +20,16 @@ size_t &pluginInstances() {
 class Plugin : public DumpAstAction, public PluginASTAction {
 public:
   Plugin() {
-    if (!pluginOutput())
-      pluginOutput() = std::make_unique<clava::proto::ProtoStream>(llvm::errs());
     ++pluginInstances();
     DumpResources::init(0, 0);
   }
   ~Plugin() override {
     DumpResources::finish();
     if (--pluginInstances() == 0) {
-      pluginOutput()->finish();
-      pluginOutput().reset();
+      if (pluginOutput()) {
+        pluginOutput()->finish();
+        pluginOutput().reset();
+      }
     }
   }
 
@@ -40,6 +40,13 @@ public:
   // creation logic shared with the standalone tool.
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef file) override {
+    // Clang constructs a probe action from the registry before it creates the
+    // action that processes a translation unit. Start the stream only when
+    // Clang asks the active action for its AST consumer, so the probe cannot
+    // leave an empty stream before the real records.
+    if (!pluginOutput())
+      pluginOutput() =
+          std::make_unique<clava::proto::ProtoStream>(llvm::errs());
     return DumpAstAction::CreateASTConsumer(CI, file);
   }
 

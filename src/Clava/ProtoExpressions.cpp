@@ -33,6 +33,8 @@ obj::ObjectKind objectKind(clang::ExprObjectKind kind) {
     return obj::ObjectKind::OBJECTKIND_OBJ_C_SUBSCRIPT;
   case clang::OK_VectorComponent:
     return obj::ObjectKind::OBJECTKIND_VECTOR_COMPONENT;
+  case clang::OK_MatrixComponent:
+    return obj::ObjectKind::OBJECTKIND_MATRIX_COMPONENT;
   }
   throw std::invalid_argument("Unsupported Clang expression object kind");
 }
@@ -189,6 +191,15 @@ std::unique_ptr<obj::CXXConstructExprDataT> makeCXXConstructExprData(
   out->is_temporary_object =
       node->isTemporaryObject(*c.ast, node->getConstructor()->getParent());
   out->constructor_decl = wireId(clava::getId(node->getConstructor(), c.id));
+  return out;
+}
+
+std::unique_ptr<obj::CXXUnresolvedConstructExprDataT>
+makeCXXUnresolvedConstructExprData(
+    const clang::CXXUnresolvedConstructExpr *node, Context &c) {
+  auto out = std::make_unique<obj::CXXUnresolvedConstructExprDataT>();
+  out->base = makeExprData(node, c);
+  out->is_list_initialization = node->isListInitialization();
   return out;
 }
 
@@ -378,9 +389,27 @@ std::unique_ptr<obj::LambdaExprDataT> makeLambdaExprData(
   out->capture_default = enumValue<obj::LambdaCaptureDefault>(
       clava::LAMBDA_CAPTURE_DEFAULT[node->getCaptureDefault()]);
   out->lambda_class = wireId(clava::getId(node->getLambdaClass(), c.id));
-  for (const auto capture : node->captures()) {
+  for (const auto &capture : node->captures()) {
     out->capture_kinds.push_back(enumValue<obj::LambdaCaptureKind>(
         clava::LAMBDA_CAPTURE_KIND[capture.getCaptureKind()]));
+    const bool isInitCapture = node->isInitCapture(&capture);
+    out->init_capture_names.push_back(
+        isInitCapture ? capture.getCapturedVar()->getNameAsString() : "");
+    const auto *capturedVar =
+        isInitCapture
+            ? llvm::dyn_cast<clang::VarDecl>(capture.getCapturedVar())
+            : nullptr;
+    if (isInitCapture && capturedVar == nullptr) {
+      throw std::invalid_argument("An init-capture must reference a VarDecl");
+    }
+    const auto initStyle = capturedVar ? capturedVar->getInitStyle()
+                                       : clang::VarDecl::CInit;
+    out->capture_init_styles.push_back(enumValue<obj::InitializationStyle>(
+        clava::INIT_STYLE[initStyle]));
+    out->capture_pack_expansions.push_back(
+        capture.isPackExpansion() ||
+        (capturedVar != nullptr && capturedVar->isParameterPack()));
+    out->capture_is_implicit.push_back(capture.isImplicit());
   }
   return out;
 }

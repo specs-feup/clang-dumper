@@ -177,6 +177,9 @@ private:
   void VisitClassTemplateSpecializationDeclChildren(
       const ClassTemplateSpecializationDecl *D,
       std::vector<std::string> &children);
+  void VisitClassTemplatePartialSpecializationDeclChildren(
+      const ClassTemplatePartialSpecializationDecl *D,
+      std::vector<std::string> &children);
   void VisitValueDeclChildren(const ValueDecl *D,
                               std::vector<std::string> &children);
   void VisitFieldDeclChildren(const FieldDecl *D,
@@ -295,6 +298,9 @@ private:
                                        std::vector<std::string> &children);
   void VisitCXXConstructExprChildren(const CXXConstructExpr *E,
                                      std::vector<std::string> &children);
+  void VisitCXXUnresolvedConstructExprChildren(
+      const CXXUnresolvedConstructExpr *E,
+      std::vector<std::string> &children);
   void VisitCXXTemporaryObjectExprChildren(const CXXTemporaryObjectExpr *E,
                                            std::vector<std::string> &children);
   void
@@ -345,6 +351,9 @@ public:
       std::vector<std::string> &visitedChildren);
   void VisitPointerTypeChildren(const PointerType *T,
                                 std::vector<std::string> &visitedChildren);
+  void VisitMemberPointerTypeChildren(
+      const MemberPointerType *T,
+      std::vector<std::string> &visitedChildren);
   void VisitElaboratedTypeChildren(const ElaboratedType *T,
                                    std::vector<std::string> &visitedChildren);
   void VisitReferenceTypeChildren(const ReferenceType *T,

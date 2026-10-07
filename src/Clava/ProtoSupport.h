@@ -6,6 +6,7 @@
 #include "../ClangEnums/ClangEnums.h"
 #include "clang/AST/AST.h"
 #include "clang/AST/Attr.h"
+#include "clang/AST/DeclFriend.h"
 #include "clang/AST/Attrs.inc"
 #include <functional>
 #include <memory>
@@ -1126,6 +1127,7 @@ struct Context {
   clang::ASTContext *ast;
   int id;
   std::function<uint32_t(llvm::StringRef)> fileId;
+  std::function<bool(clang::SourceLocation)> isInlineAsm;
 };
 int64_t wireId(const std::string &value);
 std::unique_ptr<obj::NodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c);

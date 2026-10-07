@@ -20,6 +20,7 @@ inline obj::NodeT makeNode(const clang::Decl *node, Context &c) {
   if (out.class_name == "CXXRecordDecl") { out.payload.Set(std::move(*makeCXXRecordDeclData(static_cast<const clang::CXXRecordDecl *>(node), c))); return out; }
   if (out.class_name == "ClassTemplateSpecializationDecl") { out.payload.Set(std::move(*makeClassTemplateSpecializationDeclData(static_cast<const clang::ClassTemplateSpecializationDecl *>(node), c))); return out; }
   if (out.class_name == "ClassTemplatePartialSpecializationDecl") { out.payload.Set(std::move(*makeClassTemplatePartialSpecializationDeclData(static_cast<const clang::ClassTemplatePartialSpecializationDecl *>(node), c))); return out; }
+  if (out.class_name == "FriendDecl") { out.payload.Set(std::move(*makeFriendDeclData(static_cast<const clang::FriendDecl *>(node), c))); return out; }
   if (out.class_name == "VarDecl") { out.payload.Set(std::move(*makeVarDeclData(static_cast<const clang::VarDecl *>(node), c))); return out; }
   if (out.class_name == "EnumConstantDecl") { out.payload.Set(std::move(*makeValueDeclData(static_cast<const clang::EnumConstantDecl *>(node), c))); return out; }
   if (out.class_name == "NonTypeTemplateParmDecl") { out.payload.Set(std::move(*makeNonTypeTemplateParmDeclData(static_cast<const clang::NonTypeTemplateParmDecl *>(node), c))); return out; }
@@ -56,6 +57,7 @@ inline obj::NodeT makeNode(const clang::Expr *node, Context &c) {
   if (out.class_name == "CharacterLiteral") { out.payload.Set(std::move(*makeCharacterLiteralData(static_cast<const clang::CharacterLiteral *>(node), c))); return out; }
   if (out.class_name == "IntegerLiteral") { out.payload.Set(std::move(*makeIntegerLiteralData(static_cast<const clang::IntegerLiteral *>(node), c))); return out; }
   if (out.class_name == "FloatingLiteral") { out.payload.Set(std::move(*makeFloatingLiteralData(static_cast<const clang::FloatingLiteral *>(node), c))); return out; }
+  if (out.class_name == "ImplicitCastExpr") { out.payload.Set(std::move(*makeCastExprData(static_cast<const clang::ImplicitCastExpr *>(node), c))); return out; }
   if (out.class_name == "CastExpr") { out.payload.Set(std::move(*makeCastExprData(static_cast<const clang::CastExpr *>(node), c))); return out; }
   if (out.class_name == "CXXFunctionalCastExpr") { out.payload.Set(std::move(*makeCastExprData(static_cast<const clang::CXXFunctionalCastExpr *>(node), c))); return out; }
   if (out.class_name == "CStyleCastExpr") { out.payload.Set(std::move(*makeExplicitCastExprData(static_cast<const clang::CStyleCastExpr *>(node), c))); return out; }
@@ -73,6 +75,7 @@ inline obj::NodeT makeNode(const clang::Expr *node, Context &c) {
   if (out.class_name == "UnresolvedLookupExpr") { out.payload.Set(std::move(*makeUnresolvedLookupExprData(static_cast<const clang::UnresolvedLookupExpr *>(node), c))); return out; }
   if (out.class_name == "UnresolvedMemberExpr") { out.payload.Set(std::move(*makeUnresolvedMemberExprData(static_cast<const clang::UnresolvedMemberExpr *>(node), c))); return out; }
   if (out.class_name == "CXXConstructExpr") { out.payload.Set(std::move(*makeCXXConstructExprData(static_cast<const clang::CXXConstructExpr *>(node), c))); return out; }
+  if (out.class_name == "CXXUnresolvedConstructExpr") { out.payload.Set(std::move(*makeCXXUnresolvedConstructExprData(static_cast<const clang::CXXUnresolvedConstructExpr *>(node), c))); return out; }
   if (out.class_name == "CXXTemporaryObjectExpr") { out.payload.Set(std::move(*makeCXXTemporaryObjectExprData(static_cast<const clang::CXXTemporaryObjectExpr *>(node), c))); return out; }
   if (out.class_name == "MemberExpr") { out.payload.Set(std::move(*makeMemberExprData(static_cast<const clang::MemberExpr *>(node), c))); return out; }
   if (out.class_name == "MaterializeTemporaryExpr") { out.payload.Set(std::move(*makeMaterializeTemporaryExprData(static_cast<const clang::MaterializeTemporaryExpr *>(node), c))); return out; }
@@ -106,6 +109,7 @@ inline obj::NodeT makeNode(const clang::Type *node, Context &c) {
   obj::NodeT out; out.id = wireId(clava::getId(node, c.id)); out.class_name = clava::getClassName(node);
   if (out.class_name == "BuiltinType") { out.payload.Set(std::move(*makeBuiltinTypeData(static_cast<const clang::BuiltinType *>(node), c))); return out; }
   if (out.class_name == "PointerType") { out.payload.Set(std::move(*makePointerTypeData(static_cast<const clang::PointerType *>(node), c))); return out; }
+  if (out.class_name == "MemberPointerType") { out.payload.Set(std::move(*makeMemberPointerTypeData(static_cast<const clang::MemberPointerType *>(node), c))); return out; }
   if (out.class_name == "FunctionProtoType") { out.payload.Set(std::move(*makeFunctionProtoTypeData(static_cast<const clang::FunctionProtoType *>(node), c))); return out; }
   if (out.class_name == "FunctionNoProtoType") { out.payload.Set(std::move(*makeFunctionTypeData(static_cast<const clang::FunctionNoProtoType *>(node), c))); return out; }
   if (out.class_name == "ConstantArrayType") { out.payload.Set(std::move(*makeConstantArrayTypeData(static_cast<const clang::ConstantArrayType *>(node), c))); return out; }

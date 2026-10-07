@@ -54,6 +54,8 @@ const std::map<std::string, ClangAstDumper::TypeChildrenFn>
         TYPE_CHILDREN_ENTRY(VariableArrayType,
                             VisitVariableArrayTypeChildren),
         TYPE_CHILDREN_ENTRY(PointerType, VisitPointerTypeChildren),
+        TYPE_CHILDREN_ENTRY(MemberPointerType,
+                            VisitMemberPointerTypeChildren),
         TYPE_CHILDREN_ENTRY(EnumType, VisitTagTypeChildren),
         TYPE_CHILDREN_ENTRY(RecordType, VisitTagTypeChildren),
         TYPE_CHILDREN_ENTRY(ElaboratedType, VisitElaboratedTypeChildren),
@@ -192,6 +194,13 @@ void ClangAstDumper::VisitPointerTypeChildren(
     VisitTypeChildren(T, visitedChildren);
 
     // Visit pointee
+    VisitTypeTop(T->getPointeeType());
+}
+
+void ClangAstDumper::VisitMemberPointerTypeChildren(
+    const MemberPointerType *T, std::vector<std::string> &visitedChildren) {
+    VisitTypeChildren(T, visitedChildren);
+    VisitTypeTop(T->getClass());
     VisitTypeTop(T->getPointeeType());
 }
 

@@ -3,6 +3,7 @@
 #include "clang/AST/Expr.h"
 #include "clang/AST/StmtCXX.h"
 #include "clang/AST/StmtObjC.h"
+#include "clang/Lex/Lexer.h"
 
 namespace clava::proto {
 
@@ -69,7 +70,18 @@ std::unique_ptr<obj::GCCAsmStmtDataT> makeGCCAsmStmtData(
     const clang::GCCAsmStmt *node, Context &c) {
   auto out = std::make_unique<obj::GCCAsmStmtDataT>();
   out->base = makeAsmStmtData(node, c);
-  out->asm_string = node->generateAsmString(*c.ast);
+  const auto *asmString = node->getAsmString();
+  if (asmString == nullptr) {
+    throw std::invalid_argument("GCCAsmStmt has no asm string literal");
+  }
+  // Keep the source asm template. generateAsmString() converts operand
+  // references into LLVM IR's `$` syntax, which cannot be reparsed as C++.
+  out->asm_string = asmString->getBytes().str();
+  out->is_goto = node->isAsmGoto();
+  for (unsigned i = 0; i < node->getNumLabels(); ++i) {
+    out->labels.push_back(node->getLabelName(i).str());
+  }
+  out->is_inline = c.isInlineAsm(node->getBeginLoc());
   return out;
 }
 
@@ -77,7 +89,25 @@ std::unique_ptr<obj::MSAsmStmtDataT> makeMSAsmStmtData(
     const clang::MSAsmStmt *node, Context &c) {
   auto out = std::make_unique<obj::MSAsmStmtDataT>();
   out->base = makeAsmStmtData(node, c);
-  out->asm_string = node->generateAsmString(*c.ast);
+  const auto &sourceManager = c.ast->getSourceManager();
+  const auto &langOptions = c.ast->getLangOpts();
+  auto bodyBegin = node->hasBraces()
+                       ? clang::Lexer::getLocForEndOfToken(
+                             node->getLBraceLoc(), 0, sourceManager,
+                             langOptions)
+                       : clang::Lexer::getLocForEndOfToken(
+                             node->getAsmLoc(), 0, sourceManager, langOptions);
+  auto bodyEnd = node->hasBraces()
+                     ? node->getEndLoc()
+                     : clang::Lexer::getLocForEndOfToken(
+                           node->getEndLoc(), 0, sourceManager, langOptions);
+  if (bodyBegin.isInvalid() || bodyEnd.isInvalid()) {
+    throw std::invalid_argument("MSAsmStmt has no usable source body range");
+  }
+  out->asm_string = clang::Lexer::getSourceText(
+                        clang::CharSourceRange::getCharRange(bodyBegin, bodyEnd),
+                        sourceManager, langOptions)
+                        .str();
   return out;
 }
 

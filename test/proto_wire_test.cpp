@@ -1,17 +1,58 @@
 #include "clava_ast_wire.pb.h"
+#include "ProtoSchemaHash.h"
 
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
+#include <iostream>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace {
 
 constexpr std::string_view Magic = "CLAVAPB1";
 constexpr uint64_t MaxFrameBytes = 64 * 1024 * 1024;
 constexpr uint32_t ProtocolMajor = 1;
-constexpr uint32_t ProtocolMinor = 0;
+constexpr uint32_t ProtocolMinor = 1;
+
+bool validRecord(const astwire::v1::Record &record) {
+  switch (record.record_case()) {
+  case astwire::v1::Record::kFile:
+    return record.file().has_id() && record.file().has_path() &&
+           !record.file().path().empty();
+  case astwire::v1::Record::kNode:
+    return record.node().has_id() && record.node().has_class_name() &&
+           !record.node().class_name().empty() &&
+           record.node().node_case() != astwire::v1::Node::NODE_NOT_SET;
+  case astwire::v1::Record::kChildren:
+    return record.children().has_node();
+  case astwire::v1::Record::kNodeClass:
+    return record.node_class().has_node() &&
+           record.node_class().has_class_name() &&
+           !record.node_class().class_name().empty();
+  case astwire::v1::Record::kTopLevel:
+    return record.top_level().has_kind() && record.top_level().has_node();
+  case astwire::v1::Record::kInclude:
+    return record.include().has_source() && record.include().has_name() &&
+           record.include().has_line() && record.include().has_angled();
+  case astwire::v1::Record::kPragma:
+    return record.pragma().has_source() && record.pragma().has_line() &&
+           record.pragma().has_column();
+  case astwire::v1::Record::kTranslationUnitFile:
+    return record.translation_unit_file().has_id() &&
+           record.translation_unit_file().has_path() &&
+           !record.translation_unit_file().path().empty();
+  case astwire::v1::Record::kCounter:
+    return record.counter().has_value();
+  case astwire::v1::Record::kLanguage:
+    return record.language().has_file() && !record.language().file().empty();
+  case astwire::v1::Record::RECORD_NOT_SET:
+    return false;
+  }
+  return false;
+}
 
 void appendVarint(std::string &output, uint64_t value) {
   while (value >= 0x80) {
@@ -44,13 +85,16 @@ bool validEnvelope(const astwire::v1::Envelope &envelope) {
            header.has_schema_id() && header.has_producer_version() &&
            header.has_llvm_major() && header.has_schema_sha256() &&
            header.protocol_major() == ProtocolMajor &&
-           header.protocol_minor() == ProtocolMinor;
+           header.protocol_minor() == ProtocolMinor &&
+           header.schema_id() == "clava-ast-wire" &&
+           !header.producer_version().empty() && header.llvm_major() != 0 &&
+           header.schema_sha256() == clava::proto::ProtoSchemaHash;
   }
   case astwire::v1::Envelope::kChunk:
     if (envelope.chunk().records_size() == 0)
       return false;
     for (const auto &record : envelope.chunk().records()) {
-      if (record.record_case() == astwire::v1::Record::RECORD_NOT_SET)
+      if (!validRecord(record))
         return false;
     }
     return true;
@@ -102,7 +146,7 @@ std::string makeValidStream() {
   header_body->set_schema_id("clava-ast-wire");
   header_body->set_producer_version("test");
   header_body->set_llvm_major(18);
-  header_body->set_schema_sha256("schema");
+  header_body->set_schema_sha256(clava::proto::ProtoSchemaHash);
   appendEnvelope(stream, header);
 
   astwire::v1::Envelope first_chunk;
@@ -176,12 +220,111 @@ bool validStream(std::string_view stream) {
       return false;
     }
   }
-  return header_seen && end_seen;
+  return header_seen && end_seen && records != 0;
+}
+
+bool readStreamVarint(std::istream &input, uint64_t &offset,
+                      uint64_t &value) {
+  value = 0;
+  for (unsigned shift = 0; shift < 64; shift += 7) {
+    char rawByte = 0;
+    if (!input.get(rawByte))
+      return false;
+    ++offset;
+    const auto byte = static_cast<unsigned char>(rawByte);
+    if (shift == 63 && byte > 1)
+      return false;
+    value |= static_cast<uint64_t>(byte & 0x7f) << shift;
+    if ((byte & 0x80) == 0)
+      return true;
+  }
+  return false;
+}
+
+bool validStreamFile(const char *path) {
+  std::ifstream input(path, std::ios::binary);
+  if (!input)
+    return false;
+
+  char magic[Magic.size()];
+  input.read(magic, static_cast<std::streamsize>(Magic.size()));
+  if (input.gcount() != static_cast<std::streamsize>(Magic.size()) ||
+      std::string_view(magic, Magic.size()) != Magic)
+    return false;
+
+  uint64_t offset = Magic.size();
+  bool header_seen = false;
+  bool end_seen = false;
+  uint64_t records = 0;
+  uint64_t nodes = 0;
+  uint64_t files = 0;
+  astwire::v1::Envelope envelope;
+  while (input.peek() != std::char_traits<char>::eof()) {
+    const uint64_t frame_start = offset;
+    uint64_t length = 0;
+    if (!readStreamVarint(input, offset, length) || length == 0 ||
+        length > MaxFrameBytes)
+      return false;
+
+    std::vector<char> payload(static_cast<size_t>(length));
+    input.read(payload.data(), static_cast<std::streamsize>(payload.size()));
+    if (input.gcount() != static_cast<std::streamsize>(payload.size()))
+      return false;
+    offset += length;
+    envelope.Clear();
+    if (!envelope.ParseFromArray(payload.data(),
+                                 static_cast<int>(payload.size())) ||
+        !validEnvelope(envelope))
+      return false;
+
+    switch (envelope.payload_case()) {
+    case astwire::v1::Envelope::kHeader:
+      if (header_seen || frame_start != Magic.size())
+        return false;
+      header_seen = true;
+      break;
+    case astwire::v1::Envelope::kChunk:
+      if (!header_seen || end_seen)
+        return false;
+      for (const auto &record : envelope.chunk().records()) {
+        ++records;
+        if (record.record_case() == astwire::v1::Record::kNode)
+          ++nodes;
+        if (record.record_case() == astwire::v1::Record::kFile)
+          ++files;
+      }
+      break;
+    case astwire::v1::Envelope::kEnd:
+      if (!header_seen || end_seen || envelope.end().records() != records ||
+          envelope.end().nodes() != nodes || envelope.end().files() != files ||
+          envelope.end().raw_bytes() != frame_start)
+        return false;
+      end_seen = true;
+      if (input.peek() != std::char_traits<char>::eof())
+        return false;
+      break;
+    case astwire::v1::Envelope::PAYLOAD_NOT_SET:
+      return false;
+    }
+  }
+  return !input.bad() && header_seen && end_seen && records != 0;
 }
 
 } // namespace
 
-int main() {
+int main(int argc, char **argv) {
+  if (argc == 2) {
+    if (!validStreamFile(argv[1])) {
+      std::cerr << "Invalid Protobuf AST stream: " << argv[1] << "\n";
+      return 1;
+    }
+    return 0;
+  }
+  if (argc != 1) {
+    std::cerr << "Usage: verify_protobuf [protobuf-dump-file]\n";
+    return 2;
+  }
+
   const std::string valid = makeValidStream();
   assert(validStream(valid));
 
@@ -206,7 +349,7 @@ int main() {
   incompatible.mutable_header()->set_schema_id("clava-ast-wire");
   incompatible.mutable_header()->set_producer_version("test");
   incompatible.mutable_header()->set_llvm_major(18);
-  incompatible.mutable_header()->set_schema_sha256("schema");
+  incompatible.mutable_header()->set_schema_sha256(clava::proto::ProtoSchemaHash);
   std::string incompatible_stream(Magic);
   appendEnvelope(incompatible_stream, incompatible);
   assert(!validStream(incompatible_stream));
@@ -221,10 +364,29 @@ int main() {
   header_body->set_schema_id("clava-ast-wire");
   header_body->set_producer_version("test");
   header_body->set_llvm_major(18);
-  header_body->set_schema_sha256("schema");
+  header_body->set_schema_sha256(clava::proto::ProtoSchemaHash);
   appendEnvelope(empty_chunk_stream, header);
   appendEnvelope(empty_chunk_stream, empty_chunk);
   assert(!validStream(empty_chunk_stream));
+
+  astwire::v1::Envelope empty_end;
+  empty_end.mutable_end()->set_records(0);
+  empty_end.mutable_end()->set_nodes(0);
+  empty_end.mutable_end()->set_raw_bytes(0);
+  empty_end.mutable_end()->set_files(0);
+  empty_end.mutable_end()->set_ids(0);
+  std::string empty_stream(Magic);
+  appendEnvelope(empty_stream, header);
+  empty_end.mutable_end()->set_raw_bytes(empty_stream.size());
+  appendEnvelope(empty_stream, empty_end);
+  assert(!validStream(empty_stream));
+
+  astwire::v1::Envelope malformed_record_chunk;
+  malformed_record_chunk.mutable_chunk()->add_records()->mutable_file();
+  std::string malformed_record_stream(Magic);
+  appendEnvelope(malformed_record_stream, header);
+  appendEnvelope(malformed_record_stream, malformed_record_chunk);
+  assert(!validStream(malformed_record_stream));
 
   astwire::v1::Envelope missing_header;
   missing_header.mutable_header()->set_protocol_major(ProtocolMajor);

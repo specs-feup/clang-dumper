@@ -123,7 +123,7 @@ std::unique_ptr<obj::TemplateDeclDataT> makeTemplateDeclData(
     for (auto *param : *params)
       out->template_parameters.push_back(wireId(clava::getId(param, c.id)));
   }
-  out->templated_decl = wireId(clava::getId(decl->getTemplatedDecl(), c.id));
+  out->template_decl = wireId(clava::getId(decl->getTemplatedDecl(), c.id));
   return out;
 }
 
@@ -149,6 +149,15 @@ std::unique_ptr<obj::FunctionDeclDataT> makeFunctionDeclData(
   if (auto *args = decl->getTemplateSpecializationArgs()) {
     for (const auto &arg : args->asArray())
       out->template_arguments.push_back(makeTemplateArgument(arg, c));
+  }
+  for (unsigned listIndex = 0;
+       listIndex < decl->getNumTemplateParameterLists(); ++listIndex) {
+    const auto *parameters = decl->getTemplateParameterList(listIndex);
+    out->template_parameter_list_sizes.push_back(parameters->size());
+    for (const auto *parameter : *parameters) {
+      out->template_parameters.push_back(
+          wireId(clava::getId(parameter, c.id)));
+    }
   }
   return out;
 }
@@ -468,6 +477,33 @@ makeClassTemplatePartialSpecializationDeclData(
     const clang::ClassTemplatePartialSpecializationDecl *decl, Context &c) {
   auto out = std::make_unique<obj::ClassTemplatePartialSpecializationDeclDataT>();
   out->base = makeClassTemplateSpecializationDeclData(decl, c);
+  if (auto *parameters = decl->getTemplateParameters()) {
+    for (const auto *parameter : *parameters) {
+      out->template_parameters.push_back(
+          wireId(clava::getId(parameter, c.id)));
+    }
+  }
+  return out;
+}
+
+std::unique_ptr<obj::FriendDeclDataT> makeFriendDeclData(
+    const clang::FriendDecl *decl, Context &c) {
+  auto out = std::make_unique<obj::FriendDeclDataT>();
+  out->base = makeDeclData(decl, c);
+  const auto *owner = llvm::dyn_cast<clang::RecordDecl>(decl->getDeclContext());
+  if (owner == nullptr) {
+    throw std::invalid_argument("FriendDecl has no owning record declaration");
+  }
+  const auto *friendDecl = decl->getFriendDecl();
+  const auto *friendType = decl->getFriendType();
+  if ((friendDecl == nullptr) == (friendType == nullptr)) {
+    throw std::invalid_argument(
+        "FriendDecl must reference exactly one declaration or type");
+  }
+  out->owner_record = wireId(clava::getId(owner, c.id));
+  out->friend_decl = wireId(clava::getId(friendDecl, c.id));
+  out->friend_type = wireId(clava::getId(
+      friendType == nullptr ? clang::QualType{} : friendType->getType(), c.id));
   return out;
 }
 

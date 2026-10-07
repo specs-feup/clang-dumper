@@ -88,10 +88,12 @@ inline void encode(const obj::StaticAssertDeclDataT &src, pb::StaticAssertDeclDa
 inline void encode(const obj::TemplateTemplateParmDeclDataT &src, pb::TemplateTemplateParmDeclData *dst);
 inline void encode(const obj::MSPropertyDeclDataT &src, pb::MSPropertyDeclData *dst);
 inline void encode(const obj::ClassTemplatePartialSpecializationDeclDataT &src, pb::ClassTemplatePartialSpecializationDeclData *dst);
+inline void encode(const obj::FriendDeclDataT &src, pb::FriendDeclData *dst);
 inline void encode(const obj::TypeDataT &src, pb::TypeData *dst);
 inline void encode(const obj::QualTypeDataT &src, pb::QualTypeData *dst);
 inline void encode(const obj::BuiltinTypeDataT &src, pb::BuiltinTypeData *dst);
 inline void encode(const obj::PointerTypeDataT &src, pb::PointerTypeData *dst);
+inline void encode(const obj::MemberPointerTypeDataT &src, pb::MemberPointerTypeData *dst);
 inline void encode(const obj::FunctionTypeDataT &src, pb::FunctionTypeData *dst);
 inline void encode(const obj::FunctionProtoTypeDataT &src, pb::FunctionProtoTypeData *dst);
 inline void encode(const obj::ArrayTypeDataT &src, pb::ArrayTypeData *dst);
@@ -128,6 +130,7 @@ inline void encode(const obj::InitListExprDataT &src, pb::InitListExprData *dst)
 inline void encode(const obj::DeclRefExprDataT &src, pb::DeclRefExprData *dst);
 inline void encode(const obj::OverloadExprDataT &src, pb::OverloadExprData *dst);
 inline void encode(const obj::CXXConstructExprDataT &src, pb::CXXConstructExprData *dst);
+inline void encode(const obj::CXXUnresolvedConstructExprDataT &src, pb::CXXUnresolvedConstructExprData *dst);
 inline void encode(const obj::CXXTemporaryObjectExprDataT &src, pb::CXXTemporaryObjectExprData *dst);
 inline void encode(const obj::MemberExprDataT &src, pb::MemberExprData *dst);
 inline void encode(const obj::MaterializeTemporaryExprDataT &src, pb::MaterializeTemporaryExprData *dst);
@@ -478,7 +481,7 @@ inline void encode(const obj::TemplateDeclDataT &src, pb::TemplateDeclData *dst)
   for (const auto &value : src.template_parameters) {
     dst->add_template_parameters(value);
   }
-  dst->set_templated_decl(src.templated_decl);
+  dst->set_template_decl(src.template_decl);
 }
 
 inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst) {
@@ -496,6 +499,12 @@ inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst)
   dst->set_primary_template_decl(src.primary_template_decl);
   for (const auto &value : src.template_arguments) {
     if (value) encode(*value, dst->add_template_arguments());
+  }
+  for (const auto &value : src.template_parameters) {
+    dst->add_template_parameters(value);
+  }
+  for (const auto &value : src.template_parameter_list_sizes) {
+    dst->add_template_parameter_list_sizes(value);
   }
 }
 
@@ -664,6 +673,16 @@ inline void encode(const obj::MSPropertyDeclDataT &src, pb::MSPropertyDeclData *
 
 inline void encode(const obj::ClassTemplatePartialSpecializationDeclDataT &src, pb::ClassTemplatePartialSpecializationDeclData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
+  for (const auto &value : src.template_parameters) {
+    dst->add_template_parameters(value);
+  }
+}
+
+inline void encode(const obj::FriendDeclDataT &src, pb::FriendDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_owner_record(src.owner_record);
+  dst->set_friend_decl(src.friend_decl);
+  dst->set_friend_type(src.friend_type);
 }
 
 inline void encode(const obj::TypeDataT &src, pb::TypeData *dst) {
@@ -693,6 +712,12 @@ inline void encode(const obj::BuiltinTypeDataT &src, pb::BuiltinTypeData *dst) {
 
 inline void encode(const obj::PointerTypeDataT &src, pb::PointerTypeData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_pointee_type(src.pointee_type);
+}
+
+inline void encode(const obj::MemberPointerTypeDataT &src, pb::MemberPointerTypeData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_class_type(src.class_type);
   dst->set_pointee_type(src.pointee_type);
 }
 
@@ -944,6 +969,11 @@ inline void encode(const obj::CXXConstructExprDataT &src, pb::CXXConstructExprDa
   dst->set_constructor_decl(src.constructor_decl);
 }
 
+inline void encode(const obj::CXXUnresolvedConstructExprDataT &src, pb::CXXUnresolvedConstructExprData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_is_list_initialization(src.is_list_initialization);
+}
+
 inline void encode(const obj::CXXTemporaryObjectExprDataT &src, pb::CXXTemporaryObjectExprData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
 }
@@ -1066,6 +1096,18 @@ inline void encode(const obj::LambdaExprDataT &src, pb::LambdaExprData *dst) {
   for (const auto &value : src.capture_kinds) {
     dst->add_capture_kinds(static_cast<pb::LambdaCaptureKind>(static_cast<int>(value) + 1));
   }
+  for (const auto &value : src.init_capture_names) {
+    dst->add_init_capture_names(value);
+  }
+  for (const auto &value : src.capture_init_styles) {
+    dst->add_capture_init_styles(static_cast<pb::InitializationStyle>(static_cast<int>(value) + 1));
+  }
+  for (const auto &value : src.capture_pack_expansions) {
+    dst->add_capture_pack_expansions(value);
+  }
+  for (const auto &value : src.capture_is_implicit) {
+    dst->add_capture_is_implicit(value);
+  }
 }
 
 inline void encode(const obj::PredefinedExprDataT &src, pb::PredefinedExprData *dst) {
@@ -1168,6 +1210,11 @@ inline void encode(const obj::AsmStmtDataT &src, pb::AsmStmtData *dst) {
 inline void encode(const obj::GCCAsmStmtDataT &src, pb::GCCAsmStmtData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_asm_string(src.asm_string);
+  dst->set_is_goto(src.is_goto);
+  for (const auto &value : src.labels) {
+    dst->add_labels(value);
+  }
+  dst->set_is_inline(src.is_inline);
 }
 
 inline void encode(const obj::MSAsmStmtDataT &src, pb::MSAsmStmtData *dst) {
@@ -1408,6 +1455,9 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::FormatAttrDataT>()) encode(*value, dst->mutable_format_attr_data());
   if (const auto *value = src.payload.get<obj::NonNullAttrDataT>()) encode(*value, dst->mutable_non_null_attr_data());
   if (const auto *value = src.payload.get<obj::VisibilityAttrDataT>()) encode(*value, dst->mutable_visibility_attr_data());
+  if (const auto *value = src.payload.get<obj::MemberPointerTypeDataT>()) encode(*value, dst->mutable_member_pointer_type_data());
+  if (const auto *value = src.payload.get<obj::CXXUnresolvedConstructExprDataT>()) encode(*value, dst->mutable_c_x_x_unresolved_construct_expr_data());
+  if (const auto *value = src.payload.get<obj::FriendDeclDataT>()) encode(*value, dst->mutable_friend_decl_data());
 }
 
 template <typename T> inline void setRecord(const T &, pb::Record *) {

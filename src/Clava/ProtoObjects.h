@@ -90,10 +90,12 @@ struct StaticAssertDeclDataT;
 struct TemplateTemplateParmDeclDataT;
 struct MSPropertyDeclDataT;
 struct ClassTemplatePartialSpecializationDeclDataT;
+struct FriendDeclDataT;
 struct TypeDataT;
 struct QualTypeDataT;
 struct BuiltinTypeDataT;
 struct PointerTypeDataT;
+struct MemberPointerTypeDataT;
 struct FunctionTypeDataT;
 struct FunctionProtoTypeDataT;
 struct ArrayTypeDataT;
@@ -130,6 +132,7 @@ struct InitListExprDataT;
 struct DeclRefExprDataT;
 struct OverloadExprDataT;
 struct CXXConstructExprDataT;
+struct CXXUnresolvedConstructExprDataT;
 struct CXXTemporaryObjectExprDataT;
 struct MemberExprDataT;
 struct MaterializeTemporaryExprDataT;
@@ -216,7 +219,7 @@ enum class ConstructionKind : int32_t { CONSTRUCTIONKIND_COMPLETE = 0, CONSTRUCT
 enum class LambdaCaptureDefault : int32_t { LAMBDACAPTUREDEFAULT_NONE = 0, LAMBDACAPTUREDEFAULT_BYCOPY = 1, LAMBDACAPTUREDEFAULT_BYREF = 2, };
 enum class LambdaCaptureKind : int32_t { LAMBDACAPTUREKIND_THIS = 0, LAMBDACAPTUREKIND_STARTHIS = 1, LAMBDACAPTUREKIND_BYCOPY = 2, LAMBDACAPTUREKIND_BYREF = 3, LAMBDACAPTUREKIND_VLATYPE = 4, };
 enum class NewInitStyle : int32_t { NEWINITSTYLE_NO_INIT = 0, NEWINITSTYLE_CALL_INIT = 1, NEWINITSTYLE_LIST_INIT = 2, };
-enum class ObjectKind : int32_t { OBJECTKIND_ORDINARY = 0, OBJECTKIND_BIT_FIELD = 1, OBJECTKIND_OBJ_C_PROPERTY = 2, OBJECTKIND_OBJ_C_SUBSCRIPT = 3, OBJECTKIND_VECTOR_COMPONENT = 4, };
+enum class ObjectKind : int32_t { OBJECTKIND_ORDINARY = 0, OBJECTKIND_BIT_FIELD = 1, OBJECTKIND_OBJ_C_PROPERTY = 2, OBJECTKIND_OBJ_C_SUBSCRIPT = 3, OBJECTKIND_VECTOR_COMPONENT = 4, OBJECTKIND_MATRIX_COMPONENT = 5, };
 enum class PredefinedIdType : int32_t { PREDEFINEDIDTYPE_FUNC = 0, PREDEFINEDIDTYPE_FUNCTION = 1, PREDEFINEDIDTYPE_LFUNCTION = 2, PREDEFINEDIDTYPE_FUNCDNAME = 3, PREDEFINEDIDTYPE_FUNCSIG = 4, PREDEFINEDIDTYPE_LFUNCSIG = 5, PREDEFINEDIDTYPE_PRETTYFUNCTION = 6, PREDEFINEDIDTYPE_PRETTYFUNCTIONNOVIRTUAL = 7, };
 enum class StringKind : int32_t { STRINGKIND_ORDINARY = 0, STRINGKIND_WIDE = 1, STRINGKIND_UTF8 = 2, STRINGKIND_UTF16 = 3, STRINGKIND_UTF32 = 4, STRINGKIND_UNEVALUATED = 5, };
 enum class UnaryOperatorKind : int32_t { UNARYOPERATORKIND_POSTINC = 0, UNARYOPERATORKIND_POSTDEC = 1, UNARYOPERATORKIND_PREINC = 2, UNARYOPERATORKIND_PREDEC = 3, UNARYOPERATORKIND_ADDROF = 4, UNARYOPERATORKIND_DEREF = 5, UNARYOPERATORKIND_PLUS = 6, UNARYOPERATORKIND_MINUS = 7, UNARYOPERATORKIND_NOT = 8, UNARYOPERATORKIND_LNOT = 9, UNARYOPERATORKIND_REAL = 10, UNARYOPERATORKIND_IMAG = 11, UNARYOPERATORKIND_EXTENSION = 12, UNARYOPERATORKIND_COAWAIT = 13, };
@@ -504,7 +507,7 @@ struct DeclaratorDeclDataT {
 struct TemplateDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   std::vector<int64_t> template_parameters{};
-  int64_t templated_decl{};
+  int64_t template_decl{};
 };
 
 struct FunctionDeclDataT {
@@ -521,6 +524,8 @@ struct FunctionDeclDataT {
   int64_t canonical_decl{};
   int64_t primary_template_decl{};
   std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
+  std::vector<int64_t> template_parameters{};
+  std::vector<uint32_t> template_parameter_list_sizes{};
 };
 
 struct CXXMethodDeclDataT {
@@ -678,6 +683,14 @@ struct MSPropertyDeclDataT {
 
 struct ClassTemplatePartialSpecializationDeclDataT {
   std::unique_ptr<ClassTemplateSpecializationDeclDataT> base{};
+  std::vector<int64_t> template_parameters{};
+};
+
+struct FriendDeclDataT {
+  std::unique_ptr<DeclDataT> base{};
+  int64_t owner_record{};
+  int64_t friend_decl{};
+  int64_t friend_type{};
 };
 
 struct TypeDataT {
@@ -705,6 +718,12 @@ struct BuiltinTypeDataT {
 
 struct PointerTypeDataT {
   std::unique_ptr<TypeDataT> base{};
+  int64_t pointee_type{};
+};
+
+struct MemberPointerTypeDataT {
+  std::unique_ptr<TypeDataT> base{};
+  int64_t class_type{};
   int64_t pointee_type{};
 };
 
@@ -942,6 +961,11 @@ struct CXXConstructExprDataT {
   int64_t constructor_decl{};
 };
 
+struct CXXUnresolvedConstructExprDataT {
+  std::unique_ptr<ExprDataT> base{};
+  bool is_list_initialization{};
+};
+
 struct CXXTemporaryObjectExprDataT {
   std::unique_ptr<CXXConstructExprDataT> base{};
 };
@@ -1058,6 +1082,10 @@ struct LambdaExprDataT {
   LambdaCaptureDefault capture_default{};
   int64_t lambda_class{};
   std::vector<LambdaCaptureKind> capture_kinds{};
+  std::vector<std::string> init_capture_names{};
+  std::vector<InitializationStyle> capture_init_styles{};
+  std::vector<bool> capture_pack_expansions{};
+  std::vector<bool> capture_is_implicit{};
 };
 
 struct PredefinedExprDataT {
@@ -1146,6 +1174,9 @@ struct AsmStmtDataT {
 struct GCCAsmStmtDataT {
   std::unique_ptr<AsmStmtDataT> base{};
   std::string asm_string{};
+  bool is_goto{};
+  std::vector<std::string> labels{};
+  bool is_inline{};
 };
 
 struct MSAsmStmtDataT {

@@ -29,7 +29,7 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(ClassTemplateSpecializationDecl,
                             VisitClassTemplateSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(ClassTemplatePartialSpecializationDecl,
-                            VisitClassTemplateSpecializationDeclChildren),
+                            VisitClassTemplatePartialSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(FunctionDecl, VisitFunctionDeclChildren),
         DECL_CHILDREN_ENTRY(VarDecl, VisitVarDeclChildren),
         DECL_CHILDREN_ENTRY(ParmVarDecl, VisitVarDeclChildren),
@@ -162,6 +162,17 @@ void ClangAstDumper::VisitFunctionDeclChildren(
         templateSpecializationArgs != nullptr) {
         for (auto const &templateArg : templateSpecializationArgs->asArray()) {
             VisitTemplateArgument(templateArg);
+      }
+    }
+
+    // Function template parameter lists are metadata references rather than
+    // AST children. Visit them so their declaration records are emitted.
+    for (unsigned listIndex = 0; listIndex < D->getNumTemplateParameterLists();
+         ++listIndex) {
+        if (const auto *parameters = D->getTemplateParameterList(listIndex)) {
+            for (const auto *parameter : *parameters) {
+                VisitDeclTop(parameter);
+            }
         }
     }
 
@@ -271,6 +282,17 @@ void ClangAstDumper::VisitClassTemplateSpecializationDeclChildren(
     auto &templateArgs = D->getTemplateArgs();
     for (auto &templateArg : templateArgs.asArray()) {
         VisitTemplateArgument(templateArg);
+    }
+}
+
+void ClangAstDumper::VisitClassTemplatePartialSpecializationDeclChildren(
+    const ClassTemplatePartialSpecializationDecl *D,
+    std::vector<std::string> &children) {
+    VisitClassTemplateSpecializationDeclChildren(D, children);
+    if (auto *parameters = D->getTemplateParameters()) {
+        for (const auto *parameter : *parameters) {
+            VisitDeclTop(parameter);
+        }
     }
 }
 
