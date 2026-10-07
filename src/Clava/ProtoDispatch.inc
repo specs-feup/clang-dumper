@@ -84,6 +84,7 @@ inline obj::NodeT makeNode(const clang::Expr *node, Context &c) {
   if (out.class_name == "CompoundAssignOperator") { out.payload.Set(std::move(*makeBinaryOperatorData(static_cast<const clang::CompoundAssignOperator *>(node), c))); return out; }
   if (out.class_name == "CallExpr") { out.payload.Set(std::move(*makeCallExprData(static_cast<const clang::CallExpr *>(node), c))); return out; }
   if (out.class_name == "CXXMemberCallExpr") { out.payload.Set(std::move(*makeCXXMemberCallExprData(static_cast<const clang::CXXMemberCallExpr *>(node), c))); return out; }
+  if (out.class_name == "CUDAKernelCallExpr") { out.payload.Set(std::move(*makeCallExprData(static_cast<const clang::CUDAKernelCallExpr *>(node), c))); return out; }
   if (out.class_name == "CXXOperatorCallExpr") { out.payload.Set(std::move(*makeCallExprData(static_cast<const clang::CXXOperatorCallExpr *>(node), c))); return out; }
   if (out.class_name == "UserDefinedLiteral") { out.payload.Set(std::move(*makeCallExprData(static_cast<const clang::UserDefinedLiteral *>(node), c))); return out; }
   if (out.class_name == "CXXTypeidExpr") { out.payload.Set(std::move(*makeCXXTypeidExprData(static_cast<const clang::CXXTypeidExpr *>(node), c))); return out; }
@@ -119,6 +120,8 @@ inline obj::NodeT makeNode(const clang::Type *node, Context &c) {
   if (out.class_name == "RecordType") { out.payload.Set(std::move(*makeTagTypeData(static_cast<const clang::RecordType *>(node), c))); return out; }
   if (out.class_name == "EnumType") { out.payload.Set(std::move(*makeTagTypeData(static_cast<const clang::EnumType *>(node), c))); return out; }
   if (out.class_name == "ElaboratedType") { out.payload.Set(std::move(*makeElaboratedTypeData(static_cast<const clang::ElaboratedType *>(node), c))); return out; }
+  if (out.class_name == "DependentNameType") { out.payload.Set(std::move(*makeTypeWithKeywordData(static_cast<const clang::DependentNameType *>(node), c))); return out; }
+  if (out.class_name == "DependentTemplateSpecializationType") { out.payload.Set(std::move(*makeTypeWithKeywordData(static_cast<const clang::DependentTemplateSpecializationType *>(node), c))); return out; }
   if (out.class_name == "TemplateTypeParmType") { out.payload.Set(std::move(*makeTemplateTypeParmTypeData(static_cast<const clang::TemplateTypeParmType *>(node), c))); return out; }
   if (out.class_name == "TemplateSpecializationType") { out.payload.Set(std::move(*makeTemplateSpecializationTypeData(static_cast<const clang::TemplateSpecializationType *>(node), c))); return out; }
   if (out.class_name == "TypedefType") { out.payload.Set(std::move(*makeTypedefTypeData(static_cast<const clang::TypedefType *>(node), c))); return out; }

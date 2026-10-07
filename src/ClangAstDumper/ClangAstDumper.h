@@ -356,6 +356,11 @@ public:
       std::vector<std::string> &visitedChildren);
   void VisitElaboratedTypeChildren(const ElaboratedType *T,
                                    std::vector<std::string> &visitedChildren);
+  void VisitDependentNameTypeChildren(
+      const DependentNameType *T, std::vector<std::string> &visitedChildren);
+  void VisitDependentTemplateSpecializationTypeChildren(
+      const DependentTemplateSpecializationType *T,
+      std::vector<std::string> &visitedChildren);
   void VisitReferenceTypeChildren(const ReferenceType *T,
                                   std::vector<std::string> &visitedChildren);
   void

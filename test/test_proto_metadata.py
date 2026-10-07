@@ -13,6 +13,8 @@ from pathlib import Path
 from google.protobuf import descriptor_pb2, message_factory
 
 SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_metadata.cpp"
+DENSE_ID_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_dense_ids.cpp"
+CUDA_KERNEL_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_cuda_kernel_call.cu"
 
 
 def read_varint(data: bytes, offset: int) -> tuple[int, int]:
@@ -150,6 +152,32 @@ class ProtoMetadataTest(unittest.TestCase):
             "partial specialization is missing from the top-level declaration roots",
         )
 
+        dependent_keyword_types = {
+            "DependentNameType",
+            "DependentTemplateSpecializationType",
+        }
+        keyword_field = messages["astwire.v1.TypeWithKeywordData"].DESCRIPTOR.fields_by_name[
+            "elaborated_type_keyword"
+        ]
+        typename_keyword = keyword_field.enum_type.values_by_name[
+            "ELABORATEDTYPEKEYWORD_TYPENAME"
+        ].number
+        for class_name in dependent_keyword_types:
+            values = by_class.get(class_name, [])
+            self.assertTrue(values, f"{class_name} node missing")
+            self.assertTrue(
+                all(node.WhichOneof("node") == "type_with_keyword_data" for node in values),
+                f"{class_name} must use its nearest TypeWithKeywordData payload",
+            )
+            self.assertTrue(
+                all(
+                    node.type_with_keyword_data.elaborated_type_keyword
+                    == typename_keyword
+                    for node in values
+                ),
+                f"{class_name} elaborated keyword metadata missing",
+            )
+
         lambdas = [node.lambda_expr_data for node in by_class.get("LambdaExpr", [])]
         init_lambdas = [value for value in lambdas if value.init_capture_names]
         self.assertTrue(init_lambdas, "lambda init-capture names missing")
@@ -208,6 +236,106 @@ class ProtoMetadataTest(unittest.TestCase):
                 for value in friends
             ),
             "typed-null friend target must retain presence",
+        )
+
+    def test_system_header_friend_targets_keep_dense_ids(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-dense-ids-") as temp:
+            dump = Path(temp) / "dense-ids.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-system-header-threshold=1",
+                    "-c",
+                    str(DENSE_ID_SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=gnu++20",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        node_ids = {
+            record.node.id
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+        }
+        ends = [envelope.end for envelope in envelopes if envelope.WhichOneof("payload") == "end"]
+        self.assertEqual(len(ends), 1, "stream must contain exactly one End record")
+        self.assertEqual(
+            node_ids,
+            set(range(1, ends[0].ids + 1)),
+            "End.ids must describe the exact dense set of emitted AST nodes",
+        )
+
+    def test_cuda_kernel_call_uses_call_expr_payload(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-cuda-call-") as temp:
+            dump = Path(temp) / "cuda-kernel-call.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(CUDA_KERNEL_SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-x",
+                    "cuda",
+                    "-nocudainc",
+                    "-nocudalib",
+                    "--cuda-host-only",
+                    "--cuda-gpu-arch=sm_35",
+                    "-std=c++17",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        calls = [
+            record.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+            and record.node.class_name == "CUDAKernelCallExpr"
+        ]
+        self.assertTrue(calls, "CUDA kernel call node missing")
+        self.assertTrue(
+            all(node.WhichOneof("node") == "call_expr_data" for node in calls),
+            "CUDAKernelCallExpr must use its nearest CallExprData payload",
         )
 
 

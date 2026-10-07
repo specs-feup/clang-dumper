@@ -1,6 +1,11 @@
 template <typename T> T dependent_construct() { return T(1); }
 template <typename T> T dependent_list() { return T{1}; }
 
+template <typename T> struct dependent_type_metadata {
+  using nested_type = typename T::type;
+  using nested_template = typename T::template rebind<int>;
+};
+
 int cast_forms(double value) {
   int implicit = value;
   int explicit_c = (int)value;

@@ -389,9 +389,15 @@ void ClangAstDumper::VisitFriendDeclChildren(
     VisitDeclChildren(D, children);
 
     if (D->getFriendDecl() != nullptr) {
-        addChild(D->getFriendDecl(), children);
+        // FriendDeclData carries a typed reference to this target even when
+        // the ordinary system-header depth guard would suppress the edge.
+        // Emit the referenced node so every serialized ID remains defined.
+        VisitDeclTop(D->getFriendDecl());
+        children.push_back(clava::getId(D->getFriendDecl(), id));
     } else if (D->getFriendType() != nullptr) {
-        addChild(D->getFriendType()->getType(), children);
+        const auto friendType = D->getFriendType()->getType();
+        VisitTypeTop(friendType);
+        children.push_back(clava::getId(friendType, id));
     } else {
         // Add a null node
         addChild((const Decl *)nullptr, children);

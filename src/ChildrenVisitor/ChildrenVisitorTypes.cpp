@@ -59,6 +59,10 @@ const std::map<std::string, ClangAstDumper::TypeChildrenFn>
         TYPE_CHILDREN_ENTRY(EnumType, VisitTagTypeChildren),
         TYPE_CHILDREN_ENTRY(RecordType, VisitTagTypeChildren),
         TYPE_CHILDREN_ENTRY(ElaboratedType, VisitElaboratedTypeChildren),
+        TYPE_CHILDREN_ENTRY(DependentNameType,
+                            VisitDependentNameTypeChildren),
+        TYPE_CHILDREN_ENTRY(DependentTemplateSpecializationType,
+                            VisitDependentTemplateSpecializationTypeChildren),
         TYPE_CHILDREN_ENTRY(LValueReferenceType,
                             VisitReferenceTypeChildren),
         TYPE_CHILDREN_ENTRY(RValueReferenceType,
@@ -211,6 +215,23 @@ void ClangAstDumper::VisitElaboratedTypeChildren(
 
     // Visit named type
     VisitTypeTop(T->getNamedType());
+}
+
+void ClangAstDumper::VisitDependentNameTypeChildren(
+    const DependentNameType *T, std::vector<std::string> &visitedChildren) {
+    VisitTypeChildren(T, visitedChildren);
+    if (auto *qualifier = T->getQualifier())
+        VisitNestedNameSpecifierChildren(qualifier);
+}
+
+void ClangAstDumper::VisitDependentTemplateSpecializationTypeChildren(
+    const DependentTemplateSpecializationType *T,
+    std::vector<std::string> &visitedChildren) {
+    VisitTypeChildren(T, visitedChildren);
+    if (auto *qualifier = T->getQualifier())
+        VisitNestedNameSpecifierChildren(qualifier);
+    for (const auto &argument : T->template_arguments())
+        VisitTemplateArgChildren(argument);
 }
 
 void ClangAstDumper::VisitReferenceTypeChildren(

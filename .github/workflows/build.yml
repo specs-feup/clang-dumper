@@ -577,24 +577,62 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Download Linux release assets
         uses: actions/download-artifact@v8
         with:
-          pattern: linux-*
+          pattern: linux-*-tool
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download Linux plugins
+        uses: actions/download-artifact@v8
+        with:
+          pattern: linux-*-plugin
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download Linux includes
+        uses: actions/download-artifact@v8
+        with:
+          pattern: linux-*-includes
           path: release-assets/
           merge-multiple: true
 
       - name: Download macOS release assets
         uses: actions/download-artifact@v8
         with:
-          pattern: macos-*
+          pattern: macos-*-tool
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download macOS plugins
+        uses: actions/download-artifact@v8
+        with:
+          pattern: macos-*-plugin
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download macOS includes
+        uses: actions/download-artifact@v8
+        with:
+          pattern: macos-*-includes
           path: release-assets/
           merge-multiple: true
 
       - name: Download Windows release assets
         uses: actions/download-artifact@v8
         with:
-          pattern: windows-*
+          pattern: windows-*-tool
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download Windows includes
+        uses: actions/download-artifact@v8
+        with:
+          pattern: windows-*-includes
           path: release-assets/
           merge-multiple: true
 
@@ -606,6 +644,7 @@ jobs:
 
       - name: Stage verified protocol artifacts
         run: |
+          chmod +x release-staging/protocol/clang-dumper-protoc-28.3
           cp release-staging/protocol/clang-dumper-ast-wire.proto release-assets/
           cp release-staging/protocol/clang-dumper-ast-wire.pb release-assets/
 
