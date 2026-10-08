@@ -806,6 +806,9 @@ class ClangResourceDirectorySelectionTest(unittest.TestCase):
 
 
 class MacOSIncludePackageSelectionTest(unittest.TestCase):
+    @unittest.skipIf(
+        os.name == "nt", "the macOS package fixture uses POSIX symlinks and shell"
+    )
     def test_shell_packager_passes_the_pinned_llvm_and_openmp_roots(self) -> None:
         source_root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory(prefix="clang-dumper-macos-package-script-") as temp:
@@ -847,11 +850,73 @@ class MacOSIncludePackageSelectionTest(unittest.TestCase):
             foundation_headers = framework / "Versions" / "A" / "Headers"
             foundation_headers.mkdir(parents=True)
             (foundation_headers / "Foundation.h").write_text(
-                "/* SDK framework */\n", encoding="utf-8"
+                "#include <Sub/Sub.h>\n"
+                "struct FoundationFixture { int value; };\n",
+                encoding="utf-8",
+            )
+            private_headers = framework / "Versions" / "A" / "PrivateHeaders"
+            private_headers.mkdir()
+            (private_headers / "FoundationPrivate.h").write_text(
+                "/* private SDK framework header */\n", encoding="utf-8"
+            )
+            modules = framework / "Versions" / "A" / "Modules"
+            modules.mkdir()
+            (modules / "module.modulemap").write_text(
+                "framework module Foundation { header \"Foundation.h\" export * }\n",
+                encoding="utf-8",
             )
             (framework / "Versions" / "Current").symlink_to("A", target_is_directory=True)
             (framework / "Headers").symlink_to(
                 "Versions/Current/Headers", target_is_directory=True
+            )
+            (framework / "PrivateHeaders").symlink_to(
+                "Versions/Current/PrivateHeaders", target_is_directory=True
+            )
+            (framework / "Modules").symlink_to(
+                "Versions/Current/Modules", target_is_directory=True
+            )
+            subframework = (
+                framework / "Versions" / "A" / "Frameworks" / "Sub.framework"
+            )
+            subframework_headers = subframework / "Versions" / "A" / "Headers"
+            subframework_headers.mkdir(parents=True)
+            (subframework_headers / "Sub.h").write_text(
+                "struct SubframeworkFixture { int value; };\n", encoding="utf-8"
+            )
+            (subframework / "Versions" / "Current").symlink_to(
+                "A", target_is_directory=True
+            )
+            (subframework / "Headers").symlink_to(
+                "Versions/Current/Headers", target_is_directory=True
+            )
+            (framework / "Frameworks").symlink_to(
+                "Versions/Current/Frameworks", target_is_directory=True
+            )
+
+            unsafe_framework = frameworks / "Unsafe.framework"
+            unsafe_header = (
+                unsafe_framework / "Versions" / "A" / "Headers" / "Unsafe.h"
+            )
+            unsafe_header.parent.mkdir(parents=True)
+            unsafe_header.write_text("/* unsafe alias target */\n", encoding="utf-8")
+            (unsafe_framework / "Headers").symlink_to(".", target_is_directory=True)
+            (unsafe_framework / "Frameworks").symlink_to(".", target_is_directory=True)
+
+            outside_headers = temp_root / "outside-framework-headers"
+            outside_headers.mkdir()
+            (outside_headers / "External.h").write_text(
+                "/* external target */\n", encoding="utf-8"
+            )
+            external_framework = frameworks / "External.framework"
+            external_framework.mkdir()
+            (external_framework / "Headers").symlink_to(
+                outside_headers, target_is_directory=True
+            )
+
+            cyclic_framework = frameworks / "Cyclic.framework"
+            cyclic_framework.mkdir()
+            (cyclic_framework / "Headers").symlink_to(
+                "Headers", target_is_directory=True
             )
 
             clang = bin_dir / "clang"
@@ -913,6 +978,7 @@ class MacOSIncludePackageSelectionTest(unittest.TestCase):
             with zipfile.ZipFile(output) as archive:
                 names = set(archive.namelist())
                 entrypoints = archive.read("entrypoints.txt").decode().splitlines()
+                self.assertEqual(len(names), len(archive.namelist()))
             self.assertIn("libcxx/__config", names)
             self.assertIn("sdk/stdlib.h", names)
             self.assertIn("clang/stdarg.h", names)
@@ -920,8 +986,71 @@ class MacOSIncludePackageSelectionTest(unittest.TestCase):
                 "Frameworks/Foundation.framework/Versions/A/Headers/Foundation.h"
             )
             self.assertIn(versioned_header, names)
+            canonical_header = "Frameworks/Foundation.framework/Headers/Foundation.h"
+            self.assertIn(canonical_header, names)
+            self.assertIn(
+                "Frameworks/Foundation.framework/PrivateHeaders/FoundationPrivate.h", names
+            )
+            self.assertIn("Frameworks/Foundation.framework/Modules/module.modulemap", names)
+            self.assertIn(
+                "Frameworks/Foundation.framework/Frameworks/Sub.framework/"
+                "Headers/Sub.h",
+                names,
+            )
+            self.assertNotIn(
+                "Frameworks/Unsafe.framework/Headers/Versions/A/Headers/Unsafe.h", names
+            )
+            self.assertNotIn("Frameworks/External.framework/Headers/External.h", names)
+            self.assertFalse(
+                any(
+                    name.startswith("Frameworks/Cyclic.framework/Headers/")
+                    for name in names
+                )
+            )
             with zipfile.ZipFile(output) as archive:
-                self.assertTrue(archive.read(versioned_header).strip())
+                self.assertTrue(archive.read(canonical_header).strip())
+
+            compiler = None
+            llvm_prefix = os.environ.get("LLVM_PREFIX")
+            if llvm_prefix:
+                candidate = Path(llvm_prefix) / "bin" / "clang++"
+                if candidate.is_file():
+                    compiler = str(candidate)
+            compiler = compiler or shutil.which("clang++-18")
+            if compiler is None:
+                self.skipTest("LLVM 18 clang++ is required for framework lookup validation")
+            compiler_version = subprocess.run(
+                [compiler, "--version"], capture_output=True, text=True, check=False
+            )
+            self.assertEqual(compiler_version.returncode, 0, compiler_version.stderr)
+            self.assertRegex(compiler_version.stdout, r"clang version 18(?:\.|\b)")
+            extracted = temp_root / "extracted"
+            with zipfile.ZipFile(output) as archive:
+                archive.extractall(extracted)
+            source = temp_root / "framework-lookup.cpp"
+            source.write_text(
+                "#include <Foundation/Foundation.h>\n"
+                "int main() { return FoundationFixture{0}.value + "
+                "SubframeworkFixture{0}.value; }\n",
+                encoding="utf-8",
+            )
+            compile_result = subprocess.run(
+                [
+                    compiler,
+                    "-fsyntax-only",
+                    "-F",
+                    str(extracted / "Frameworks"),
+                    str(source),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(
+                compile_result.returncode,
+                0,
+                compile_result.stdout + compile_result.stderr,
+            )
             self.assertFalse(any(name.startswith("sdk/c++/v1/") for name in names))
             self.assertNotIn("sdk/c++/v1", entrypoints)
             self.assertLess(entrypoints.index("libcxx"), entrypoints.index("sdk"))

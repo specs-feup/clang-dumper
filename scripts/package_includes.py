@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -90,12 +91,16 @@ def zip_dir(source, output):
         for path in sorted(source.rglob("*")):
             target = path
             if path.is_symlink():
-                target = path.resolve(strict=False)
+                try:
+                    target = path.resolve(strict=False)
+                except (OSError, RuntimeError):
+                    continue
                 if not target.exists() or target.is_dir():
                     continue
             if not target.exists():
                 continue
             archive.write(target, path.relative_to(source))
+        archive_framework_directory_aliases(archive, source)
 
 
 def copy_ignore_excluded(excluded_dirs):
@@ -112,6 +117,74 @@ def copy_ignore_excluded(excluded_dirs):
         return ignored
 
     return ignore
+
+
+def archive_framework_directory_aliases(archive, source):
+    """Materialize known framework directory aliases without following arbitrary links."""
+    source_root = source.resolve()
+    pending = [
+        (path, path.relative_to(source))
+        for path in sorted(source.rglob("*.framework"))
+        if path.is_dir() and not path.is_symlink()
+    ]
+    processed = set()
+    while pending:
+        framework, archive_framework = pending.pop()
+        framework_root = framework.resolve()
+        archive_framework = Path(archive_framework)
+        framework_key = (framework_root, archive_framework.as_posix())
+        if framework_key in processed:
+            continue
+        processed.add(framework_key)
+        if not is_relative_to(framework_root, source_root):
+            continue
+
+        for alias_name in ("Headers", "PrivateHeaders", "Modules", "Frameworks"):
+            alias = framework / alias_name
+            if not alias.is_symlink():
+                continue
+            try:
+                target_root = alias.resolve(strict=False)
+            except (OSError, RuntimeError):
+                continue
+            if (
+                not target_root.is_dir()
+                or not is_relative_to(target_root, source_root)
+                or not is_relative_to(target_root, framework_root)
+                or target_root == framework_root
+            ):
+                continue
+
+            archive_alias = archive_framework / alias_name
+            for directory, child_dirs, filenames in os.walk(target_root, followlinks=False):
+                directory_path = Path(directory)
+                child_dirs[:] = sorted(
+                    child for child in child_dirs
+                    if not (directory_path / child).is_symlink()
+                )
+                if alias_name == "Frameworks":
+                    for child in child_dirs:
+                        child_framework = directory_path / child
+                        if child.endswith(".framework") and child_framework.is_dir():
+                            pending.append(
+                                (
+                                    child_framework,
+                                    archive_alias / child_framework.relative_to(target_root),
+                                )
+                            )
+                for filename in sorted(filenames):
+                    file_path = directory_path / filename
+                    try:
+                        target_file = file_path.resolve(strict=False)
+                    except (OSError, RuntimeError):
+                        continue
+                    if (
+                        not target_file.is_file()
+                        or not is_relative_to(target_file, source_root)
+                    ):
+                        continue
+                    archive_name = archive_alias / file_path.relative_to(target_root)
+                    archive.write(target_file, archive_name.as_posix())
 
 
 def main():

@@ -370,8 +370,7 @@ jobs:
           framework_headers = [
               name for name in names
               if name.startswith("Frameworks/")
-              and ".framework/" in name
-              and "/Headers/" in name
+              and ".framework/Headers/" in name
           ]
           if not framework_headers:
               raise SystemExit("include package is missing SDK framework headers")
