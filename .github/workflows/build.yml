@@ -257,6 +257,7 @@ jobs:
           python3 -m venv "${PROTOBUF_VENV}"
           "${PROTOBUF_VENV}/bin/python" -m pip install --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
           echo "${PROTOBUF_VENV}/bin" >> "$GITHUB_PATH"
+          echo "PROTOBUF_VENV=${PROTOBUF_VENV}" >> "$GITHUB_ENV"
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
           ZSTD_ROOT="$(brew --prefix zstd)"
@@ -278,6 +279,7 @@ jobs:
             -DLLVM_PREFIX="${LLVM_PREFIX}" \
             -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
+            -DPython3_EXECUTABLE="${PROTOBUF_VENV}/bin/python" \
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build

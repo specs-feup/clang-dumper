@@ -231,8 +231,8 @@ if(NOT Protobuf_FOUND)
         if(NOT EXISTS "${_cctz_time_zone_lookup}")
             message(FATAL_ERROR "Pinned Abseil CCTZ source was not found: ${_cctz_time_zone_lookup}")
         endif()
-        set_property(SOURCE "${_cctz_time_zone_lookup}" APPEND PROPERTY
-            COMPILE_OPTIONS "-include;winstring.h")
+        include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/enable_mingw_cctz_winstring.cmake")
+        clang_dumper_enable_mingw_cctz_winstring("${_cctz_time_zone_lookup}" absl_time_zone)
     endif()
     # The plugin is a shared module.  Keep the reproducible static fallback
     # usable from that module as well as from the executable.

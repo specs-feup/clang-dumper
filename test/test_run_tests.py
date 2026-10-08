@@ -569,7 +569,45 @@ class PythonProtobufPinTest(unittest.TestCase):
         self.assertEqual(workflow.count(pip_command), 2)
         self.assertEqual(workflow.count('PROTOBUF_VENV="${RUNNER_TEMP}/protobuf-python-venv"'), 2)
         self.assertEqual(workflow.count('echo "${PROTOBUF_VENV}/bin" >> "$GITHUB_PATH"'), 1)
+        self.assertEqual(
+            workflow.count('echo "PROTOBUF_VENV=${PROTOBUF_VENV}" >> "$GITHUB_ENV"'), 1
+        )
+        self.assertEqual(
+            workflow.count('-DPython3_EXECUTABLE="${PROTOBUF_VENV}/bin/python"'), 1
+        )
         self.assertEqual(workflow.count("source protobuf-version.env"), 2)
+
+
+@unittest.skipUnless(shutil.which("cmake"), "CMake is required for interpreter selection tests")
+class PythonInterpreterSelectionTest(unittest.TestCase):
+    def test_cmake_honors_the_explicit_python_interpreter(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            temp_root = Path(tmp_dir)
+            source_dir = temp_root / "cmake-source"
+            source_dir.mkdir()
+            (source_dir / "CMakeLists.txt").write_text(
+                "cmake_minimum_required(VERSION 3.20)\n"
+                "project(PythonInterpreterSelection NONE)\n"
+                "find_package(Python3 COMPONENTS Interpreter REQUIRED)\n"
+                'file(WRITE "${CMAKE_BINARY_DIR}/selected-python.txt" "${Python3_EXECUTABLE}")\n'
+            )
+            build_dir = temp_root / "cmake-build"
+            subprocess.run(
+                [
+                    "cmake",
+                    "-S",
+                    str(source_dir),
+                    "-B",
+                    str(build_dir),
+                    f"-DPython3_EXECUTABLE={sys.executable}",
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+            selected_python = Path((build_dir / "selected-python.txt").read_text())
+            self.assertEqual(selected_python.resolve(), Path(sys.executable).resolve())
 
 
 @unittest.skipUnless(shutil.which("cmake"), "CMake is required for dependency patch tests")
@@ -583,7 +621,7 @@ class WindowsCOFFProtobufPatchTest(unittest.TestCase):
             "target_compile_definitions(absl_synchronization PRIVATE _WIN32_WINNT=0x0600)",
             cmake_lists,
         )
-        self.assertIn('COMPILE_OPTIONS "-include;winstring.h"', cmake_lists)
+        self.assertIn("clang_dumper_enable_mingw_cctz_winstring", cmake_lists)
         self.assertIn("patch_protobuf_28_3_for_coff.cmake", cmake_lists)
         old_guard = (
             "#if defined(__GNUC__) && defined(__clang__) && !defined(__APPLE__) && \\\n"
@@ -633,6 +671,41 @@ class WindowsCOFFProtobufPatchTest(unittest.TestCase):
             changed_source = invoke(source_dir, "28.3")
             self.assertNotEqual(changed_source.returncode, 0)
             self.assertIn("feature guard changed", changed_source.stderr)
+
+    def test_winstring_option_is_visible_in_abseil_target_directory_only(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        helper = root / "cmake" / "enable_mingw_cctz_winstring.cmake"
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            source_dir = Path(tmp_dir)
+            nested_dir = source_dir / "absl" / "time"
+            nested_dir.mkdir(parents=True)
+            source = nested_dir / "time_zone_lookup.cc"
+            source.write_text("// compile option scope fixture\n")
+            (nested_dir / "CMakeLists.txt").write_text(
+                f'add_custom_target(absl_time_zone SOURCES "{source.as_posix()}")\n'
+            )
+            cmake_lists = f"""cmake_minimum_required(VERSION 3.20)
+project(WinstringScope NONE)
+add_subdirectory(absl/time)
+include("{helper.as_posix()}")
+clang_dumper_enable_mingw_cctz_winstring("{source.as_posix()}" absl_time_zone)
+get_source_file_property(target_options "{source.as_posix()}" TARGET_DIRECTORY absl_time_zone COMPILE_OPTIONS)
+if(NOT "-include" IN_LIST target_options OR NOT "winstring.h" IN_LIST target_options)
+    message(FATAL_ERROR "winstring include options missing from the Abseil target directory: ${{target_options}}")
+endif()
+get_source_file_property(root_options "{source.as_posix()}" COMPILE_OPTIONS)
+if(NOT root_options STREQUAL "NOTFOUND")
+    message(FATAL_ERROR "winstring options leaked into the parent directory: ${{root_options}}")
+endif()
+"""
+            (source_dir / "CMakeLists.txt").write_text(cmake_lists)
+            result = subprocess.run(
+                ["cmake", "-S", str(source_dir), "-B", str(source_dir / "build")],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 class ClangDiagnosticFilteringTest(unittest.TestCase):
