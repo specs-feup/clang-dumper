@@ -253,7 +253,7 @@ jobs:
         run: |
           brew install llvm@${LLVM_VERSION} libomp zstd ccache
           source protobuf-version.env
-          python3 -m pip install --user "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          python3 -m pip install --user --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
           ZSTD_ROOT="$(brew --prefix zstd)"
@@ -700,7 +700,7 @@ jobs:
           LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
         run: |
           source protobuf-version.env
-          python3 -m pip install --user "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          python3 -m pip install --user --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
           python3 scripts/write_release_manifest.py \
             --asset-dir release-assets \
             --llvm-major "$LLVM_VERSION" \
