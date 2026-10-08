@@ -352,9 +352,32 @@ jobs:
           import sys, zipfile
           with zipfile.ZipFile(sys.argv[1]) as archive:
               names = archive.namelist()
+              entrypoints = archive.read("entrypoints.txt").decode().splitlines()
           if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
               raise SystemExit("include package is missing omp.h")
-          print("omp.h found")
+          required = ["libcxx/__config", "libcxx/vector", "sdk/stdlib.h"]
+          missing = [name for name in required if name not in names]
+          if missing:
+              raise SystemExit("include package is missing pinned libc++ or SDK C headers: " + ", ".join(missing))
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              if not archive.read("sdk/stdlib.h").strip():
+                  raise SystemExit("include package has an empty SDK stdlib.h")
+          if any(
+              entry == "sdk/c++/v1" or entry.startswith("sdk/c++/v1/")
+              for entry in entrypoints
+          ) or any(name.startswith("sdk/c++/v1/") for name in names):
+              raise SystemExit("SDK libc++ headers override the pinned Homebrew LLVM libc++")
+          framework_headers = [
+              name for name in names
+              if name.startswith("Frameworks/") and ".framework/Headers/" in name
+          ]
+          if not framework_headers:
+              raise SystemExit("include package is missing SDK framework headers")
+          if "libcxx" not in entrypoints or "sdk" not in entrypoints:
+              raise SystemExit("include package is missing libc++ or SDK C include entrypoints")
+          if entrypoints.index("libcxx") >= entrypoints.index("sdk"):
+              raise SystemExit("pinned Homebrew libc++ must precede SDK C headers")
+          print("pinned libc++, SDK C headers, SDK frameworks, and omp.h found")
           PY
 
       - name: Upload failed test outputs

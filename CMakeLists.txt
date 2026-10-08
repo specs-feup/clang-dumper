@@ -816,11 +816,30 @@ add_test(NAME proto_release_manifest_test
     COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_release_manifest.py"
             ${PROTO_MANIFEST_TEST_ARGS})
 
+set(PROTO_METADATA_LIBCXX_ARGS)
+if(APPLE)
+    set(PROTO_METADATA_LIBCXX_INCLUDE_DIR "${LLVM_PREFIX}/include/c++/v1")
+    if(NOT EXISTS "${PROTO_METADATA_LIBCXX_INCLUDE_DIR}/__config")
+        message(FATAL_ERROR
+            "LLVM libc++ headers are missing from ${PROTO_METADATA_LIBCXX_INCLUDE_DIR}")
+    endif()
+    list(APPEND PROTO_METADATA_LIBCXX_ARGS
+        --libcxx-include-dir "${PROTO_METADATA_LIBCXX_INCLUDE_DIR}")
+    if(DEFINED ENV{LIBOMP_PREFIX} AND EXISTS "$ENV{LIBOMP_PREFIX}/include/omp.h")
+        list(APPEND PROTO_METADATA_LIBCXX_ARGS
+            --libomp-include-dir "$ENV{LIBOMP_PREFIX}/include")
+    endif()
+    if(CMAKE_OSX_SYSROOT)
+        list(APPEND PROTO_METADATA_LIBCXX_ARGS --sysroot "${CMAKE_OSX_SYSROOT}")
+    endif()
+endif()
+
 add_test(NAME proto_metadata_emission_test
     COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_metadata.py"
         --tool "$<TARGET_FILE:tool>"
         --resource-dir "${PROTO_METADATA_RESOURCE_DIR}"
         --llvm-major "${CLANG_VERSION}"
+        ${PROTO_METADATA_LIBCXX_ARGS}
         --verifier "$<TARGET_FILE:verify_protobuf>"
         --descriptor "${PROTO_DESCRIPTOR}"
         --schema "${PROTO_SCHEMA}")

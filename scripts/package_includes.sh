@@ -24,11 +24,15 @@ if [[ "${OUTPUT_ZIP}" != /* ]]; then
 fi
 
 EXTRA_INCLUDE_ARGS=()
+EXCLUDED_INCLUDE_ARGS=()
 add_extra_include_dir() {
   local include_dir="$1"
   if [[ -d "${include_dir}" ]]; then
     EXTRA_INCLUDE_ARGS+=(--extra-include-dir "${include_dir}")
   fi
+}
+exclude_include_dir() {
+  EXCLUDED_INCLUDE_ARGS+=(--exclude-include-dir "$1")
 }
 
 case "${PLATFORM}/${ARCH}" in
@@ -45,6 +49,17 @@ case "${PLATFORM}/${ARCH}" in
     : "${LLVM_PREFIX:?LLVM_PREFIX is required}"
     : "${SDKROOT:?SDKROOT is required}"
     STAGING=".deps/macos-includes-${ARCH}"
+    LIBCXX_INCLUDE_DIR="${LLVM_PREFIX}/include/c++/v1"
+    if [[ ! -f "${LIBCXX_INCLUDE_DIR}/__config" ]]; then
+      echo "LLVM libc++ headers are missing from ${LIBCXX_INCLUDE_DIR}" >&2
+      exit 1
+    fi
+    RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
+    if [[ ! -f "${RESOURCE_DIR}/include/stdarg.h" ]]; then
+      echo "LLVM resource headers are missing from ${RESOURCE_DIR}" >&2
+      exit 1
+    fi
+    exclude_include_dir "${SDKROOT}/usr/include/c++/v1"
 
     if [[ -n "${LIBOMP_PREFIX:-}" ]]; then
       add_extra_include_dir "${LIBOMP_PREFIX}/include"
@@ -52,7 +67,11 @@ case "${PLATFORM}/${ARCH}" in
       add_extra_include_dir "$(brew --prefix libomp)/include"
     fi
 
-    CLANG_CMD=("${LLVM_PREFIX}/bin/clang++" "-isysroot" "${SDKROOT}")
+    CLANG_CMD=("${LLVM_PREFIX}/bin/clang++" "-isysroot" "${SDKROOT}" "-nostdinc++" "-isystem" "${LIBCXX_INCLUDE_DIR}")
+    if [[ -n "${LIBOMP_PREFIX:-}" && -d "${LIBOMP_PREFIX}/include" ]]; then
+      CLANG_CMD+=("-isystem" "${LIBOMP_PREFIX}/include")
+    fi
+    CLANG_CMD+=("-resource-dir=${RESOURCE_DIR}")
     ;;
   windows/arm64)
     SDK_ROOT="${ROOT_DIR}/.deps/msys2-clangarm64-${LLVM_VERSION}/clangarm64"
@@ -81,4 +100,5 @@ python3 "${ROOT_DIR}/scripts/package_includes.py" \
   --staging "${ROOT_DIR}/${STAGING}" \
   --output "${OUTPUT_ZIP}" \
   "${EXTRA_INCLUDE_ARGS[@]}" \
+  "${EXCLUDED_INCLUDE_ARGS[@]}" \
   -- "${CLANG_CMD[@]}" -E -x c++ - -v

@@ -20,6 +20,79 @@ SYSTEM_HEADER_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_sys
 INDIRECT_FIELD_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_indirect_field_decl.cpp"
 
 
+def metadata_compiler_flags(
+    resource_dir: Path,
+    libcxx_include_dir: Path | None = None,
+    libomp_include_dir: Path | None = None,
+    sysroot: Path | None = None,
+) -> list[str]:
+    if sysroot is not None and libcxx_include_dir is None:
+        raise ValueError("an Apple SDK sysroot requires a selected libc++ include directory")
+
+    flags: list[str] = []
+    if libcxx_include_dir is not None:
+        if sysroot is not None:
+            if not sysroot.is_dir():
+                raise RuntimeError(f"Apple SDK sysroot does not exist: {sysroot}")
+            flags.extend(["-isysroot", str(sysroot)])
+        if not (libcxx_include_dir / "__config").is_file():
+            raise RuntimeError(
+                f"Selected libc++ headers are missing from {libcxx_include_dir}"
+            )
+        flags.extend(["-nostdinc++", "-isystem", str(libcxx_include_dir)])
+    if libomp_include_dir is not None:
+        if not (libomp_include_dir / "omp.h").is_file():
+            raise RuntimeError(f"Selected libomp headers are missing from {libomp_include_dir}")
+        flags.extend(["-isystem", str(libomp_include_dir)])
+
+    flags.append(f"-resource-dir={resource_dir}")
+    return flags
+
+
+class MetadataCompilerFlagsTest(unittest.TestCase):
+    def test_apple_flags_use_only_the_selected_libcxx_and_keep_resource_flags(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-compiler-flags-") as temp:
+            root = Path(temp)
+            resource = root / "lib" / "clang" / "18"
+            libcxx = root / "include" / "c++" / "v1"
+            libomp = root / "libomp" / "include"
+            sysroot = root / "MacOSX.sdk"
+            for directory in (resource, libcxx, libomp, sysroot):
+                directory.mkdir(parents=True)
+            (libcxx / "__config").touch()
+            (libomp / "omp.h").touch()
+
+            self.assertEqual(
+                metadata_compiler_flags(resource, libcxx, libomp, sysroot),
+                [
+                    "-isysroot",
+                    str(sysroot),
+                    "-nostdinc++",
+                    "-isystem",
+                    str(libcxx),
+                    "-isystem",
+                    str(libomp),
+                    f"-resource-dir={resource}",
+                ],
+            )
+            self.assertEqual(
+                metadata_compiler_flags(resource, libcxx),
+                ["-nostdinc++", "-isystem", str(libcxx), f"-resource-dir={resource}"],
+            )
+
+    def test_apple_flags_reject_missing_selected_headers(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-missing-headers-") as temp:
+            root = Path(temp)
+            resource = root / "resource"
+            resource.mkdir()
+            libcxx = root / "libcxx"
+            libcxx.mkdir()
+            with self.assertRaisesRegex(RuntimeError, r"Selected libc\+\+ headers"):
+                metadata_compiler_flags(resource, libcxx)
+            with self.assertRaisesRegex(ValueError, r"requires a selected libc\+\+"):
+                metadata_compiler_flags(resource, sysroot=root)
+
+
 def read_varint(data: bytes, offset: int) -> tuple[int, int]:
     value = 0
     shift = 0
@@ -65,7 +138,12 @@ class ProtoMetadataTest(unittest.TestCase):
             raise RuntimeError(
                 f"Clang resource headers are missing from {resource_path}"
             )
-        cls.compiler_flags = [f"-resource-dir={resource_path}"]
+        cls.compiler_flags = metadata_compiler_flags(
+            resource_path,
+            ARGS.libcxx_include_dir,
+            ARGS.libomp_include_dir,
+            ARGS.sysroot,
+        )
 
     def test_native_emission_contains_structured_metadata(self) -> None:
         descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
@@ -469,6 +547,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--tool", type=Path, required=True)
 parser.add_argument("--resource-dir", type=Path, required=True)
 parser.add_argument("--llvm-major", required=True)
+parser.add_argument("--libcxx-include-dir", type=Path)
+parser.add_argument("--libomp-include-dir", type=Path)
+parser.add_argument("--sysroot", type=Path)
 parser.add_argument("--verifier", type=Path, required=True)
 parser.add_argument("--descriptor", type=Path, required=True)
 parser.add_argument("--schema", type=Path, required=True)

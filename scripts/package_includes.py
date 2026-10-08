@@ -98,6 +98,22 @@ def zip_dir(source, output):
             archive.write(target, path.relative_to(source))
 
 
+def copy_ignore_excluded(excluded_dirs):
+    def ignore(directory, names):
+        ignored = set()
+        parent = Path(directory).resolve()
+        for name in names:
+            candidate = (parent / name).resolve(strict=False)
+            if any(
+                candidate == excluded or is_relative_to(candidate, excluded)
+                for excluded in excluded_dirs
+            ):
+                ignored.add(name)
+        return ignored
+
+    return ignore
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--platform", required=True, choices=["linux", "macos", "windows"])
@@ -109,6 +125,13 @@ def main():
         default=[],
         type=Path,
         help="Additional include root to copy into the archive and append to entrypoints.txt",
+    )
+    parser.add_argument(
+        "--exclude-include-dir",
+        action="append",
+        default=[],
+        type=Path,
+        help="Exclude an include directory subtree from copied roots and entrypoints.txt",
     )
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
@@ -130,13 +153,32 @@ def main():
 
     include_dirs = [path for path in dict.fromkeys(include_dirs)]
     roots = minimal_roots(include_dirs)
+    excluded_dirs = [path.resolve() for path in args.exclude_include_dir]
+    for excluded in excluded_dirs:
+        if not any(is_relative_to(excluded, root) for root in roots):
+            print(
+                f"excluded include dir is outside selected include roots: {excluded}",
+                file=sys.stderr,
+            )
+            return 2
+    include_dirs = [
+        path
+        for path in include_dirs
+        if not any(path == excluded or is_relative_to(path, excluded) for excluded in excluded_dirs)
+    ]
+    roots = minimal_roots(include_dirs)
     names = unique_names(roots, args.platform)
     entrypoints = make_entrypoints(include_dirs, roots, names)
 
     shutil.rmtree(args.staging, ignore_errors=True)
     args.staging.mkdir(parents=True)
     for root in roots:
-        shutil.copytree(root, args.staging / names[root], symlinks=True)
+        shutil.copytree(
+            root,
+            args.staging / names[root],
+            symlinks=True,
+            ignore=copy_ignore_excluded(excluded_dirs),
+        )
     (args.staging / "entrypoints.txt").write_text("\n".join(entrypoints) + "\n")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)

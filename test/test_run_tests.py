@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -802,6 +803,118 @@ class ClangResourceDirectorySelectionTest(unittest.TestCase):
             "else:\n"
             "    raise SystemExit(2)\n",
         )
+
+
+class MacOSIncludePackageSelectionTest(unittest.TestCase):
+    def test_shell_packager_passes_the_pinned_llvm_and_openmp_roots(self) -> None:
+        source_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-macos-package-script-") as temp:
+            temp_root = Path(temp)
+            project = temp_root / "project"
+            scripts = project / "scripts"
+            scripts.mkdir(parents=True)
+            for name in ("package_includes.sh", "package_includes.py", "load_llvm_version.sh"):
+                shutil.copy2(source_root / "scripts" / name, scripts / name)
+            shutil.copy2(source_root / "llvm-version.env", project / "llvm-version.env")
+
+            llvm_prefix = temp_root / "homebrew-llvm"
+            bin_dir = llvm_prefix / "bin"
+            libcxx = llvm_prefix / "include" / "c++" / "v1"
+            resource = llvm_prefix / "lib" / "clang" / "18"
+            libomp = temp_root / "homebrew-libomp" / "include"
+            sdk_root = temp_root / "SDKs" / "MacOSX.sdk"
+            sdk_include = sdk_root / "usr" / "include"
+            sdk_libcxx = sdk_include / "c++" / "v1"
+            frameworks = sdk_root / "System" / "Library" / "Frameworks"
+            for directory in (
+                bin_dir,
+                libcxx,
+                resource / "include",
+                libomp,
+                sdk_include,
+                sdk_libcxx,
+                frameworks,
+            ):
+                directory.mkdir(parents=True, exist_ok=True)
+            (libcxx / "__config").write_text("/* pinned */\n", encoding="utf-8")
+            (resource / "include" / "stdarg.h").write_text(
+                "/* resource */\n", encoding="utf-8"
+            )
+            (libomp / "omp.h").write_text("/* OpenMP */\n", encoding="utf-8")
+            (sdk_include / "stdlib.h").write_text("/* SDK C */\n", encoding="utf-8")
+            (sdk_libcxx / "__config").write_text("/* SDK libc++ */\n", encoding="utf-8")
+            foundation_headers = frameworks / "Foundation.framework" / "Headers"
+            foundation_headers.mkdir(parents=True)
+            (foundation_headers / "Foundation.h").write_text(
+                "/* SDK framework */\n", encoding="utf-8"
+            )
+
+            clang = bin_dir / "clang"
+            clang.write_text(
+                "#!/usr/bin/env python3\n"
+                "import sys\n"
+                "if sys.argv[1:] != ['-print-resource-dir']:\n"
+                "    raise SystemExit(2)\n"
+                f"print({str(resource)!r})\n",
+                encoding="utf-8",
+            )
+            clang.chmod(0o755)
+            clangxx = bin_dir / "clang++"
+            search_dirs = [resource / "include", libcxx, sdk_include, sdk_libcxx, frameworks]
+            search_output = "\n".join(
+                ["#include <...> search starts here:"]
+                + [
+                    f" {path} (framework directory)" if path == frameworks else f" {path}"
+                    for path in search_dirs
+                ]
+                + ["End of search list."]
+            )
+            required_args = [
+                ["-isysroot", str(sdk_root)],
+                ["-nostdinc++"],
+                ["-isystem", str(libcxx)],
+                ["-isystem", str(libomp)],
+                [f"-resource-dir={resource}"],
+            ]
+            clangxx.write_text(
+                "#!/usr/bin/env python3\n"
+                "import sys\n"
+                f"required = {required_args!r}\n"
+                "args = sys.argv[1:]\n"
+                "if any(not any(args[i:i + len(flags)] == flags for i in range(len(args))) for flags in required):\n"
+                "    print('missing pinned macOS include flags: ' + repr(args), file=sys.stderr)\n"
+                "    raise SystemExit(9)\n"
+                f"sys.stderr.write({search_output!r} + '\\n')\n",
+                encoding="utf-8",
+            )
+            clangxx.chmod(0o755)
+            output = temp_root / "macos-includes.zip"
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "LLVM_PREFIX": str(llvm_prefix),
+                    "SDKROOT": str(sdk_root),
+                    "LIBOMP_PREFIX": str(libomp.parent),
+                }
+            )
+            result = subprocess.run(
+                ["bash", str(scripts / "package_includes.sh"), "macos", "arm64", str(output)],
+                capture_output=True,
+                text=True,
+                check=False,
+                env=environment,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+                entrypoints = archive.read("entrypoints.txt").decode().splitlines()
+            self.assertIn("libcxx/__config", names)
+            self.assertIn("sdk/stdlib.h", names)
+            self.assertIn("clang/stdarg.h", names)
+            self.assertIn("Frameworks/Foundation.framework/Headers/Foundation.h", names)
+            self.assertFalse(any(name.startswith("sdk/c++/v1/") for name in names))
+            self.assertNotIn("sdk/c++/v1", entrypoints)
+            self.assertLess(entrypoints.index("libcxx"), entrypoints.index("sdk"))
 
 
 @unittest.skipUnless(shutil.which("cmake"), "CMake is required for interpreter selection tests")
