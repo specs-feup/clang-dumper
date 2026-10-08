@@ -579,6 +579,54 @@ class PythonProtobufPinTest(unittest.TestCase):
         self.assertEqual(workflow.count("source protobuf-version.env"), 2)
 
 
+@unittest.skipUnless(shutil.which("cmake"), "CMake is required for archive tool selection tests")
+class MacOSArchiveToolSelectionTest(unittest.TestCase):
+    def test_macos_static_libraries_use_the_active_xcode_archiver_pair(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        workflow = (root / ".github" / "workflows" / "build.yml").read_text()
+        linux_job = workflow.split("  linux:", 1)[1].split("  macos:", 1)[0]
+        macos_job = workflow.split("  macos:", 1)[1].split("  windows:", 1)[0]
+
+        self.assertNotIn("APPLE_AR", linux_job)
+        self.assertIn('echo "APPLE_AR=$(xcrun --find ar)" >> "$GITHUB_ENV"', macos_job)
+        self.assertIn('echo "APPLE_RANLIB=$(xcrun --find ranlib)" >> "$GITHUB_ENV"', macos_job)
+        self.assertIn('-DCMAKE_AR="${APPLE_AR}"', macos_job)
+        self.assertIn('-DCMAKE_RANLIB="${APPLE_RANLIB}"', macos_job)
+        self.assertIn("grep -E '^CMAKE_(AR|RANLIB):' build/CMakeCache.txt", macos_job)
+
+    def test_cmake_uses_explicit_archive_tools_in_static_library_rules(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            source_dir = Path(tmp_dir)
+            (source_dir / "sample.cc").write_text("int sample() { return 0; }\n")
+            (source_dir / "CMakeLists.txt").write_text(
+                "cmake_minimum_required(VERSION 3.20)\n"
+                "project(ArchiveToolSelection LANGUAGES CXX)\n"
+                "add_library(sample STATIC sample.cc)\n"
+            )
+            build_dir = source_dir / "build"
+            result = subprocess.run(
+                [
+                    "cmake",
+                    "-G",
+                    "Unix Makefiles",
+                    "-S",
+                    str(source_dir),
+                    "-B",
+                    str(build_dir),
+                    "-DCMAKE_AR=/xcode/toolchain/usr/bin/ar",
+                    "-DCMAKE_RANLIB=/xcode/toolchain/usr/bin/ranlib",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            archive_rule = (build_dir / "CMakeFiles" / "sample.dir" / "link.txt").read_text()
+            self.assertIn("/xcode/toolchain/usr/bin/ar qc", archive_rule)
+            self.assertIn("/xcode/toolchain/usr/bin/ranlib", archive_rule)
+
+
 @unittest.skipUnless(shutil.which("cmake"), "CMake is required for interpreter selection tests")
 class PythonInterpreterSelectionTest(unittest.TestCase):
     def test_cmake_honors_the_explicit_python_interpreter(self) -> None:

@@ -268,6 +268,8 @@ jobs:
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
           echo "CLANG_RESOURCE_DIR=${CLANG_RESOURCE_DIR}" >> "$GITHUB_ENV"
           echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
+          echo "APPLE_AR=$(xcrun --find ar)" >> "$GITHUB_ENV"
+          echo "APPLE_RANLIB=$(xcrun --find ranlib)" >> "$GITHUB_ENV"
 
       - name: Configure
         run: |
@@ -275,12 +277,15 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
             -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
             -DCMAKE_CXX_COMPILER="${LLVM_PREFIX}/bin/clang++" \
+            -DCMAKE_AR="${APPLE_AR}" \
+            -DCMAKE_RANLIB="${APPLE_RANLIB}" \
             -DCMAKE_OSX_SYSROOT="${SDKROOT}" \
             -DLLVM_PREFIX="${LLVM_PREFIX}" \
             -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
             -DPython3_EXECUTABLE="${PROTOBUF_VENV}/bin/python" \
             -DSKIP_ENUM_GENERATION=ON
+          grep -E '^CMAKE_(AR|RANLIB):' build/CMakeCache.txt
 
       - name: Build
         run: cmake --build build --target tool plugin verify_protobuf --parallel
