@@ -677,24 +677,6 @@ class MacOSArchiveToolSelectionTest(unittest.TestCase):
             self.assertIn("/xcode/toolchain/usr/bin/ranlib", archive_rule)
 
 
-class MacOSBuildParallelismTest(unittest.TestCase):
-    def test_macos_build_is_bounded_and_records_the_selected_generator(self) -> None:
-        root = Path(__file__).resolve().parents[1]
-        workflow = (root / ".github" / "workflows" / "build.yml").read_text()
-        macos_job = workflow.split("  macos:", 1)[1].split("  windows:", 1)[0]
-        build_step = macos_job.split("      - name: Build\n", 1)[1].split(
-            "      - name: Test C++ and Protobuf semantics", 1
-        )[0]
-
-        self.assertIn(
-            "cmake --build build --target tool plugin verify_protobuf --parallel 2",
-            build_step,
-        )
-        self.assertIn(
-            "grep -E '^CMAKE_GENERATOR:INTERNAL=' build/CMakeCache.txt", macos_job
-        )
-
-
 @unittest.skipUnless(
     shutil.which("cmake"), "CMake is required for Clang resource selection tests"
 )

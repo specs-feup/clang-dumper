@@ -24,6 +24,26 @@
   "validation_scope": "Linux x86_64 results only; this record does not assert multi-platform RC publication success.",
   "resource_selection": "Metadata fixtures use the resource directory from the selected host Clang; CMake verifies compiler/resource LLVM major and stdarg.h presence. GNU C++ override regression confirms the selected LLVM resource path remains in use.",
   "stream_validation": "Every emitted .pb stream was checked by build/verify_protobuf; legacy text snapshots were not compared.",
+  "parallelism_probe": {
+    "observed_at_utc": "2026-10-08T09:27:56Z",
+    "workflow_revision": "e1ffdda5650220bd993c5b1ecf898ccb35580c47",
+    "host": "Linux x86_64",
+    "cmake_version": "4.4.4",
+    "generator_environment": "CMAKE_GENERATOR unset",
+    "generator": "Unix Makefiles",
+    "make_version": "GNU Make 4.4.1",
+    "bare_parallel": {
+      "command": "cmake --build <build-dir> --target probe --parallel --verbose",
+      "native_invocation": "gmake -f Makefile -j probe",
+      "job_limit": "unbounded"
+    },
+    "bounded_parallel": {
+      "command": "cmake --build <build-dir> --target probe --parallel 2 --verbose",
+      "native_invocation": "gmake -f Makefile -j2 probe",
+      "job_limit": 2
+    },
+    "scope": "Local CMake-to-Make argument translation only; this does not establish the cause of the RC4 macOS arm64 build duration."
+  },
   "commands": [
     "ctest --test-dir build --output-on-failure",
     "python3 test/test_run_tests.py",

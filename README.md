@@ -13,6 +13,12 @@ descriptor, tool, and plugin assets in the build directory.
 The target `tool` has been successfully built in Ubuntu and macOS. Windows
 executables are cross-compiled from Linux.
 
+The macOS CI build sets an explicit two-job CMake limit and records the
+selected generator. This avoids an unbounded `-j` when Unix Makefiles is
+selected. A local CMake-to-Make CLI probe is recorded in
+`test/protobuf-native-validation.json`; it does not establish the cause of any
+specific CI build duration.
+
 ## Stand-alone output
 
 The stand-alone tool requires `-o` for structured output. It writes the
