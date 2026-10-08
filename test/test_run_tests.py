@@ -813,7 +813,7 @@ class PackageIncludesIgnoreTest(unittest.TestCase):
         self,
     ) -> None:
         with tempfile.TemporaryDirectory(prefix="clang-dumper-ignore-") as temp:
-            root = Path(temp)
+            root = Path(temp).resolve()
             excluded = root / "excluded"
             excluded.mkdir()
             unresolvable = root / "cyclic-link"
