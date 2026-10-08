@@ -1,0 +1,318 @@
+{
+  "format": 1,
+  "validated_at_utc": "2026-10-08T13:32:31.170099+00:00",
+  "release_tag": "v18.1.8_6-rc8",
+  "release_revision": "e874debc111ec105fa5d1efa17ecd97300613178",
+  "release_url": "https://github.com/specs-feup/clang-dumper/releases/tag/v18.1.8_6-rc8",
+  "published_at": "2026-10-08T13:31:32Z",
+  "is_prerelease": true,
+  "workflow_url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771",
+  "workflow_conclusion": "success",
+  "jobs": [
+    {
+      "name": "Generate Enums",
+      "job_id": 113328462003,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328462003",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:18Z",
+      "completed_at": "2026-10-08T13:11:38Z",
+      "log_filename": "generate-enums.log",
+      "log_sha256": "7e297a03283af4bde8dc96cd2093ed6a10fe39a06b9eb80bc17e5b1224fa0b87",
+      "ctest_passed": [],
+      "harness_tests": [],
+      "corpus_results": []
+    },
+    {
+      "name": "Linux arm64",
+      "job_id": 113328624541,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328624541",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:43Z",
+      "completed_at": "2026-10-08T13:21:17Z",
+      "log_filename": "linux-arm64.log",
+      "log_sha256": "100706d1564149d277718a64d543375beda88af31b1d8e1c11c97ffcde3a612e",
+      "ctest_passed": [
+        6
+      ],
+      "harness_tests": [
+        44
+      ],
+      "corpus_results": [
+        {
+          "passed": 147,
+          "failed": 0,
+          "skipped": 10
+        },
+        {
+          "passed": 147,
+          "failed": 0,
+          "skipped": 10
+        }
+      ]
+    },
+    {
+      "name": "Windows arm64",
+      "job_id": 113328624575,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328624575",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:41Z",
+      "completed_at": "2026-10-08T13:16:01Z",
+      "log_filename": "windows-arm64.log",
+      "log_sha256": "5c59ceca842b37e1d01dfdc05698fc957ac39dde3fc0fff6477877e948d361bc",
+      "ctest_passed": [],
+      "harness_tests": [],
+      "corpus_results": []
+    },
+    {
+      "name": "macOS x64",
+      "job_id": 113328624605,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328624605",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:44Z",
+      "completed_at": "2026-10-08T13:30:44Z",
+      "log_filename": "macos-x64.log",
+      "log_sha256": "986642b5e02cf5dae40e87903369d735883775b132ba439fa692959f0f0b4685",
+      "ctest_passed": [
+        6
+      ],
+      "harness_tests": [
+        44
+      ],
+      "corpus_results": [
+        {
+          "passed": 152,
+          "failed": 0,
+          "skipped": 5
+        },
+        {
+          "passed": 152,
+          "failed": 0,
+          "skipped": 5
+        }
+      ]
+    },
+    {
+      "name": "Linux x64",
+      "job_id": 113328624671,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328624671",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:41Z",
+      "completed_at": "2026-10-08T13:18:13Z",
+      "log_filename": "linux-x64.log",
+      "log_sha256": "6406887edc8952b36e7dbf02a3f6703487662a813d2492ef9c51948e060898e8",
+      "ctest_passed": [
+        6
+      ],
+      "harness_tests": [
+        44
+      ],
+      "corpus_results": [
+        {
+          "passed": 152,
+          "failed": 0,
+          "skipped": 5
+        },
+        {
+          "passed": 152,
+          "failed": 0,
+          "skipped": 5
+        }
+      ]
+    },
+    {
+      "name": "macOS arm64",
+      "job_id": 113328624678,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328624678",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:48Z",
+      "completed_at": "2026-10-08T13:23:35Z",
+      "log_filename": "macos-arm64.log",
+      "log_sha256": "4bb159e44589df8317664be0c610c26ed916622baaaa76c8d7335ad707e924f3",
+      "ctest_passed": [
+        6
+      ],
+      "harness_tests": [
+        44
+      ],
+      "corpus_results": [
+        {
+          "passed": 147,
+          "failed": 0,
+          "skipped": 10
+        },
+        {
+          "passed": 147,
+          "failed": 0,
+          "skipped": 10
+        }
+      ]
+    },
+    {
+      "name": "Windows x86_64",
+      "job_id": 113328624849,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113328624849",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:11:41Z",
+      "completed_at": "2026-10-08T13:15:14Z",
+      "log_filename": "windows-x86_64.log",
+      "log_sha256": "04145fb46042f551bcc3c6f7789789e99b24ab0b3cf49b784d3d8c762ad9c3c6",
+      "ctest_passed": [],
+      "harness_tests": [],
+      "corpus_results": []
+    },
+    {
+      "name": "Windows test x86_64",
+      "job_id": 113330550705,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113330550705",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:16:04Z",
+      "completed_at": "2026-10-08T13:17:03Z",
+      "log_filename": "windows-test-x86_64.log",
+      "log_sha256": "bd6d7604b3773719117dd3a12be508d7c92c29757b60d20f9b5c5b96e3bc5792",
+      "ctest_passed": [],
+      "harness_tests": [],
+      "corpus_results": [
+        {
+          "passed": 145,
+          "failed": 0,
+          "skipped": 12
+        }
+      ]
+    },
+    {
+      "name": "Windows test arm64",
+      "job_id": 113330550808,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113330550808",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:16:05Z",
+      "completed_at": "2026-10-08T13:17:46Z",
+      "log_filename": "windows-test-arm64.log",
+      "log_sha256": "d3836c03b7d59a65ff50498191de47d8bf144ce9d932f73c6c4a906bb070a4c1",
+      "ctest_passed": [],
+      "harness_tests": [],
+      "corpus_results": [
+        {
+          "passed": 142,
+          "failed": 0,
+          "skipped": 15
+        }
+      ]
+    },
+    {
+      "name": "Release",
+      "job_id": 113337090525,
+      "url": "https://github.com/specs-feup/clang-dumper/actions/runs/37782386771/job/113337090525",
+      "conclusion": "success",
+      "started_at": "2026-10-08T13:30:48Z",
+      "completed_at": "2026-10-08T13:31:45Z",
+      "log_filename": "release.log",
+      "log_sha256": "75fec9a1889a1a5b12f58ac383da0354a890481b099281459067fc3cc2181ecf",
+      "ctest_passed": [],
+      "harness_tests": [],
+      "corpus_results": []
+    }
+  ],
+  "published_assets": [
+    {
+      "name": "clang-dumper-ast-wire.pb",
+      "size": 82563,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-ast-wire.pb"
+    },
+    {
+      "name": "clang-dumper-ast-wire.proto",
+      "size": 70490,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-ast-wire.proto"
+    },
+    {
+      "name": "clang-dumper-generated-enums.zip",
+      "size": 22817,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-generated-enums.zip"
+    },
+    {
+      "name": "clang-dumper-linux-arm64",
+      "size": 78752408,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-linux-arm64"
+    },
+    {
+      "name": "clang-dumper-linux-arm64-includes.zip",
+      "size": 45105011,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-linux-arm64-includes.zip"
+    },
+    {
+      "name": "clang-dumper-linux-arm64-plugin.so",
+      "size": 6569816,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-linux-arm64-plugin.so"
+    },
+    {
+      "name": "clang-dumper-linux-x64",
+      "size": 76646928,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-linux-x64"
+    },
+    {
+      "name": "clang-dumper-linux-x64-includes.zip",
+      "size": 45266020,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-linux-x64-includes.zip"
+    },
+    {
+      "name": "clang-dumper-linux-x64-plugin.so",
+      "size": 6270952,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-linux-x64-plugin.so"
+    },
+    {
+      "name": "clang-dumper-macos-arm64",
+      "size": 71344312,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-macos-arm64"
+    },
+    {
+      "name": "clang-dumper-macos-arm64-includes.zip",
+      "size": 94095681,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-macos-arm64-includes.zip"
+    },
+    {
+      "name": "clang-dumper-macos-arm64-plugin.so",
+      "size": 4893584,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-macos-arm64-plugin.so"
+    },
+    {
+      "name": "clang-dumper-macos-x64",
+      "size": 73858760,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-macos-x64"
+    },
+    {
+      "name": "clang-dumper-macos-x64-includes.zip",
+      "size": 82418466,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-macos-x64-includes.zip"
+    },
+    {
+      "name": "clang-dumper-macos-x64-plugin.so",
+      "size": 4910624,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-macos-x64-plugin.so"
+    },
+    {
+      "name": "clang-dumper-release-manifest.json",
+      "size": 8364,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-release-manifest.json"
+    },
+    {
+      "name": "clang-dumper-windows-arm64-includes.zip",
+      "size": 23450372,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-windows-arm64-includes.zip"
+    },
+    {
+      "name": "clang-dumper-windows-arm64.exe",
+      "size": 68554752,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-windows-arm64.exe"
+    },
+    {
+      "name": "clang-dumper-windows-x86_64-includes.zip",
+      "size": 23546156,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-windows-x86_64-includes.zip"
+    },
+    {
+      "name": "clang-dumper-windows-x86_64.exe",
+      "size": 74403328,
+      "url": "https://github.com/specs-feup/clang-dumper/releases/download/v18.1.8_6-rc8/clang-dumper-windows-x86_64.exe"
+    }
+  ],
+  "scope": "Actual RC8 build/test/package and prerelease publication evidence. Windows tests exercise standalone tools; Linux/macOS also run plugin tests. Unsupported-host corpus skips are retained per job. Consumer validation and performance evidence are captured separately. No stable publication or master merge."
+}

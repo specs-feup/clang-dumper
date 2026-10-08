@@ -95,6 +95,12 @@ Those snapshots remain available to the harness's explicit text comparison
 path and offline replay of older text captures. Binary captures are preserved
 as `.pb` files and are not accepted by the text replay script.
 
+`test/protobuf-rc8-validation-20261008.json` records the successful immutable
+RC8 workflow, prerelease publication, platform-specific corpus counts and raw
+job-log hashes. Linux and macOS checks cover the tool and plugin; Windows
+checks cover the standalone tool. Unsupported-host skips remain in the record.
+Consumer and performance validation are recorded separately in Clava.
+
 ## Dependencies
 
 **Python3 is required to build this project**
