@@ -286,9 +286,10 @@ jobs:
             -DPython3_EXECUTABLE="${PROTOBUF_VENV}/bin/python" \
             -DSKIP_ENUM_GENERATION=ON
           grep -E '^CMAKE_(AR|RANLIB):' build/CMakeCache.txt
+          grep -E '^CMAKE_GENERATOR:INTERNAL=' build/CMakeCache.txt
 
       - name: Build
-        run: cmake --build build --target tool plugin verify_protobuf --parallel
+        run: cmake --build build --target tool plugin verify_protobuf --parallel 2
 
       - name: Test C++ and Protobuf semantics
         run: ctest --test-dir build --output-on-failure
