@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 #include "ClangAst.h"
 #include "../Clava/HandlerCoverage.h"
-#include "../ClangAstDumper/ClangAstDumperConstants.h"
+#include "../Clava/ProtoStream.h"
 #include "ClangNodes.h"
 
 #include <clang/AST/AST.h>
@@ -23,6 +23,8 @@
 #include <exception>
 #include <fstream>
 #include <string>
+#include <stdexcept>
+#include <utility>
 
 using namespace clang;
 
@@ -61,19 +63,18 @@ std::string sanitizeErrorMessage(const char *message) {
     return sanitized;
 }
 
-[[noreturn]] void dumpFatalError(const Decl *D, const char *message) {
+void dumpFatalError(const Decl *D, const char *message) {
     llvm::errs() << "ERROR "
                  << (D == nullptr ? "<unknown>" : clava::getClassName(D)) << " "
                  << sanitizeErrorMessage(message) << "\n";
     llvm::errs().flush();
+    if (auto *stream = clava::proto::ProtoStream::active())
+        stream->flush();
     clava::reportHandlerCoverage();
     llvm::outs().flush();
-    exit(1);
 }
 
 } // namespace
-
-static constexpr const char *const PREFIX = "COUNTER";
 
 static llvm::cl::opt<bool> HandlerCoverageReport(
     "handler-coverage-report",
@@ -132,13 +133,20 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             FullSourceLoc fullLocation = Context->getFullLoc(D->getBeginLoc());
             if (fullLocation.isValid() && fullLocation.hasManager() &&
                 !fullLocation.isInSystemHeader()) {
-                llvm::errs() << TOP_LEVEL_NODES << "\n";
-                llvm::errs() << clava::getId(D, id) << "\n";
+                auto *stream = clava::proto::ProtoStream::active();
+                if (stream == nullptr)
+                    throw std::logic_error("protobuf AST stream is not active");
+                astwire::v1obj::TopLevelT record;
+                record.kind = astwire::v1obj::TopLevelKind::TOPLEVELKIND_DECL;
+                record.node = clava::proto::wireId(clava::getId(D, id));
+                stream->record(record);
             }
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
+            return false;
         } catch (...) {
             dumpFatalError(D, "unknown error");
+            return false;
         }
     }
 
@@ -147,8 +155,10 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             printRelationsVisitor.TraverseDecl(D);
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
+            return false;
         } catch (...) {
             dumpFatalError(D, "unknown error");
+            return false;
         }
     }
 
@@ -158,6 +168,8 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
 // For each source file provided to the tool, a new FrontendAction is created.
 std::unique_ptr<ASTConsumer>
 DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
+    clava::enableDenseIds();
+    clava::resetDenseIds();
     int counter = DumpResources::runId;
     
     // If runId is 0 (default value), use the global counter instead
@@ -169,13 +181,26 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
     // This must be done before AST processing begins
     CI.getPreprocessor().addPPCallbacks(
         std::make_unique<IncludeDumper>(CI.getSourceManager()));
+    if (auto *stream = clava::proto::ProtoStream::active()) {
+        stream->beginSourceFile();
+    }
+    CI.getPreprocessor().setTokenWatcher([](const Token &token) {
+        if (auto *stream = clava::proto::ProtoStream::active()) {
+            stream->observePreprocessorToken(token.getKind(),
+                                             token.getLocation());
+        }
+    });
 
     dumpCompilerInstanceData(CI, file);
 
     // Dump id->file data
-    llvm::errs() << ID_FILE_MAP << "\n";
-    llvm::errs() << counter << "\n";
-    llvm::errs() << file << "\n";
+    auto *stream = clava::proto::ProtoStream::active();
+    if (stream == nullptr)
+        throw std::logic_error("protobuf AST stream is not active");
+    astwire::v1obj::TranslationUnitFileT record;
+    record.id = counter;
+    record.path = file.str();
+    stream->record(record);
 
     ASTContext *Context = &CI.getASTContext();
 
@@ -185,45 +210,42 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
 
 void DumpAstAction::dumpCompilerInstanceData(CompilerInstance &CI,
                                              StringRef file) {
-    clava::dump(COMPILER_INSTANCE_DATA);
-
-    clava::dump(file.str());
-
-    clava::dump(CI.getInvocation().getLangOpts().LineComment);
-    // Derived from Std.isC89 in Clang 3.8
-    clava::dump(CI.getInvocation().getLangOpts().GNUInline);
-    clava::dump(CI.getInvocation().getLangOpts().C99);
-    clava::dump(CI.getInvocation().getLangOpts().C11);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus11);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus14);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus17);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus20);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus23);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus26);
-    clava::dump(CI.getInvocation().getLangOpts().Digraphs);
-    clava::dump(CI.getInvocation().getLangOpts().GNUMode);
-    clava::dump(CI.getInvocation().getLangOpts().HexFloats);
-
-    clava::dump(CI.getInvocation().getLangOpts().OpenCL);
-    clava::dump(CI.getInvocation().getLangOpts().OpenCLVersion);
-    clava::dump(CI.getInvocation().getLangOpts().NativeHalfType);
-
-    clava::dump(CI.getInvocation().getLangOpts().CUDA);
-
-    clava::dump(CI.getInvocation().getLangOpts().Bool);
-    clava::dump(CI.getInvocation().getLangOpts().Half);
-    clava::dump(CI.getInvocation().getLangOpts().WChar);
-
-    clava::dump(CI.getTarget().getCharWidth());
-    clava::dump(CI.getTarget().getFloatWidth());
-    clava::dump(CI.getTarget().getDoubleWidth());
-    clava::dump(CI.getTarget().getLongDoubleWidth());
-    clava::dump(CI.getTarget().getBoolWidth());
-    clava::dump(CI.getTarget().getShortWidth());
-    clava::dump(CI.getTarget().getIntWidth());
-    clava::dump(CI.getTarget().getLongWidth());
-    clava::dump(CI.getTarget().getLongLongWidth());
+    auto *stream = clava::proto::ProtoStream::active();
+    if (stream == nullptr)
+        throw std::logic_error("protobuf AST stream is not active");
+    astwire::v1obj::LanguageT record;
+    record.file = file.str();
+    record.line_comment = CI.getInvocation().getLangOpts().LineComment;
+    record.gnu_inline = CI.getInvocation().getLangOpts().GNUInline;
+    record.c99 = CI.getInvocation().getLangOpts().C99;
+    record.c11 = CI.getInvocation().getLangOpts().C11;
+    record.c_plus_plus = CI.getInvocation().getLangOpts().CPlusPlus;
+    record.c_plus_plus_11 = CI.getInvocation().getLangOpts().CPlusPlus11;
+    record.c_plus_plus_14 = CI.getInvocation().getLangOpts().CPlusPlus14;
+    record.c_plus_plus_17 = CI.getInvocation().getLangOpts().CPlusPlus17;
+    record.c_plus_plus_20 = CI.getInvocation().getLangOpts().CPlusPlus20;
+    record.c_plus_plus_23 = CI.getInvocation().getLangOpts().CPlusPlus23;
+    record.c_plus_plus_26 = CI.getInvocation().getLangOpts().CPlusPlus26;
+    record.has_digraphs = CI.getInvocation().getLangOpts().Digraphs;
+    record.is_gnu = CI.getInvocation().getLangOpts().GNUMode;
+    record.hex_floats = CI.getInvocation().getLangOpts().HexFloats;
+    record.open_cl = CI.getInvocation().getLangOpts().OpenCL;
+    record.open_cl_version = CI.getInvocation().getLangOpts().OpenCLVersion;
+    record.native_half_type = CI.getInvocation().getLangOpts().NativeHalfType;
+    record.cuda = CI.getInvocation().getLangOpts().CUDA;
+    record.has_bool = CI.getInvocation().getLangOpts().Bool;
+    record.has_half = CI.getInvocation().getLangOpts().Half;
+    record.has_wchar = CI.getInvocation().getLangOpts().WChar;
+    record.char_width = CI.getTarget().getCharWidth();
+    record.float_width = CI.getTarget().getFloatWidth();
+    record.double_width = CI.getTarget().getDoubleWidth();
+    record.long_double_width = CI.getTarget().getLongDoubleWidth();
+    record.bool_width = CI.getTarget().getBoolWidth();
+    record.short_width = CI.getTarget().getShortWidth();
+    record.int_width = CI.getTarget().getIntWidth();
+    record.long_width = CI.getTarget().getLongWidth();
+    record.long_long_width = CI.getTarget().getLongLongWidth();
+    stream->record(record);
 }
 
 /*** IncludeDumper ***/
@@ -238,13 +260,15 @@ void IncludeDumper::InclusionDirective(
     SrcMgr::CharacteristicKind FileType) {
 
     if (!sourceManager.isInSystemHeader(HashLoc)) {
-        // Includes information in stream
-        llvm::errs() << INCLUDES << "\n";
-        // Source
-        llvm::errs() << sourceManager.getFilename(HashLoc).str() << "\n";
-        llvm::errs() << FileName.str() << "\n";
-        llvm::errs() << sourceManager.getSpellingLineNumber(HashLoc) << "\n";
-        llvm::errs() << IsAngled << "\n";
+        auto *stream = clava::proto::ProtoStream::active();
+        if (stream == nullptr)
+            throw std::logic_error("protobuf AST stream is not active");
+        astwire::v1obj::IncludeT record;
+        record.source = sourceManager.getFilename(HashLoc).str();
+        record.name = FileName.str();
+        record.line = sourceManager.getSpellingLineNumber(HashLoc);
+        record.angled = IsAngled;
+        stream->record(record);
     }
 }
 
@@ -256,11 +280,14 @@ void IncludeDumper::PragmaDirective(SourceLocation Loc,
         return;
     }
 
-    // Pragma location
-    clava::dump(PRAGMA);
-    clava::dump(sourceManager.getFilename(Loc));
-    clava::dump(sourceManager.getSpellingLineNumber(Loc));
-    clava::dump(sourceManager.getSpellingColumnNumber(Loc));
+    auto *stream = clava::proto::ProtoStream::active();
+    if (stream == nullptr)
+        throw std::logic_error("protobuf AST stream is not active");
+    astwire::v1obj::PragmaT record;
+    record.source = sourceManager.getFilename(Loc).str();
+    record.line = sourceManager.getSpellingLineNumber(Loc);
+    record.column = sourceManager.getSpellingColumnNumber(Loc);
+    stream->record(record);
 }
 
 
@@ -283,14 +310,12 @@ void DumpResources::setSystemHeaderThreshold(int systemHeaderThreshold) {
 }
 
 void DumpResources::writeCounter(int id) {
-
-    // Output is processed with a line iterator, allows multiple-line processing
-
-    llvm::outs() << PREFIX << "\n";
-    llvm::outs() << id << "\n";
-
-    llvm::errs() << PREFIX << "\n";
-    llvm::errs() << id << "\n";
+    auto *stream = clava::proto::ProtoStream::active();
+    if (stream == nullptr)
+        throw std::logic_error("protobuf AST stream is not active");
+    astwire::v1obj::CounterT record;
+    record.value = id;
+    stream->record(record);
 }
 
 void DumpResources::init(int runId, int systemLevelThreshold) {

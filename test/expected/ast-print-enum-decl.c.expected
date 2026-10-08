@@ -33,12 +33,6 @@
 <Id-File Map>
 0
 <TEST_DIR>/ast-print-enum-decl.c
-<TEST_DIR>/ast-print-enum-decl.c:27:52: note: 'T' has been explicitly marked deprecated here
-   27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
-      |                                                    ^
-<TEST_DIR>/ast-print-enum-decl.c:27:52: note: 'T' has been explicitly marked deprecated here
-   27 |   enum __attribute__((aligned(16))) __attribute__((deprecated(""))) T {
-      |                                                    ^
 <Top Level Nodes>
 ADDR_001
 <Visited Children>
@@ -591,9 +585,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_001
 FunctionDecl
-<TEST_DIR>/ast-print-enum-decl.c:46:23: note: 'T' has been explicitly marked deprecated here
-   46 |   enum __attribute__((deprecated(""))) T { E0, E1 } *p1;
-      |                       ^
 <Top Level Nodes>
 ADDR_023
 <Top Level Types>
@@ -1136,15 +1127,6 @@ nullptr_decl
 <Id to Class Map>
 ADDR_023
 FunctionDecl
-<TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
-   54 |   enum __attribute__((deprecated(""))) T *p0;
-      |                       ^
-<TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
-   54 |   enum __attribute__((deprecated(""))) T *p0;
-      |                       ^
-<TEST_DIR>/ast-print-enum-decl.c:54:23: note: 'T' has been explicitly marked deprecated here
-   54 |   enum __attribute__((deprecated(""))) T *p0;
-      |                       ^
 <Top Level Nodes>
 ADDR_043
 <Top Level Types>
@@ -2867,4 +2849,3 @@ Struct
 <Id to Class Map>
 ADDR_092
 RecordDecl
-6 warnings generated.

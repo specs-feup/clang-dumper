@@ -4,6 +4,21 @@ include("${CMAKE_CURRENT_LIST_DIR}/cmake/read_llvm_version.cmake")
 clang_dumper_load_llvm_version("${CMAKE_CURRENT_LIST_DIR}/llvm-version.env")
 set(LLVM_WINDOWS_ROOT "" CACHE PATH "Windows-target LLVM/Clang SDK root for cross-compilation")
 
+function(clang_dumper_load_toolchain_pin key output)
+    file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/protobuf-version.env" _pin_lines
+        REGEX "^${key}=")
+    list(LENGTH _pin_lines _pin_count)
+    if(NOT _pin_count EQUAL 1)
+        message(FATAL_ERROR "Expected exactly one ${key} entry in protobuf-version.env")
+    endif()
+    string(REGEX REPLACE "^[^=]+=" "" _pin_value "${_pin_lines}")
+    set(${output} "${_pin_value}" PARENT_SCOPE)
+endfunction()
+
+clang_dumper_load_toolchain_pin(PROTOBUF_VERSION CLAVA_PROTOBUF_VERSION)
+clang_dumper_load_toolchain_pin(PROTOC_VERSION CLAVA_PROTOC_VERSION)
+clang_dumper_load_toolchain_pin(PROTOBUF_PYTHON_VERSION CLAVA_PROTOBUF_PYTHON_VERSION)
+
 # CMake chooses compilers during project(), so default compiler discovery must
 # happen before that call. Users and CI can still override this with CC/CXX or
 # -DCMAKE_*_COMPILER.
@@ -141,15 +156,267 @@ add_definitions(${CLANG_DEFINITIONS})
 
 # Find Python3 for enum generation
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" -c
+        "from google.protobuf import descriptor_pb2, message_factory; assert hasattr(message_factory, 'GetMessages')"
+    RESULT_VARIABLE PYTHON_PROTOBUF_RESULT
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(PYTHON_PROTOBUF_RESULT)
+    message(FATAL_ERROR
+        "Python protobuf runtime with descriptor_pb2 and message_factory.GetMessages is required (install protobuf ${CLAVA_PROTOBUF_PYTHON_VERSION} or a compatible package)")
+endif()
+
+# -----------------------------------------------------------------------------
+# Protobuf wire protocol
+# -----------------------------------------------------------------------------
+# The producer and the Java consumer intentionally share one pinned compiler
+# release.  A compatible system package is used when available; otherwise the
+# exact upstream source archive is built as a normal CMake dependency.  This
+# keeps generated C++ and the descriptor reproducible without embedding an
+# absolute developer path in the build or in the stream.
+find_package(Protobuf CONFIG QUIET)
+if(Protobuf_FOUND AND
+   NOT (Protobuf_VERSION VERSION_EQUAL CLAVA_PROTOBUF_VERSION OR
+        Protobuf_VERSION VERSION_EQUAL "4.28.3"))
+    message(STATUS "Ignoring incompatible Protobuf ${Protobuf_VERSION}; need ${CLAVA_PROTOBUF_VERSION}")
+    set(Protobuf_FOUND FALSE)
+endif()
+
+if(NOT Protobuf_FOUND)
+    include(FetchContent)
+    # The plugin is a shared module while the reproducible fallback uses
+    # static protobuf/Abseil archives.  Build those archives as PIC.
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+    set(ABSL_PROPAGATE_CXX_STD ON CACHE BOOL "" FORCE)
+    # The protobuf source archive intentionally leaves the Abseil submodule
+    # empty.  Fetch its pinned LTS snapshot separately so the fallback is
+    # self-contained and does not depend on an initialized git checkout.
+    FetchContent_Declare(
+        clava_abseil
+        URL https://github.com/abseil/abseil-cpp/archive/refs/tags/20230802.1.tar.gz
+        URL_HASH SHA256=987ce98f02eefbaf930d6e38ab16aa05737234d7afbab2d5c4ea7adbe50c28ed
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    FetchContent_MakeAvailable(clava_abseil)
+    if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        # Abseil 20230802.1 adds architecture selectors and their flags as
+        # separate CMake options. CMake de-duplicates repeated selectors,
+        # which can leave -msse4.1 unqualified in arm64 builds. Keep each
+        # selector+flag pair grouped so CMake preserves the universal-build
+        # arguments as written by Abseil.
+        include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/group_abseil_arch_copts.cmake")
+        clang_dumper_group_abseil_arch_copts(absl_random_internal_randen_hwaes)
+        clang_dumper_group_abseil_arch_copts(absl_random_internal_randen_hwaes_impl)
+    endif()
+    set(ABSL_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
+    set(protobuf_INSTALL OFF CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_CONFORMANCE OFF CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_PROTOBUF_BINARIES ON CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_PROTOC_BINARIES ON CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_LIBPROTOC ON CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    FetchContent_Declare(
+        clava_protobuf
+        URL https://github.com/protocolbuffers/protobuf/archive/refs/tags/v28.3.tar.gz
+        URL_HASH SHA256=7c3ebd7aaedd86fa5dc479a0fda803f602caaf78d8aff7ce83b89e1b8ae7442a
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    FetchContent_MakeAvailable(clava_protobuf)
+    if(WIN32 AND CMAKE_CROSSCOMPILING)
+        # Protobuf 28.3 enables descriptor-weak section sentinels for Clang's
+        # GNU mode, but lld's COFF linker does not synthesize ELF-style
+        # __start/__stop symbols. Our wire schema uses no weak descriptors.
+        set(PROTOBUF_SOURCE_DIR "${clava_protobuf_SOURCE_DIR}")
+        set(PROTOBUF_SOURCE_VERSION "${CLAVA_PROTOBUF_VERSION}")
+        include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch_protobuf_28_3_for_coff.cmake")
+
+        # Abseil's Win32 waiter needs the same Windows API level in every TU.
+        target_compile_definitions(absl_synchronization PRIVATE _WIN32_WINNT=0x0600)
+
+        # The pinned MinGW ARM64 SDK does not include winstring.h from
+        # windows.globalization.h, though the latter uses its declarations.
+        set(_cctz_time_zone_lookup
+            "${clava_abseil_SOURCE_DIR}/absl/time/internal/cctz/src/time_zone_lookup.cc")
+        if(NOT EXISTS "${_cctz_time_zone_lookup}")
+            message(FATAL_ERROR "Pinned Abseil CCTZ source was not found: ${_cctz_time_zone_lookup}")
+        endif()
+        include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/enable_mingw_cctz_winstring.cmake")
+        clang_dumper_enable_mingw_cctz_winstring("${_cctz_time_zone_lookup}" absl_time_zone)
+    endif()
+    # The plugin is a shared module.  Keep the reproducible static fallback
+    # usable from that module as well as from the executable.
+    if(TARGET libprotobuf)
+        set_property(TARGET libprotobuf PROPERTY POSITION_INDEPENDENT_CODE ON)
+    endif()
+    if(NOT TARGET protobuf::protoc OR NOT TARGET protobuf::libprotobuf)
+        message(FATAL_ERROR "Pinned Protobuf source did not provide protoc/libprotobuf targets")
+    endif()
+endif()
+
+if(NOT TARGET protobuf::protoc OR NOT TARGET protobuf::libprotobuf)
+    message(FATAL_ERROR "Protobuf ${CLAVA_PROTOBUF_VERSION} requires protobuf::protoc and protobuf::libprotobuf")
+endif()
+
+set(PROTO_SCHEMA "${CMAKE_SOURCE_DIR}/wire/clava_ast_wire.proto")
+set(PROTO_GEN_DIR "${CMAKE_BINARY_DIR}/generated/proto")
+set(PROTO_CPP "${PROTO_GEN_DIR}/clava_ast_wire.pb.cc")
+set(PROTO_HPP "${PROTO_GEN_DIR}/clava_ast_wire.pb.h")
+set(PROTO_DESCRIPTOR "${PROTO_GEN_DIR}/clava_ast_wire.pb")
+set(PROTO_SCHEMA_HASH "${PROTO_GEN_DIR}/ProtoSchemaHash.h")
+set(PROTO_HASH_SCRIPT "${CMAKE_SOURCE_DIR}/cmake/generate_proto_hash.py")
+set(PROTO_ADAPTER_SCRIPT "${CMAKE_SOURCE_DIR}/cmake/generate_proto_adapters.py")
+set(RELEASE_MANIFEST_SCRIPT "${CMAKE_SOURCE_DIR}/scripts/write_release_manifest.py")
+set(PROTO_ADAPTER_OBJECTS "${PROTO_GEN_DIR}/ProtoObjects.h")
+set(PROTO_ADAPTER_ENCODE "${PROTO_GEN_DIR}/ProtoEncode.h")
+set(PROTO_ADAPTER_STAMP "${PROTO_GEN_DIR}/adapters.verified")
+
+# A cross build cannot execute the target protoc.exe.  Use a reproducibly
+# pinned host protoc for code generation while linking the target protobuf
+# runtime into the Windows executable.  A caller can override the download
+# with CLAVA_HOST_PROTOC when building on another host.
+set(CLAVA_HOST_PROTOC "" CACHE FILEPATH "Host protoc used during cross compilation")
+if(CMAKE_CROSSCOMPILING)
+    if(CLAVA_HOST_PROTOC)
+        set(PROTOC_EXECUTABLE "${CLAVA_HOST_PROTOC}")
+        set(PROTOC_DEPENDENCY "${CLAVA_HOST_PROTOC}")
+    elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" AND
+           CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64)$")
+        set(PROTOC_HOST_ROOT "${CMAKE_BINARY_DIR}/host-protoc")
+        set(PROTOC_HOST_ARCHIVE "${CMAKE_BINARY_DIR}/host-protoc/protoc-28.3-linux-x86_64.zip")
+        set(PROTOC_HOST_EXECUTABLE "${PROTOC_HOST_ROOT}/bin/protoc")
+        if(NOT EXISTS "${PROTOC_HOST_ARCHIVE}")
+            file(DOWNLOAD
+                "https://github.com/protocolbuffers/protobuf/releases/download/v28.3/protoc-28.3-linux-x86_64.zip"
+                "${PROTOC_HOST_ARCHIVE}"
+                EXPECTED_HASH SHA256=0ad949f04a6a174da83cdcbdb36dee0a4925272a5b6d83f79a6bf9852076d53f)
+        endif()
+        add_custom_command(
+            OUTPUT "${PROTOC_HOST_EXECUTABLE}"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${PROTOC_HOST_ROOT}"
+            COMMAND ${CMAKE_COMMAND} -E tar xf "${PROTOC_HOST_ARCHIVE}"
+            WORKING_DIRECTORY "${PROTOC_HOST_ROOT}"
+            DEPENDS "${PROTOC_HOST_ARCHIVE}"
+            COMMENT "Extract pinned host protoc for cross compilation"
+            VERBATIM)
+        add_custom_target(clava_host_protoc DEPENDS "${PROTOC_HOST_EXECUTABLE}")
+        set(PROTOC_EXECUTABLE "${PROTOC_HOST_EXECUTABLE}")
+        set(PROTOC_DEPENDENCY clava_host_protoc)
+    else()
+        message(FATAL_ERROR "Cross compilation requires CLAVA_HOST_PROTOC or a Linux x86_64 host")
+    endif()
+else()
+    set(PROTOC_EXECUTABLE "$<TARGET_FILE:protobuf::protoc>")
+    set(PROTOC_DEPENDENCY protobuf::protoc)
+endif()
+
+file(GENERATE
+    OUTPUT "${CMAKE_BINARY_DIR}/protobuf-protoc-path.txt"
+    CONTENT "${PROTOC_EXECUTABLE}\n")
+
+add_custom_command(
+    OUTPUT "${PROTO_CPP}" "${PROTO_HPP}" "${PROTO_DESCRIPTOR}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROTO_GEN_DIR}"
+    COMMAND "${PROTOC_EXECUTABLE}"
+        --proto_path=${CMAKE_SOURCE_DIR}/wire
+        --cpp_out=${PROTO_GEN_DIR}
+        --descriptor_set_out=${PROTO_DESCRIPTOR}
+        ${PROTO_SCHEMA}
+    DEPENDS "${PROTO_SCHEMA}" "${PROTOC_DEPENDENCY}"
+    COMMENT "Generate C++ protobuf bindings and wire descriptor"
+    VERBATIM)
+
+add_custom_command(
+    OUTPUT "${PROTO_SCHEMA_HASH}"
+    COMMAND ${Python3_EXECUTABLE} "${PROTO_HASH_SCRIPT}"
+        --schema "${PROTO_SCHEMA}" --output "${PROTO_SCHEMA_HASH}"
+    DEPENDS "${PROTO_SCHEMA}" "${PROTO_HASH_SCRIPT}"
+    COMMENT "Embed protobuf schema hash"
+    VERBATIM)
+
+add_custom_target(proto_artifact_verify
+    COMMAND ${Python3_EXECUTABLE} "${RELEASE_MANIFEST_SCRIPT}"
+        --verify-protocol-artifacts
+        --schema "${PROTO_SCHEMA}"
+        --descriptor "${PROTO_DESCRIPTOR}"
+        --protoc "${PROTOC_EXECUTABLE}"
+    DEPENDS "${PROTO_SCHEMA}" "${PROTO_DESCRIPTOR}" "${RELEASE_MANIFEST_SCRIPT}"
+            ${PROTOC_DEPENDENCY}
+    COMMENT "Verify schema, descriptor, and pinned native protoc compatibility on every build"
+    VERBATIM)
+
+add_custom_target(ast_wire_proto
+    DEPENDS "${PROTO_CPP}" "${PROTO_HPP}" "${PROTO_DESCRIPTOR}" "${PROTO_SCHEMA_HASH}")
+add_dependencies(ast_wire_proto proto_artifact_verify)
+
+# ProtoObjects.h and ProtoEncode.h are intentionally checked in beside the
+# native emitters, but are generated from protoc's descriptor rather than from
+# a second schema.  A normal build regenerates them in the build tree and
+# compares the result, so a schema edit cannot silently leave a stale adapter.
+add_custom_command(
+    OUTPUT "${PROTO_ADAPTER_OBJECTS}" "${PROTO_ADAPTER_ENCODE}"
+    COMMAND ${Python3_EXECUTABLE} "${PROTO_ADAPTER_SCRIPT}"
+        --descriptor "${PROTO_DESCRIPTOR}"
+        --objects "${PROTO_ADAPTER_OBJECTS}"
+        --encode "${PROTO_ADAPTER_ENCODE}"
+        --native-source "${CMAKE_SOURCE_DIR}/src/Clava/ProtoStream.cpp"
+    DEPENDS "${PROTO_DESCRIPTOR}" "${PROTO_ADAPTER_SCRIPT}"
+            "${CMAKE_SOURCE_DIR}/src/Clava/ProtoStream.cpp"
+    COMMENT "Generate native protobuf adapter headers from descriptor"
+    VERBATIM)
+
+add_custom_command(
+    OUTPUT "${PROTO_ADAPTER_STAMP}"
+    COMMAND ${CMAKE_COMMAND} -E compare_files
+        "${PROTO_ADAPTER_OBJECTS}" "${CMAKE_SOURCE_DIR}/src/Clava/ProtoObjects.h"
+    COMMAND ${CMAKE_COMMAND} -E compare_files
+        "${PROTO_ADAPTER_ENCODE}" "${CMAKE_SOURCE_DIR}/src/Clava/ProtoEncode.h"
+    COMMAND ${CMAKE_COMMAND} -E touch "${PROTO_ADAPTER_STAMP}"
+    DEPENDS "${PROTO_ADAPTER_OBJECTS}" "${PROTO_ADAPTER_ENCODE}"
+            "${CMAKE_SOURCE_DIR}/src/Clava/ProtoObjects.h"
+            "${CMAKE_SOURCE_DIR}/src/Clava/ProtoEncode.h"
+    COMMENT "Verify checked-in native protobuf adapters match descriptor"
+    VERBATIM)
+
+add_custom_target(proto_adapter_verify DEPENDS "${PROTO_ADAPTER_STAMP}")
+
+add_custom_target(proto_adapter_regenerate
+    COMMAND ${Python3_EXECUTABLE} "${PROTO_ADAPTER_SCRIPT}"
+        --descriptor "${PROTO_DESCRIPTOR}"
+        --objects "${CMAKE_SOURCE_DIR}/src/Clava/ProtoObjects.h"
+        --encode "${CMAKE_SOURCE_DIR}/src/Clava/ProtoEncode.h"
+        --native-source "${CMAKE_SOURCE_DIR}/src/Clava/ProtoStream.cpp"
+    DEPENDS "${PROTO_DESCRIPTOR}" "${PROTO_ADAPTER_SCRIPT}"
+    COMMENT "Regenerate checked-in native Protobuf adapter headers"
+    VERBATIM)
+add_dependencies(proto_adapter_regenerate proto_artifact_verify)
+
+enable_testing()
+add_executable(verify_protobuf test/proto_wire_test.cpp "${PROTO_CPP}")
+target_compile_features(verify_protobuf PRIVATE cxx_std_20)
+target_include_directories(verify_protobuf PRIVATE "${PROTO_GEN_DIR}")
+target_link_libraries(verify_protobuf PRIVATE protobuf::libprotobuf)
+add_dependencies(verify_protobuf ast_wire_proto)
+add_test(NAME proto_wire_test COMMAND verify_protobuf)
 
 option(SKIP_ENUM_GENERATION "Skip Python enum generation (use pre-existing files)" OFF)
 set(CLANG_ENUMS_HOST_CLANG "" CACHE FILEPATH "Host clang++ executable for enum preprocessing")
 if(NOT CLANG_ENUMS_HOST_CLANG)
-    find_program(CLANG_ENUMS_HOST_CLANG_AUTO NAMES clang++-${CLANG_VERSION} clang++)
+    find_program(CLANG_ENUMS_HOST_CLANG_AUTO
+        NAMES clang++-${CLANG_VERSION} clang++
+        HINTS "${LLVM_TOOLS_BINARY_DIR}"
+        NO_DEFAULT_PATH)
+    if(NOT CLANG_ENUMS_HOST_CLANG_AUTO)
+        find_program(CLANG_ENUMS_HOST_CLANG_AUTO
+            NAMES clang++-${CLANG_VERSION} clang++)
+    endif()
     if(CLANG_ENUMS_HOST_CLANG_AUTO)
         set(CLANG_ENUMS_HOST_CLANG "${CLANG_ENUMS_HOST_CLANG_AUTO}" CACHE FILEPATH "Host clang++ executable for enum preprocessing" FORCE)
     endif()
 endif()
+include("${CMAKE_SOURCE_DIR}/cmake/query_clang_resource_dir.cmake")
+clang_dumper_query_clang_resource_dir(
+    "${CLANG_ENUMS_HOST_CLANG}" "${CLANG_VERSION}" PROTO_METADATA_RESOURCE_DIR)
 set(CLANG_ENUMS_HOST_CLANG_ARG "")
 if(CLANG_ENUMS_HOST_CLANG)
     set(CLANG_ENUMS_HOST_CLANG_ARG --clang-executable "${CLANG_ENUMS_HOST_CLANG}")
@@ -218,11 +485,13 @@ set(SOURCE_FILES
     src/Clang/ClangNodes.cpp
     src/ClangEnums/ClangEnums.cpp
     src/Clava/HandlerCoverage.cpp
-    src/ClavaDataDumper/ClavaDataDumper.cpp
-    src/ClavaDataDumper/ClavaDataDumperAttrs.cpp
-    src/ClavaDataDumper/ClavaDataDumperDecls.cpp
-    src/ClavaDataDumper/ClavaDataDumperStmts.cpp
-    src/ClavaDataDumper/ClavaDataDumperTypes.cpp
+    src/Clava/ProtoAttributes.cpp
+    src/Clava/ProtoCommon.cpp
+    src/Clava/ProtoDecls.cpp
+    src/Clava/ProtoExpressions.cpp
+    src/Clava/ProtoStatements.cpp
+    src/Clava/ProtoStream.cpp
+    src/Clava/ProtoTypes.cpp
     src/ChildrenVisitor/ChildrenVisitorAttrs.cpp
     src/ChildrenVisitor/ChildrenVisitorDecls.cpp
     src/ChildrenVisitor/ChildrenVisitorExtras.cpp
@@ -234,18 +503,37 @@ set(SOURCE_FILES
     src/ClangAstDumper/ClangAstDumperExprs.cpp
     src/ClangAstDumper/ClangAstDumperStmts.cpp
     src/ClangAstDumper/ClangAstDumperTypes.cpp
+    "${PROTO_CPP}"
     "${ENUMS_AGGREGATED_SRC}"
     )
 
 if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
     add_library(plugin MODULE ${SOURCE_FILES} src/plugin.cpp)
     target_compile_features(plugin PRIVATE cxx_std_20)
-    add_dependencies(plugin clang_enums)
+    target_include_directories(plugin PRIVATE "${PROTO_GEN_DIR}")
+    target_link_libraries(plugin PRIVATE protobuf::libprotobuf)
+    add_dependencies(plugin clang_enums ast_wire_proto proto_adapter_verify)
 endif()
 
-add_executable(tool ${SOURCE_FILES} src/tool.cpp)
+add_executable(tool ${SOURCE_FILES} src/tool.cpp src/Clava/ZstdStream.cpp)
 target_compile_features(tool PRIVATE cxx_std_20)
-add_dependencies(tool clang_enums)
+target_include_directories(tool PRIVATE "${PROTO_GEN_DIR}")
+target_link_libraries(tool PRIVATE protobuf::libprotobuf)
+add_dependencies(tool clang_enums ast_wire_proto proto_adapter_verify)
+
+find_path(CLANG_DUMPER_ZSTD_INCLUDE_DIR NAMES zstd.h
+    HINTS "$ENV{ZSTD_ROOT}"
+    PATH_SUFFIXES include
+    REQUIRED)
+target_include_directories(tool PRIVATE "${CLANG_DUMPER_ZSTD_INCLUDE_DIR}")
+
+if(NOT (WIN32 AND CMAKE_CROSSCOMPILING))
+    find_library(CLANG_DUMPER_ZSTD_LIBRARY NAMES zstd
+        HINTS "$ENV{ZSTD_ROOT}"
+        PATH_SUFFIXES lib
+        REQUIRED)
+    target_link_libraries(tool PRIVATE "${CLANG_DUMPER_ZSTD_LIBRARY}")
+endif()
 
 target_compile_options(tool PRIVATE -ffunction-sections -fdata-sections)
 
@@ -361,7 +649,10 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
         ${CLANG_DUMPER_WINDOWS_RUNTIME_LIBS}
         -Wl,--end-group
     )
+    # Windows CI runs this verifier without the MSYS runtime DLLs installed.
+    target_link_libraries(verify_protobuf PRIVATE ${CLANG_DUMPER_WINDOWS_RUNTIME_LIBS})
     target_link_options(tool PRIVATE -static -Wl,--gc-sections -Wl,--stack,16777216)
+    target_link_options(verify_protobuf PRIVATE -static -Wl,--gc-sections -Wl,--stack,16777216)
 
 else()
     message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
@@ -459,6 +750,106 @@ else()
         endif()
     endif()
 endif()  # end tool linking
+
+if(WIN32)
+    set(CLAVA_LOCAL_PLATFORM "windows")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+        set(CLAVA_LOCAL_ARCH "arm64")
+    else()
+        set(CLAVA_LOCAL_ARCH "x86_64")
+    endif()
+elseif(APPLE)
+    set(CLAVA_LOCAL_PLATFORM "macos")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+        set(CLAVA_LOCAL_ARCH "arm64")
+    else()
+        set(CLAVA_LOCAL_ARCH "x64")
+    endif()
+else()
+    set(CLAVA_LOCAL_PLATFORM "linux")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+        set(CLAVA_LOCAL_ARCH "arm64")
+    else()
+        set(CLAVA_LOCAL_ARCH "x64")
+    endif()
+endif()
+
+set(LOCAL_MANIFEST_ARGS
+    --local-output-dir "${CMAKE_BINARY_DIR}"
+    --tool "$<TARGET_FILE:tool>"
+    --descriptor "${PROTO_DESCRIPTOR}"
+    --llvm-major "${CLANG_VERSION}"
+    --platform "${CLAVA_LOCAL_PLATFORM}"
+    --arch "${CLAVA_LOCAL_ARCH}"
+    --protoc "${PROTOC_EXECUTABLE}")
+set(LOCAL_MANIFEST_DEPENDS tool "${PROTO_DESCRIPTOR}" "${RELEASE_MANIFEST_SCRIPT}")
+if(TARGET plugin)
+    list(APPEND LOCAL_MANIFEST_ARGS --plugin "$<TARGET_FILE:plugin>")
+    list(APPEND LOCAL_MANIFEST_DEPENDS plugin)
+endif()
+add_custom_target(local_protobuf_manifest ALL
+    COMMAND ${Python3_EXECUTABLE} "${RELEASE_MANIFEST_SCRIPT}" ${LOCAL_MANIFEST_ARGS}
+    DEPENDS ${LOCAL_MANIFEST_DEPENDS}
+    COMMENT "Verify local Protobuf artifacts and refresh the build manifest"
+    VERBATIM)
+
+add_test(NAME standalone_tool_requires_output
+    COMMAND $<TARGET_FILE:tool> -c ${CMAKE_SOURCE_DIR}/test/inputs/simple_function.cpp --)
+set_tests_properties(standalone_tool_requires_output PROPERTIES
+    WILL_FAIL TRUE)
+
+add_test(NAME standalone_tool_syntax_check
+    COMMAND $<TARGET_FILE:tool> -syntax-check-only -c
+            ${CMAKE_SOURCE_DIR}/test/inputs/simple_function.cpp --)
+
+set(PROTO_MANIFEST_TEST_ARGS
+    --tool "$<TARGET_FILE:tool>"
+    --descriptor "${PROTO_DESCRIPTOR}"
+    --protoc "${PROTOC_EXECUTABLE}"
+    --platform "${CLAVA_LOCAL_PLATFORM}"
+    --arch "${CLAVA_LOCAL_ARCH}"
+    --llvm-major "${CLANG_VERSION}")
+if(TARGET plugin)
+    list(APPEND PROTO_MANIFEST_TEST_ARGS --plugin "$<TARGET_FILE:plugin>")
+endif()
+add_test(NAME proto_release_manifest_test
+    COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_release_manifest.py"
+            ${PROTO_MANIFEST_TEST_ARGS})
+
+set(PROTO_METADATA_LIBCXX_ARGS)
+if(APPLE)
+    set(PROTO_METADATA_LIBCXX_INCLUDE_DIR "${LLVM_PREFIX}/include/c++/v1")
+    if(NOT EXISTS "${PROTO_METADATA_LIBCXX_INCLUDE_DIR}/__config")
+        message(FATAL_ERROR
+            "LLVM libc++ headers are missing from ${PROTO_METADATA_LIBCXX_INCLUDE_DIR}")
+    endif()
+    list(APPEND PROTO_METADATA_LIBCXX_ARGS
+        --libcxx-include-dir "${PROTO_METADATA_LIBCXX_INCLUDE_DIR}")
+    if(DEFINED ENV{LIBOMP_PREFIX} AND EXISTS "$ENV{LIBOMP_PREFIX}/include/omp.h")
+        list(APPEND PROTO_METADATA_LIBCXX_ARGS
+            --libomp-include-dir "$ENV{LIBOMP_PREFIX}/include")
+    endif()
+    if(CMAKE_OSX_SYSROOT)
+        list(APPEND PROTO_METADATA_LIBCXX_ARGS --sysroot "${CMAKE_OSX_SYSROOT}")
+    endif()
+endif()
+
+add_test(NAME proto_metadata_emission_test
+    COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_metadata.py"
+        --tool "$<TARGET_FILE:tool>"
+        --resource-dir "${PROTO_METADATA_RESOURCE_DIR}"
+        --llvm-major "${CLANG_VERSION}"
+        ${PROTO_METADATA_LIBCXX_ARGS}
+        --verifier "$<TARGET_FILE:verify_protobuf>"
+        --descriptor "${PROTO_DESCRIPTOR}"
+        --schema "${PROTO_SCHEMA}")
+if(TARGET plugin)
+    add_test(NAME proto_plugin_stream_test
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_plugin_stream.py"
+            --plugin "$<TARGET_FILE:plugin>"
+            --clang "${CLANG_ENUMS_HOST_CLANG}"
+            --verifier "$<TARGET_FILE:verify_protobuf>")
+endif()
 
 if(TARGET plugin)
     target_link_libraries(plugin PRIVATE clang-cpp LLVM)

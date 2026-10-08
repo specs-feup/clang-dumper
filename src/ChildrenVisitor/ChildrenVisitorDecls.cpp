@@ -29,7 +29,7 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(ClassTemplateSpecializationDecl,
                             VisitClassTemplateSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(ClassTemplatePartialSpecializationDecl,
-                            VisitClassTemplateSpecializationDeclChildren),
+                            VisitClassTemplatePartialSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(FunctionDecl, VisitFunctionDeclChildren),
         DECL_CHILDREN_ENTRY(VarDecl, VisitVarDeclChildren),
         DECL_CHILDREN_ENTRY(ParmVarDecl, VisitVarDeclChildren),
@@ -162,6 +162,17 @@ void ClangAstDumper::VisitFunctionDeclChildren(
         templateSpecializationArgs != nullptr) {
         for (auto const &templateArg : templateSpecializationArgs->asArray()) {
             VisitTemplateArgument(templateArg);
+      }
+    }
+
+    // Function template parameter lists are metadata references rather than
+    // AST children. Visit them so their declaration records are emitted.
+    for (unsigned listIndex = 0; listIndex < D->getNumTemplateParameterLists();
+         ++listIndex) {
+        if (const auto *parameters = D->getTemplateParameterList(listIndex)) {
+            for (const auto *parameter : *parameters) {
+                VisitDeclTop(parameter);
+            }
         }
     }
 
@@ -274,6 +285,17 @@ void ClangAstDumper::VisitClassTemplateSpecializationDeclChildren(
     }
 }
 
+void ClangAstDumper::VisitClassTemplatePartialSpecializationDeclChildren(
+    const ClassTemplatePartialSpecializationDecl *D,
+    std::vector<std::string> &children) {
+    VisitClassTemplateSpecializationDeclChildren(D, children);
+    if (auto *parameters = D->getTemplateParameters()) {
+        for (const auto *parameter : *parameters) {
+            VisitDeclTop(parameter);
+        }
+    }
+}
+
 void ClangAstDumper::VisitVarDeclChildren(const VarDecl *D,
                                           std::vector<std::string> &children) {
     // Hierarchy
@@ -367,9 +389,15 @@ void ClangAstDumper::VisitFriendDeclChildren(
     VisitDeclChildren(D, children);
 
     if (D->getFriendDecl() != nullptr) {
-        addChild(D->getFriendDecl(), children);
+        // FriendDeclData carries a typed reference to this target even when
+        // the ordinary system-header depth guard would suppress the edge.
+        // Emit the referenced node so every serialized ID remains defined.
+        VisitDeclTop(D->getFriendDecl());
+        children.push_back(clava::getId(D->getFriendDecl(), id));
     } else if (D->getFriendType() != nullptr) {
-        addChild(D->getFriendType()->getType(), children);
+        const auto friendType = D->getFriendType()->getType();
+        VisitTypeTop(friendType);
+        children.push_back(clava::getId(friendType, id));
     } else {
         // Add a null node
         addChild((const Decl *)nullptr, children);

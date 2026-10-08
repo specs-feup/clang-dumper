@@ -13,8 +13,6 @@
 #include "clang/AST/TemplateName.h"
 #include "clang/AST/Type.h"
 
-#include <functional>
-#include <sstream>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -61,26 +59,6 @@ const std::string getAttrKind(const Attr *A);
 const std::string getClassName(const Attr *A);
 
 /**
- * Dumps the source range.
- *
- * @param Context
- * @param startLoc
- * @param endLoc
- */
-void dumpSourceRange(ASTContext *Context, SourceLocation startLoc,
-                     SourceLocation endLoc);
-
-/**
- * Dumps info related to the source code (original source location, if it is a
- * macro, spelling source location...)
- * @param Context
- * @param startLoc
- * @param endLoc
- */
-void dumpSourceInfo(ASTContext *Context, SourceLocation startLoc,
-                    SourceLocation endLoc);
-
-/**
  * Builds a string id.
  *
  * @param addr
@@ -102,36 +80,9 @@ const std::string getId(const Attr *addr, int id);
  * @return
  */
 const std::string getId(const void *addr, int id);
-
-/**
- *
- * @param Context
- * @param sourceRange
- * @return the source code corresponding to the given sourceRange
- */
-const std::string getSource(ASTContext *Context, SourceRange sourceRange);
-
-// Value dumpers
-void dump(bool boolean);
-void dump(int integer);
-void dump(double integer);
-void dump(unsigned int integer);
-void dumpSize(size_t integer);
-void dump(const std::string &string);
-void dump(const llvm::StringRef string);
-void dump(const char string[]);
-void dump(const std::vector<std::string> &strings);
-void dump(const std::vector<Attr *> &attributes, const int id);
-void dump(const QualType &type, int id);
-void dump(const Qualifiers &qualifiers, ASTContext *Context);
-void dump(NestedNameSpecifier *qualifier, int id);
-void dump(NestedNameSpecifier *qualifier, ASTContext *Context);
-void dump(const TemplateArgument &templateArg, int id, ASTContext *Context);
-void dump(const TemplateName &templateName, int id, ASTContext *Context);
-void dump(const CXXBaseSpecifier &base, int id);
-void dump(std::function<void(llvm::raw_string_ostream &)> dumper);
-void dump(const clang::DesignatedInitExpr::Designator *designator);
-void dump(const ExplicitSpecifier &specifier, int id);
+void enableDenseIds();
+void resetDenseIds();
+size_t denseIdCount();
 
 void throwNotImplemented(const std::string &source,
                          const std::string &caseNotImplemented,
@@ -140,10 +91,6 @@ void throwNotImplemented(const std::string &source,
 void throwNotImplemented(const std::string &source,
                          const std::string &caseNotImplemented,
                          ASTContext *Context, SourceRange range);
-
-template <typename E> void dump(const std::string *enumValues, E e) {
-    dump(enumValues[static_cast<std::underlying_type_t<E>>(e)]);
-}
 
 bool isSystemHeader(const Stmt *S, ASTContext *context);
 bool isSystemHeader(const Decl *S, ASTContext *context);

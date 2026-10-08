@@ -93,7 +93,10 @@ jobs:
             zlib1g-dev \
             libedit-dev \
             libzstd-dev \
-            libxml2-dev
+            zstd \
+            ccache \
+            libxml2-dev \
+            python3-protobuf
           if [ -n "${{ matrix.accelerator-packages }}" ]; then
             sudo apt-get install -y --no-install-recommends ${{ matrix.accelerator-packages }}
           fi
@@ -107,13 +110,18 @@ jobs:
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
-        run: cmake --build build --target tool plugin --parallel
+        run: cmake --build build --target tool plugin verify_protobuf --parallel
+
+      - name: Test C++ and Protobuf semantics
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Test output streams
+        run: python3 test/test_run_tests.py
 
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
-            --baseline-platform linux-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode tool --path build/tool --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
@@ -121,8 +129,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} ${{ matrix.feature-args }} \
-            --baseline-platform linux-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
 
@@ -157,6 +164,11 @@ jobs:
           mkdir -p dist
           cp build/tool dist/clang-dumper-linux-${{ matrix.arch }}
           cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
+          if [ "${{ matrix.arch }}" = "x64" ]; then
+            cp wire/clava_ast_wire.proto dist/clang-dumper-ast-wire.proto
+            cp build/generated/proto/clava_ast_wire.pb dist/clang-dumper-ast-wire.pb
+            cp "$(cat build/protobuf-protoc-path.txt)" dist/clang-dumper-protoc-28.3
+          fi
 
       - name: Package Linux includes
         run: scripts/package_includes.sh linux ${{ matrix.arch }} dist/${{ matrix.include-package }}
@@ -197,6 +209,18 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+      - name: Upload protocol schema
+        if: matrix.arch == 'x64'
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-x64-protocol
+          path: |
+            dist/clang-dumper-ast-wire.proto
+            dist/clang-dumper-ast-wire.pb
+            dist/clang-dumper-protoc-28.3
+          retention-days: 1
+          if-no-files-found: error
+
   macos:
     name: macOS ${{ matrix.arch }}
     needs: generate-enums
@@ -227,15 +251,25 @@ jobs:
 
       - name: Install LLVM
         run: |
-          brew install llvm@${LLVM_VERSION} libomp zstd
+          brew install llvm@${LLVM_VERSION} libomp zstd ccache
+          source protobuf-version.env
+          PROTOBUF_VENV="${RUNNER_TEMP}/protobuf-python-venv"
+          python3 -m venv "${PROTOBUF_VENV}"
+          "${PROTOBUF_VENV}/bin/python" -m pip install --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          echo "${PROTOBUF_VENV}/bin" >> "$GITHUB_PATH"
+          echo "PROTOBUF_VENV=${PROTOBUF_VENV}" >> "$GITHUB_ENV"
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
+          ZSTD_ROOT="$(brew --prefix zstd)"
           CLANG_RESOURCE_DIR="$("${LLVM_PREFIX}/bin/clang" -print-resource-dir)"
           echo "LLVM_PREFIX=${LLVM_PREFIX}" >> "$GITHUB_ENV"
           echo "LIBOMP_PREFIX=${LIBOMP_PREFIX}" >> "$GITHUB_ENV"
+          echo "ZSTD_ROOT=${ZSTD_ROOT}" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
           echo "CLANG_RESOURCE_DIR=${CLANG_RESOURCE_DIR}" >> "$GITHUB_ENV"
           echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
+          echo "APPLE_AR=$(xcrun --find ar)" >> "$GITHUB_ENV"
+          echo "APPLE_RANLIB=$(xcrun --find ranlib)" >> "$GITHUB_ENV"
 
       - name: Configure
         run: |
@@ -243,20 +277,30 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
             -DCMAKE_C_COMPILER="${LLVM_PREFIX}/bin/clang" \
             -DCMAKE_CXX_COMPILER="${LLVM_PREFIX}/bin/clang++" \
+            -DCMAKE_AR="${APPLE_AR}" \
+            -DCMAKE_RANLIB="${APPLE_RANLIB}" \
             -DCMAKE_OSX_SYSROOT="${SDKROOT}" \
             -DLLVM_PREFIX="${LLVM_PREFIX}" \
             -DLLVM_DIR="${LLVM_PREFIX}/lib/cmake/llvm" \
             -DClang_DIR="${LLVM_PREFIX}/lib/cmake/clang" \
+            -DPython3_EXECUTABLE="${PROTOBUF_VENV}/bin/python" \
             -DSKIP_ENUM_GENERATION=ON
+          grep -E '^CMAKE_(AR|RANLIB):' build/CMakeCache.txt
+          grep -E '^CMAKE_GENERATOR:INTERNAL=' build/CMakeCache.txt
 
       - name: Build
-        run: cmake --build build --target tool plugin --parallel
+        run: cmake --build build --target tool plugin verify_protobuf --parallel 2
+
+      - name: Test C++ and Protobuf semantics
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Test output streams
+        run: python3 test/test_run_tests.py
 
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
-            --baseline-platform macos-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode tool --path build/tool --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
@@ -272,8 +316,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.feature-args }} \
-            --baseline-platform macos-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
@@ -309,9 +352,36 @@ jobs:
           import sys, zipfile
           with zipfile.ZipFile(sys.argv[1]) as archive:
               names = archive.namelist()
+              entrypoints = archive.read("entrypoints.txt").decode().splitlines()
           if not any(name.endswith("/omp.h") or name == "omp.h" for name in names):
               raise SystemExit("include package is missing omp.h")
-          print("omp.h found")
+          required = ["libcxx/__config", "libcxx/vector", "sdk/stdlib.h"]
+          missing = [name for name in required if name not in names]
+          if missing:
+              raise SystemExit("include package is missing pinned libc++ or SDK C headers: " + ", ".join(missing))
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              if not archive.read("sdk/stdlib.h").strip():
+                  raise SystemExit("include package has an empty SDK stdlib.h")
+          if any(
+              entry == "sdk/c++/v1" or entry.startswith("sdk/c++/v1/")
+              for entry in entrypoints
+          ) or any(name.startswith("sdk/c++/v1/") for name in names):
+              raise SystemExit("SDK libc++ headers override the pinned Homebrew LLVM libc++")
+          framework_headers = [
+              name for name in names
+              if name.startswith("Frameworks/")
+              and ".framework/Headers/" in name
+          ]
+          if not framework_headers:
+              raise SystemExit("include package is missing SDK framework headers")
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              if not any(archive.read(name).strip() for name in framework_headers):
+                  raise SystemExit("include package has no nonempty SDK framework header")
+          if "libcxx" not in entrypoints or "sdk" not in entrypoints:
+              raise SystemExit("include package is missing libc++ or SDK C include entrypoints")
+          if entrypoints.index("libcxx") >= entrypoints.index("sdk"):
+              raise SystemExit("pinned Homebrew libc++ must precede SDK C headers")
+          print("pinned libc++, SDK C headers, SDK frameworks, and omp.h found")
           PY
 
       - name: Upload failed test outputs
@@ -370,10 +440,12 @@ jobs:
           - arch: arm64
             build-dir: build-win-arm64
             output: clang-dumper-windows-arm64.exe
+            verifier: clang-dumper-windows-arm64-verify-protobuf.exe
             include-package: clang-dumper-windows-arm64-includes.zip
           - arch: x86_64
             build-dir: build-win-x86_64
             output: clang-dumper-windows-x86_64.exe
+            verifier: clang-dumper-windows-x86_64-verify-protobuf.exe
             include-package: clang-dumper-windows-x86_64-includes.zip
     steps:
       - name: Checkout
@@ -396,6 +468,7 @@ jobs:
             curl \
             dpkg \
             python3 \
+            python3-protobuf \
             rsync \
             tar \
             zstd
@@ -409,7 +482,7 @@ jobs:
           SKIP_ENUM_GENERATION=ON \
             scripts/build_windows_cross.sh ${{ matrix.arch }}
 
-      - name: Check Windows tool binary
+      - name: Check Windows binaries
         run: |
           file ${{ matrix.build-dir }}/tool.exe
 
@@ -420,10 +493,20 @@ jobs:
             exit 1
           fi
 
+          file ${{ matrix.build-dir }}/verify_protobuf.exe
+
+          llvm-objdump-${LLVM_VERSION} -p ${{ matrix.build-dir }}/verify_protobuf.exe | tee verifier-imports.txt
+
+          if grep -E 'DLL Name: .*(clang|LLVM|libc\+\+|libunwind|zstd|zlib|pthread|protobuf|absl).*\.dll' verifier-imports.txt; then
+            echo "Windows Protobuf verifier imports non-system runtime DLLs"
+            exit 1
+          fi
+
       - name: Stage Windows tool
         run: |
           mkdir -p dist
           cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
+          cp ${{ matrix.build-dir }}/verify_protobuf.exe dist/${{ matrix.verifier }}
 
       - name: Package Windows includes
         run: scripts/package_includes.sh windows ${{ matrix.arch }} dist/${{ matrix.include-package }}
@@ -444,6 +527,14 @@ jobs:
         with:
           name: windows-${{ matrix.arch }}-tool
           path: dist/${{ matrix.output }}
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload Windows Protobuf verifier
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-verifier
+          path: dist/${{ matrix.verifier }}
           retention-days: 1
           if-no-files-found: error
 
@@ -468,12 +559,16 @@ jobs:
             runner: windows-11-arm
             artifact: windows-arm64-tool
             executable: clang-dumper-windows-arm64.exe
+            verifier-artifact: windows-arm64-verifier
+            verifier: clang-dumper-windows-arm64-verify-protobuf.exe
             include-package: clang-dumper-windows-arm64-includes.zip
             triple: aarch64-w64-mingw32
           - arch: x86_64
             runner: windows-2025
             artifact: windows-x86_64-tool
             executable: clang-dumper-windows-x86_64.exe
+            verifier-artifact: windows-x86_64-verifier
+            verifier: clang-dumper-windows-x86_64-verify-protobuf.exe
             include-package: clang-dumper-windows-x86_64-includes.zip
             triple: x86_64-w64-mingw32
     steps:
@@ -490,6 +585,12 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: windows-${{ matrix.arch }}-includes
+          path: dist/
+
+      - name: Download Windows Protobuf verifier
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.verifier-artifact }}
           path: dist/
 
       - name: Test Windows tool
@@ -511,8 +612,7 @@ jobs:
             INCLUDE_ARGS+=(--extra-clang-arg "${INCLUDE_ROOT}/${include_path}")
           done < windows-includes/entrypoints.txt
 
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
-            --baseline-platform windows-${{ matrix.arch }} \
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --protobuf-verifier "dist/${{ matrix.verifier }}" --jobs 1 \
             --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
             "${INCLUDE_ARGS[@]}"
@@ -549,26 +649,76 @@ jobs:
       attestations: write
       id-token: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Download Linux release assets
         uses: actions/download-artifact@v8
         with:
-          pattern: linux-*
+          pattern: linux-*-tool
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download Linux plugins
+        uses: actions/download-artifact@v8
+        with:
+          pattern: linux-*-plugin
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download Linux includes
+        uses: actions/download-artifact@v8
+        with:
+          pattern: linux-*-includes
           path: release-assets/
           merge-multiple: true
 
       - name: Download macOS release assets
         uses: actions/download-artifact@v8
         with:
-          pattern: macos-*
+          pattern: macos-*-tool
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download macOS plugins
+        uses: actions/download-artifact@v8
+        with:
+          pattern: macos-*-plugin
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download macOS includes
+        uses: actions/download-artifact@v8
+        with:
+          pattern: macos-*-includes
           path: release-assets/
           merge-multiple: true
 
       - name: Download Windows release assets
         uses: actions/download-artifact@v8
         with:
-          pattern: windows-*
+          pattern: windows-*-tool
           path: release-assets/
           merge-multiple: true
+
+      - name: Download Windows includes
+        uses: actions/download-artifact@v8
+        with:
+          pattern: windows-*-includes
+          path: release-assets/
+          merge-multiple: true
+
+      - name: Download protocol schema
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-x64-protocol
+          path: release-staging/protocol/
+
+      - name: Stage verified protocol artifacts
+        run: |
+          chmod +x release-staging/protocol/clang-dumper-protoc-28.3
+          cp release-staging/protocol/clang-dumper-ast-wire.proto release-assets/
+          cp release-staging/protocol/clang-dumper-ast-wire.pb release-assets/
 
       - name: Download generated enums
         uses: actions/download-artifact@v8
@@ -587,68 +737,14 @@ jobs:
         env:
           LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
         run: |
-          python3 - <<'PY'
-          import hashlib
-          import json
-          import os
-          import re
-          from pathlib import Path
-
-          assets_dir = Path("release-assets")
-          manifest_name = "clang-dumper-release-manifest.json"
-          llvm_major = int(os.environ["LLVM_VERSION"])
-
-          patterns = [
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-plugin[.]so$"), "plugin"),
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+?)-includes[.]zip$"), "includes"),
-              (re.compile(r"^clang-dumper-(linux|macos)-(.+)$"), "tool"),
-              (re.compile(r"^clang-dumper-windows-(.+?)[.]exe$"), "tool"),
-              (re.compile(r"^clang-dumper-windows-(.+?)-includes[.]zip$"), "includes"),
-          ]
-
-          def classify(filename):
-              if filename == "clang-dumper-generated-enums.zip":
-                  return "any", "any", "generated-enums"
-
-              for pattern, kind in patterns:
-                  match = pattern.match(filename)
-                  if not match:
-                      continue
-
-                  if filename.startswith("clang-dumper-windows-"):
-                      return "windows", match.group(1), kind
-
-                  return match.group(1), match.group(2), kind
-
-              raise ValueError(f"Unrecognized release asset filename: {filename}")
-
-          entries = []
-          for asset in sorted(assets_dir.iterdir()):
-              if not asset.is_file() or asset.name == manifest_name:
-                  continue
-
-              platform, arch, kind = classify(asset.name)
-              digest = hashlib.sha256(asset.read_bytes()).hexdigest()
-              entries.append(
-                  {
-                      "filename": asset.name,
-                      "platform": platform,
-                      "arch": arch,
-                      "kind": kind,
-                      "llvm_major": llvm_major,
-                      "sha256": digest,
-                  }
-              )
-
-          manifest = {
-              "schema_version": 1,
-              "assets": entries,
-          }
-          (assets_dir / manifest_name).write_text(
-              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
-          )
-          PY
+          source protobuf-version.env
+          PROTOBUF_VENV="${RUNNER_TEMP}/protobuf-python-venv"
+          python3 -m venv "${PROTOBUF_VENV}"
+          "${PROTOBUF_VENV}/bin/python" -m pip install --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          "${PROTOBUF_VENV}/bin/python" scripts/write_release_manifest.py \
+            --asset-dir release-assets \
+            --llvm-major "$LLVM_VERSION" \
+            --protoc release-staging/protocol/clang-dumper-protoc-28.3
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v2
@@ -659,4 +755,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: release-assets/*
+          prerelease: ${{ contains(github.ref_name, '-rc') }}
           generate_release_notes: true

@@ -1,0 +1,653 @@
+#!/usr/bin/env python3
+"""Verify the new native metadata is present in an actual Protobuf dump."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import os
+import re
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+from google.protobuf import descriptor_pb2, message_factory
+
+SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_metadata.cpp"
+DENSE_ID_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_dense_ids.cpp"
+CUDA_KERNEL_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_cuda_kernel_call.cu"
+SYSTEM_HEADER_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_system_header_top_level.cpp"
+INDIRECT_FIELD_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_indirect_field_decl.cpp"
+
+
+def resolve_apple_sysroot(sysroot: Path) -> Path:
+    is_sdk_name = len(sysroot.parts) == 1 and sysroot.name != "."
+    if sysroot.is_dir() and not is_sdk_name:
+        return sysroot
+    if sysroot.is_absolute():
+        raise RuntimeError(f"Apple SDK sysroot directory does not exist: {sysroot}")
+
+    try:
+        result = subprocess.run(
+            ["xcrun", "--sdk", str(sysroot), "--show-sdk-path"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError as error:
+        raise RuntimeError(f"Could not resolve Apple SDK name {sysroot} with xcrun") from error
+    if result.returncode != 0:
+        details = result.stderr.strip() or (
+            f"xcrun exited with status {result.returncode}"
+        )
+        raise RuntimeError(f"Could not resolve Apple SDK name {sysroot}: {details}")
+
+    resolved_text = result.stdout.strip()
+    if not resolved_text:
+        raise RuntimeError(f"xcrun returned an empty path for Apple SDK name {sysroot}")
+    resolved = Path(resolved_text)
+    if not resolved.is_absolute() or not resolved.is_dir():
+        raise RuntimeError(
+            f"xcrun resolved Apple SDK name {sysroot} to an invalid directory: {resolved}"
+        )
+    return resolved
+
+
+def metadata_compiler_flags(
+    resource_dir: Path,
+    libcxx_include_dir: Path | None = None,
+    libomp_include_dir: Path | None = None,
+    sysroot: Path | None = None,
+) -> list[str]:
+    if sysroot is not None and libcxx_include_dir is None:
+        raise ValueError("an Apple SDK sysroot requires a selected libc++ include directory")
+
+    flags: list[str] = []
+    if libcxx_include_dir is not None:
+        if sysroot is not None:
+            flags.extend(["-isysroot", str(resolve_apple_sysroot(sysroot))])
+        if not (libcxx_include_dir / "__config").is_file():
+            raise RuntimeError(
+                f"Selected libc++ headers are missing from {libcxx_include_dir}"
+            )
+        flags.extend(["-nostdinc++", "-isystem", str(libcxx_include_dir)])
+    if libomp_include_dir is not None:
+        if not (libomp_include_dir / "omp.h").is_file():
+            raise RuntimeError(f"Selected libomp headers are missing from {libomp_include_dir}")
+        flags.extend(["-isystem", str(libomp_include_dir)])
+
+    flags.append(f"-resource-dir={resource_dir}")
+    return flags
+
+
+class MetadataCompilerFlagsTest(unittest.TestCase):
+    def test_apple_flags_use_only_the_selected_libcxx_and_keep_resource_flags(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-compiler-flags-") as temp:
+            root = Path(temp)
+            resource = root / "lib" / "clang" / "18"
+            libcxx = root / "include" / "c++" / "v1"
+            libomp = root / "libomp" / "include"
+            sysroot = root / "MacOSX.sdk"
+            for directory in (resource, libcxx, libomp, sysroot):
+                directory.mkdir(parents=True)
+            (libcxx / "__config").touch()
+            (libomp / "omp.h").touch()
+
+            self.assertEqual(
+                metadata_compiler_flags(resource, libcxx, libomp, sysroot),
+                [
+                    "-isysroot",
+                    str(sysroot),
+                    "-nostdinc++",
+                    "-isystem",
+                    str(libcxx),
+                    "-isystem",
+                    str(libomp),
+                    f"-resource-dir={resource}",
+                ],
+            )
+            self.assertEqual(
+                metadata_compiler_flags(resource, libcxx),
+                ["-nostdinc++", "-isystem", str(libcxx), f"-resource-dir={resource}"],
+            )
+
+    def test_apple_flags_reject_missing_selected_headers(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-missing-headers-") as temp:
+            root = Path(temp)
+            resource = root / "resource"
+            resource.mkdir()
+            libcxx = root / "libcxx"
+            libcxx.mkdir()
+            with self.assertRaisesRegex(RuntimeError, r"Selected libc\+\+ headers"):
+                metadata_compiler_flags(resource, libcxx)
+            with self.assertRaisesRegex(ValueError, r"requires a selected libc\+\+"):
+                metadata_compiler_flags(resource, sysroot=root)
+
+    @unittest.skipIf(os.name == "nt", "the fake xcrun fixture requires a POSIX executable")
+    def test_sdk_names_resolve_and_absolute_or_empty_sysroots_do_not_call_xcrun(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-xcrun-") as temp:
+            root = Path(temp)
+            resource = root / "resource"
+            libcxx = root / "libcxx"
+            sdk = root / "MacOSX.sdk"
+            binary_dir = root / "bin"
+            for directory in (resource, libcxx, sdk, binary_dir):
+                directory.mkdir()
+            (libcxx / "__config").touch()
+            query_log = root / "xcrun.log"
+            fake_xcrun = binary_dir / "xcrun"
+            fake_xcrun.write_text(
+                "#!/usr/bin/env python3\n"
+                "import os, sys\n"
+                "with open(os.environ['XCRUN_LOG'], 'a', encoding='utf-8') as log:\n"
+                "    log.write(' '.join(sys.argv[1:]) + '\\n')\n"
+                "if sys.argv[1:] == ['--sdk', 'macosx', '--show-sdk-path']:\n"
+                "    print(os.environ['FAKE_SDK_PATH'])\n"
+                "elif sys.argv[1:] == ['--sdk', 'empty-sdk', '--show-sdk-path']:\n"
+                "    pass\n"
+                "else:\n"
+                "    print('unsupported SDK name', file=sys.stderr)\n"
+                "    raise SystemExit(1)\n",
+                encoding="utf-8",
+            )
+            fake_xcrun.chmod(0o755)
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "PATH": f"{binary_dir}{os.pathsep}{environment.get('PATH', '')}",
+                    "XCRUN_LOG": str(query_log),
+                    "FAKE_SDK_PATH": str(sdk),
+                }
+            )
+            with patch.dict(os.environ, environment):
+                by_name = metadata_compiler_flags(
+                    resource, libcxx, sysroot=Path("macosx")
+                )
+                self.assertEqual(by_name[:3], ["-isysroot", str(sdk), "-nostdinc++"])
+                by_path = metadata_compiler_flags(resource, libcxx, sysroot=sdk)
+                self.assertEqual(by_path[:3], ["-isysroot", str(sdk), "-nostdinc++"])
+                no_sysroot = metadata_compiler_flags(resource, libcxx)
+                self.assertEqual(no_sysroot[0], "-nostdinc++")
+                with self.assertRaisesRegex(RuntimeError, "unsupported SDK name"):
+                    metadata_compiler_flags(resource, libcxx, sysroot=Path("not-an-sdk"))
+                with self.assertRaisesRegex(RuntimeError, "empty path"):
+                    metadata_compiler_flags(resource, libcxx, sysroot=Path("empty-sdk"))
+                with self.assertRaisesRegex(RuntimeError, "does not exist"):
+                    metadata_compiler_flags(resource, libcxx, sysroot=root / "missing.sdk")
+
+            self.assertEqual(
+                query_log.read_text(encoding="utf-8").splitlines(),
+                [
+                    "--sdk macosx --show-sdk-path",
+                    "--sdk not-an-sdk --show-sdk-path",
+                    "--sdk empty-sdk --show-sdk-path",
+                ],
+            )
+
+
+def read_varint(data: bytes, offset: int) -> tuple[int, int]:
+    value = 0
+    shift = 0
+    while offset < len(data) and shift < 64:
+        byte = data[offset]
+        offset += 1
+        if shift == 63 and byte > 1:
+            raise ValueError("overlong Protobuf frame length")
+        value |= (byte & 0x7F) << shift
+        if byte < 0x80:
+            return value, offset
+        shift += 7
+    raise ValueError("truncated Protobuf frame length")
+
+
+def read_envelopes(path: Path, envelope_type: type) -> list:
+    data = path.read_bytes()
+    if not data.startswith(b"CLAVAPB1"):
+        raise ValueError("missing Protobuf AST stream magic")
+    offset = len(b"CLAVAPB1")
+    envelopes = []
+    while offset < len(data):
+        length, offset = read_varint(data, offset)
+        end = offset + length
+        if length == 0 or end > len(data):
+            raise ValueError("invalid Protobuf frame length")
+        envelopes.append(envelope_type.FromString(data[offset:end]))
+        offset = end
+    return envelopes
+
+
+class ProtoMetadataTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        resource_path = ARGS.resource_dir
+        match = re.match(r"^(\d+)(?:\.|$)", resource_path.name)
+        if match is None or match.group(1) != ARGS.llvm_major:
+            raise RuntimeError(
+                f"Clang resource directory {resource_path} does not match "
+                f"LLVM major {ARGS.llvm_major}"
+            )
+        if not (resource_path / "include" / "stdarg.h").is_file():
+            raise RuntimeError(
+                f"Clang resource headers are missing from {resource_path}"
+            )
+        cls.compiler_flags = metadata_compiler_flags(
+            resource_path,
+            ARGS.libcxx_include_dir,
+            ARGS.libomp_include_dir,
+            ARGS.sysroot,
+        )
+
+    def test_native_emission_contains_structured_metadata(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-metadata-") as temp:
+            dump = Path(temp) / "metadata.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=gnu++20",
+                    *self.compiler_flags,
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        self.assertEqual(envelopes[0].header.protocol_minor, 1)
+        self.assertEqual(
+            envelopes[0].header.schema_sha256,
+            hashlib.sha256(ARGS.schema.read_bytes()).hexdigest().encode("ascii"),
+        )
+        nodes = [
+            record.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+        ]
+        by_class: dict[str, list] = {}
+        for node in nodes:
+            by_class.setdefault(node.class_name, []).append(node)
+
+        implicit_casts = by_class.get("ImplicitCastExpr", [])
+        self.assertTrue(implicit_casts, "implicit cast nodes missing")
+        self.assertTrue(
+            all(node.WhichOneof("node") == "cast_expr_data" for node in implicit_casts),
+            "ImplicitCastExpr nodes must use the checked CastExprData payload",
+        )
+        c_style_casts = by_class.get("CStyleCastExpr", [])
+        self.assertTrue(c_style_casts, "C-style cast nodes missing")
+        self.assertTrue(
+            all(
+                node.WhichOneof("node") == "explicit_cast_expr_data"
+                for node in c_style_casts
+            ),
+            "CStyleCastExpr nodes must retain ExplicitCastExprData metadata",
+        )
+
+        function_data = [
+            node.function_decl_data
+            for node in by_class.get("FunctionDecl", [])
+        ]
+        function_data.extend(
+            node.c_x_x_method_decl_data.base
+            for node in by_class.get("CXXMethodDecl", [])
+        )
+        function_data = [data for data in function_data if data.template_parameters]
+        self.assertTrue(function_data, "out-of-line function template params missing")
+        self.assertTrue(
+            any(
+                sum(data.template_parameter_list_sizes)
+                == len(data.template_parameters)
+                and any(data.template_parameter_list_sizes)
+                for data in function_data
+            ),
+            "function template parameter-list sizes missing or inconsistent",
+        )
+
+        partials = by_class.get("ClassTemplatePartialSpecializationDecl", [])
+        self.assertTrue(partials, "partial specialization node missing")
+        self.assertTrue(
+            any(node.class_template_partial_specialization_decl_data.template_parameters for node in partials),
+            "partial specialization parameters missing",
+        )
+        partial_ids = {node.id for node in partials}
+        top_level_ids = {
+            record.top_level.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "top_level"
+        }
+        self.assertTrue(
+            partial_ids.intersection(top_level_ids),
+            "partial specialization is missing from the top-level declaration roots",
+        )
+
+        dependent_keyword_types = {
+            "DependentNameType",
+            "DependentTemplateSpecializationType",
+        }
+        keyword_field = messages["astwire.v1.TypeWithKeywordData"].DESCRIPTOR.fields_by_name[
+            "elaborated_type_keyword"
+        ]
+        typename_keyword = keyword_field.enum_type.values_by_name[
+            "ELABORATEDTYPEKEYWORD_TYPENAME"
+        ].number
+        for class_name in dependent_keyword_types:
+            values = by_class.get(class_name, [])
+            self.assertTrue(values, f"{class_name} node missing")
+            self.assertTrue(
+                all(node.WhichOneof("node") == "type_with_keyword_data" for node in values),
+                f"{class_name} must use its nearest TypeWithKeywordData payload",
+            )
+            self.assertTrue(
+                all(
+                    node.type_with_keyword_data.elaborated_type_keyword
+                    == typename_keyword
+                    for node in values
+                ),
+                f"{class_name} elaborated keyword metadata missing",
+            )
+
+        lambdas = [node.lambda_expr_data for node in by_class.get("LambdaExpr", [])]
+        init_lambdas = [value for value in lambdas if value.init_capture_names]
+        self.assertTrue(init_lambdas, "lambda init-capture names missing")
+        for value in init_lambdas:
+            count = len(value.capture_kinds)
+            self.assertEqual(len(value.init_capture_names), count)
+            self.assertEqual(len(value.capture_init_styles), count)
+            self.assertEqual(len(value.capture_pack_expansions), count)
+            self.assertEqual(len(value.capture_is_implicit), count)
+        self.assertTrue(
+            any(any(value.capture_pack_expansions) for value in init_lambdas),
+            "lambda init-capture pack expansion flag missing",
+        )
+
+        assembly = [node.g_c_c_asm_stmt_data for node in by_class.get("GCCAsmStmt", [])]
+        self.assertTrue(any(value.is_inline for value in assembly), "asm inline flag missing")
+        self.assertTrue(
+            any(value.is_goto and "target" in value.labels for value in assembly),
+            "asm goto labels missing",
+        )
+        self.assertTrue(
+            any(
+                "%0" in value.asm_string and "%l[target]" in value.asm_string
+                for value in assembly
+            ),
+            "source-level asm operand references were rewritten for LLVM IR",
+        )
+
+        member_pointer = [
+            node.member_pointer_type_data
+            for node in by_class.get("MemberPointerType", [])
+        ]
+        self.assertTrue(member_pointer, "member pointer type node missing")
+        self.assertTrue(
+            all(
+                value.HasField("class_type") and value.HasField("pointee_type")
+                for value in member_pointer
+            ),
+            "member pointer class or pointee type reference missing",
+        )
+
+        constructions = [
+            node.c_x_x_unresolved_construct_expr_data
+            for node in by_class.get("CXXUnresolvedConstructExpr", [])
+        ]
+        self.assertTrue(constructions, "dependent construction node missing")
+        self.assertIn(False, [value.is_list_initialization for value in constructions])
+        self.assertIn(True, [value.is_list_initialization for value in constructions])
+
+        friends = [node.friend_decl_data for node in by_class.get("FriendDecl", [])]
+        self.assertTrue(friends, "FriendDecl node missing")
+        self.assertTrue(all(value.HasField("owner_record") for value in friends))
+        self.assertTrue(
+            all(
+                value.HasField("friend_decl") and value.HasField("friend_type")
+                for value in friends
+            ),
+            "typed-null friend target must retain presence",
+        )
+
+    def test_system_header_friend_targets_keep_dense_ids(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-dense-ids-") as temp:
+            dump = Path(temp) / "dense-ids.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-system-header-threshold=1",
+                    "-c",
+                    str(DENSE_ID_SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=gnu++20",
+                    *self.compiler_flags,
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        node_ids = {
+            record.node.id
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+        }
+        ends = [envelope.end for envelope in envelopes if envelope.WhichOneof("payload") == "end"]
+        self.assertEqual(len(ends), 1, "stream must contain exactly one End record")
+        self.assertEqual(
+            node_ids,
+            set(range(1, ends[0].ids + 1)),
+            "End.ids must describe the exact dense set of emitted AST nodes",
+        )
+
+    def test_system_header_top_level_references_have_nodes(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-system-roots-") as temp:
+            dump = Path(temp) / "system-roots.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(SYSTEM_HEADER_SOURCE),
+                    "-id=42",
+                    "-system-header-threshold=1",
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=c++17",
+                    *self.compiler_flags,
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertNotIn("ERROR", result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        node_ids = {
+            record.node.id
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+        }
+        top_level_ids = {
+            record.top_level.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "top_level"
+            and record.top_level.node > 0
+        }
+        self.assertTrue(top_level_ids, "the fixture must emit top-level roots")
+        self.assertEqual(
+            top_level_ids - node_ids,
+            set(),
+            "every non-null top-level reference must name an emitted Node",
+        )
+
+    def test_indirect_field_uses_value_decl_payload(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-indirect-field-") as temp:
+            dump = Path(temp) / "indirect-field.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(INDIRECT_FIELD_SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-std=c++17",
+                    *self.compiler_flags,
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        indirect_fields = [
+            record.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+            and record.node.class_name == "IndirectFieldDecl"
+        ]
+        self.assertTrue(indirect_fields, "fixture must emit an IndirectFieldDecl")
+        self.assertTrue(
+            all(node.WhichOneof("node") == "value_decl_data" for node in indirect_fields),
+            "IndirectFieldDecl must use its nearest ValueDecl payload",
+        )
+
+    def test_cuda_kernel_call_uses_call_expr_payload(self) -> None:
+        descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
+            ARGS.descriptor.read_bytes()
+        )
+        messages = message_factory.GetMessages(descriptor_set.file)
+        envelope_type = messages["astwire.v1.Envelope"]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-proto-cuda-call-") as temp:
+            dump = Path(temp) / "cuda-kernel-call.pb"
+            result = subprocess.run(
+                [
+                    str(ARGS.tool),
+                    "-c",
+                    str(CUDA_KERNEL_SOURCE),
+                    "-o",
+                    str(dump),
+                    "--",
+                    "-x",
+                    "cuda",
+                    "-nocudainc",
+                    "-nocudalib",
+                    "--cuda-host-only",
+                    "--cuda-gpu-arch=sm_35",
+                    "-std=c++17",
+                    *self.compiler_flags,
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            checked = subprocess.run(
+                [str(ARGS.verifier), str(dump)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            envelopes = read_envelopes(dump, envelope_type)
+
+        calls = [
+            record.node
+            for envelope in envelopes
+            if envelope.WhichOneof("payload") == "chunk"
+            for record in envelope.chunk.records
+            if record.WhichOneof("record") == "node"
+            and record.node.class_name == "CUDAKernelCallExpr"
+        ]
+        self.assertTrue(calls, "CUDA kernel call node missing")
+        self.assertTrue(
+            all(node.WhichOneof("node") == "call_expr_data" for node in calls),
+            "CUDAKernelCallExpr must use its nearest CallExprData payload",
+        )
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--tool", type=Path, required=True)
+parser.add_argument("--resource-dir", type=Path, required=True)
+parser.add_argument("--llvm-major", required=True)
+parser.add_argument("--libcxx-include-dir", type=Path)
+parser.add_argument("--libomp-include-dir", type=Path)
+parser.add_argument("--sysroot", type=Path)
+parser.add_argument("--verifier", type=Path, required=True)
+parser.add_argument("--descriptor", type=Path, required=True)
+parser.add_argument("--schema", type=Path, required=True)
+ARGS = parser.parse_args()
+
+if __name__ == "__main__":
+    unittest.main(argv=[__file__])

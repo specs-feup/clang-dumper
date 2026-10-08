@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "validated_at_utc": "2026-10-08T07:49:31Z",
+  "tested_revision": "56dc98e3ea6c7cc7246b78058e4d7875c602d5e0",
+  "tool_corpus_tested_revision": "1de10a821e5229bc84c1d58852e7e3c6f49928e1",
+  "plugin_corpus_tested_revision": "9a271e53830901a001a1fedcbf1196961c676d4c",
+  "producer_revision": "ab358d0c57e249e3a50f524a7a2541113f2e0c82",
+  "host": "Linux x86_64, LLVM 18.1.8",
+  "features": ["opencl", "posix", "x86"],
+  "artifacts_sha256": {
+    "build/tool": "876522bb24b04574e68ec2f789e9a6f088346c26ac82d49421e161d56b550ef1",
+    "build/libplugin.so": "9a67e49b586d847dd8cbd935f847eedb40738d29f931a7d3babc2afca2781947",
+    "build/verify_protobuf": "530f1d206768da7318afba49a17b0e55731279a053a45297df5e4498b2f04819"
+  },
+  "results": {
+    "ctest": {"passed": 6, "failed": 0},
+    "test/test_run_tests.py": {"passed": 42, "failed": 0},
+    "clang_resource_selection_regression": {"passed": 1, "failed": 0},
+    "plugin_stream_regressions": {"passed": 3, "failed": 0},
+    "tool_corpus": {"passed": 152, "failed": 0, "skipped": 5},
+    "plugin_corpus": {"passed": 152, "failed": 0, "skipped": 5}
+  },
+  "corpus_skip_reason": "The five CUDA inputs were skipped because CUDA support is unavailable on this host.",
+  "validation_scope": "Linux x86_64 results only; this record does not assert multi-platform RC publication success.",
+  "resource_selection": "Metadata fixtures use the resource directory from the selected host Clang; CMake verifies compiler/resource LLVM major and stdarg.h presence. GNU C++ override regression confirms the selected LLVM resource path remains in use.",
+  "stream_validation": "Every emitted .pb stream was checked by build/verify_protobuf; legacy text snapshots were not compared.",
+  "parallelism_probe": {
+    "observed_at_utc": "2026-10-08T09:27:56Z",
+    "workflow_revision": "e1ffdda5650220bd993c5b1ecf898ccb35580c47",
+    "host": "Linux x86_64",
+    "cmake_version": "4.4.4",
+    "generator_environment": "CMAKE_GENERATOR unset",
+    "generator": "Unix Makefiles",
+    "make_version": "GNU Make 4.4.1",
+    "bare_parallel": {
+      "command": "cmake --build <build-dir> --target probe --parallel --verbose",
+      "native_invocation": "gmake -f Makefile -j probe",
+      "job_limit": "unbounded"
+    },
+    "bounded_parallel": {
+      "command": "cmake --build <build-dir> --target probe --parallel 2 --verbose",
+      "native_invocation": "gmake -f Makefile -j2 probe",
+      "job_limit": 2
+    },
+    "scope": "Local CMake-to-Make argument translation only; this does not establish the cause of the RC4 macOS arm64 build duration."
+  },
+  "commands": [
+    "ctest --test-dir build --output-on-failure",
+    "python3 test/test_run_tests.py",
+    "python3 test/test_run_tests.py ClangResourceDirectorySelectionTest -v",
+    "python3 test/test_plugin_stream.py --plugin build/libplugin.so --clang clang-18 --verifier build/verify_protobuf",
+    "python3 test/run_tests.py --mode tool --path build/tool --protobuf-verifier build/verify_protobuf --enable-opencl --jobs 4 --failure-output-dir test/failures/linux-x64/tool --raw-output-dir test/raw-outputs/linux-x64/tool",
+    "python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-18 --protobuf-verifier build/verify_protobuf --enable-opencl --jobs 4 --failure-output-dir test/failures/linux-x64/plugin-stdout-separate-9a271e5 --raw-output-dir test/raw-outputs/linux-x64/plugin-stdout-separate-9a271e5"
+  ],
+  "raw_output_paths": [
+    "test/raw-outputs/linux-x64/tool",
+    "test/raw-outputs/linux-x64/plugin",
+    "test/raw-outputs/linux-x64/plugin-stdout-separate-9a271e5"
+  ],
+  "raw_binary_dumps_committed": false
+}
