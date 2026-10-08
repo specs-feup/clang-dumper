@@ -5,11 +5,13 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import re
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from google.protobuf import descriptor_pb2, message_factory
 
@@ -18,6 +20,39 @@ DENSE_ID_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_dense_id
 CUDA_KERNEL_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_cuda_kernel_call.cu"
 SYSTEM_HEADER_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_system_header_top_level.cpp"
 INDIRECT_FIELD_SOURCE = Path(__file__).resolve().parent / "fixtures" / "proto_indirect_field_decl.cpp"
+
+
+def resolve_apple_sysroot(sysroot: Path) -> Path:
+    is_sdk_name = len(sysroot.parts) == 1 and sysroot.name != "."
+    if sysroot.is_dir() and not is_sdk_name:
+        return sysroot
+    if sysroot.is_absolute():
+        raise RuntimeError(f"Apple SDK sysroot directory does not exist: {sysroot}")
+
+    try:
+        result = subprocess.run(
+            ["xcrun", "--sdk", str(sysroot), "--show-sdk-path"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError as error:
+        raise RuntimeError(f"Could not resolve Apple SDK name {sysroot} with xcrun") from error
+    if result.returncode != 0:
+        details = result.stderr.strip() or (
+            f"xcrun exited with status {result.returncode}"
+        )
+        raise RuntimeError(f"Could not resolve Apple SDK name {sysroot}: {details}")
+
+    resolved_text = result.stdout.strip()
+    if not resolved_text:
+        raise RuntimeError(f"xcrun returned an empty path for Apple SDK name {sysroot}")
+    resolved = Path(resolved_text)
+    if not resolved.is_absolute() or not resolved.is_dir():
+        raise RuntimeError(
+            f"xcrun resolved Apple SDK name {sysroot} to an invalid directory: {resolved}"
+        )
+    return resolved
 
 
 def metadata_compiler_flags(
@@ -32,9 +67,7 @@ def metadata_compiler_flags(
     flags: list[str] = []
     if libcxx_include_dir is not None:
         if sysroot is not None:
-            if not sysroot.is_dir():
-                raise RuntimeError(f"Apple SDK sysroot does not exist: {sysroot}")
-            flags.extend(["-isysroot", str(sysroot)])
+            flags.extend(["-isysroot", str(resolve_apple_sysroot(sysroot))])
         if not (libcxx_include_dir / "__config").is_file():
             raise RuntimeError(
                 f"Selected libc++ headers are missing from {libcxx_include_dir}"
@@ -91,6 +124,66 @@ class MetadataCompilerFlagsTest(unittest.TestCase):
                 metadata_compiler_flags(resource, libcxx)
             with self.assertRaisesRegex(ValueError, r"requires a selected libc\+\+"):
                 metadata_compiler_flags(resource, sysroot=root)
+
+    def test_sdk_names_resolve_and_absolute_or_empty_sysroots_do_not_call_xcrun(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-xcrun-") as temp:
+            root = Path(temp)
+            resource = root / "resource"
+            libcxx = root / "libcxx"
+            sdk = root / "MacOSX.sdk"
+            binary_dir = root / "bin"
+            for directory in (resource, libcxx, sdk, binary_dir):
+                directory.mkdir()
+            (libcxx / "__config").touch()
+            query_log = root / "xcrun.log"
+            fake_xcrun = binary_dir / "xcrun"
+            fake_xcrun.write_text(
+                "#!/usr/bin/env python3\n"
+                "import os, sys\n"
+                "with open(os.environ['XCRUN_LOG'], 'a', encoding='utf-8') as log:\n"
+                "    log.write(' '.join(sys.argv[1:]) + '\\n')\n"
+                "if sys.argv[1:] == ['--sdk', 'macosx', '--show-sdk-path']:\n"
+                "    print(os.environ['FAKE_SDK_PATH'])\n"
+                "elif sys.argv[1:] == ['--sdk', 'empty-sdk', '--show-sdk-path']:\n"
+                "    pass\n"
+                "else:\n"
+                "    print('unsupported SDK name', file=sys.stderr)\n"
+                "    raise SystemExit(1)\n",
+                encoding="utf-8",
+            )
+            fake_xcrun.chmod(0o755)
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "PATH": f"{binary_dir}{os.pathsep}{environment.get('PATH', '')}",
+                    "XCRUN_LOG": str(query_log),
+                    "FAKE_SDK_PATH": str(sdk),
+                }
+            )
+            with patch.dict(os.environ, environment):
+                by_name = metadata_compiler_flags(
+                    resource, libcxx, sysroot=Path("macosx")
+                )
+                self.assertEqual(by_name[:3], ["-isysroot", str(sdk), "-nostdinc++"])
+                by_path = metadata_compiler_flags(resource, libcxx, sysroot=sdk)
+                self.assertEqual(by_path[:3], ["-isysroot", str(sdk), "-nostdinc++"])
+                no_sysroot = metadata_compiler_flags(resource, libcxx)
+                self.assertEqual(no_sysroot[0], "-nostdinc++")
+                with self.assertRaisesRegex(RuntimeError, "unsupported SDK name"):
+                    metadata_compiler_flags(resource, libcxx, sysroot=Path("not-an-sdk"))
+                with self.assertRaisesRegex(RuntimeError, "empty path"):
+                    metadata_compiler_flags(resource, libcxx, sysroot=Path("empty-sdk"))
+                with self.assertRaisesRegex(RuntimeError, "does not exist"):
+                    metadata_compiler_flags(resource, libcxx, sysroot=root / "missing.sdk")
+
+            self.assertEqual(
+                query_log.read_text(encoding="utf-8").splitlines(),
+                [
+                    "--sdk macosx --show-sdk-path",
+                    "--sdk not-an-sdk --show-sdk-path",
+                    "--sdk empty-sdk --show-sdk-path",
+                ],
+            )
 
 
 def read_varint(data: bytes, offset: int) -> tuple[int, int]:
