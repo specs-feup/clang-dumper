@@ -544,6 +544,27 @@ class ProtobufValidationModeTest(unittest.TestCase):
         self.assertEqual(raw_copy, self.stream)
         self.assertEqual(failure_copy, self.stream)
 
+
+class PythonProtobufPinTest(unittest.TestCase):
+    def test_python_pin_is_separate_and_used_by_ci(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        pins = dict(
+            line.split("=", 1)
+            for line in (root / "protobuf-version.env").read_text().splitlines()
+            if line and not line.startswith("#")
+        )
+        self.assertEqual(pins["PROTOBUF_PYTHON_VERSION"], "5.28.3")
+        self.assertEqual(pins["PROTOBUF_VERSION"], "28.3")
+        self.assertEqual(pins["PROTOC_VERSION"], "28.3")
+        self.assertEqual(pins["JAVA_PROTOC_MINIMUM_VERSION"], "4.28.3")
+        self.assertEqual(pins["JAVA_RUNTIME_MINIMUM_VERSION"], "4.28.3")
+
+        workflow = (root / ".github" / "workflows" / "build.yml").read_text()
+        pip_command = 'python3 -m pip install --user "protobuf==${PROTOBUF_PYTHON_VERSION}"'
+        self.assertEqual(workflow.count(pip_command), 2)
+        self.assertEqual(workflow.count("source protobuf-version.env"), 2)
+
+
 class ClangDiagnosticFilteringTest(unittest.TestCase):
     def test_removes_interleaved_diagnostics_without_touching_protocol(self) -> None:
         output = """protocol before

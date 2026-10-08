@@ -17,6 +17,7 @@ endfunction()
 
 clang_dumper_load_toolchain_pin(PROTOBUF_VERSION CLAVA_PROTOBUF_VERSION)
 clang_dumper_load_toolchain_pin(PROTOC_VERSION CLAVA_PROTOC_VERSION)
+clang_dumper_load_toolchain_pin(PROTOBUF_PYTHON_VERSION CLAVA_PROTOBUF_PYTHON_VERSION)
 
 # CMake chooses compilers during project(), so default compiler discovery must
 # happen before that call. Users and CI can still override this with CC/CXX or
@@ -156,13 +157,14 @@ add_definitions(${CLANG_DEFINITIONS})
 # Find Python3 for enum generation
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 execute_process(
-    COMMAND "${Python3_EXECUTABLE}" -c "import google.protobuf.descriptor_pb2"
+    COMMAND "${Python3_EXECUTABLE}" -c
+        "from google.protobuf import descriptor_pb2, message_factory; assert hasattr(message_factory, 'GetMessages')"
     RESULT_VARIABLE PYTHON_PROTOBUF_RESULT
     OUTPUT_QUIET
     ERROR_QUIET)
 if(PYTHON_PROTOBUF_RESULT)
     message(FATAL_ERROR
-        "Python protobuf runtime is required (install protobuf 4.28.3 or a compatible package)")
+        "Python protobuf runtime with descriptor_pb2 and message_factory.GetMessages is required (install protobuf ${CLAVA_PROTOBUF_PYTHON_VERSION} or a compatible package)")
 endif()
 
 # -----------------------------------------------------------------------------
