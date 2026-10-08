@@ -125,6 +125,7 @@ class MetadataCompilerFlagsTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, r"requires a selected libc\+\+"):
                 metadata_compiler_flags(resource, sysroot=root)
 
+    @unittest.skipIf(os.name == "nt", "the fake xcrun fixture requires a POSIX executable")
     def test_sdk_names_resolve_and_absolute_or_empty_sysroots_do_not_call_xcrun(self) -> None:
         with tempfile.TemporaryDirectory(prefix="clang-dumper-xcrun-") as temp:
             root = Path(temp)
