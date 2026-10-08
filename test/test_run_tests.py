@@ -9,9 +9,12 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
+import package_includes
 from run_tests import (
     TestStatus,
     check_address_consistency,
@@ -803,6 +806,29 @@ class ClangResourceDirectorySelectionTest(unittest.TestCase):
             "else:\n"
             "    raise SystemExit(2)\n",
         )
+
+
+class PackageIncludesIgnoreTest(unittest.TestCase):
+    def test_unresolvable_entry_is_ignored_without_changing_exclusion_matching(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-ignore-") as temp:
+            root = Path(temp)
+            excluded = root / "excluded"
+            excluded.mkdir()
+            unresolvable = root / "cyclic-link"
+            original_resolve = Path.resolve
+
+            def resolve(path: Path, strict: bool = False) -> Path:
+                if path == unresolvable:
+                    raise RuntimeError("Symlink loop")
+                return original_resolve(path, strict=strict)
+
+            ignore = package_includes.copy_ignore_excluded([excluded.resolve()])
+            with patch.object(Path, "resolve", new=resolve):
+                ignored = ignore(str(root), ["cyclic-link", "excluded", "included"])
+
+        self.assertEqual(ignored, {"cyclic-link", "excluded"})
 
 
 class MacOSIncludePackageSelectionTest(unittest.TestCase):

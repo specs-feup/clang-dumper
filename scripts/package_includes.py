@@ -108,7 +108,11 @@ def copy_ignore_excluded(excluded_dirs):
         ignored = set()
         parent = Path(directory).resolve()
         for name in names:
-            candidate = (parent / name).resolve(strict=False)
+            try:
+                candidate = (parent / name).resolve(strict=False)
+            except (OSError, RuntimeError):
+                ignored.add(name)
+                continue
             if any(
                 candidate == excluded or is_relative_to(candidate, excluded)
                 for excluded in excluded_dirs
