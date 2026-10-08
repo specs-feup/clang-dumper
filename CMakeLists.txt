@@ -213,6 +213,27 @@ if(NOT Protobuf_FOUND)
         URL_HASH SHA256=7c3ebd7aaedd86fa5dc479a0fda803f602caaf78d8aff7ce83b89e1b8ae7442a
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
     FetchContent_MakeAvailable(clava_protobuf)
+    if(WIN32 AND CMAKE_CROSSCOMPILING)
+        # Protobuf 28.3 enables descriptor-weak section sentinels for Clang's
+        # GNU mode, but lld's COFF linker does not synthesize ELF-style
+        # __start/__stop symbols. Our wire schema uses no weak descriptors.
+        set(PROTOBUF_SOURCE_DIR "${clava_protobuf_SOURCE_DIR}")
+        set(PROTOBUF_SOURCE_VERSION "${CLAVA_PROTOBUF_VERSION}")
+        include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch_protobuf_28_3_for_coff.cmake")
+
+        # Abseil's Win32 waiter needs the same Windows API level in every TU.
+        target_compile_definitions(absl_synchronization PRIVATE _WIN32_WINNT=0x0600)
+
+        # The pinned MinGW ARM64 SDK does not include winstring.h from
+        # windows.globalization.h, though the latter uses its declarations.
+        set(_cctz_time_zone_lookup
+            "${clava_abseil_SOURCE_DIR}/absl/time/internal/cctz/src/time_zone_lookup.cc")
+        if(NOT EXISTS "${_cctz_time_zone_lookup}")
+            message(FATAL_ERROR "Pinned Abseil CCTZ source was not found: ${_cctz_time_zone_lookup}")
+        endif()
+        set_property(SOURCE "${_cctz_time_zone_lookup}" APPEND PROPERTY
+            COMPILE_OPTIONS "-include;winstring.h")
+    endif()
     # The plugin is a shared module.  Keep the reproducible static fallback
     # usable from that module as well as from the executable.
     if(TARGET libprotobuf)

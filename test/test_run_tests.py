@@ -572,6 +572,69 @@ class PythonProtobufPinTest(unittest.TestCase):
         self.assertEqual(workflow.count("source protobuf-version.env"), 2)
 
 
+@unittest.skipUnless(shutil.which("cmake"), "CMake is required for dependency patch tests")
+class WindowsCOFFProtobufPatchTest(unittest.TestCase):
+    def test_pinned_patch_is_scoped_idempotent_and_rejects_drift(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        patch_script = root / "cmake" / "patch_protobuf_28_3_for_coff.cmake"
+        cmake_lists = (root / "CMakeLists.txt").read_text()
+        self.assertIn("if(WIN32 AND CMAKE_CROSSCOMPILING)", cmake_lists)
+        self.assertIn(
+            "target_compile_definitions(absl_synchronization PRIVATE _WIN32_WINNT=0x0600)",
+            cmake_lists,
+        )
+        self.assertIn('COMPILE_OPTIONS "-include;winstring.h"', cmake_lists)
+        self.assertIn("patch_protobuf_28_3_for_coff.cmake", cmake_lists)
+        old_guard = (
+            "#if defined(__GNUC__) && defined(__clang__) && !defined(__APPLE__) && \\\n"
+            "    !defined(_MSC_VER)\n"
+            "#define PROTOBUF_DESCRIPTOR_WEAK_MESSAGES_ALLOWED\n"
+        )
+        new_guard = (
+            "#if defined(__GNUC__) && defined(__clang__) && !defined(__APPLE__) && \\\n"
+            "    !defined(_MSC_VER) && !defined(_WIN32)\n"
+            "#define PROTOBUF_DESCRIPTOR_WEAK_MESSAGES_ALLOWED\n"
+        )
+
+        def invoke(source_dir: Path, version: str) -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                [
+                    "cmake",
+                    f"-DPROTOBUF_SOURCE_DIR={source_dir}",
+                    f"-DPROTOBUF_SOURCE_VERSION={version}",
+                    "-P",
+                    str(patch_script),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            source_dir = Path(tmp_dir)
+            port_def = source_dir / "src" / "google" / "protobuf" / "port_def.inc"
+            port_def.parent.mkdir(parents=True)
+            port_def.write_text("before\n" + old_guard + "after\n")
+
+            first = invoke(source_dir, "28.3")
+            self.assertEqual(first.returncode, 0, first.stderr)
+            first_result = port_def.read_text()
+            self.assertEqual(first_result, "before\n" + new_guard + "after\n")
+
+            second = invoke(source_dir, "28.3")
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(port_def.read_text(), first_result)
+
+            wrong_version = invoke(source_dir, "28.4")
+            self.assertNotEqual(wrong_version.returncode, 0)
+            self.assertIn("audited only for Protobuf 28.3", wrong_version.stderr)
+
+            port_def.write_text("changed upstream guard\n")
+            changed_source = invoke(source_dir, "28.3")
+            self.assertNotEqual(changed_source.returncode, 0)
+            self.assertIn("feature guard changed", changed_source.stderr)
+
+
 class ClangDiagnosticFilteringTest(unittest.TestCase):
     def test_removes_interleaved_diagnostics_without_touching_protocol(self) -> None:
         output = """protocol before
