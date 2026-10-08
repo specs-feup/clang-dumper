@@ -110,7 +110,10 @@ jobs:
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
-        run: cmake --build build --target tool plugin --parallel
+        run: cmake --build build --target tool plugin verify_protobuf --parallel
+
+      - name: Test C++ and Protobuf semantics
+        run: ctest --test-dir build --output-on-failure
 
       - name: Test output streams
         run: python3 test/test_run_tests.py
@@ -118,8 +121,7 @@ jobs:
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
-            --baseline-platform linux-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode tool --path build/tool --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/tool
 
@@ -127,8 +129,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} ${{ matrix.feature-args }} \
-            --baseline-platform linux-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-${LLVM_VERSION} --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/linux-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/linux-${{ matrix.arch }}/plugin
 
@@ -276,7 +277,10 @@ jobs:
             -DSKIP_ENUM_GENERATION=ON
 
       - name: Build
-        run: cmake --build build --target tool plugin --parallel
+        run: cmake --build build --target tool plugin verify_protobuf --parallel
+
+      - name: Test C++ and Protobuf semantics
+        run: ctest --test-dir build --output-on-failure
 
       - name: Test output streams
         run: python3 test/test_run_tests.py
@@ -284,8 +288,7 @@ jobs:
       - name: Test tool
         id: test_tool
         run: |
-          python3 test/run_tests.py --mode tool --path build/tool ${{ matrix.feature-args }} \
-            --baseline-platform macos-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode tool --path build/tool --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/tool \
             --extra-clang-arg="-isysroot" \
@@ -301,8 +304,7 @@ jobs:
         id: test_plugin
         if: success() || (failure() && steps.test_tool.outcome == 'failure')
         run: |
-          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" ${{ matrix.feature-args }} \
-            --baseline-platform macos-${{ matrix.arch }} \
+          python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path "${LLVM_PREFIX}/bin/clang" --protobuf-verifier build/verify_protobuf ${{ matrix.feature-args }} \
             --failure-output-dir test/failures/macos-${{ matrix.arch }}/plugin \
             --raw-output-dir test/raw-outputs/macos-${{ matrix.arch }}/plugin \
             --extra-clang-arg="-isysroot" \
@@ -399,10 +401,12 @@ jobs:
           - arch: arm64
             build-dir: build-win-arm64
             output: clang-dumper-windows-arm64.exe
+            verifier: clang-dumper-windows-arm64-verify-protobuf.exe
             include-package: clang-dumper-windows-arm64-includes.zip
           - arch: x86_64
             build-dir: build-win-x86_64
             output: clang-dumper-windows-x86_64.exe
+            verifier: clang-dumper-windows-x86_64-verify-protobuf.exe
             include-package: clang-dumper-windows-x86_64-includes.zip
     steps:
       - name: Checkout
@@ -454,6 +458,7 @@ jobs:
         run: |
           mkdir -p dist
           cp ${{ matrix.build-dir }}/tool.exe dist/${{ matrix.output }}
+          cp ${{ matrix.build-dir }}/verify_protobuf.exe dist/${{ matrix.verifier }}
 
       - name: Package Windows includes
         run: scripts/package_includes.sh windows ${{ matrix.arch }} dist/${{ matrix.include-package }}
@@ -474,6 +479,14 @@ jobs:
         with:
           name: windows-${{ matrix.arch }}-tool
           path: dist/${{ matrix.output }}
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload Windows Protobuf verifier
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-${{ matrix.arch }}-verifier
+          path: dist/${{ matrix.verifier }}
           retention-days: 1
           if-no-files-found: error
 
@@ -498,12 +511,16 @@ jobs:
             runner: windows-11-arm
             artifact: windows-arm64-tool
             executable: clang-dumper-windows-arm64.exe
+            verifier-artifact: windows-arm64-verifier
+            verifier: clang-dumper-windows-arm64-verify-protobuf.exe
             include-package: clang-dumper-windows-arm64-includes.zip
             triple: aarch64-w64-mingw32
           - arch: x86_64
             runner: windows-2025
             artifact: windows-x86_64-tool
             executable: clang-dumper-windows-x86_64.exe
+            verifier-artifact: windows-x86_64-verifier
+            verifier: clang-dumper-windows-x86_64-verify-protobuf.exe
             include-package: clang-dumper-windows-x86_64-includes.zip
             triple: x86_64-w64-mingw32
     steps:
@@ -520,6 +537,12 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: windows-${{ matrix.arch }}-includes
+          path: dist/
+
+      - name: Download Windows Protobuf verifier
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.verifier-artifact }}
           path: dist/
 
       - name: Test Windows tool
@@ -541,8 +564,7 @@ jobs:
             INCLUDE_ARGS+=(--extra-clang-arg "${INCLUDE_ROOT}/${include_path}")
           done < windows-includes/entrypoints.txt
 
-          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --jobs 1 \
-            --baseline-platform windows-${{ matrix.arch }} \
+          python test/run_tests.py --mode tool --path "dist/${{ matrix.executable }}" --protobuf-verifier "dist/${{ matrix.verifier }}" --jobs 1 \
             --failure-output-dir test/failures/windows-${{ matrix.arch }}/tool \
             --raw-output-dir test/raw-outputs/windows-${{ matrix.arch }}/tool \
             "${INCLUDE_ARGS[@]}"

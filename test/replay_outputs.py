@@ -182,6 +182,13 @@ def main() -> None:
     manifest: dict[str, object] = {}
     if manifest_file.exists():
         manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    if manifest.get("validation") == "protobuf":
+        print(
+            "ERROR: Protobuf captures are binary streams and cannot be replayed "
+            "as legacy text snapshots.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
     if args.test_dir:
         test_dir = Path(args.test_dir)

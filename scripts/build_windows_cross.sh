@@ -39,7 +39,7 @@ build_target() {
     -DSKIP_ENUM_GENERATION="${SKIP_ENUM_GENERATION}" \
     -DCLANG_ENUMS_HOST_CLANG="${HOST_CLANGXX}"
 
-  cmake --build "${ROOT_DIR}/${build_dir}" --target tool -j"$(nproc)"
+  cmake --build "${ROOT_DIR}/${build_dir}" --target tool verify_protobuf -j"$(nproc)"
 }
 
 if [[ $# -eq 0 ]]; then

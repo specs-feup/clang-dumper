@@ -76,6 +76,16 @@ contract, and minimum Java compiler/runtime versions. Update the pinned tool
 and consumer dependencies explicitly when that manifest requires newer Java
 Protobuf support. CI publishes only tags containing `-rc` as prereleases.
 
+## Native tests
+
+Native CI runs CTest for the schema, metadata, and plugin stream checks, then
+runs the full input corpus through `test/run_tests.py` with the built
+`verify_protobuf` executable. That corpus check validates each emitted binary
+stream; it does not compare the legacy text snapshots under `test/expected/`.
+Those snapshots remain available to the harness's explicit text comparison
+path and offline replay of older text captures. Binary captures are preserved
+as `.pb` files and are not accepted by the text replay script.
+
 ## Dependencies
 
 **Python3 is required to build this project**

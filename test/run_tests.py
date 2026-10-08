@@ -972,9 +972,10 @@ def run_tool_and_normalize(
     clang_path: Optional[str] = None,
     extra_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
-) -> tuple[int, str, str, str, str, dict[str, list[str]]]:
+    protobuf_verifier: Optional[str] = None,
+) -> tuple[int, str, str | bytes, str, str, dict[str, list[str]]]:
     """
-    Run the clang-dumper tool or plugin and normalize its AST dump.
+    Run clang-dumper and capture either its binary stream or normalized text dump.
 
     Args:
         mode: Either "tool" or "plugin"
@@ -987,18 +988,22 @@ def run_tool_and_normalize(
         system_header_threshold: Positive system-header expansion threshold.
             Level N is expanded and its immediate children are serialized as
             boundary leaves. A non-positive value disables the threshold.
+        protobuf_verifier: Select binary capture for validation with this executable.
 
     Returns:
         tuple: (return_code, stdout, raw_dump, raw_stderr, normalized_dump,
             address_mapping)
     """
     flags = extra_flags or []
+    protobuf_mode = protobuf_verifier is not None
 
     dump_directory = None
     dump_path = None
     if mode == "tool":
         dump_directory = tempfile.TemporaryDirectory(prefix="clang-dumper-")
-        dump_path = Path(dump_directory.name) / "ast.dump"
+        dump_path = Path(dump_directory.name) / (
+            "ast.pb" if protobuf_mode else "ast.dump"
+        )
         cmd = [path, f"-id={test_id}"]
         if system_header_threshold is not None:
             cmd.append(f"-system-header-threshold={system_header_threshold}")
@@ -1025,6 +1030,11 @@ def run_tool_and_normalize(
                 "-Xclang",
                 f"-system-header-threshold={system_header_threshold}",
             ]
+        if protobuf_mode:
+            # Plugin protocol bytes share stderr with Clang diagnostics.
+            # The text harness stripped warnings, so suppress them here to
+            # keep the captured stream parseable by the production verifier.
+            cmd.append("-w")
         cmd += flags + [
             "-fsyntax-only",
             input_file,
@@ -1035,26 +1045,42 @@ def run_tool_and_normalize(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True,
+            text=not protobuf_mode,
         )
 
-        stdout, raw_stderr = proc.communicate()
-        if dump_path is not None:
+        stdout, captured_stderr = proc.communicate()
+        if protobuf_mode:
+            stdout = stdout.decode("utf-8", errors="replace")
+            if dump_path is not None:
+                raw_stderr = captured_stderr.decode("utf-8", errors="replace")
+                raw_dump = dump_path.read_bytes() if dump_path.exists() else b""
+            else:
+                # The plugin writes its protocol stream to stderr.
+                raw_dump = captured_stderr
+                raw_stderr = ""
+        elif dump_path is not None:
+            raw_stderr = captured_stderr
             raw_dump = (
                 dump_path.read_text(encoding="utf-8")
                 if dump_path.exists()
                 else ""
             )
         else:
+            raw_stderr = captured_stderr
             raw_dump = strip_clang_diagnostics(raw_stderr)
     finally:
         if dump_directory is not None:
             dump_directory.cleanup()
 
-    normalized_dump, placeholder_to_raw = normalize_captured_output(
-        raw_dump,
-        inputs_dir_str,
-    )
+    if protobuf_mode:
+        normalized_dump = ""
+        placeholder_to_raw = {}
+    else:
+        assert isinstance(raw_dump, str)
+        normalized_dump, placeholder_to_raw = normalize_captured_output(
+            raw_dump,
+            inputs_dir_str,
+        )
     return (
         proc.returncode,
         stdout,
@@ -1147,6 +1173,7 @@ def run_single_test(
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
+    protobuf_verifier: Optional[str] = None,
 ) -> tuple[str, str]:
     """
     Run a single test case.
@@ -1180,7 +1207,11 @@ def run_single_test(
             test_name,
         )
 
-    missing_expected = not generate and not expected_file.exists()
+    missing_expected = (
+        not generate
+        and protobuf_verifier is None
+        and not expected_file.exists()
+    )
 
     # Run the tool/plugin with streaming normalization
     flags = list(global_flags or []) + config.flags
@@ -1204,22 +1235,39 @@ def run_single_test(
         config.system_header_threshold
         if config.system_header_threshold is not None
         else system_header_threshold,
+        protobuf_verifier,
     )
 
     if raw_output_dir is not None:
         raw_output_dir.mkdir(parents=True, exist_ok=True)
-        (raw_output_dir / f"{test_name}.dump").write_text(
-            raw_dump, encoding="utf-8"
-        )
-        (raw_output_dir / f"{test_name}.stderr").write_text(
-            raw_stderr, encoding="utf-8"
-        )
+        if isinstance(raw_dump, bytes):
+            (raw_output_dir / f"{test_name}.pb").write_bytes(raw_dump)
+        else:
+            (raw_output_dir / f"{test_name}.dump").write_text(
+                raw_dump, encoding="utf-8"
+            )
+        if raw_stderr:
+            (raw_output_dir / f"{test_name}.stderr").write_text(
+                raw_stderr, encoding="utf-8"
+            )
+
+    def preserve_failure_output() -> None:
+        if failure_output_dir is None:
+            return
+        failure_output_dir.mkdir(parents=True, exist_ok=True)
+        if isinstance(raw_dump, bytes):
+            (failure_output_dir / f"{test_name}.pb").write_bytes(raw_dump)
+            if raw_stderr:
+                (failure_output_dir / f"{test_name}.stderr").write_text(
+                    raw_stderr, encoding="utf-8"
+                )
+        else:
+            (failure_output_dir / expected_file_name).write_text(
+                normalized_output, encoding="utf-8"
+            )
 
     if return_code != 0:
-        if failure_output_dir is not None:
-            failure_output_dir.mkdir(parents=True, exist_ok=True)
-            failure_output_file = failure_output_dir / expected_file_name
-            failure_output_file.write_text(normalized_output, encoding="utf-8")
+        preserve_failure_output()
         # Include both the normalized dump and the real stderr diagnostics.
         stderr_lines = raw_stderr.splitlines()
         if stderr_lines:
@@ -1228,12 +1276,40 @@ def run_single_test(
         else:
             head_excerpt = "(empty)"
             tail_excerpt = "(empty)"
+            if isinstance(raw_dump, bytes):
+                head_excerpt = tail_excerpt = (
+                    "Plugin stderr bytes are preserved in the .pb output"
+        )
         return TestStatus.FAIL, (
-            f"Tool exited with code {return_code}\n"
+            f"Process exited with code {return_code}\n"
             f"Stderr (first 50 lines):\n{head_excerpt}\n"
             f"Stderr (last 50 lines):\n{tail_excerpt}\n"
-            f"Dump contained {len(normalized_output.splitlines())} lines"
+            + (
+                f"Dump contained {len(raw_dump)} bytes"
+                if isinstance(raw_dump, bytes)
+                else f"Dump contained {len(normalized_output.splitlines())} lines"
+            )
         )
+
+    if protobuf_verifier is not None:
+        assert isinstance(raw_dump, bytes)
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-verify-") as temp:
+            dump_path = Path(temp) / f"{test_name}.pb"
+            dump_path.write_bytes(raw_dump)
+            checked = subprocess.run(
+                [protobuf_verifier, str(dump_path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        if checked.returncode != 0:
+            preserve_failure_output()
+            detail = checked.stderr.strip() or checked.stdout.strip()
+            return TestStatus.FAIL, (
+                "Protobuf AST stream verification failed"
+                + (f": {detail}" if detail else "")
+            )
+        return TestStatus.PASS, "Valid Protobuf AST stream"
 
     # Check address consistency
     consistency_errors = check_address_consistency(placeholder_to_raw)
@@ -1304,6 +1380,14 @@ def main():
         help="Path to the clang-dumper tool executable or plugin shared library",
     )
     parser.add_argument(
+        "--protobuf-verifier",
+        default=None,
+        help=(
+            "Validate each emitted Protobuf AST stream with this verifier. "
+            "In this mode, legacy text snapshots are not compared."
+        ),
+    )
+    parser.add_argument(
         "--clang-path",
         default=None,
         help="Path to clang executable (required for plugin mode)",
@@ -1355,16 +1439,15 @@ def main():
         "--failure-output-dir",
         default=None,
         help=(
-            "Write normalized outputs for failed comparisons to this directory. "
-            "Useful for reviewing CI differences and replaying normalization changes."
+            "Write failed comparison or validation outputs to this directory."
         ),
     )
     parser.add_argument(
         "--raw-output-dir",
         default=None,
         help=(
-            "Write raw AST dumps and stderr for every executed test to this "
-            "directory, plus a _manifest.json file for offline replay."
+            "Write raw outputs for every executed test to this directory, plus "
+            "a _manifest.json file. Protobuf validation mode stores .pb streams."
         ),
     )
     parser.add_argument(
@@ -1399,9 +1482,30 @@ def main():
         print(f"ERROR: Inputs directory not found: {inputs_dir}", file=sys.stderr)
         sys.exit(1)
 
-    if not args.generate and not expected_dir.exists():
+    if (
+        not args.generate
+        and args.protobuf_verifier is None
+        and not expected_dir.exists()
+    ):
         print(f"ERROR: Expected directory not found: {expected_dir}", file=sys.stderr)
         sys.exit(1)
+
+    protobuf_verifier: Optional[str] = None
+    if args.protobuf_verifier:
+        verifier_path = Path(args.protobuf_verifier)
+        if not verifier_path.exists():
+            print(
+                f"ERROR: Protobuf verifier not found: {verifier_path}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        if args.generate:
+            parser.error("--generate cannot be combined with --protobuf-verifier")
+        if args.baseline_platform:
+            parser.error(
+                "--baseline-platform cannot be combined with --protobuf-verifier"
+            )
+        protobuf_verifier = str(verifier_path)
 
     failure_output_dir: Optional[Path] = None
     if args.failure_output_dir:
@@ -1493,6 +1597,7 @@ def main():
             "extra_clang_args": global_flags,
             "system_header_threshold": args.system_header_threshold,
             "baseline_platform": args.baseline_platform,
+            "validation": "protobuf" if protobuf_verifier else "legacy-text",
         }
         (raw_output_dir / "_manifest.json").write_text(
             json.dumps(manifest, indent=2, sort_keys=True) + "\n",
@@ -1512,6 +1617,10 @@ def main():
         print(f"Extra compiler args: {shlex.join(global_flags)}")
     if args.baseline_platform:
         print(f"Baseline platform: {args.baseline_platform}")
+    if protobuf_verifier:
+        print(
+            "Validation: Protobuf AST stream integrity; legacy text snapshots are not compared."
+        )
     print()
 
     passed = 0
@@ -1568,6 +1677,7 @@ def main():
                 clang_path=clang_path,
                 global_flags=global_flags,
                 system_header_threshold=args.system_header_threshold,
+                protobuf_verifier=protobuf_verifier,
             ): test_file
             for test_file in tests
         }

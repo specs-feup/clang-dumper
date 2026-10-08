@@ -11,9 +11,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from run_tests import (
+    TestStatus,
     normalize_captured_output,
     normalize_static_output,
     normalize_system_source_blocks,
+    run_single_test,
     strip_clang_diagnostics,
     unresolved_node_ids,
 )
@@ -238,6 +240,7 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue(output.is_file())
             self.assertTrue(dependencies.is_file())
+
 
     def test_accepts_ccache_injected_color_flag_in_tool_arguments(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -465,6 +468,80 @@ class DumpStreamIntegrationTest(unittest.TestCase):
             self.assert_valid_dump(second_output)
             self.assertNotIn(str(root / "A").encode(), second_output.read_bytes())
 
+
+class ProtobufValidationModeTest(unittest.TestCase):
+    stream = b"CLAVAPB1\x00test-stream"
+
+    def write_executable(self, path: Path, contents: str) -> Path:
+        path.write_text(contents, encoding="utf-8")
+        path.chmod(0o755)
+        return path
+
+    def run_fixture(
+        self, verifier_accepts_stream: bool
+    ) -> tuple[str, str, bytes, bytes | None]:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-runner-protobuf-") as temp:
+            root = Path(temp)
+            input_file = root / "inputs" / "simple_function.cpp"
+            input_file.parent.mkdir()
+            input_file.write_text("int value;\n", encoding="utf-8")
+            tool = self.write_executable(
+                root / "fake-tool",
+                "#!/usr/bin/env python3\n"
+                "import pathlib, sys\n"
+                "args = sys.argv[1:]\n"
+                "pathlib.Path(args[args.index('-o') + 1]).write_bytes("
+                + repr(self.stream)
+                + ")\n",
+            )
+            verifier_exit = 0 if verifier_accepts_stream else 1
+            verifier = self.write_executable(
+                root / "fake-verifier",
+                "#!/usr/bin/env python3\n"
+                "import pathlib, sys\n"
+                "sys.exit("
+                + str(verifier_exit)
+                + " if pathlib.Path(sys.argv[1]).read_bytes() == "
+                + repr(self.stream)
+                + " else 1)\n",
+            )
+            raw_dir = root / "raw"
+            failures = root / "failures"
+            result = run_single_test(
+                mode="tool",
+                path=str(tool),
+                input_file=input_file,
+                expected_dir=root / "expected",
+                platform_expected_dirs=[],
+                failure_output_dir=failures,
+                raw_output_dir=raw_dir,
+                inputs_dir_str=str(input_file.parent),
+                generate=False,
+                enabled_features=set(),
+                protobuf_verifier=str(verifier),
+            )
+            raw_copy = (raw_dir / "simple_function.cpp.pb").read_bytes()
+            failure_copy_path = failures / "simple_function.cpp.pb"
+            failure_copy = (
+                failure_copy_path.read_bytes()
+                if failure_copy_path.exists()
+                else None
+            )
+            return result[0], result[1], raw_copy, failure_copy
+
+    def test_valid_stream_is_checked_without_reading_text_snapshots(self) -> None:
+        status, message, raw_copy, failure_copy = self.run_fixture(True)
+        self.assertEqual(status, TestStatus.PASS)
+        self.assertEqual(message, "Valid Protobuf AST stream")
+        self.assertEqual(raw_copy, self.stream)
+        self.assertIsNone(failure_copy)
+
+    def test_invalid_stream_is_preserved_as_binary_failure_output(self) -> None:
+        status, message, raw_copy, failure_copy = self.run_fixture(False)
+        self.assertEqual(status, TestStatus.FAIL)
+        self.assertIn("Protobuf AST stream verification failed", message)
+        self.assertEqual(raw_copy, self.stream)
+        self.assertEqual(failure_copy, self.stream)
 
 class ClangDiagnosticFilteringTest(unittest.TestCase):
     def test_removes_interleaved_diagnostics_without_touching_protocol(self) -> None:
