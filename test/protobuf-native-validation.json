@@ -1,18 +1,20 @@
 {
   "format": 1,
-  "validated_at_utc": "2026-10-08T02:46:56Z",
-  "tested_revision": "1de10a821e5229bc84c1d58852e7e3c6f49928e1",
+  "validated_at_utc": "2026-10-08T07:30:39Z",
+  "tested_revision": "9a271e53830901a001a1fedcbf1196961c676d4c",
+  "tool_corpus_tested_revision": "1de10a821e5229bc84c1d58852e7e3c6f49928e1",
   "producer_revision": "ab358d0c57e249e3a50f524a7a2541113f2e0c82",
   "host": "Linux x86_64, LLVM 18.1.8",
   "features": ["opencl", "posix", "x86"],
   "artifacts_sha256": {
     "build/tool": "876522bb24b04574e68ec2f789e9a6f088346c26ac82d49421e161d56b550ef1",
-    "build/libplugin.so": "d6d438694083f80d8cab4568f3254d963d5a837093372d10a12fbea626ce786e",
+    "build/libplugin.so": "9a67e49b586d847dd8cbd935f847eedb40738d29f931a7d3babc2afca2781947",
     "build/verify_protobuf": "530f1d206768da7318afba49a17b0e55731279a053a45297df5e4498b2f04819"
   },
   "results": {
     "ctest": {"passed": 6, "failed": 0},
-    "test/test_run_tests.py": {"passed": 35, "failed": 0},
+    "test/test_run_tests.py": {"passed": 41, "failed": 0},
+    "plugin_stream_regressions": {"passed": 3, "failed": 0},
     "tool_corpus": {"passed": 152, "failed": 0, "skipped": 5},
     "plugin_corpus": {"passed": 152, "failed": 0, "skipped": 5}
   },
@@ -21,12 +23,14 @@
   "commands": [
     "ctest --test-dir build --output-on-failure",
     "python3 test/test_run_tests.py",
+    "python3 test/test_plugin_stream.py --plugin build/libplugin.so --clang clang-18 --verifier build/verify_protobuf",
     "python3 test/run_tests.py --mode tool --path build/tool --protobuf-verifier build/verify_protobuf --enable-opencl --jobs 4 --failure-output-dir test/failures/linux-x64/tool --raw-output-dir test/raw-outputs/linux-x64/tool",
-    "python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-18 --protobuf-verifier build/verify_protobuf --enable-opencl --jobs 4 --failure-output-dir test/failures/linux-x64/plugin --raw-output-dir test/raw-outputs/linux-x64/plugin"
+    "python3 test/run_tests.py --mode plugin --path build/libplugin.so --clang-path clang-18 --protobuf-verifier build/verify_protobuf --enable-opencl --jobs 4 --failure-output-dir test/failures/linux-x64/plugin-stdout-separate-9a271e5 --raw-output-dir test/raw-outputs/linux-x64/plugin-stdout-separate-9a271e5"
   ],
   "raw_output_paths": [
     "test/raw-outputs/linux-x64/tool",
-    "test/raw-outputs/linux-x64/plugin"
+    "test/raw-outputs/linux-x64/plugin",
+    "test/raw-outputs/linux-x64/plugin-stdout-separate-9a271e5"
   ],
   "raw_binary_dumps_committed": false
 }
