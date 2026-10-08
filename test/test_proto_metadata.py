@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import re
 import subprocess
 import tempfile
 import unittest
@@ -53,20 +54,17 @@ def read_envelopes(path: Path, envelope_type: type) -> list:
 class ProtoMetadataTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        resource_dir = subprocess.run(
-            [str(ARGS.clang), "-print-resource-dir"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if resource_dir.returncode != 0:
+        resource_path = ARGS.resource_dir
+        match = re.match(r"^(\d+)(?:\.|$)", resource_path.name)
+        if match is None or match.group(1) != ARGS.llvm_major:
             raise RuntimeError(
-                "Cannot query the selected Clang resource directory: "
-                + resource_dir.stderr
+                f"Clang resource directory {resource_path} does not match "
+                f"LLVM major {ARGS.llvm_major}"
             )
-        resource_path = resource_dir.stdout.strip()
-        if not resource_path:
-            raise RuntimeError("Selected Clang returned an empty resource directory")
+        if not (resource_path / "include" / "stdarg.h").is_file():
+            raise RuntimeError(
+                f"Clang resource headers are missing from {resource_path}"
+            )
         cls.compiler_flags = [f"-resource-dir={resource_path}"]
 
     def test_native_emission_contains_structured_metadata(self) -> None:
@@ -469,7 +467,8 @@ class ProtoMetadataTest(unittest.TestCase):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--tool", type=Path, required=True)
-parser.add_argument("--clang", type=Path, required=True)
+parser.add_argument("--resource-dir", type=Path, required=True)
+parser.add_argument("--llvm-major", required=True)
 parser.add_argument("--verifier", type=Path, required=True)
 parser.add_argument("--descriptor", type=Path, required=True)
 parser.add_argument("--schema", type=Path, required=True)

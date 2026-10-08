@@ -402,11 +402,21 @@ add_test(NAME proto_wire_test COMMAND verify_protobuf)
 option(SKIP_ENUM_GENERATION "Skip Python enum generation (use pre-existing files)" OFF)
 set(CLANG_ENUMS_HOST_CLANG "" CACHE FILEPATH "Host clang++ executable for enum preprocessing")
 if(NOT CLANG_ENUMS_HOST_CLANG)
-    find_program(CLANG_ENUMS_HOST_CLANG_AUTO NAMES clang++-${CLANG_VERSION} clang++)
+    find_program(CLANG_ENUMS_HOST_CLANG_AUTO
+        NAMES clang++-${CLANG_VERSION} clang++
+        HINTS "${LLVM_TOOLS_BINARY_DIR}"
+        NO_DEFAULT_PATH)
+    if(NOT CLANG_ENUMS_HOST_CLANG_AUTO)
+        find_program(CLANG_ENUMS_HOST_CLANG_AUTO
+            NAMES clang++-${CLANG_VERSION} clang++)
+    endif()
     if(CLANG_ENUMS_HOST_CLANG_AUTO)
         set(CLANG_ENUMS_HOST_CLANG "${CLANG_ENUMS_HOST_CLANG_AUTO}" CACHE FILEPATH "Host clang++ executable for enum preprocessing" FORCE)
     endif()
 endif()
+include("${CMAKE_SOURCE_DIR}/cmake/query_clang_resource_dir.cmake")
+clang_dumper_query_clang_resource_dir(
+    "${CLANG_ENUMS_HOST_CLANG}" "${CLANG_VERSION}" PROTO_METADATA_RESOURCE_DIR)
 set(CLANG_ENUMS_HOST_CLANG_ARG "")
 if(CLANG_ENUMS_HOST_CLANG)
     set(CLANG_ENUMS_HOST_CLANG_ARG --clang-executable "${CLANG_ENUMS_HOST_CLANG}")
@@ -809,7 +819,8 @@ add_test(NAME proto_release_manifest_test
 add_test(NAME proto_metadata_emission_test
     COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_metadata.py"
         --tool "$<TARGET_FILE:tool>"
-        --clang "${CMAKE_CXX_COMPILER}"
+        --resource-dir "${PROTO_METADATA_RESOURCE_DIR}"
+        --llvm-major "${CLANG_VERSION}"
         --verifier "$<TARGET_FILE:verify_protobuf>"
         --descriptor "${PROTO_DESCRIPTOR}"
         --schema "${PROTO_SCHEMA}")

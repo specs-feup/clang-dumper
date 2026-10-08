@@ -677,6 +677,133 @@ class MacOSArchiveToolSelectionTest(unittest.TestCase):
             self.assertIn("/xcode/toolchain/usr/bin/ranlib", archive_rule)
 
 
+@unittest.skipUnless(
+    shutil.which("cmake"), "CMake is required for Clang resource selection tests"
+)
+class ClangResourceDirectorySelectionTest(unittest.TestCase):
+    def test_gnu_cxx_override_keeps_selected_llvm_clang_resource_directory(self) -> None:
+        gxx = shutil.which("g++")
+        if not gxx:
+            self.skipTest("GNU C++ compiler is unavailable")
+        gxx_version = subprocess.run(
+            [gxx, "--version"], capture_output=True, text=True, check=False
+        )
+        if "Free Software Foundation" not in gxx_version.stdout:
+            self.skipTest("g++ is not a GNU compiler on this host")
+
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-resource-dir-") as temp:
+            temp_root = Path(temp)
+            resource_dir = temp_root / "llvm18" / "lib" / "clang" / "18"
+            selected_clang = self._fake_clang(
+                temp_root / "clang++-18", "18.1.8", resource_dir
+            )
+            wrong_resource_dir = temp_root / "llvm18" / "lib" / "clang" / "17"
+            wrong_resource_clang = self._fake_clang(
+                temp_root / "clang++-18-wrong-resource",
+                "18.1.8",
+                wrong_resource_dir,
+            )
+            source_dir = temp_root / "cmake-source"
+            source_dir.mkdir()
+            (source_dir / "CMakeLists.txt").write_text(
+                "cmake_minimum_required(VERSION 3.20)\n"
+                "project(ResourceSelection LANGUAGES CXX)\n"
+                'set(CLANG_ENUMS_HOST_CLANG "${SELECTED_CLANG}" CACHE FILEPATH "" FORCE)\n'
+                f'include("{root / "cmake" / "query_clang_resource_dir.cmake"}")\n'
+                "clang_dumper_query_clang_resource_dir(\n"
+                '  "${CLANG_ENUMS_HOST_CLANG}" "${EXPECTED_MAJOR}" selected_resource_dir)\n'
+                'file(WRITE "${CMAKE_BINARY_DIR}/selection.txt" '
+                '"${CMAKE_CXX_COMPILER_ID}\\n${selected_resource_dir}\\n")\n'
+            )
+
+            def configure(
+                build_name: str, clang: Path, expected_major: str
+            ) -> tuple[subprocess.CompletedProcess[str], Path]:
+                build_dir = temp_root / build_name
+                result = subprocess.run(
+                    [
+                        "cmake",
+                        "-S",
+                        str(source_dir),
+                        "-B",
+                        str(build_dir),
+                        f"-DCMAKE_CXX_COMPILER={gxx}",
+                        f"-DSELECTED_CLANG={clang}",
+                        f"-DEXPECTED_MAJOR={expected_major}",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                return result, build_dir
+
+            configured, build_dir = configure("cmake-build", selected_clang, "18")
+            self.assertEqual(
+                configured.returncode,
+                0,
+                configured.stdout + configured.stderr,
+            )
+            compiler_id, selected_resource_dir = (
+                build_dir / "selection.txt"
+            ).read_text().splitlines()
+            wrong_major, _ = configure("wrong-major", selected_clang, "19")
+            self.assertNotEqual(wrong_major.returncode, 0)
+            wrong_major_message = " ".join(
+                (wrong_major.stdout + wrong_major.stderr).split()
+            )
+            self.assertIn("expected LLVM 19", wrong_major_message)
+            wrong_resource, _ = configure(
+                "wrong-resource", wrong_resource_clang, "18"
+            )
+            self.assertNotEqual(wrong_resource.returncode, 0)
+            wrong_resource_message = " ".join(
+                (wrong_resource.stdout + wrong_resource.stderr).split()
+            )
+            self.assertIn("expected LLVM 18", wrong_resource_message)
+        self.assertEqual(compiler_id, "GNU")
+        self.assertEqual(selected_resource_dir, str(resource_dir))
+
+        cmake_lists = (root / "CMakeLists.txt").read_text()
+        host_clang_selection = cmake_lists.split(
+            'set(CLANG_ENUMS_HOST_CLANG "" CACHE', 1
+        )[1].split("set(CLANG_ENUMS_HOST_CLANG_ARG", 1)[0]
+        metadata_test = cmake_lists.split(
+            "add_test(NAME proto_metadata_emission_test", 1
+        )[1].split("if(TARGET plugin)", 1)[0]
+        self.assertIn("NAMES clang++-${CLANG_VERSION} clang++", host_clang_selection)
+        self.assertIn('HINTS "${LLVM_TOOLS_BINARY_DIR}"', host_clang_selection)
+        self.assertIn(
+            'clang_dumper_query_clang_resource_dir(\n'
+            '    "${CLANG_ENUMS_HOST_CLANG}" "${CLANG_VERSION}"',
+            cmake_lists,
+        )
+        self.assertIn('--resource-dir "${PROTO_METADATA_RESOURCE_DIR}"', metadata_test)
+        self.assertNotIn('"${CMAKE_CXX_COMPILER}"', metadata_test)
+
+    @staticmethod
+    def _write_executable(path: Path, contents: str) -> Path:
+        path.write_text(contents, encoding="utf-8")
+        path.chmod(0o755)
+        return path
+
+    def _fake_clang(self, path: Path, version: str, resource_dir: Path) -> Path:
+        resource_include = resource_dir / "include"
+        resource_include.mkdir(parents=True)
+        (resource_include / "stdarg.h").write_text("/* test resource */\n")
+        return self._write_executable(
+            path,
+            "#!/usr/bin/env python3\n"
+            "import sys\n"
+            "if sys.argv[1:] == ['-dumpversion']:\n"
+            f"    print({version!r})\n"
+            "elif sys.argv[1:] == ['-print-resource-dir']:\n"
+            f"    print({str(resource_dir)!r})\n"
+            "else:\n"
+            "    raise SystemExit(2)\n",
+        )
+
+
 @unittest.skipUnless(shutil.which("cmake"), "CMake is required for interpreter selection tests")
 class PythonInterpreterSelectionTest(unittest.TestCase):
     def test_cmake_honors_the_explicit_python_interpreter(self) -> None:
