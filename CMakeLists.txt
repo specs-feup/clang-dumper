@@ -198,6 +198,16 @@ if(NOT Protobuf_FOUND)
         URL_HASH SHA256=987ce98f02eefbaf930d6e38ab16aa05737234d7afbab2d5c4ea7adbe50c28ed
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
     FetchContent_MakeAvailable(clava_abseil)
+    if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        # Abseil 20230802.1 adds architecture selectors and their flags as
+        # separate CMake options. CMake de-duplicates repeated selectors,
+        # which can leave -msse4.1 unqualified in arm64 builds. Keep each
+        # selector+flag pair grouped so CMake preserves the universal-build
+        # arguments as written by Abseil.
+        include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/group_abseil_arch_copts.cmake")
+        clang_dumper_group_abseil_arch_copts(absl_random_internal_randen_hwaes)
+        clang_dumper_group_abseil_arch_copts(absl_random_internal_randen_hwaes_impl)
+    endif()
     set(ABSL_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
     set(protobuf_INSTALL OFF CACHE BOOL "" FORCE)
     set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)

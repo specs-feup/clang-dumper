@@ -1,0 +1,40 @@
+function(clang_dumper_group_abseil_arch_copts target)
+    if(NOT TARGET "${target}")
+        message(FATAL_ERROR "Abseil Randen target does not exist: ${target}")
+    endif()
+
+    get_target_property(_compile_options "${target}" COMPILE_OPTIONS)
+    if(NOT _compile_options)
+        message(FATAL_ERROR "Abseil Randen target has no compile options: ${target}")
+    endif()
+
+    set(_grouped_options "")
+    set(_pending_arch "")
+    set(_arch_pair_count 0)
+    foreach(_option IN LISTS _compile_options)
+        if(_pending_arch)
+            if(_option MATCHES "^-Xarch_")
+                message(FATAL_ERROR
+                    "Abseil architecture selector has no matching flag on ${target}: ${_pending_arch}")
+            endif()
+            list(APPEND _grouped_options "SHELL:${_pending_arch} ${_option}")
+            set(_pending_arch "")
+            math(EXPR _arch_pair_count "${_arch_pair_count} + 1")
+        elseif(_option MATCHES "^-Xarch_(x86_64|arm64)$")
+            set(_pending_arch "${_option}")
+        else()
+            list(APPEND _grouped_options "${_option}")
+        endif()
+    endforeach()
+
+    if(_pending_arch)
+        message(FATAL_ERROR
+            "Abseil architecture selector has no matching flag on ${target}: ${_pending_arch}")
+    endif()
+    if(NOT _arch_pair_count EQUAL 3)
+        message(FATAL_ERROR
+            "Expected three pinned Abseil Randen architecture flag pairs on ${target}; found ${_arch_pair_count}")
+    endif()
+
+    set_property(TARGET "${target}" PROPERTY COMPILE_OPTIONS "${_grouped_options}")
+endfunction()

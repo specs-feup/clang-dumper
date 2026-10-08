@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import shutil
 import subprocess
@@ -706,6 +707,61 @@ endif()
                 check=False,
             )
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+@unittest.skipUnless(shutil.which("cmake"), "CMake is required for Abseil option tests")
+class AbseilArchitectureFlagGroupingTest(unittest.TestCase):
+    def test_cmake_keeps_each_architecture_selector_with_its_flag(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        helper = root / "cmake" / "group_abseil_arch_copts.cmake"
+        top_level = (root / "CMakeLists.txt").read_text()
+        self.assertIn('if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")', top_level)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            source_dir = Path(tmp_dir)
+            source = source_dir / "fixture.cc"
+            source.write_text("int abseil_arch_options_fixture() { return 0; }\n")
+            cmake_lists = f"""cmake_minimum_required(VERSION 3.20)
+project(AbseilArchitectureFlagGrouping LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(_randen_options
+    -Xarch_x86_64 -maes
+    -Xarch_x86_64 -msse4.1
+    -Xarch_arm64 -march=armv8-a+crypto)
+foreach(_target IN ITEMS absl_random_internal_randen_hwaes absl_random_internal_randen_hwaes_impl)
+    add_library(${{_target}} OBJECT "${{CMAKE_CURRENT_SOURCE_DIR}}/fixture.cc")
+    target_compile_options(${{_target}} PRIVATE ${{_randen_options}} -Wall)
+endforeach()
+include("{helper.as_posix()}")
+clang_dumper_group_abseil_arch_copts(absl_random_internal_randen_hwaes)
+clang_dumper_group_abseil_arch_copts(absl_random_internal_randen_hwaes_impl)
+"""
+            (source_dir / "CMakeLists.txt").write_text(cmake_lists)
+            build_dir = source_dir / "build"
+            result = subprocess.run(
+                ["cmake", "-S", str(source_dir), "-B", str(build_dir)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            compile_commands = json.loads((build_dir / "compile_commands.json").read_text())
+            self.assertEqual(len(compile_commands), 2)
+            for entry in compile_commands:
+                command = entry["command"].split()
+                x86_selectors = [
+                    index for index, option in enumerate(command) if option == "-Xarch_x86_64"
+                ]
+                arm_selectors = [
+                    index for index, option in enumerate(command) if option == "-Xarch_arm64"
+                ]
+                self.assertEqual(len(x86_selectors), 2, command)
+                self.assertEqual(len(arm_selectors), 1, command)
+                self.assertEqual(command[x86_selectors[0] + 1], "-maes", command)
+                self.assertEqual(command[x86_selectors[1] + 1], "-msse4.1", command)
+                self.assertEqual(command[arm_selectors[0] + 1], "-march=armv8-a+crypto", command)
+                self.assertIn("-Wall", command)
 
 
 class ClangDiagnosticFilteringTest(unittest.TestCase):
