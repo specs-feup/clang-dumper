@@ -598,6 +598,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      attestations: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -693,8 +695,14 @@ jobs:
             --llvm-major "$LLVM_VERSION" \
             --protoc release-staging/protocol/clang-dumper-protoc-28.3
 
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: release-assets/*
+
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           files: release-assets/*
           prerelease: ${{ contains(github.ref_name, '-rc') }}
+          generate_release_notes: true
