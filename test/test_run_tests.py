@@ -843,10 +843,15 @@ class MacOSIncludePackageSelectionTest(unittest.TestCase):
             (libomp / "omp.h").write_text("/* OpenMP */\n", encoding="utf-8")
             (sdk_include / "stdlib.h").write_text("/* SDK C */\n", encoding="utf-8")
             (sdk_libcxx / "__config").write_text("/* SDK libc++ */\n", encoding="utf-8")
-            foundation_headers = frameworks / "Foundation.framework" / "Headers"
+            framework = frameworks / "Foundation.framework"
+            foundation_headers = framework / "Versions" / "A" / "Headers"
             foundation_headers.mkdir(parents=True)
             (foundation_headers / "Foundation.h").write_text(
                 "/* SDK framework */\n", encoding="utf-8"
+            )
+            (framework / "Versions" / "Current").symlink_to("A", target_is_directory=True)
+            (framework / "Headers").symlink_to(
+                "Versions/Current/Headers", target_is_directory=True
             )
 
             clang = bin_dir / "clang"
@@ -911,7 +916,12 @@ class MacOSIncludePackageSelectionTest(unittest.TestCase):
             self.assertIn("libcxx/__config", names)
             self.assertIn("sdk/stdlib.h", names)
             self.assertIn("clang/stdarg.h", names)
-            self.assertIn("Frameworks/Foundation.framework/Headers/Foundation.h", names)
+            versioned_header = (
+                "Frameworks/Foundation.framework/Versions/A/Headers/Foundation.h"
+            )
+            self.assertIn(versioned_header, names)
+            with zipfile.ZipFile(output) as archive:
+                self.assertTrue(archive.read(versioned_header).strip())
             self.assertFalse(any(name.startswith("sdk/c++/v1/") for name in names))
             self.assertNotIn("sdk/c++/v1", entrypoints)
             self.assertLess(entrypoints.index("libcxx"), entrypoints.index("sdk"))

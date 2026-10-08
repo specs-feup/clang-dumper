@@ -369,10 +369,15 @@ jobs:
               raise SystemExit("SDK libc++ headers override the pinned Homebrew LLVM libc++")
           framework_headers = [
               name for name in names
-              if name.startswith("Frameworks/") and ".framework/Headers/" in name
+              if name.startswith("Frameworks/")
+              and ".framework/" in name
+              and "/Headers/" in name
           ]
           if not framework_headers:
               raise SystemExit("include package is missing SDK framework headers")
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              if not any(archive.read(name).strip() for name in framework_headers):
+                  raise SystemExit("include package has no nonempty SDK framework header")
           if "libcxx" not in entrypoints or "sdk" not in entrypoints:
               raise SystemExit("include package is missing libc++ or SDK C include entrypoints")
           if entrypoints.index("libcxx") >= entrypoints.index("sdk"):
