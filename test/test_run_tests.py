@@ -560,11 +560,15 @@ class PythonProtobufPinTest(unittest.TestCase):
         self.assertEqual(pins["JAVA_RUNTIME_MINIMUM_VERSION"], "4.28.3")
 
         workflow = (root / ".github" / "workflows" / "build.yml").read_text()
+        venv_creation = 'python3 -m venv "${PROTOBUF_VENV}"'
         pip_command = (
-            'python3 -m pip install --user --only-binary=:all: '
-            '"protobuf==${PROTOBUF_PYTHON_VERSION}"'
+            '"${PROTOBUF_VENV}/bin/python" -m pip install '
+            '--only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"'
         )
+        self.assertEqual(workflow.count(venv_creation), 2)
         self.assertEqual(workflow.count(pip_command), 2)
+        self.assertEqual(workflow.count('PROTOBUF_VENV="${RUNNER_TEMP}/protobuf-python-venv"'), 2)
+        self.assertEqual(workflow.count('echo "${PROTOBUF_VENV}/bin" >> "$GITHUB_PATH"'), 1)
         self.assertEqual(workflow.count("source protobuf-version.env"), 2)
 
 

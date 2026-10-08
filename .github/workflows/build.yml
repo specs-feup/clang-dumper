@@ -253,7 +253,10 @@ jobs:
         run: |
           brew install llvm@${LLVM_VERSION} libomp zstd ccache
           source protobuf-version.env
-          python3 -m pip install --user --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          PROTOBUF_VENV="${RUNNER_TEMP}/protobuf-python-venv"
+          python3 -m venv "${PROTOBUF_VENV}"
+          "${PROTOBUF_VENV}/bin/python" -m pip install --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          echo "${PROTOBUF_VENV}/bin" >> "$GITHUB_PATH"
           LLVM_PREFIX="$(brew --prefix llvm@${LLVM_VERSION})"
           LIBOMP_PREFIX="$(brew --prefix libomp)"
           ZSTD_ROOT="$(brew --prefix zstd)"
@@ -700,8 +703,10 @@ jobs:
           LLVM_VERSION: ${{ needs.generate-enums.outputs.llvm-version }}
         run: |
           source protobuf-version.env
-          python3 -m pip install --user --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
-          python3 scripts/write_release_manifest.py \
+          PROTOBUF_VENV="${RUNNER_TEMP}/protobuf-python-venv"
+          python3 -m venv "${PROTOBUF_VENV}"
+          "${PROTOBUF_VENV}/bin/python" -m pip install --only-binary=:all: "protobuf==${PROTOBUF_PYTHON_VERSION}"
+          "${PROTOBUF_VENV}/bin/python" scripts/write_release_manifest.py \
             --asset-dir release-assets \
             --llvm-major "$LLVM_VERSION" \
             --protoc release-staging/protocol/clang-dumper-protoc-28.3
