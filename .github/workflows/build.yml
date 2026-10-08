@@ -443,7 +443,7 @@ jobs:
           SKIP_ENUM_GENERATION=ON \
             scripts/build_windows_cross.sh ${{ matrix.arch }}
 
-      - name: Check Windows tool binary
+      - name: Check Windows binaries
         run: |
           file ${{ matrix.build-dir }}/tool.exe
 
@@ -451,6 +451,15 @@ jobs:
 
           if grep -E 'DLL Name: .*(clang|LLVM|libc\+\+|libunwind|zstd|zlib|pthread).*\.dll' imports.txt; then
             echo "Windows tool imports non-system runtime DLLs"
+            exit 1
+          fi
+
+          file ${{ matrix.build-dir }}/verify_protobuf.exe
+
+          llvm-objdump-${LLVM_VERSION} -p ${{ matrix.build-dir }}/verify_protobuf.exe | tee verifier-imports.txt
+
+          if grep -E 'DLL Name: .*(clang|LLVM|libc\+\+|libunwind|zstd|zlib|pthread|protobuf|absl).*\.dll' verifier-imports.txt; then
+            echo "Windows Protobuf verifier imports non-system runtime DLLs"
             exit 1
           fi
 

@@ -606,7 +606,10 @@ if(WIN32 AND CMAKE_CROSSCOMPILING)
         ${CLANG_DUMPER_WINDOWS_RUNTIME_LIBS}
         -Wl,--end-group
     )
+    # Windows CI runs this verifier without the MSYS runtime DLLs installed.
+    target_link_libraries(verify_protobuf PRIVATE ${CLANG_DUMPER_WINDOWS_RUNTIME_LIBS})
     target_link_options(tool PRIVATE -static -Wl,--gc-sections -Wl,--stack,16777216)
+    target_link_options(verify_protobuf PRIVATE -static -Wl,--gc-sections -Wl,--stack,16777216)
 
 else()
     message(STATUS "Configuring 'tool' for static-style linking (always enabled)")
