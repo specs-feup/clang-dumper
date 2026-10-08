@@ -51,6 +51,24 @@ def read_envelopes(path: Path, envelope_type: type) -> list:
 
 
 class ProtoMetadataTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        resource_dir = subprocess.run(
+            [str(ARGS.clang), "-print-resource-dir"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if resource_dir.returncode != 0:
+            raise RuntimeError(
+                "Cannot query the selected Clang resource directory: "
+                + resource_dir.stderr
+            )
+        resource_path = resource_dir.stdout.strip()
+        if not resource_path:
+            raise RuntimeError("Selected Clang returned an empty resource directory")
+        cls.compiler_flags = [f"-resource-dir={resource_path}"]
+
     def test_native_emission_contains_structured_metadata(self) -> None:
         descriptor_set = descriptor_pb2.FileDescriptorSet.FromString(
             ARGS.descriptor.read_bytes()
@@ -68,6 +86,7 @@ class ProtoMetadataTest(unittest.TestCase):
                     str(dump),
                     "--",
                     "-std=gnu++20",
+                    *self.compiler_flags,
                 ],
                 capture_output=True,
                 text=True,
@@ -258,6 +277,7 @@ class ProtoMetadataTest(unittest.TestCase):
                     str(dump),
                     "--",
                     "-std=gnu++20",
+                    *self.compiler_flags,
                 ],
                 capture_output=True,
                 text=True,
@@ -307,6 +327,7 @@ class ProtoMetadataTest(unittest.TestCase):
                     str(dump),
                     "--",
                     "-std=c++17",
+                    *self.compiler_flags,
                 ],
                 capture_output=True,
                 text=True,
@@ -362,6 +383,7 @@ class ProtoMetadataTest(unittest.TestCase):
                     str(dump),
                     "--",
                     "-std=c++17",
+                    *self.compiler_flags,
                 ],
                 capture_output=True,
                 text=True,
@@ -414,6 +436,7 @@ class ProtoMetadataTest(unittest.TestCase):
                     "--cuda-host-only",
                     "--cuda-gpu-arch=sm_35",
                     "-std=c++17",
+                    *self.compiler_flags,
                 ],
                 capture_output=True,
                 text=True,
@@ -446,6 +469,7 @@ class ProtoMetadataTest(unittest.TestCase):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--tool", type=Path, required=True)
+parser.add_argument("--clang", type=Path, required=True)
 parser.add_argument("--verifier", type=Path, required=True)
 parser.add_argument("--descriptor", type=Path, required=True)
 parser.add_argument("--schema", type=Path, required=True)

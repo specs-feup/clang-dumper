@@ -809,6 +809,7 @@ add_test(NAME proto_release_manifest_test
 add_test(NAME proto_metadata_emission_test
     COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_metadata.py"
         --tool "$<TARGET_FILE:tool>"
+        --clang "${CMAKE_CXX_COMPILER}"
         --verifier "$<TARGET_FILE:verify_protobuf>"
         --descriptor "${PROTO_DESCRIPTOR}"
         --schema "${PROTO_SCHEMA}")
