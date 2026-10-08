@@ -545,6 +545,56 @@ class ProtobufValidationModeTest(unittest.TestCase):
         self.assertEqual(raw_copy, self.stream)
         self.assertEqual(failure_copy, self.stream)
 
+    def test_plugin_stream_and_diagnostics_are_captured_separately(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="clang-dumper-runner-plugin-") as temp:
+            root = Path(temp)
+            input_file = root / "inputs" / "simple_function.cpp"
+            input_file.parent.mkdir()
+            input_file.write_text("int value;\n", encoding="utf-8")
+            plugin = root / "libplugin.so"
+            plugin.write_bytes(b"fixture plugin")
+            clang = self.write_executable(
+                root / "fake-clang",
+                "#!/usr/bin/env python3\n"
+                "import sys\n"
+                "assert '-w' not in sys.argv\n"
+                "sys.stdout.buffer.write(" + repr(self.stream) + ")\n"
+                "sys.stderr.write('fixture warning: kept on stderr\\n')\n",
+            )
+            verifier = self.write_executable(
+                root / "fake-verifier",
+                "#!/usr/bin/env python3\n"
+                "import pathlib, sys\n"
+                "sys.exit(0 if pathlib.Path(sys.argv[1]).read_bytes() == "
+                + repr(self.stream)
+                + " else 1)\n",
+            )
+            raw_dir = root / "raw"
+            status, message = run_single_test(
+                mode="plugin",
+                path=str(plugin),
+                input_file=input_file,
+                expected_dir=root / "expected",
+                platform_expected_dirs=[],
+                failure_output_dir=root / "failures",
+                raw_output_dir=raw_dir,
+                inputs_dir_str=str(input_file.parent),
+                generate=False,
+                enabled_features=set(),
+                clang_path=str(clang),
+                protobuf_verifier=str(verifier),
+            )
+
+            self.assertEqual(status, TestStatus.PASS)
+            self.assertEqual(message, "Valid Protobuf AST stream")
+            self.assertEqual(
+                (raw_dir / "simple_function.cpp.pb").read_bytes(), self.stream
+            )
+            self.assertEqual(
+                (raw_dir / "simple_function.cpp.stderr").read_text(encoding="utf-8"),
+                "fixture warning: kept on stderr\n",
+            )
+
 
 class PythonProtobufPinTest(unittest.TestCase):
     def test_python_pin_is_separate_and_used_by_ci(self) -> None:

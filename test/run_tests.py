@@ -1051,11 +1051,6 @@ def run_tool_and_normalize(
                 "-Xclang",
                 f"-system-header-threshold={system_header_threshold}",
             ]
-        if protobuf_mode:
-            # Plugin protocol bytes share stderr with Clang diagnostics.
-            # The text harness stripped warnings, so suppress them here to
-            # keep the captured stream parseable by the production verifier.
-            cmd.append("-w")
         cmd += flags + [
             "-fsyntax-only",
             input_file,
@@ -1069,17 +1064,21 @@ def run_tool_and_normalize(
             text=not protobuf_mode,
         )
 
-        stdout, captured_stderr = proc.communicate()
+        captured_stdout, captured_stderr = proc.communicate()
         if protobuf_mode:
-            stdout = stdout.decode("utf-8", errors="replace")
             if dump_path is not None:
+                stdout = captured_stdout.decode("utf-8", errors="replace")
                 raw_stderr = captured_stderr.decode("utf-8", errors="replace")
                 raw_dump = dump_path.read_bytes() if dump_path.exists() else b""
             else:
-                # The plugin writes its protocol stream to stderr.
-                raw_dump = captured_stderr
-                raw_stderr = ""
+                # The plugin writes protocol bytes to stdout and diagnostics
+                # to stderr. Keep both channels separate and never decode the
+                # binary stream as text.
+                stdout = ""
+                raw_dump = captured_stdout
+                raw_stderr = captured_stderr.decode("utf-8", errors="replace")
         elif dump_path is not None:
+            stdout = captured_stdout
             raw_stderr = captured_stderr
             raw_dump = (
                 dump_path.read_text(encoding="utf-8")
@@ -1087,6 +1086,7 @@ def run_tool_and_normalize(
                 else ""
             )
         else:
+            stdout = captured_stdout
             raw_stderr = captured_stderr
             raw_dump = strip_clang_diagnostics(raw_stderr)
     finally:
@@ -1297,10 +1297,6 @@ def run_single_test(
         else:
             head_excerpt = "(empty)"
             tail_excerpt = "(empty)"
-            if isinstance(raw_dump, bytes):
-                head_excerpt = tail_excerpt = (
-                    "Plugin stderr bytes are preserved in the .pb output"
-        )
         return TestStatus.FAIL, (
             f"Process exited with code {return_code}\n"
             f"Stderr (first 50 lines):\n{head_excerpt}\n"

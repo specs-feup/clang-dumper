@@ -3,12 +3,22 @@
 #include "Clang/ClangAst.h"
 #include "Clava/ProtoStream.h"
 
+#include <llvm/Support/raw_ostream.h>
+
 #include <memory>
 
 namespace {
 std::unique_ptr<clava::proto::ProtoStream> &pluginOutput() {
   static std::unique_ptr<clava::proto::ProtoStream> output;
   return output;
+}
+
+llvm::raw_ostream &pluginStdout() {
+  // Plugin actions can leave the static ProtoStream alive until process
+  // shutdown, after LLVM's managed llvm::outs() stream has been destroyed.
+  // Keep a non-owning, unbuffered wrapper around stdout alive for that stream.
+  static auto *output = new llvm::raw_fd_ostream(1, false, true);
+  return *output;
 }
 
 size_t &pluginInstances() {
@@ -46,7 +56,7 @@ public:
     // leave an empty stream before the real records.
     if (!pluginOutput())
       pluginOutput() =
-          std::make_unique<clava::proto::ProtoStream>(llvm::errs());
+          std::make_unique<clava::proto::ProtoStream>(pluginStdout());
     return DumpAstAction::CreateASTConsumer(CI, file);
   }
 

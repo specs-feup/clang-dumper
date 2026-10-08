@@ -15,13 +15,16 @@ executables are cross-compiled from Linux.
 
 ## Stand-alone output
 
-The stand-alone tool requires `-o` for structured output. It never writes the
-machine protocol to stderr, because Clang diagnostics would make that stream
-unparseable:
+The stand-alone tool requires `-o` for structured output. It writes the
+machine protocol to that file and leaves Clang diagnostics on stderr:
 
 ```sh
 build/tool -c source.cpp -o source.ast -- -std=c++17
 ```
+
+The Clang plugin writes its binary protocol stream to stdout and leaves
+compiler diagnostics on stderr. Keep stdout as a binary stream when invoking
+the plugin; do not merge it with stderr.
 
 For large dumps, the tool can stream a Zstandard frame directly to the output
 without buffering the AST in memory:
