@@ -42,9 +42,7 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
   }
 
 
-  visitChildren(T);
-  emit(T);
-  dumpIdToClassMap(T.getAsOpaquePtr(), "QualType");
+  emit(T, visitChildren(T));
 
 }
 
@@ -86,19 +84,6 @@ void ClangAstDumper::VisitAttrTop(const Attr *Node) {
 
   VisitAttr(Node);
 
-}
-
-void ClangAstDumper::dumpVisitedChildren(const void *pointer,
-                                         std::vector<int64_t> children) {
-  astwire::v2::ChildrenT record;record.node=clava::getId(pointer,id);
-  record.children=std::move(children);
-  clava::flat::FlatStream::current().record(std::move(record));
-}
-
-void ClangAstDumper::dumpIdToClassMap(const void *pointer,
-                                      std::string className) {
-  astwire::v2::NodeClassT record;record.node=clava::getId(pointer,id);record.class_name=className;
-  clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpTopLevelType(const QualType &type) {

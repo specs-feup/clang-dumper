@@ -84,7 +84,7 @@ const std::map<std::string, ClangAstDumper::TypeChildrenFn>
         TYPE_CHILDREN_ENTRY(ComplexType, VisitComplexTypeChildren),
 };
 
-void ClangAstDumper::visitChildren(const Type *T) {
+std::vector<int64_t> ClangAstDumper::visitChildren(const Type *T) {
     const std::string classname = clava::getClassName(T);
     auto it = TYPE_CHILDREN_VISITORS.find(classname);
 
@@ -96,10 +96,10 @@ void ClangAstDumper::visitChildren(const Type *T) {
         VisitTypeChildren(T, visitedChildren);
     }
 
-    dumpVisitedChildren(T, visitedChildren);
+    return visitedChildren;
 }
 
-void ClangAstDumper::visitChildren(const QualType &T) {
+std::vector<int64_t> ClangAstDumper::visitChildren(const QualType &T) {
     std::vector<int64_t> visitedChildren;
 
     VisitTypeTop(T.getTypePtr());
@@ -108,7 +108,7 @@ void ClangAstDumper::visitChildren(const QualType &T) {
     VisitTypeTop(
         T.getSingleStepDesugaredType(*const_cast<const ASTContext *>(Context)));
 
-    dumpVisitedChildren(T.getAsOpaquePtr(), visitedChildren);
+    return visitedChildren;
 }
 
 void ClangAstDumper::VisitTypeChildren(

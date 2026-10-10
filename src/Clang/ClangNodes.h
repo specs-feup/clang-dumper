@@ -88,11 +88,9 @@ int64_t getId(const Attr *addr, int id);
  */
 int64_t getId(const void *addr, int id);
 
-/** Resets the per-translation-unit dense pointer IDs used by wire pilots. */
+/** Restarts node ids at 1 for the next translation unit. */
 void resetDenseIds();
 
-/** Returns the number of non-null pointers assigned a dense wire ID. */
-size_t denseIdCount();
 
 /**
  *

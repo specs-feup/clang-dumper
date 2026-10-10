@@ -24,7 +24,6 @@ class DumpResources {
     static void init(int runId, int systemLevelThreshold);
     static void finish();
 
-    static void writeCounter(int set);
 
     static int runId;
     static int systemHeaderThreshold;

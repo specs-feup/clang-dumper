@@ -19,7 +19,7 @@ const std::map<std::string, ClangAstDumper::AttrChildrenFn>
         ATTR_CHILDREN_ENTRY(AlignedAttr, VisitAlignedAttrChildren),
 };
 
-void ClangAstDumper::visitChildren(const Attr *A) {
+std::vector<int64_t> ClangAstDumper::visitChildren(const Attr *A) {
     const std::string classname = clava::getClassName(A);
     auto it = ATTR_CHILDREN_VISITORS.find(classname);
 
@@ -31,7 +31,7 @@ void ClangAstDumper::visitChildren(const Attr *A) {
     }
     // By default, attributes have no children to visit
 
-    dumpVisitedChildren(A, visitedChildren);
+    return visitedChildren;
 }
 
 void ClangAstDumper::VisitAlignedAttrChildren(

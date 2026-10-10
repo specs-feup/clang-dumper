@@ -34,8 +34,10 @@ private:
   llvm::SmallPtrSet<const Decl *, 32> seenDecls;
   llvm::SmallPtrSet<const Attr *, 16> seenAttrs;
 
-  /** Writes the node's data record to the dump in progress. */
-  template <class T> void emit(const T &node) { clava::flat::FlatStream::current().node(node, Context, id); }
+  /** Writes the node record, with its already visited children, to the dump in progress. */
+  template <class T> void emit(const T &node, std::vector<int64_t> children) {
+    clava::flat::FlatStream::current().node(node, std::move(children), Context, id);
+  }
 
   // Children visitors are selected directly by the node's class name, as
   // reported on the wire format ("<Id to Class Map>" payloads). Adding a
@@ -139,15 +141,13 @@ private:
   void visitChildrenAndData(const Attr *A);
 
   // Children visitors
-  void dumpVisitedChildren(const void *pointer,
-                           std::vector<int64_t> children);
 
-  void visitChildren(const Decl *D);
-  void visitChildren(const Stmt *S);
-  void visitChildren(const Expr *E);
-  void visitChildren(const Type *T);
-  void visitChildren(const Attr *A);
-  void visitChildren(const QualType &T);
+  std::vector<int64_t> visitChildren(const Decl *D);
+  std::vector<int64_t> visitChildren(const Stmt *S);
+  std::vector<int64_t> visitChildren(const Expr *E);
+  std::vector<int64_t> visitChildren(const Type *T);
+  std::vector<int64_t> visitChildren(const Attr *A);
+  std::vector<int64_t> visitChildren(const QualType &T);
   void visitTemplateArguments(const TemplateArgumentLoc *templateArgs,
                               unsigned count);
   // A positive N expands through system-header level N and serializes its
@@ -319,7 +319,6 @@ private:
 public:
 
   // Dumpers of other kinds of information
-  void dumpIdToClassMap(const void *pointer, std::string className);
   void dumpTopLevelType(const QualType &type);
   void dumpTopLevelAttr(const Attr *attr);
 

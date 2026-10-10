@@ -231,11 +231,6 @@ int main(int argc, char **argv) {
           return 1;
         }
         end = record->payload_as_End();
-        if (!end->records().has_value() || !end->nodes().has_value() ||
-            !end->files().has_value() || !end->ids().has_value()) {
-          std::cerr << "end record is missing required counters\n";
-          return 1;
-        }
         sawEnd = true;
         break;
       default:
@@ -253,11 +248,6 @@ int main(int argc, char **argv) {
 
   if (!sawHeader || !end) {
     std::cerr << "FlatBuffers stream is missing its header or end record\n";
-    return 1;
-  }
-  if (*end->records() + 1 != records || *end->nodes() != nodes ||
-      *end->files() != files) {
-    std::cerr << "end-record counts do not match the decoded stream\n";
     return 1;
   }
   if (expectedGccAsm && !foundExpectedGccAsm) {

@@ -87,7 +87,7 @@ const std::map<std::string, ClangAstDumper::ExprChildrenFn>
                             VisitMSPropertyRefExprChildren),
 };
 
-void ClangAstDumper::visitChildren(const Stmt *S) {
+std::vector<int64_t> ClangAstDumper::visitChildren(const Stmt *S) {
     const std::string classname = clava::getClassName(S);
     auto it = STMT_CHILDREN_VISITORS.find(classname);
 
@@ -99,10 +99,10 @@ void ClangAstDumper::visitChildren(const Stmt *S) {
         VisitStmtChildren(S, visitedChildren);
     }
 
-    dumpVisitedChildren(S, visitedChildren);
+    return visitedChildren;
 }
 
-void ClangAstDumper::visitChildren(const Expr *E) {
+std::vector<int64_t> ClangAstDumper::visitChildren(const Expr *E) {
     const std::string classname = clava::getClassName(E);
     auto it = EXPR_CHILDREN_VISITORS.find(classname);
 
@@ -114,7 +114,7 @@ void ClangAstDumper::visitChildren(const Expr *E) {
         VisitExprChildren(E, visitedChildren);
     }
 
-    dumpVisitedChildren(E, visitedChildren);
+    return visitedChildren;
 }
 
 void ClangAstDumper::VisitStmtChildren(const Stmt *S,

@@ -273,11 +273,6 @@ void DumpResources::setSystemHeaderThreshold(int systemHeaderThreshold) {
     DumpResources::systemHeaderThreshold = systemHeaderThreshold;
 }
 
-void DumpResources::writeCounter(int id) {
-    astwire::v2::CounterT record;record.value=id;
-    clava::flat::FlatStream::current().record(std::move(record));
-}
-
 void DumpResources::init(int runId, int systemLevelThreshold) {
 
     DumpResources::runId = runId;

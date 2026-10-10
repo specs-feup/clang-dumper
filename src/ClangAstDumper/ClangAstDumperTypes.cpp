@@ -11,14 +11,8 @@ using namespace clang;
 
 
 void ClangAstDumper::visitChildrenAndData(const Type *T) {
-  // Visit children
-  visitChildren(T);
-
-  // Dump data
-  emit(T);
-
-  // Dump id
-  dumpIdToClassMap(T, clava::getClassName(T));
+  // Children come first, so the node record can list them.
+  emit(T, visitChildren(T));
 }
 
 /*

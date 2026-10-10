@@ -18,7 +18,6 @@ class FlatStream final {
  std::unordered_map<std::string,uint32_t> files;
  std::unordered_set<unsigned> inlineAsmLocations;
  std::vector<flatbuffers::Offset<fb::Record>> pending;
- uint64_t records=0,nodes=0,bytes=0;
  clang::SourceLocation pendingAsmLocation;
  bool trackingAsmQualifiers=false;
  bool pendingAsmInline=false;
@@ -37,13 +36,12 @@ public:
  template<class T> void record(T value) {
    fb::RecordT record;record.payload.Set(std::move(value));
    pending.push_back(fb::Record::Pack(builder,&record));
-   records++;
    if(builder.GetSize()>=64*1024)flushBlock();
  }
- template<class T> void node(T node,clang::ASTContext *ast,int id) {
+ template<class T> void node(T node,std::vector<int64_t> children,clang::ASTContext *ast,int id) {
    Context c{ast,id,[this](llvm::StringRef p){return fileId(p);},
              [this](clang::SourceLocation loc){return isInlineAsm(loc);}};
-   record(makeNode(node,c));nodes++;
+   auto out=makeNode(node,c);out.children=std::move(children);record(std::move(out));
  }
  void finish();
 };

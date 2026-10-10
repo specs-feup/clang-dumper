@@ -62,7 +62,7 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(UsingDecl, VisitUsingDeclChildren),
 };
 
-void ClangAstDumper::visitChildren(const Decl *D) {
+std::vector<int64_t> ClangAstDumper::visitChildren(const Decl *D) {
     const std::string classname = clava::getClassName(D);
     auto it = DECL_CHILDREN_VISITORS.find(classname);
 
@@ -74,7 +74,7 @@ void ClangAstDumper::visitChildren(const Decl *D) {
         VisitDeclChildren(D, visitedChildren);
     }
 
-    dumpVisitedChildren(D, visitedChildren);
+    return visitedChildren;
 }
 
 void ClangAstDumper::VisitDeclChildren(const Decl *D,

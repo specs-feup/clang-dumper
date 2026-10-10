@@ -55,11 +55,11 @@ void FlatStream::flushBlock() {
  auto root=fb::CreateBlock(builder,builder.CreateVector(pending));
  fb::FinishSizePrefixedBlockBuffer(builder,root);
  output.write(reinterpret_cast<const char*>(builder.GetBufferPointer()),builder.GetSize());
- bytes+=builder.GetSize();pending.clear();builder.Clear();
+ pending.clear();builder.Clear();
 }
 void FlatStream::finish() {
  if(finished)return;
- fb::EndT end;end.records=records;end.nodes=nodes;end.files=files.size();end.ids=clava::denseIdCount();record(std::move(end));
+ record(fb::EndT{});
  flushBlock();output.flush();finished=true;
 }
 }

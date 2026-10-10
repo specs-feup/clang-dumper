@@ -32,12 +32,6 @@ bool ClangAstDumper::dumpAttr(const Attr *attrAddr) {
 }
 
 void ClangAstDumper::visitChildrenAndData(const Attr *A) {
-  // Visit children
-  visitChildren(A);
-
-  // Dump data
-  emit(A);
-
-  // Dump id
-  dumpIdToClassMap(A, clava::getClassName(A));
+  // Children come first, so the node record can list them.
+  emit(A, visitChildren(A));
 }

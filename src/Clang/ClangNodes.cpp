@@ -106,8 +106,6 @@ int64_t clava::getId(const void *addr, int id) {
 
 void clava::resetDenseIds() { denseIds().clear(); }
 
-size_t clava::denseIdCount() { return denseIds().size(); }
-
 int64_t clava::getId(const Decl *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_DECL; }
 int64_t clava::getId(const Stmt *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_STMT; }
 int64_t clava::getId(const Expr *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_EXPR; }

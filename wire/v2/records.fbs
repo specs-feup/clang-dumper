@@ -2,14 +2,11 @@ include "common.fbs";
 namespace astwire.v2;
 table Header { schema_hash:string (required); }
 table File { id:uint = null; path:string (required); }
-table Children { node:long = null; children:[long] (required); }
-table NodeClass { node:long = null; class_name:string (required); }
 enum TopLevelKind : ubyte { Decl, Type, Attr }
 table TopLevel { kind:TopLevelKind = null; node:long = null; }
 table Include { source:string (required); name:string (required); line:uint = null; angled:bool = null; }
 table Pragma { source:string (required); line:uint = null; column:uint = null; }
 table TranslationUnitFile { id:int = null; path:string (required); }
-table Counter { value:int = null; }
 table Language {
   file:string (required);
   line_comment:bool = null;
@@ -43,4 +40,4 @@ table Language {
   long_width:uint = null;
   long_long_width:uint = null;
 }
-table End { records:ulong = null; nodes:ulong = null; files:uint = null; ids:uint = null; }
+table End {}
