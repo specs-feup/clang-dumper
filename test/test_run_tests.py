@@ -131,8 +131,8 @@ class FlatBuffersIntegrationTest(unittest.TestCase):
             record_vtable = table_vtable(last_record)
             payload_type_field = u16(record_vtable + 4)
             payload_type_offset = last_record + payload_type_field
-            self.assertEqual(12, changed[payload_type_offset])
-            changed[payload_type_offset] = 10  # End -> Counter; valid union, missing terminator.
+            self.assertEqual(9, changed[payload_type_offset])  # RecordPayload.End
+            changed[payload_type_offset] = 4  # End -> TopLevel; valid union, missing terminator.
 
             malformed = Path(directory) / "missing-end.clv2"
             malformed.write_bytes(changed)
