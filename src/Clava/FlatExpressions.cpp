@@ -567,4 +567,57 @@ std::unique_ptr<fb::CallExprDataT> makeUserDefinedLiteralData(
   return makeCallExprData(node, c);
 }
 
+/** Payload builder per emitted Clang class; other classes use the base Expr payload. */
+fb::NodeT makeNode(const clang::Expr *node, Context &c) {
+  auto out = nodeHeader(node, c);
+  FLAT_PAYLOAD(CharacterLiteral, makeCharacterLiteralData)
+  FLAT_PAYLOAD(IntegerLiteral, makeIntegerLiteralData)
+  FLAT_PAYLOAD(FloatingLiteral, makeFloatingLiteralData)
+  FLAT_PAYLOAD(CastExpr, makeCastExprData)
+  FLAT_PAYLOAD(CXXUnresolvedConstructExpr, makeCXXUnresolvedConstructExprData)
+  FLAT_PAYLOAD(CXXFunctionalCastExpr, makeCastExprData)
+  FLAT_PAYLOAD(CStyleCastExpr, makeExplicitCastExprData)
+  FLAT_PAYLOAD(CXXAddrspaceCastExpr, makeCXXNamedCastExprData)
+  FLAT_PAYLOAD(CXXConstCastExpr, makeCXXNamedCastExprData)
+  FLAT_PAYLOAD(CXXDynamicCastExpr, makeCXXNamedCastExprData)
+  FLAT_PAYLOAD(CXXReinterpretCastExpr, makeCXXNamedCastExprData)
+  FLAT_PAYLOAD(CXXStaticCastExpr, makeCXXNamedCastExprData)
+  FLAT_PAYLOAD(CXXBoolLiteralExpr, makeCXXBoolLiteralExprData)
+  FLAT_PAYLOAD(CompoundLiteralExpr, makeCompoundLiteralExprData)
+  FLAT_PAYLOAD(InitListExpr, makeInitListExprData)
+  FLAT_PAYLOAD(StringLiteral, makeStringLiteralData)
+  FLAT_PAYLOAD(DeclRefExpr, makeDeclRefExprData)
+  FLAT_PAYLOAD(DependentScopeDeclRefExpr, makeDependentScopeDeclRefExprData)
+  FLAT_PAYLOAD(UnresolvedLookupExpr, makeUnresolvedLookupExprData)
+  FLAT_PAYLOAD(UnresolvedMemberExpr, makeUnresolvedMemberExprData)
+  FLAT_PAYLOAD(CXXConstructExpr, makeCXXConstructExprData)
+  FLAT_PAYLOAD(CXXTemporaryObjectExpr, makeCXXTemporaryObjectExprData)
+  FLAT_PAYLOAD(MemberExpr, makeMemberExprData)
+  FLAT_PAYLOAD(MaterializeTemporaryExpr, makeMaterializeTemporaryExprData)
+  FLAT_PAYLOAD(BinaryOperator, makeBinaryOperatorData)
+  FLAT_PAYLOAD(UnaryOperator, makeUnaryOperatorData)
+  FLAT_PAYLOAD(CompoundAssignOperator, makeBinaryOperatorData)
+  FLAT_PAYLOAD(CallExpr, makeCallExprData)
+  FLAT_PAYLOAD(CXXMemberCallExpr, makeCXXMemberCallExprData)
+  FLAT_PAYLOAD(CXXOperatorCallExpr, makeCallExprData)
+  FLAT_PAYLOAD(UserDefinedLiteral, makeCallExprData)
+  FLAT_PAYLOAD(CXXTypeidExpr, makeCXXTypeidExprData)
+  FLAT_PAYLOAD(CXXDependentScopeMemberExpr, makeCXXDependentScopeMemberExprData)
+  FLAT_PAYLOAD(UnaryExprOrTypeTraitExpr, makeUnaryExprOrTypeTraitExprData)
+  FLAT_PAYLOAD(CXXNewExpr, makeCXXNewExprData)
+  FLAT_PAYLOAD(CXXDeleteExpr, makeCXXDeleteExprData)
+  FLAT_PAYLOAD(OffsetOfExpr, makeOffsetOfExprData)
+  FLAT_PAYLOAD(LambdaExpr, makeLambdaExprData)
+  FLAT_PAYLOAD(PredefinedExpr, makePredefinedExprData)
+  FLAT_PAYLOAD(SizeOfPackExpr, makeSizeOfPackExprData)
+  FLAT_PAYLOAD(ArrayInitLoopExpr, makeArrayInitLoopExprData)
+  FLAT_PAYLOAD(DesignatedInitExpr, makeDesignatedInitExprData)
+  FLAT_PAYLOAD(CXXNoexceptExpr, makeCXXNoexceptExprData)
+  FLAT_PAYLOAD(CXXPseudoDestructorExpr, makeCXXPseudoDestructorExprData)
+  FLAT_PAYLOAD(PseudoObjectExpr, makePseudoObjectExprData)
+  FLAT_PAYLOAD(MSPropertyRefExpr, makeMSPropertyRefExprData)
+  out.payload.Set(std::move(*makeExprData(node, c)));
+  return out;
+}
+
 } // namespace clava::flat

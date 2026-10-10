@@ -482,4 +482,48 @@ makeClassTemplatePartialSpecializationDeclData(
   return out;
 }
 
+/** Payload builder per emitted Clang class; other classes use the base Decl payload. */
+fb::NodeT makeNode(const clang::Decl *node, Context &c) {
+  auto out = nodeHeader(node, c);
+  FLAT_PAYLOAD(CXXConstructorDecl, makeCXXConstructorDeclData)
+  FLAT_PAYLOAD(CXXConversionDecl, makeCXXConversionDeclData)
+  FLAT_PAYLOAD(CXXDestructorDecl, makeCXXMethodDeclData)
+  FLAT_PAYLOAD(CXXMethodDecl, makeCXXMethodDeclData)
+  FLAT_PAYLOAD(FieldDecl, makeFieldDeclData)
+  FLAT_PAYLOAD(FunctionDecl, makeFunctionDeclData)
+  FLAT_PAYLOAD(ObjCImplementationDecl, makeNamedDeclData)
+  FLAT_PAYLOAD(ParmVarDecl, makeParmVarDeclData)
+  FLAT_PAYLOAD(ClassTemplateDecl, makeTemplateDeclData)
+  FLAT_PAYLOAD(FunctionTemplateDecl, makeTemplateDeclData)
+  FLAT_PAYLOAD(TypeAliasTemplateDecl, makeTemplateDeclData)
+  FLAT_PAYLOAD(VarTemplateDecl, makeTemplateDeclData)
+  FLAT_PAYLOAD(TemplateTypeParmDecl, makeTemplateTypeParmDeclData)
+  FLAT_PAYLOAD(TypeDecl, makeTypeDeclData)
+  FLAT_PAYLOAD(UnresolvedUsingTypenameDecl, makeUnresolvedUsingTypenameDeclData)
+  FLAT_PAYLOAD(EnumDecl, makeEnumDeclData)
+  FLAT_PAYLOAD(RecordDecl, makeRecordDeclData)
+  FLAT_PAYLOAD(CXXRecordDecl, makeCXXRecordDeclData)
+  FLAT_PAYLOAD(ClassTemplateSpecializationDecl, makeClassTemplateSpecializationDeclData)
+  FLAT_PAYLOAD(ClassTemplatePartialSpecializationDecl, makeClassTemplatePartialSpecializationDeclData)
+  FLAT_PAYLOAD(VarDecl, makeVarDeclData)
+  FLAT_PAYLOAD(EnumConstantDecl, makeValueDeclData)
+  FLAT_PAYLOAD(NonTypeTemplateParmDecl, makeNonTypeTemplateParmDeclData)
+  FLAT_PAYLOAD(UsingShadowDecl, makeNamedDeclData)
+  FLAT_PAYLOAD(TypeAliasDecl, makeTypedefNameDeclData)
+  FLAT_PAYLOAD(TypedefDecl, makeTypedefNameDeclData)
+  FLAT_PAYLOAD(AccessSpecDecl, makeAccessSpecDeclData)
+  FLAT_PAYLOAD(UsingDirectiveDecl, makeUsingDirectiveDeclData)
+  FLAT_PAYLOAD(NamespaceDecl, makeNamespaceDeclData)
+  FLAT_PAYLOAD(NamespaceAliasDecl, makeNamespaceAliasDeclData)
+  FLAT_PAYLOAD(LinkageSpecDecl, makeLinkageSpecDeclData)
+  FLAT_PAYLOAD(LabelDecl, makeNamedDeclData)
+  FLAT_PAYLOAD(StaticAssertDecl, makeStaticAssertDeclData)
+  FLAT_PAYLOAD(TemplateTemplateParmDecl, makeTemplateTemplateParmDeclData)
+  FLAT_PAYLOAD(MSPropertyDecl, makeMSPropertyDeclData)
+  FLAT_PAYLOAD(UsingDecl, makeUsingDeclData)
+  FLAT_PAYLOAD(VarTemplateSpecializationDecl, makeVarDeclData)
+  out.payload.Set(std::move(*makeDeclData(node, c)));
+  return out;
+}
+
 } // namespace clava::flat

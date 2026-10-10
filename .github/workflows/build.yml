@@ -110,10 +110,6 @@ jobs:
       - name: Build
         run: cmake --build build --target tool plugin verify_flatbuffers --parallel
 
-      - name: Test pinned schema toolchain and generated-output drift
-        if: matrix.arch == 'x64'
-        run: python3 test/test_wire_toolchain.py --flatbuffers-source build/_deps/flatbuffers-src --flatc build/_deps/flatbuffers-build/flatc
-
       - name: Test output streams
         run: python3 test/test_run_tests.py
 

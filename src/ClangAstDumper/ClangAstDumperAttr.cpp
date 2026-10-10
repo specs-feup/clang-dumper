@@ -24,8 +24,6 @@ bool ClangAstDumper::dumpAttr(const Attr *attrAddr) {
     return true;
   }
 
-  log(attrAddr);
-
   // A Dumper is created for each context,
   // no need to use id to disambiguate
   seenAttrs.insert(attrAddr);
@@ -38,7 +36,7 @@ void ClangAstDumper::visitChildrenAndData(const Attr *A) {
   visitChildren(A);
 
   // Dump data
-  dataDumper.dump(A);
+  emit(A);
 
   // Dump id
   dumpIdToClassMap(A, clava::getClassName(A));

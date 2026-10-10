@@ -146,4 +146,16 @@ std::unique_ptr<fb::MSAsmStmtDataT> makeMSAsmStmtData(
   return out;
 }
 
+/** Payload builder per emitted Clang class; other classes use the base Stmt payload. */
+fb::NodeT makeNode(const clang::Stmt *node, Context &c) {
+  auto out = nodeHeader(node, c);
+  FLAT_PAYLOAD(LabelStmt, makeLabelStmtData)
+  FLAT_PAYLOAD(GotoStmt, makeGotoStmtData)
+  FLAT_PAYLOAD(AttributedStmt, makeAttributedStmtData)
+  FLAT_PAYLOAD(GCCAsmStmt, makeGCCAsmStmtData)
+  FLAT_PAYLOAD(MSAsmStmt, makeMSAsmStmtData)
+  out.payload.Set(std::move(*makeStmtData(node, c)));
+  return out;
+}
+
 } // namespace clava::flat

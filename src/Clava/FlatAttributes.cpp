@@ -28,4 +28,17 @@ std::unique_ptr<fb::VisibilityAttrDataT> makeVisibilityAttrData(const Visibility
  auto out=std::make_unique<fb::VisibilityAttrDataT>();out->base=makeAttributeData(a,c);
  out->visibility_type=enumValue<fb::VisibilityType>(clava::VISIBILITY_ATTR_TYPE[a->getVisibility()]);return out;
 }
+
+/** Payload builder per emitted Clang class; other classes use the base Attr payload. */
+fb::NodeT makeNode(const clang::Attr *node, Context &c) {
+  auto out = nodeHeader(node, c);
+  FLAT_PAYLOAD(AlignedAttr, makeAlignedAttrData)
+  FLAT_PAYLOAD(OpenCLUnrollHintAttr, makeOpenCLUnrollHintAttrData)
+  FLAT_PAYLOAD(FormatAttr, makeFormatAttrData)
+  FLAT_PAYLOAD(NonNullAttr, makeNonNullAttrData)
+  FLAT_PAYLOAD(VisibilityAttr, makeVisibilityAttrData)
+  out.payload.Set(std::move(*makeAttributeData(node, c)));
+  return out;
+}
+
 }

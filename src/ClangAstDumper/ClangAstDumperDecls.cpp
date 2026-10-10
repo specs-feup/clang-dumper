@@ -4,7 +4,6 @@
 
 #include "../Clang/ClangNodes.h"
 #include "ClangAstDumper.h"
-#include "ClangAstDumperConstants.h"
 
 #include "clang/AST/AST.h"
 
@@ -17,7 +16,7 @@ void ClangAstDumper::visitChildrenAndData(const Decl *D) {
   visitChildren(D);
 
   // Dump data
-  dataDumper.dump(D);
+  emit(D);
 
   // Dump id
   dumpIdToClassMap(D, clava::getClassName(D));
@@ -35,8 +34,6 @@ bool ClangAstDumper::dumpDecl(const Decl *declAddr) {
   if (seenDecls.count(declAddr) != 0) {
     return true;
   }
-
-  log(declAddr);
 
   // A StmtDumper is created for each context,
   // no need to use id to disambiguate

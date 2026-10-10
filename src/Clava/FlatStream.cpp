@@ -2,21 +2,20 @@
 #include "FlatSchemaHash.h"
 namespace clava::flat {
 namespace { FlatStream *activeStream=nullptr; }
-#include "FlatDispatch.inc"
 FlatStream::FlatStream(llvm::raw_ostream &output):output(output) {
  if(activeStream)throw std::logic_error("Nested FlatBuffers dump streams");
- SetUnbuffered();activeStream=this;fb::HeaderT header;header.schema_hash=SchemaHash;record(std::move(header));
+ activeStream=this;fb::HeaderT header;header.schema_hash=SchemaHash;record(std::move(header));
 }
 FlatStream::~FlatStream(){if(activeStream==this)activeStream=nullptr;}
-FlatStream *FlatStream::active(){return activeStream;}
+FlatStream &FlatStream::current() {
+ if(!activeStream)throw std::logic_error("No AST dump in progress");
+ return *activeStream;
+}
 void FlatStream::beginSourceFile() {
  inlineAsmLocations.clear();
  pendingAsmLocation={};
  trackingAsmQualifiers=false;
  pendingAsmInline=false;
-}
-void FlatStream::write_impl(const char *,size_t size) {
- if(size)throw std::logic_error("Legacy text reached the complete FlatBuffers writer");
 }
 void FlatStream::observePreprocessorToken(clang::tok::TokenKind kind,
                                          clang::SourceLocation location) {
@@ -63,10 +62,4 @@ void FlatStream::finish() {
  fb::EndT end;end.records=records;end.nodes=nodes;end.files=files.size();end.ids=clava::denseIdCount();record(std::move(end));
  flushBlock();output.flush();finished=true;
 }
-bool emit(const clang::Decl * node,clang::ASTContext *ast,int id) { if(auto *s=FlatStream::active()){s->node(node,ast,id);return true;}return false;}
-bool emit(const clang::Stmt * node,clang::ASTContext *ast,int id) { if(auto *s=FlatStream::active()){s->node(node,ast,id);return true;}return false;}
-bool emit(const clang::Expr * node,clang::ASTContext *ast,int id) { if(auto *s=FlatStream::active()){s->node(node,ast,id);return true;}return false;}
-bool emit(const clang::Type * node,clang::ASTContext *ast,int id) { if(auto *s=FlatStream::active()){s->node(node,ast,id);return true;}return false;}
-bool emit(const clang::Attr * node,clang::ASTContext *ast,int id) { if(auto *s=FlatStream::active()){s->node(node,ast,id);return true;}return false;}
-bool emit(const clang::QualType & node,clang::ASTContext *ast,int id) { if(auto *s=FlatStream::active()){s->node(node,ast,id);return true;}return false;}
 }

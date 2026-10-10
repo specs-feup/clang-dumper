@@ -4,7 +4,6 @@
 
 #include "../Clang/ClangNodes.h"
 #include "ClangAstDumper.h"
-#include "ClangAstDumperConstants.h"
 
 #include "clang/AST/AST.h"
 
@@ -16,7 +15,7 @@ void ClangAstDumper::visitChildrenAndData(const Type *T) {
   visitChildren(T);
 
   // Dump data
-  dataDumper.dump(T);
+  emit(T);
 
   // Dump id
   dumpIdToClassMap(T, clava::getClassName(T));
@@ -35,8 +34,6 @@ bool ClangAstDumper::dumpType(const Type *typeAddr) {
     return true;
   }
 
-  log(typeAddr);
-
   // Dump type if it has not appeared yet
   // A TypeDumper is created for each context,
   // no need to use id to disambiguate
@@ -52,8 +49,6 @@ bool ClangAstDumper::dumpType(const QualType &type) {
   if (seenTypes.count(typeAddr) != 0) {
     return true;
   }
-
-  log("QualType", typeAddr);
 
   // Dump type if it has not appeared yet
   // A TypeDumper is created for each context,

@@ -26,8 +26,6 @@ class DumpResources {
 
     static void writeCounter(int set);
 
-    static std::ofstream includes;
-    static std::ofstream nodetypes;
     static int runId;
     static int systemHeaderThreshold;
 

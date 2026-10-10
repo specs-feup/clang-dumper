@@ -2,7 +2,6 @@
 
 #include "Clang/ClangAst.h"
 #include "Clang/ClangNodes.h"
-#include "Clava/DumpStream.h"
 #include "Clava/FlatStream.h"
 #include "llvm/Support/FileSystem.h"
 
@@ -65,7 +64,6 @@ public:
 
     clava::enableDenseIds();
     stream = std::make_unique<clava::flat::FlatStream>(*output);
-    clava::setDumpStream(*stream);
     return true;
   }
 
@@ -74,7 +72,6 @@ public:
       stream->finish();
       stream.reset();
     }
-    clava::setDumpStream(llvm::errs());
 
     if (output) {
       output->flush();

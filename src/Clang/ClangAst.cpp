@@ -8,9 +8,7 @@
 //------------------------------------------------------------------------------
 #include "ClangAst.h"
 #include "../Clava/HandlerCoverage.h"
-#include "../ClangAstDumper/ClangAstDumperConstants.h"
 #include "ClangNodes.h"
-#include "../Clava/DumpStream.h"
 
 #include <clang/AST/AST.h>
 #include <clang/AST/ASTConsumer.h>
@@ -68,14 +66,11 @@ void dumpFatalError(const Decl *D, const char *message) {
                  << (D == nullptr ? "<unknown>" : clava::getClassName(D)) << " "
                  << sanitizeErrorMessage(message) << "\n";
     llvm::errs().flush();
-    clava::dumpStream().flush();
     clava::reportHandlerCoverage();
     llvm::outs().flush();
 }
 
 } // namespace
-
-static constexpr const char *const PREFIX = "COUNTER";
 
 static llvm::cl::opt<bool> HandlerCoverageReport(
     "handler-coverage-report",
@@ -134,13 +129,9 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             FullSourceLoc fullLocation = Context->getFullLoc(D->getBeginLoc());
             if (fullLocation.isValid() && fullLocation.hasManager() &&
                 !fullLocation.isInSystemHeader()) {
-                if(auto *stream=clava::flat::FlatStream::active()) {
-                    astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Decl;
-                    record.node=clava::flat::wireId(clava::getId(D,id));stream->record(std::move(record));
-                } else {
-                    clava::dumpStream() << TOP_LEVEL_NODES << "\n";
-                    clava::dumpStream() << clava::getId(D,id) << "\n";
-                }
+                astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Decl;
+                record.node=clava::flat::wireId(clava::getId(D,id));
+                clava::flat::FlatStream::current().record(std::move(record));
             }
         } catch (const std::exception &e) {
             dumpFatalError(D, e.what());
@@ -181,26 +172,17 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
     // This must be done before AST processing begins
     CI.getPreprocessor().addPPCallbacks(
         std::make_unique<IncludeDumper>(CI.getSourceManager()));
-    if (auto *stream = clava::flat::FlatStream::active()) {
-        stream->beginSourceFile();
-    }
+    clava::flat::FlatStream::current().beginSourceFile();
     CI.getPreprocessor().setTokenWatcher([](const Token &token) {
-        if (auto *stream = clava::flat::FlatStream::active()) {
-            stream->observePreprocessorToken(token.getKind(),
-                                             token.getLocation());
-        }
+        clava::flat::FlatStream::current().observePreprocessorToken(
+            token.getKind(), token.getLocation());
     });
 
     dumpCompilerInstanceData(CI, file);
 
     // Dump id->file data
-    if(auto *stream=clava::flat::FlatStream::active()) {
-        astwire::v2::TranslationUnitFileT record;record.id=counter;record.path=file.str();stream->record(std::move(record));
-    } else {
-    clava::dumpStream() << ID_FILE_MAP << "\n";
-    clava::dumpStream() << counter << "\n";
-    clava::dumpStream() << file << "\n";
-    }
+    astwire::v2::TranslationUnitFileT fileRecord;fileRecord.id=counter;fileRecord.path=file.str();
+    clava::flat::FlatStream::current().record(std::move(fileRecord));
 
     ASTContext *Context = &CI.getASTContext();
 
@@ -210,79 +192,38 @@ DumpAstAction::CreateASTConsumer(CompilerInstance &CI, StringRef file) {
 
 void DumpAstAction::dumpCompilerInstanceData(CompilerInstance &CI,
                                              StringRef file) {
-    if(auto *stream=clava::flat::FlatStream::active()) {
-        astwire::v2::LanguageT record;record.file=file.str();
-        record.line_comment=+CI.getInvocation().getLangOpts().LineComment;
-        record.gnu_inline=+CI.getInvocation().getLangOpts().GNUInline;
-        record.c99=+CI.getInvocation().getLangOpts().C99;
-        record.c11=+CI.getInvocation().getLangOpts().C11;
-        record.c_plus_plus=+CI.getInvocation().getLangOpts().CPlusPlus;
-        record.c_plus_plus_11=+CI.getInvocation().getLangOpts().CPlusPlus11;
-        record.c_plus_plus_14=+CI.getInvocation().getLangOpts().CPlusPlus14;
-        record.c_plus_plus_17=+CI.getInvocation().getLangOpts().CPlusPlus17;
-        record.c_plus_plus_20=+CI.getInvocation().getLangOpts().CPlusPlus20;
-        record.c_plus_plus_23=+CI.getInvocation().getLangOpts().CPlusPlus23;
-        record.c_plus_plus_26=+CI.getInvocation().getLangOpts().CPlusPlus26;
-        record.has_digraphs=+CI.getInvocation().getLangOpts().Digraphs;
-        record.is_gnu=+CI.getInvocation().getLangOpts().GNUMode;
-        record.hex_floats=+CI.getInvocation().getLangOpts().HexFloats;
-        record.open_cl=+CI.getInvocation().getLangOpts().OpenCL;
-        record.open_cl_version=+CI.getInvocation().getLangOpts().OpenCLVersion;
-        record.native_half_type=+CI.getInvocation().getLangOpts().NativeHalfType;
-        record.cuda=+CI.getInvocation().getLangOpts().CUDA;
-        record.has_bool=+CI.getInvocation().getLangOpts().Bool;
-        record.has_half=+CI.getInvocation().getLangOpts().Half;
-        record.has_wchar=+CI.getInvocation().getLangOpts().WChar;
-        record.char_width=CI.getTarget().getCharWidth();
-        record.float_width=CI.getTarget().getFloatWidth();
-        record.double_width=CI.getTarget().getDoubleWidth();
-        record.long_double_width=CI.getTarget().getLongDoubleWidth();
-        record.bool_width=CI.getTarget().getBoolWidth();
-        record.short_width=CI.getTarget().getShortWidth();
-        record.int_width=CI.getTarget().getIntWidth();
-        record.long_width=CI.getTarget().getLongWidth();
-        record.long_long_width=CI.getTarget().getLongLongWidth();
-        stream->record(std::move(record));return;
-    }
-    clava::dump(COMPILER_INSTANCE_DATA);
-
-    clava::dump(file.str());
-
-    clava::dump(CI.getInvocation().getLangOpts().LineComment);
-    // Derived from Std.isC89 in Clang 3.8
-    clava::dump(CI.getInvocation().getLangOpts().GNUInline);
-    clava::dump(CI.getInvocation().getLangOpts().C99);
-    clava::dump(CI.getInvocation().getLangOpts().C11);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus11);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus14);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus17);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus20);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus23);
-    clava::dump(CI.getInvocation().getLangOpts().CPlusPlus26);
-    clava::dump(CI.getInvocation().getLangOpts().Digraphs);
-    clava::dump(CI.getInvocation().getLangOpts().GNUMode);
-    clava::dump(CI.getInvocation().getLangOpts().HexFloats);
-
-    clava::dump(CI.getInvocation().getLangOpts().OpenCL);
-    clava::dump(CI.getInvocation().getLangOpts().OpenCLVersion);
-    clava::dump(CI.getInvocation().getLangOpts().NativeHalfType);
-
-    clava::dump(CI.getInvocation().getLangOpts().CUDA);
-
-    clava::dump(CI.getInvocation().getLangOpts().Bool);
-    clava::dump(CI.getInvocation().getLangOpts().Half);
-    clava::dump(CI.getInvocation().getLangOpts().WChar);
-
-    clava::dump(CI.getTarget().getCharWidth());
-    clava::dump(CI.getTarget().getFloatWidth());
-    clava::dump(CI.getTarget().getDoubleWidth());
-    clava::dump(CI.getTarget().getLongDoubleWidth());
-    clava::dump(CI.getTarget().getBoolWidth());
-    clava::dump(CI.getTarget().getShortWidth());
-    clava::dump(CI.getTarget().getIntWidth());
-    clava::dump(CI.getTarget().getLongWidth());
-    clava::dump(CI.getTarget().getLongLongWidth());
+    astwire::v2::LanguageT record;record.file=file.str();
+    record.line_comment=+CI.getInvocation().getLangOpts().LineComment;
+    record.gnu_inline=+CI.getInvocation().getLangOpts().GNUInline;
+    record.c99=+CI.getInvocation().getLangOpts().C99;
+    record.c11=+CI.getInvocation().getLangOpts().C11;
+    record.c_plus_plus=+CI.getInvocation().getLangOpts().CPlusPlus;
+    record.c_plus_plus_11=+CI.getInvocation().getLangOpts().CPlusPlus11;
+    record.c_plus_plus_14=+CI.getInvocation().getLangOpts().CPlusPlus14;
+    record.c_plus_plus_17=+CI.getInvocation().getLangOpts().CPlusPlus17;
+    record.c_plus_plus_20=+CI.getInvocation().getLangOpts().CPlusPlus20;
+    record.c_plus_plus_23=+CI.getInvocation().getLangOpts().CPlusPlus23;
+    record.c_plus_plus_26=+CI.getInvocation().getLangOpts().CPlusPlus26;
+    record.has_digraphs=+CI.getInvocation().getLangOpts().Digraphs;
+    record.is_gnu=+CI.getInvocation().getLangOpts().GNUMode;
+    record.hex_floats=+CI.getInvocation().getLangOpts().HexFloats;
+    record.open_cl=+CI.getInvocation().getLangOpts().OpenCL;
+    record.open_cl_version=+CI.getInvocation().getLangOpts().OpenCLVersion;
+    record.native_half_type=+CI.getInvocation().getLangOpts().NativeHalfType;
+    record.cuda=+CI.getInvocation().getLangOpts().CUDA;
+    record.has_bool=+CI.getInvocation().getLangOpts().Bool;
+    record.has_half=+CI.getInvocation().getLangOpts().Half;
+    record.has_wchar=+CI.getInvocation().getLangOpts().WChar;
+    record.char_width=CI.getTarget().getCharWidth();
+    record.float_width=CI.getTarget().getFloatWidth();
+    record.double_width=CI.getTarget().getDoubleWidth();
+    record.long_double_width=CI.getTarget().getLongDoubleWidth();
+    record.bool_width=CI.getTarget().getBoolWidth();
+    record.short_width=CI.getTarget().getShortWidth();
+    record.int_width=CI.getTarget().getIntWidth();
+    record.long_width=CI.getTarget().getLongWidth();
+    record.long_long_width=CI.getTarget().getLongLongWidth();
+    clava::flat::FlatStream::current().record(std::move(record));
 }
 
 /*** IncludeDumper ***/
@@ -297,17 +238,9 @@ void IncludeDumper::InclusionDirective(
     SrcMgr::CharacteristicKind FileType) {
 
     if (!sourceManager.isInSystemHeader(HashLoc)) {
-        if(auto *stream=clava::flat::FlatStream::active()) {
-            astwire::v2::IncludeT record;record.source=sourceManager.getFilename(HashLoc).str();record.name=FileName.str();
-            record.line=sourceManager.getSpellingLineNumber(HashLoc);record.angled=IsAngled;stream->record(std::move(record));return;
-        }
-        // Includes information in stream
-        clava::dumpStream() << INCLUDES << "\n";
-        // Source
-        clava::dumpStream() << sourceManager.getFilename(HashLoc).str() << "\n";
-        clava::dumpStream() << FileName.str() << "\n";
-        clava::dumpStream() << sourceManager.getSpellingLineNumber(HashLoc) << "\n";
-        clava::dumpStream() << IsAngled << "\n";
+        astwire::v2::IncludeT record;record.source=sourceManager.getFilename(HashLoc).str();record.name=FileName.str();
+        record.line=sourceManager.getSpellingLineNumber(HashLoc);record.angled=IsAngled;
+        clava::flat::FlatStream::current().record(std::move(record));
     }
 }
 
@@ -319,15 +252,9 @@ void IncludeDumper::PragmaDirective(SourceLocation Loc,
         return;
     }
 
-    if(auto *stream=clava::flat::FlatStream::active()) {
-        astwire::v2::PragmaT record;record.source=sourceManager.getFilename(Loc).str();record.line=sourceManager.getSpellingLineNumber(Loc);
-        record.column=sourceManager.getSpellingColumnNumber(Loc);stream->record(std::move(record));return;
-    }
-    // Pragma location
-    clava::dump(PRAGMA);
-    clava::dump(sourceManager.getFilename(Loc));
-    clava::dump(sourceManager.getSpellingLineNumber(Loc));
-    clava::dump(sourceManager.getSpellingColumnNumber(Loc));
+    astwire::v2::PragmaT record;record.source=sourceManager.getFilename(Loc).str();record.line=sourceManager.getSpellingLineNumber(Loc);
+    record.column=sourceManager.getSpellingColumnNumber(Loc);
+    clava::flat::FlatStream::current().record(std::move(record));
 }
 
 
@@ -335,9 +262,6 @@ void IncludeDumper::PragmaDirective(SourceLocation Loc,
  * DumpResources Implementations
  */
 
-// File instantiations
-std::ofstream DumpResources::includes;
-std::ofstream DumpResources::nodetypes;
 int DumpResources::runId;
 int DumpResources::systemHeaderThreshold;
 
@@ -350,14 +274,8 @@ void DumpResources::setSystemHeaderThreshold(int systemHeaderThreshold) {
 }
 
 void DumpResources::writeCounter(int id) {
-    if(auto *stream=clava::flat::FlatStream::active()) {
-        astwire::v2::CounterT record;record.value=id;stream->record(std::move(record));return;
-    }
-
-    // Output is processed with a line iterator, allows multiple-line processing
-
-    clava::dumpStream() << PREFIX << "\n";
-    clava::dumpStream() << id << "\n";
+    astwire::v2::CounterT record;record.value=id;
+    clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void DumpResources::init(int runId, int systemLevelThreshold) {

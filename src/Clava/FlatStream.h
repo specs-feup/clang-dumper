@@ -11,8 +11,8 @@ fb::NodeT makeNode(const clang::Type *,Context &);
 fb::NodeT makeNode(const clang::Attr *,Context &);
 fb::NodeT makeNode(const clang::QualType &,Context &);
 
-/** Incremental size-prefixed blocks sharing vtables across records. */
-class FlatStream final : public llvm::raw_ostream {
+/** Writes the AST as size-prefixed FlatBuffers blocks of records (about 64 KiB each). One stream is active per dump. */
+class FlatStream final {
  llvm::raw_ostream &output;
  flatbuffers::FlatBufferBuilder builder;
  std::unordered_map<std::string,uint32_t> files;
@@ -24,14 +24,13 @@ class FlatStream final : public llvm::raw_ostream {
  bool pendingAsmInline=false;
  void flushBlock();
  bool finished=false;
- void write_impl(const char *,size_t) override;
- uint64_t current_pos() const override {return bytes;}
  uint32_t fileId(llvm::StringRef path);
  bool isInlineAsm(clang::SourceLocation location) const;
 public:
  explicit FlatStream(llvm::raw_ostream &output);
- ~FlatStream() override;
- static FlatStream *active();
+ ~FlatStream();
+ /** The stream of the dump in progress. */
+ static FlatStream &current();
  void beginSourceFile();
  void observePreprocessorToken(clang::tok::TokenKind kind,
                                clang::SourceLocation location);

@@ -275,7 +275,6 @@ set(SOURCE_FILES
     src/Clang/ClangAst.cpp
     src/Clang/ClangNodes.cpp
     src/ClangEnums/ClangEnums.cpp
-    src/Clava/DumpStream.cpp
     src/Clava/HandlerCoverage.cpp
     src/Clava/FlatCommon.cpp
     src/Clava/FlatAttributes.cpp
@@ -284,11 +283,6 @@ set(SOURCE_FILES
     src/Clava/FlatExpressions.cpp
     src/Clava/FlatStatements.cpp
     src/Clava/FlatStream.cpp
-    src/ClavaDataDumper/ClavaDataDumper.cpp
-    src/ClavaDataDumper/ClavaDataDumperAttrs.cpp
-    src/ClavaDataDumper/ClavaDataDumperDecls.cpp
-    src/ClavaDataDumper/ClavaDataDumperStmts.cpp
-    src/ClavaDataDumper/ClavaDataDumperTypes.cpp
     src/ChildrenVisitor/ChildrenVisitorAttrs.cpp
     src/ChildrenVisitor/ChildrenVisitorDecls.cpp
     src/ChildrenVisitor/ChildrenVisitorExtras.cpp
@@ -319,7 +313,6 @@ else()
 endif()
 set(AST_WIRE_V2_DIR "${CMAKE_CURRENT_BINARY_DIR}/wire-v2")
 file(GLOB AST_WIRE_V2_SCHEMAS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/wire/v2/*.fbs")
-file(GLOB AST_WIRE_V2_BUILDERS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/Clava/Flat*.cpp")
 add_custom_command(
     OUTPUT "${AST_WIRE_V2_DIR}/complete.stamp"
     BYPRODUCTS
@@ -331,23 +324,15 @@ add_custom_command(
         "${AST_WIRE_V2_DIR}/expressions_generated.h"
         "${AST_WIRE_V2_DIR}/FlatSchemaHash.h"
         "${AST_WIRE_V2_DIR}/FlatEnumSupport.h"
-        "${AST_WIRE_V2_DIR}/FlatHandlerDeclarations.inc"
-        "${AST_WIRE_V2_DIR}/FlatDispatch.inc"
         "${AST_WIRE_V2_DIR}/records_generated.h"
         "${AST_WIRE_V2_DIR}/statements_generated.h"
         "${AST_WIRE_V2_DIR}/types_generated.h"
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
         --flatc "${AST_WIRE_FLATC}"
         --out "${AST_WIRE_V2_DIR}"
-        --manifest "${CMAKE_CURRENT_SOURCE_DIR}/wire/generated.sha256"
-    DEPENDS ${AST_WIRE_V2_SCHEMAS} ${AST_WIRE_V2_BUILDERS}
+    DEPENDS ${AST_WIRE_V2_SCHEMAS}
         "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
         "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers-version.env"
-        "${CMAKE_CURRENT_SOURCE_DIR}/wire/generated.sha256"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperDecls.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperTypes.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperStmts.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClavaDataDumper/ClavaDataDumperAttrs.cpp"
         ${AST_WIRE_FLATC_DEPENDENCY}
     VERBATIM)
 add_custom_target(ast_wire_v2 DEPENDS "${AST_WIRE_V2_DIR}/complete.stamp")

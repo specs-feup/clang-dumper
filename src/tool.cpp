@@ -4,7 +4,6 @@
 #include <clang/Basic/MakeSupport.h>
 
 #include "Clang/ClangAst.h"
-#include "Clava/DumpStream.h"
 #include "Clava/FlatStream.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/FileSystem.h"
@@ -213,7 +212,6 @@ int main(int argc, const char *argv[]) {
 
     clava::enableDenseIds();
     dumpStream = std::make_unique<clava::flat::FlatStream>(*dumpOutput);
-    clava::setDumpStream(*dumpStream);
   }
 
   if (!SyntaxCheckOnlyOption) {

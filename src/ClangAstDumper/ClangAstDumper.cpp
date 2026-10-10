@@ -6,23 +6,16 @@
 #include "ClangAstDumper.h"
 #include "../Clang/ClangNodes.h"
 #include "../ClangEnums/ClangEnums.h"
-#include "../Clava/DumpStream.h"
-#include "ClangAstDumperConstants.h"
 
 #include "clang/Lex/Lexer.h"
 
 #include "clang/Basic/SourceManager.h"
 
-// #define DEBUG
-
-// #define VISIT_CHECK
-
 using namespace clang;
 
 ClangAstDumper::ClangAstDumper(ASTContext *Context, int id,
                                int systemHeaderThreshold)
-    : Context(Context), id(id), systemHeaderThreshold(systemHeaderThreshold),
-      dataDumper(Context, id){};
+    : Context(Context), id(id), systemHeaderThreshold(systemHeaderThreshold) {}
 
 // This method is equivalent to a VisitQualType() in ClangAstDumperTypes.cpp
 void ClangAstDumper::VisitTypeTop(const QualType &T) {
@@ -33,10 +26,6 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
 
   // Check if QualType is the same as the underlying type
   if ((void *)T.getTypePtr() == T.getAsOpaquePtr()) {
-#ifdef VISIT_CHECK
-    clava::dump(TOP_VISIT_START);
-    clava::dump(clava::getId(T.getTypePtr(), id));
-#endif
 
     // TODO: AST dump method relies on visiting the nodes multiple times
     // For now, detect it to avoid visiting children more than once
@@ -45,10 +34,6 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
     }
 
     dumpType(T.getTypePtr());
-#ifdef VISIT_CHECK
-    clava::dump(TOP_VISIT_END);
-    clava::dump(clava::getId(T.getTypePtr(), id));
-#endif
     return;
   }
 
@@ -56,19 +41,11 @@ void ClangAstDumper::VisitTypeTop(const QualType &T) {
     return;
   }
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_START);
-  clava::dump(clava::getId(T, id));
-#endif
 
   visitChildren(T);
-  dataDumper.dump(T);
+  emit(T);
   dumpIdToClassMap(T.getAsOpaquePtr(), "QualType");
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_END);
-  clava::dump(clava::getId(T, id));
-#endif
 }
 
 void ClangAstDumper::VisitTypeTop(const Type *T) {
@@ -76,17 +53,9 @@ void ClangAstDumper::VisitTypeTop(const Type *T) {
     return;
   }
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_START);
-  clava::dump(clava::getId(T, id));
-#endif
 
   TypeVisitor::Visit(T);
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_END);
-  clava::dump(clava::getId(T, id));
-#endif
 }
 
 void ClangAstDumper::VisitStmtTop(const Stmt *Node) {
@@ -94,17 +63,9 @@ void ClangAstDumper::VisitStmtTop(const Stmt *Node) {
     return;
   }
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_START);
-  clava::dump(clava::getId(Node, id));
-#endif
 
   ConstStmtVisitor::Visit(Node);
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_END);
-  clava::dump(clava::getId(Node, id));
-#endif
 }
 
 void ClangAstDumper::VisitDeclTop(const Decl *Node) {
@@ -112,17 +73,9 @@ void ClangAstDumper::VisitDeclTop(const Decl *Node) {
     return;
   }
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_START);
-  clava::dump(clava::getId(Node, id));
-#endif
 
   ConstDeclVisitor::Visit(Node);
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_END);
-  clava::dump(clava::getId(Node, id));
-#endif
 }
 
 void ClangAstDumper::VisitAttrTop(const Attr *Node) {
@@ -130,77 +83,32 @@ void ClangAstDumper::VisitAttrTop(const Attr *Node) {
     return;
   }
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_START);
-  clava::dump(clava::getId(Node, id));
-#endif
 
   VisitAttr(Node);
 
-#ifdef VISIT_CHECK
-  clava::dump(TOP_VISIT_END);
-  clava::dump(clava::getId(Node, id));
-#endif
 }
-
-void ClangAstDumper::log(std::string name, const void *addr) {
-#ifdef DEBUG
-  llvm::errs() << name << " " << addr << "\n";
-#endif
-}
-
-void ClangAstDumper::log(const Decl *D) { log(clava::getClassName(D), D); }
-
-void ClangAstDumper::log(const Stmt *S) { log(clava::getClassName(S), S); }
-
-void ClangAstDumper::log(const Type *T) { log(clava::getClassName(T), T); }
-
-void ClangAstDumper::log(const Attr *A) { log(clava::getClassName(A), A); }
 
 void ClangAstDumper::dumpVisitedChildren(const void *pointer,
                                          std::vector<std::string> children) {
-  if(auto *stream=clava::flat::FlatStream::active()) {
-    astwire::v2::ChildrenT record;record.node=clava::flat::wireId(clava::getId(pointer,id));
-    for(const auto &child:children)record.children.push_back(clava::flat::wireId(child));
-    stream->record(std::move(record));return;
-  }
-  clava::dumpStream() << VISITED_CHILDREN << "\n";
-  // If node has children, pointer will not be null
-  clava::dumpStream() << clava::getId(pointer, id) << "\n";
-  clava::dumpStream() << children.size() << "\n";
-
-  for (auto child : children) {
-    clava::dumpStream() << child << "\n";
-  }
+  astwire::v2::ChildrenT record;record.node=clava::flat::wireId(clava::getId(pointer,id));
+  for(const auto &child:children)record.children.push_back(clava::flat::wireId(child));
+  clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpIdToClassMap(const void *pointer,
                                       std::string className) {
-  if(auto *stream=clava::flat::FlatStream::active()) {
-    astwire::v2::NodeClassT record;record.node=clava::flat::wireId(clava::getId(pointer,id));record.class_name=className;
-    stream->record(std::move(record));return;
-  }
-  clava::dumpStream() << ID_TO_CLASS_MAP << "\n";
-  clava::dumpStream() << clava::getId(pointer, id) << "\n";
-  clava::dumpStream() << className << "\n";
+  astwire::v2::NodeClassT record;record.node=clava::flat::wireId(clava::getId(pointer,id));record.class_name=className;
+  clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpTopLevelType(const QualType &type) {
-  if(auto *stream=clava::flat::FlatStream::active()) {
-    astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Type;record.node=clava::flat::wireId(clava::getId(type,id));
-    stream->record(std::move(record));return;
-  }
-  clava::dumpStream() << TOP_LEVEL_TYPES << "\n";
-  clava::dump(type, id);
+  astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Type;record.node=clava::flat::wireId(clava::getId(type,id));
+  clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
-  if(auto *stream=clava::flat::FlatStream::active()) {
-    astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Attr;record.node=clava::flat::wireId(clava::getId(attr,id));
-    stream->record(std::move(record));return;
-  }
-  clava::dumpStream() << TOP_LEVEL_ATTRIBUTES << "\n";
-  clava::dumpStream() << clava::getId(attr, id) << "\n";
+  astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Attr;record.node=clava::flat::wireId(clava::getId(attr,id));
+  clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::visitTemplateArguments(

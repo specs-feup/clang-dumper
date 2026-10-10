@@ -41,8 +41,21 @@ std::unique_ptr<fb::ExceptionSpecificationT> makeExceptionSpecification(const cl
 std::unique_ptr<fb::OffsetOfComponentT> makeOffsetOfComponent(const clang::OffsetOfExpr *expr, unsigned index, Context &c);
 std::unique_ptr<fb::DesignatorT> makeDesignator(const clang::DesignatedInitExpr::Designator *designator, Context &c);
 std::unique_ptr<fb::NestedNameSpecifierT> makeNestedNameSpecifier(clang::NestedNameSpecifier *specifier, Context &c);
+std::unique_ptr<fb::StmtDataT> makeStmtData(const clang::Stmt *stmt, Context &c);
 
-// Handler declarations are generated from the direct native definitions.
-#include "FlatHandlerDeclarations.inc"
+/** A Node record with the node's wire id and Clang class name; the family's makeNode adds the payload. */
+template <class T> fb::NodeT nodeHeader(const T *node, Context &c) {
+  fb::NodeT out;
+  out.id = wireId(clava::getId(node, c.id));
+  out.class_name = clava::getClassName(node);
+  return out;
+}
+
+/** Inside makeNode: nodes of Clang class {@code Class} get the payload built by {@code Builder}. */
+#define FLAT_PAYLOAD(Class, Builder)                                                                     \
+  if (out.class_name == #Class) {                                                                        \
+    out.payload.Set(std::move(*Builder(static_cast<const clang::Class *>(node), c)));                    \
+    return out;                                                                                          \
+  }
 }
 #endif
