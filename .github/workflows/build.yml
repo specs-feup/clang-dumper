@@ -45,8 +45,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: generated-enums
-          path: |
-            src/enums_cpp/
+          # A single upload path is stored without its directory; downloads restore it into src/enums_cpp/.
+          path: src/enums_cpp/
           retention-days: 1
           if-no-files-found: error
 
@@ -78,7 +78,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-enums
-          path: src/
+          path: src/enums_cpp/
 
       - name: Install LLVM and dependencies
         run: |
@@ -224,7 +224,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-enums
-          path: src/
+          path: src/enums_cpp/
 
       - name: Install LLVM
         run: |
@@ -385,7 +385,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-enums
-          path: src/
+          path: src/enums_cpp/
 
       - name: Install host tools
         run: |
@@ -591,7 +591,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-enums
-          path: release-staging/generated-enums/
+          path: release-staging/generated-enums/enums_cpp/
 
       - name: Package generated enums for release
         run: |
