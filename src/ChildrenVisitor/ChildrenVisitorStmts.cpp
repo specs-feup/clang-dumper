@@ -14,7 +14,7 @@
 // visitor (e.g. all named casts use the ExplicitCastExpr visitor).
 #define STMT_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
   {#CLASS, [](ClangAstDumper &self, const Stmt *S,                             \
-              std::vector<std::string> &children) {                            \
+              std::vector<int64_t> &children) {                            \
     self.VISITOR(static_cast<const CLASS *>(S), children);                     \
   }}
 
@@ -40,7 +40,7 @@ const std::map<std::string, ClangAstDumper::StmtChildrenFn>
 // use the generic expression visitor (sub-statements plus type).
 #define EXPR_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
   {#CLASS, [](ClangAstDumper &self, const Expr *E,                             \
-              std::vector<std::string> &children) {                            \
+              std::vector<int64_t> &children) {                            \
     self.VISITOR(static_cast<const CLASS *>(E), children);                     \
   }}
 
@@ -91,7 +91,7 @@ void ClangAstDumper::visitChildren(const Stmt *S) {
     const std::string classname = clava::getClassName(S);
     auto it = STMT_CHILDREN_VISITORS.find(classname);
 
-    std::vector<std::string> visitedChildren;
+    std::vector<int64_t> visitedChildren;
     if (it != STMT_CHILDREN_VISITORS.end()) {
         it->second(*this, S, visitedChildren);
     } else {
@@ -106,7 +106,7 @@ void ClangAstDumper::visitChildren(const Expr *E) {
     const std::string classname = clava::getClassName(E);
     auto it = EXPR_CHILDREN_VISITORS.find(classname);
 
-    std::vector<std::string> visitedChildren;
+    std::vector<int64_t> visitedChildren;
     if (it != EXPR_CHILDREN_VISITORS.end()) {
         it->second(*this, E, visitedChildren);
     } else {
@@ -118,7 +118,7 @@ void ClangAstDumper::visitChildren(const Expr *E) {
 }
 
 void ClangAstDumper::VisitStmtChildren(const Stmt *S,
-                                       std::vector<std::string> &children) {
+                                       std::vector<int64_t> &children) {
     // Visit Stmt children
     for (const Stmt *SubStmt : S->children()) {
         if (SubStmt) {
@@ -128,7 +128,7 @@ void ClangAstDumper::VisitStmtChildren(const Stmt *S,
 }
 
 void ClangAstDumper::VisitDeclStmtChildren(const DeclStmt *S,
-                                           std::vector<std::string> &children) {
+                                           std::vector<int64_t> &children) {
     // Do not visit sub-statements, only decls
 
     // Visit decls
@@ -139,7 +139,7 @@ void ClangAstDumper::VisitDeclStmtChildren(const DeclStmt *S,
 }
 
 void ClangAstDumper::VisitIfStmtChildren(const IfStmt *S,
-                                         std::vector<std::string> &children) {
+                                         std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -150,7 +150,7 @@ void ClangAstDumper::VisitIfStmtChildren(const IfStmt *S,
 }
 
 void ClangAstDumper::VisitForStmtChildren(const ForStmt *S,
-                                          std::vector<std::string> &children) {
+                                          std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the for stmts in a
     // controlled manner
 
@@ -162,7 +162,7 @@ void ClangAstDumper::VisitForStmtChildren(const ForStmt *S,
 }
 
 void ClangAstDumper::VisitWhileStmtChildren(
-    const WhileStmt *S, std::vector<std::string> &children) {
+    const WhileStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -172,7 +172,7 @@ void ClangAstDumper::VisitWhileStmtChildren(
 }
 
 void ClangAstDumper::VisitDoStmtChildren(const DoStmt *S,
-                                         std::vector<std::string> &children) {
+                                         std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -181,7 +181,7 @@ void ClangAstDumper::VisitDoStmtChildren(const DoStmt *S,
 }
 
 void ClangAstDumper::VisitCXXForRangeStmtChildren(
-    const CXXForRangeStmt *S, std::vector<std::string> &children) {
+    const CXXForRangeStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -195,7 +195,7 @@ void ClangAstDumper::VisitCXXForRangeStmtChildren(
 }
 
 void ClangAstDumper::VisitCXXCatchStmtChildren(
-    const CXXCatchStmt *S, std::vector<std::string> &children) {
+    const CXXCatchStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -204,7 +204,7 @@ void ClangAstDumper::VisitCXXCatchStmtChildren(
 }
 
 void ClangAstDumper::VisitCXXTryStmtChildren(
-    const CXXTryStmt *S, std::vector<std::string> &children) {
+    const CXXTryStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -215,7 +215,7 @@ void ClangAstDumper::VisitCXXTryStmtChildren(
 }
 
 void ClangAstDumper::VisitCaseStmtChildren(const CaseStmt *S,
-                                           std::vector<std::string> &children) {
+                                           std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -225,7 +225,7 @@ void ClangAstDumper::VisitCaseStmtChildren(const CaseStmt *S,
 }
 
 void ClangAstDumper::VisitDefaultStmtChildren(
-    const DefaultStmt *S, std::vector<std::string> &children) {
+    const DefaultStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -233,7 +233,7 @@ void ClangAstDumper::VisitDefaultStmtChildren(
 }
 
 void ClangAstDumper::VisitGotoStmtChildren(const GotoStmt *S,
-                                           std::vector<std::string> &children) {
+                                           std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -241,7 +241,7 @@ void ClangAstDumper::VisitGotoStmtChildren(const GotoStmt *S,
 }
 
 void ClangAstDumper::VisitLabelStmtChildren(
-    const LabelStmt *S, std::vector<std::string> &children) {
+    const LabelStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -251,7 +251,7 @@ void ClangAstDumper::VisitLabelStmtChildren(
 }
 
 void ClangAstDumper::VisitAttributedStmtChildren(
-    const AttributedStmt *S, std::vector<std::string> &children) {
+    const AttributedStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -265,7 +265,7 @@ void ClangAstDumper::VisitAttributedStmtChildren(
 }
 
 void ClangAstDumper::VisitCapturedStmtChildren(
-    const CapturedStmt *S, std::vector<std::string> &children) {
+    const CapturedStmt *S, std::vector<int64_t> &children) {
     // Do not visit sub-statements automatically, visit the if stmts in a
     // controlled manner
 
@@ -273,7 +273,7 @@ void ClangAstDumper::VisitCapturedStmtChildren(
 }
 
 void ClangAstDumper::VisitExprChildren(const Expr *E,
-                                       std::vector<std::string> &children) {
+                                       std::vector<int64_t> &children) {
     // Visit sub-statements
     VisitStmtChildren(E, children);
 
@@ -283,7 +283,7 @@ void ClangAstDumper::VisitExprChildren(const Expr *E,
 }
 
 void ClangAstDumper::VisitInitListExprChildren(
-    const InitListExpr *E, std::vector<std::string> &children) {
+    const InitListExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -296,7 +296,7 @@ void ClangAstDumper::VisitInitListExprChildren(
 }
 
 void ClangAstDumper::VisitDeclRefExprChildren(
-    const DeclRefExpr *E, std::vector<std::string> &children) {
+    const DeclRefExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -306,7 +306,7 @@ void ClangAstDumper::VisitDeclRefExprChildren(
 }
 
 void ClangAstDumper::VisitDependentScopeDeclRefExprChildren(
-    const DependentScopeDeclRefExpr *E, std::vector<std::string> &children) {
+    const DependentScopeDeclRefExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -314,7 +314,7 @@ void ClangAstDumper::VisitDependentScopeDeclRefExprChildren(
 }
 
 void ClangAstDumper::VisitOffsetOfExprChildren(
-    const OffsetOfExpr *E, std::vector<std::string> &children) {
+    const OffsetOfExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -347,7 +347,7 @@ void ClangAstDumper::VisitOffsetOfExprChildren(
 }
 
 void ClangAstDumper::VisitMemberExprChildren(
-    const MemberExpr *E, std::vector<std::string> &children) {
+    const MemberExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -357,7 +357,7 @@ void ClangAstDumper::VisitMemberExprChildren(
 }
 
 void ClangAstDumper::VisitMaterializeTemporaryExprChildren(
-    const MaterializeTemporaryExpr *E, std::vector<std::string> &children) {
+    const MaterializeTemporaryExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -366,7 +366,7 @@ void ClangAstDumper::VisitMaterializeTemporaryExprChildren(
 }
 
 void ClangAstDumper::VisitOverloadExprChildren(
-    const OverloadExpr *E, std::vector<std::string> &children) {
+    const OverloadExpr *E, std::vector<int64_t> &children) {
     // Hierarchy - direct parent is OverloadExpr
     VisitExprChildren(E, children);
 
@@ -381,14 +381,14 @@ void ClangAstDumper::VisitOverloadExprChildren(
 }
 
 void ClangAstDumper::VisitCallExprChildren(const CallExpr *E,
-                                           std::vector<std::string> &children) {
+                                           std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
     VisitDeclTop(E->getDirectCallee());
 }
 
 void ClangAstDumper::VisitCXXMemberCallExprChildren(
-    const CXXMemberCallExpr *E, std::vector<std::string> &children) {
+    const CXXMemberCallExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitCallExprChildren(E, children);
 
@@ -396,7 +396,7 @@ void ClangAstDumper::VisitCXXMemberCallExprChildren(
 }
 
 void ClangAstDumper::VisitCXXTypeidExprChildren(
-    const CXXTypeidExpr *E, std::vector<std::string> &children) {
+    const CXXTypeidExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -408,7 +408,7 @@ void ClangAstDumper::VisitCXXTypeidExprChildren(
 }
 
 void ClangAstDumper::VisitExplicitCastExprChildren(
-    const ExplicitCastExpr *E, std::vector<std::string> &children) {
+    const ExplicitCastExpr *E, std::vector<int64_t> &children) {
     // Hierarchy - direct parent is CastExpr
     VisitExprChildren(E, children);
 
@@ -416,7 +416,7 @@ void ClangAstDumper::VisitExplicitCastExprChildren(
 }
 
 void ClangAstDumper::VisitOpaqueValueExprChildren(
-    const OpaqueValueExpr *E, std::vector<std::string> &children) {
+    const OpaqueValueExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -424,7 +424,7 @@ void ClangAstDumper::VisitOpaqueValueExprChildren(
 }
 
 void ClangAstDumper::VisitUnaryExprOrTypeTraitExprChildren(
-    const UnaryExprOrTypeTraitExpr *E, std::vector<std::string> &children) {
+    const UnaryExprOrTypeTraitExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -434,7 +434,7 @@ void ClangAstDumper::VisitUnaryExprOrTypeTraitExprChildren(
 }
 
 void ClangAstDumper::VisitCXXNewExprChildren(
-    const CXXNewExpr *E, std::vector<std::string> &children) {
+    const CXXNewExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -444,7 +444,7 @@ void ClangAstDumper::VisitCXXNewExprChildren(
 }
 
 void ClangAstDumper::VisitCXXDeleteExprChildren(
-    const CXXDeleteExpr *E, std::vector<std::string> &children) {
+    const CXXDeleteExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -452,7 +452,7 @@ void ClangAstDumper::VisitCXXDeleteExprChildren(
 }
 
 void ClangAstDumper::VisitLambdaExprChildren(
-    const LambdaExpr *E, std::vector<std::string> &children) {
+    const LambdaExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -460,7 +460,7 @@ void ClangAstDumper::VisitLambdaExprChildren(
 }
 
 void ClangAstDumper::VisitSizeOfPackExprChildren(
-    const SizeOfPackExpr *E, std::vector<std::string> &children) {
+    const SizeOfPackExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -474,13 +474,13 @@ void ClangAstDumper::VisitSizeOfPackExprChildren(
 }
 
 void ClangAstDumper::VisitDesignatedInitExprChildren(
-    const DesignatedInitExpr *E, std::vector<std::string> &children) {
+    const DesignatedInitExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 }
 
 void ClangAstDumper::VisitCXXConstructExprChildren(
-    const CXXConstructExpr *E, std::vector<std::string> &children) {
+    const CXXConstructExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -488,13 +488,13 @@ void ClangAstDumper::VisitCXXConstructExprChildren(
 }
 
 void ClangAstDumper::VisitCXXTemporaryObjectExprChildren(
-    const CXXTemporaryObjectExpr *E, std::vector<std::string> &children) {
+    const CXXTemporaryObjectExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitCXXConstructExprChildren(E, children);
 }
 
 void ClangAstDumper::VisitCXXDependentScopeMemberExprChildren(
-    const CXXDependentScopeMemberExpr *E, std::vector<std::string> &children) {
+    const CXXDependentScopeMemberExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -502,7 +502,7 @@ void ClangAstDumper::VisitCXXDependentScopeMemberExprChildren(
 }
 
 void ClangAstDumper::VisitCXXPseudoDestructorExprChildren(
-    const CXXPseudoDestructorExpr *E, std::vector<std::string> &children) {
+    const CXXPseudoDestructorExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 
@@ -510,7 +510,7 @@ void ClangAstDumper::VisitCXXPseudoDestructorExprChildren(
 }
 
 void ClangAstDumper::VisitMSPropertyRefExprChildren(
-    const MSPropertyRefExpr *E, std::vector<std::string> &children) {
+    const MSPropertyRefExpr *E, std::vector<int64_t> &children) {
     // Hierarchy
     VisitExprChildren(E, children);
 

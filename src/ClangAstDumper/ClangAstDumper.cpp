@@ -89,25 +89,25 @@ void ClangAstDumper::VisitAttrTop(const Attr *Node) {
 }
 
 void ClangAstDumper::dumpVisitedChildren(const void *pointer,
-                                         std::vector<std::string> children) {
-  astwire::v2::ChildrenT record;record.node=clava::flat::wireId(clava::getId(pointer,id));
-  for(const auto &child:children)record.children.push_back(clava::flat::wireId(child));
+                                         std::vector<int64_t> children) {
+  astwire::v2::ChildrenT record;record.node=clava::getId(pointer,id);
+  record.children=std::move(children);
   clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpIdToClassMap(const void *pointer,
                                       std::string className) {
-  astwire::v2::NodeClassT record;record.node=clava::flat::wireId(clava::getId(pointer,id));record.class_name=className;
+  astwire::v2::NodeClassT record;record.node=clava::getId(pointer,id);record.class_name=className;
   clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpTopLevelType(const QualType &type) {
-  astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Type;record.node=clava::flat::wireId(clava::getId(type,id));
+  astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Type;record.node=clava::getId(type,id);
   clava::flat::FlatStream::current().record(std::move(record));
 }
 
 void ClangAstDumper::dumpTopLevelAttr(const Attr *attr) {
-  astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Attr;record.node=clava::flat::wireId(clava::getId(attr,id));
+  astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Attr;record.node=clava::getId(attr,id);
   clava::flat::FlatStream::current().record(std::move(record));
 }
 
@@ -131,13 +131,13 @@ bool ClangAstDumper::isPastSystemHeaderThreshold() const {
 // between them is which Top-level visit function serializes the node.
 template <typename T, typename F>
 void ClangAstDumper::addChildInternal(const T *addr,
-                                      std::vector<std::string> &children,
+                                      std::vector<int64_t> &children,
                                       F &&visitTop) {
   if (isPastSystemHeaderThreshold()) {
     return;
   }
 
-  std::string clavaId = clava::getId(addr, id);
+  int64_t clavaId = clava::getId(addr, id);
 
   visitTop(addr);
   children.push_back(clavaId);
@@ -146,26 +146,26 @@ void ClangAstDumper::addChildInternal(const T *addr,
 // Overload for QualType, which is passed by value/reference instead of pointer.
 template <typename F>
 void ClangAstDumper::addChildInternal(const QualType &addr,
-                                      std::vector<std::string> &children,
+                                      std::vector<int64_t> &children,
                                       F &&visitTop) {
   if (isPastSystemHeaderThreshold()) {
     return;
   }
 
-  std::string clavaId = clava::getId(addr, id);
+  int64_t clavaId = clava::getId(addr, id);
 
   visitTop(addr);
   children.push_back(clavaId);
 }
 
 const void ClangAstDumper::addChild(const Decl *addr,
-                                    std::vector<std::string> &children) {
+                                    std::vector<int64_t> &children) {
   addChildInternal(addr, children,
                    [this](const Decl *D) { VisitDeclTop(D); });
 };
 
 const void ClangAstDumper::addChildren(DeclContext::decl_range decls,
-                                       std::vector<std::string> &children) {
+                                       std::vector<int64_t> &children) {
 
   for (auto decl = decls.begin(), endDecl = decls.end(); decl != endDecl;
        ++decl) {
@@ -184,31 +184,31 @@ const void ClangAstDumper::addChildren(DeclContext::decl_range decls,
 };
 
 const void ClangAstDumper::addChild(const Stmt *addr,
-                                    std::vector<std::string> &children) {
+                                    std::vector<int64_t> &children) {
   addChildInternal(addr, children,
                    [this](const Stmt *S) { VisitStmtTop(S); });
 };
 
 const void ClangAstDumper::addChild(const Expr *addr,
-                                    std::vector<std::string> &children) {
+                                    std::vector<int64_t> &children) {
   addChildInternal(addr, children,
                    [this](const Expr *E) { VisitStmtTop(E); });
 };
 
 const void ClangAstDumper::addChild(const Type *addr,
-                                    std::vector<std::string> &children) {
+                                    std::vector<int64_t> &children) {
   addChildInternal(addr, children,
                    [this](const Type *T) { VisitTypeTop(T); });
 };
 
 const void ClangAstDumper::addChild(const QualType &addr,
-                                    std::vector<std::string> &children) {
+                                    std::vector<int64_t> &children) {
   addChildInternal(addr, children,
                    [this](const QualType &T) { VisitTypeTop(T); });
 };
 
 const void ClangAstDumper::addChild(const Attr *addr,
-                                    std::vector<std::string> &children) {
+                                    std::vector<int64_t> &children) {
   addChildInternal(addr, children,
                    [this](const Attr *A) { VisitAttrTop(A); });
 };

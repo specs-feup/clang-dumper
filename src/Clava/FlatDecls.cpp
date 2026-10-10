@@ -53,7 +53,7 @@ std::unique_ptr<fb::DeclDataT> makeDeclData(const clang::Decl *decl,
   out->is_invalid_decl = decl->isInvalidDecl();
   out->is_module_private = decl->isModulePrivate();
   for (auto attr = decl->attr_begin(); attr != decl->attr_end(); ++attr)
-    out->attributes.push_back(wireId(clava::getId(*attr, c.id)));
+    out->attributes.push_back(clava::getId(*attr, c.id));
   return out;
 }
 
@@ -77,7 +77,7 @@ std::unique_ptr<fb::TypeDeclDataT> makeTypeDeclData(
     const clang::TypeDecl *decl, Context &c) {
   auto out = declBase<fb::TypeDeclDataT>(decl, c);
   out->base = makeNamedDeclData(decl, c);
-  out->type_for_decl = wireId(clava::getId(decl->getTypeForDecl(), c.id));
+  out->type_for_decl = clava::getId(decl->getTypeForDecl(), c.id);
   return out;
 }
 
@@ -103,7 +103,7 @@ std::unique_ptr<fb::ValueDeclDataT> makeValueDeclData(
     const clang::ValueDecl *decl, Context &c) {
   auto out = declBase<fb::ValueDeclDataT>(decl, c);
   out->base = makeNamedDeclData(decl, c);
-  out->type = wireId(clava::getId(decl->getType(), c.id));
+  out->type = clava::getId(decl->getType(), c.id);
   out->is_weak = decl->isWeak();
   return out;
 }
@@ -121,9 +121,9 @@ std::unique_ptr<fb::TemplateDeclDataT> makeTemplateDeclData(
   out->base = makeNamedDeclData(decl, c);
   if (auto params = decl->getTemplateParameters()) {
     for (auto *param : *params)
-      out->template_parameters.push_back(wireId(clava::getId(param, c.id)));
+      out->template_parameters.push_back(clava::getId(param, c.id));
   }
-  out->template_decl = wireId(clava::getId(decl->getTemplatedDecl(), c.id));
+  out->template_decl = clava::getId(decl->getTemplatedDecl(), c.id);
   return out;
 }
 
@@ -140,12 +140,12 @@ std::unique_ptr<fb::FunctionDeclDataT> makeFunctionDeclData(
   out->is_pure = decl->isPureVirtual();
   out->is_deleted = decl->isDeletedAsWritten();
   out->is_explicitly_defaulted = decl->isExplicitlyDefaulted();
-  out->previous_decl = wireId(clava::getId(decl->getPreviousDecl(), c.id));
-  out->canonical_decl = wireId(clava::getId(decl->getCanonicalDecl(), c.id));
+  out->previous_decl = clava::getId(decl->getPreviousDecl(), c.id);
+  out->canonical_decl = clava::getId(decl->getCanonicalDecl(), c.id);
   out->primary_template_decl = -2;
   if (auto *primary = decl->getPrimaryTemplate())
     out->primary_template_decl =
-        wireId(clava::getId(primary->getTemplatedDecl(), c.id));
+        clava::getId(primary->getTemplatedDecl(), c.id);
   if (auto *args = decl->getTemplateSpecializationArgs()) {
     for (const auto &arg : args->asArray())
       out->template_arguments.push_back(makeTemplateArgument(arg, c));
@@ -156,7 +156,7 @@ std::unique_ptr<fb::FunctionDeclDataT> makeFunctionDeclData(
     out->template_parameter_list_sizes.push_back(parameters->size());
     for (const auto *parameter : *parameters)
       out->template_parameters.push_back(
-          wireId(clava::getId(parameter, c.id)));
+          clava::getId(parameter, c.id));
   }
   return out;
 }
@@ -165,9 +165,9 @@ std::unique_ptr<fb::CXXMethodDeclDataT> makeCXXMethodDeclData(
     const clang::CXXMethodDecl *decl, Context &c) {
   auto out = declBase<fb::CXXMethodDeclDataT>(decl, c);
   out->base = makeFunctionDeclData(decl, c);
-  out->record = wireId(clava::getId(decl->getParent(), c.id));
+  out->record = clava::getId(decl->getParent(), c.id);
   for (auto *method : decl->overridden_methods())
-    out->overridden_methods.push_back(wireId(clava::getId(method, c.id)));
+    out->overridden_methods.push_back(clava::getId(method, c.id));
   out->is_static = decl->isStatic();
   out->is_instance = decl->isInstance();
   out->is_const = decl->isConst();
@@ -175,9 +175,9 @@ std::unique_ptr<fb::CXXMethodDeclDataT> makeCXXMethodDeclData(
   out->is_virtual = decl->isVirtual();
   out->is_copy_assignment_operator = decl->isCopyAssignmentOperator();
   out->is_move_assignment_operator = decl->isMoveAssignmentOperator();
-  out->this_type = decl->isInstance()?wireId(clava::getId(decl->getThisType(), c.id)):-1;
+  out->this_type = decl->isInstance()?clava::getId(decl->getThisType(), c.id):-1;
   out->this_object_type =
-      decl->isInstance()?wireId(clava::getId(decl->getFunctionObjectParameterType(), c.id)):-1;
+      decl->isInstance()?clava::getId(decl->getFunctionObjectParameterType(), c.id):-1;
   out->has_inline_body = decl->hasInlineBody();
   out->is_lambda_static_invoker = decl->isLambdaStaticInvoker();
   return out;
@@ -202,7 +202,7 @@ std::unique_ptr<fb::CXXConversionDeclDataT> makeCXXConversionDeclData(
   out->is_explicit = decl->isExplicit();
   out->is_lambda_to_block_pointer_conversion =
       decl->isLambdaToBlockPointerConversion();
-  out->conversion_type = wireId(clava::getId(decl->getConversionType(), c.id));
+  out->conversion_type = clava::getId(decl->getConversionType(), c.id);
   return out;
 }
 
@@ -246,7 +246,7 @@ std::unique_ptr<fb::TemplateTypeParmDeclDataT> makeTemplateTypeParmDeclData(
   out->kind = enumValue<fb::TemplateTypeParmKind>(
       decl->wasDeclaredWithTypename() ? "TYPENAME" : "CLASS");
   out->is_parameter_pack = decl->isParameterPack();
-  out->default_argument = decl->hasDefaultArgument() ? wireId(clava::getId(decl->getDefaultArgument(), c.id)) : -1;
+  out->default_argument = decl->hasDefaultArgument() ? clava::getId(decl->getDefaultArgument(), c.id) : -1;
   return out;
 }
 
@@ -269,7 +269,7 @@ std::unique_ptr<fb::EnumDeclDataT> makeEnumDeclData(const clang::EnumDecl *decl,
         decl->isScopedUsingClassTag() ? "CLASS" : "STRUCT");
   else
     out->enum_scope_kind = enumValue<fb::EnumScopeType>("NO_SCOPE");
-  out->integer_type = wireId(clava::getId(decl->getIntegerType(), c.id));
+  out->integer_type = clava::getId(decl->getIntegerType(), c.id);
   return out;
 }
 
@@ -280,7 +280,7 @@ std::unique_ptr<fb::CXXRecordDeclDataT> makeCXXRecordDeclData(
   if (decl->hasDefinition())
     for (const auto &base : decl->bases())
       out->record_bases.push_back(makeCXXBaseSpecifier(base, c));
-  out->record_definition = wireId(clava::getId(decl->getDefinition(), c.id));
+  out->record_definition = clava::getId(decl->getDefinition(), c.id);
   return out;
 }
 
@@ -290,7 +290,7 @@ makeClassTemplateSpecializationDeclData(
   auto out = declBase<fb::ClassTemplateSpecializationDeclDataT>(decl, c);
   out->base = makeCXXRecordDeclData(decl, c);
   out->specialized_template =
-      wireId(clava::getId(decl->getSpecializedTemplate(), c.id));
+      clava::getId(decl->getSpecializedTemplate(), c.id);
   out->specialization_kind = enumValue<fb::TemplateSpecializationKind>(
       clava::TEMPLATE_SPECIALIZATION_KIND[decl->getSpecializationKind()]);
   for (const auto &arg : decl->getTemplateArgs().asArray())
@@ -303,15 +303,15 @@ makeNonTypeTemplateParmDeclData(
     const clang::NonTypeTemplateParmDecl *decl, Context &c) {
   auto out = declBase<fb::NonTypeTemplateParmDeclDataT>(decl, c);
   out->base = makeDeclaratorDeclData(decl, c);
-  out->default_argument = decl->hasDefaultArgument() ? wireId(clava::getId(decl->getDefaultArgument(), c.id)) : -3;
+  out->default_argument = decl->hasDefaultArgument() ? clava::getId(decl->getDefaultArgument(), c.id) : -3;
   out->default_argument_was_inherited = decl->defaultArgumentWasInherited();
   out->is_parameter_pack = decl->isParameterPack();
   out->is_pack_expansion = decl->isPackExpansion();
   out->is_expanded_parameter_pack = decl->isExpandedParameterPack();
   if (decl->isExpandedParameterPack())
     for (unsigned i = 0; i < decl->getNumExpansionTypes(); ++i)
-      out->expansion_types.push_back(wireId(clava::getId(
-          decl->getExpansionType(i), c.id)));
+      out->expansion_types.push_back(clava::getId(
+          decl->getExpansionType(i), c.id));
   return out;
 }
 
@@ -319,7 +319,7 @@ std::unique_ptr<fb::TypedefNameDeclDataT> makeTypedefNameDeclData(
     const clang::TypedefNameDecl *decl, Context &c) {
   auto out = declBase<fb::TypedefNameDeclDataT>(decl, c);
   out->base = makeTypeDeclData(decl, c);
-  out->underlying_type = wireId(clava::getId(decl->getUnderlyingType(), c.id));
+  out->underlying_type = clava::getId(decl->getUnderlyingType(), c.id);
   return out;
 }
 
@@ -345,9 +345,9 @@ std::unique_ptr<fb::UsingDirectiveDeclDataT> makeUsingDirectiveDeclData(
   auto out = declBase<fb::UsingDirectiveDeclDataT>(decl, c);
   out->base = makeNamedDeclData(decl, c);
   out->qualifier = sourceText(decl->getSourceRange(), c);
-  out->namespace_ = wireId(clava::getId(decl->getNominatedNamespace(), c.id));
+  out->namespace_ = clava::getId(decl->getNominatedNamespace(), c.id);
   out->namespace_as_written =
-      wireId(clava::getId(decl->getNominatedNamespaceAsWritten(), c.id));
+      clava::getId(decl->getNominatedNamespaceAsWritten(), c.id);
   return out;
 }
 
@@ -365,7 +365,7 @@ std::unique_ptr<fb::NamespaceAliasDeclDataT> makeNamespaceAliasDeclData(
   out->base = makeNamedDeclData(decl, c);
   out->nested_prefix = sourceText(decl->getQualifierLoc().getSourceRange(), c);
   out->aliased_namespace =
-      wireId(clava::getId(decl->getAliasedNamespace(), c.id));
+      clava::getId(decl->getAliasedNamespace(), c.id);
   return out;
 }
 
@@ -478,7 +478,7 @@ makeClassTemplatePartialSpecializationDeclData(
   out->base = makeClassTemplateSpecializationDeclData(decl, c);
   if (auto *params = decl->getTemplateParameters())
     for (auto *param : *params)
-      out->template_parameters.push_back(wireId(clava::getId(param, c.id)));
+      out->template_parameters.push_back(clava::getId(param, c.id));
   return out;
 }
 

@@ -61,7 +61,7 @@ std::unique_ptr<fb::ExprDataT> makeExprData(const clang::Expr *node,
                                             Context &c) {
   auto out = std::make_unique<fb::ExprDataT>();
   out->base = makeStmtData(node, c);
-  out->type = wireId(clava::getId(node->getType(), c.id));
+  out->type = clava::getId(node->getType(), c.id);
   out->value_kind = valueKind(node->getValueKind());
   out->object_kind = objectKind(node->getObjectKind());
   out->is_default_argument = node->isDefaultArgument();
@@ -160,11 +160,11 @@ std::unique_ptr<fb::InitListExprDataT> makeInitListExprData(
     const clang::InitListExpr *node, Context &c) {
   auto out = std::make_unique<fb::InitListExprDataT>();
   out->base = makeExprData(node, c);
-  out->array_filler = wireId(clava::getId(node->getArrayFiller(), c.id));
+  out->array_filler = clava::getId(node->getArrayFiller(), c.id);
   out->is_explicit = const_cast<clang::InitListExpr *>(node)->isExplicit();
   out->is_string_literal_init = node->isStringLiteralInit();
-  out->syntactic_form = wireId(clava::getId(node->getSyntacticForm(), c.id));
-  out->semantic_form = wireId(clava::getId(node->getSemanticForm(), c.id));
+  out->syntactic_form = clava::getId(node->getSyntacticForm(), c.id);
+  out->semantic_form = clava::getId(node->getSemanticForm(), c.id);
   return out;
 }
 
@@ -174,7 +174,7 @@ std::unique_ptr<fb::DeclRefExprDataT> makeDeclRefExprData(
   out->base = makeExprData(node, c);
   out->qualifier = qualifierString(node->getQualifier(), c);
   templateArguments(out->template_arguments, node, c);
-  out->decl = wireId(clava::getId(node->getDecl(), c.id));
+  out->decl = clava::getId(node->getDecl(), c.id);
   return out;
 }
 
@@ -185,7 +185,7 @@ std::unique_ptr<fb::OverloadExprDataT> makeOverloadExprData(
   out->qualifier = qualifierString(node->getQualifier(), c);
   out->name = node->getName().getAsString();
   for (auto it = node->decls_begin(); it != node->decls_end(); ++it) {
-    out->unresolved_decls.push_back(wireId(clava::getId(*it, c.id)));
+    out->unresolved_decls.push_back(clava::getId(*it, c.id));
   }
   templateArguments(out->template_arguments, node, c);
   return out;
@@ -203,7 +203,7 @@ std::unique_ptr<fb::CXXConstructExprDataT> makeCXXConstructExprData(
       clava::CONSTRUCTION_KIND[llvm::to_underlying(node->getConstructionKind())]);
   out->is_temporary_object =
       node->isTemporaryObject(*c.ast, node->getConstructor()->getParent());
-  out->constructor_decl = wireId(clava::getId(node->getConstructor(), c.id));
+  out->constructor_decl = clava::getId(node->getConstructor(), c.id);
   return out;
 }
 
@@ -220,8 +220,8 @@ std::unique_ptr<fb::MemberExprDataT> makeMemberExprData(
   out->base = makeExprData(node, c);
   out->is_arrow = node->isArrow();
   out->member_name = node->getMemberNameInfo().getAsString();
-  out->member_decl = wireId(clava::getId(node->getMemberDecl(), c.id));
-  out->found_decl = wireId(clava::getId(node->getFoundDecl().getDecl(), c.id));
+  out->member_decl = clava::getId(node->getMemberDecl(), c.id);
+  out->found_decl = clava::getId(node->getFoundDecl().getDecl(), c.id);
   out->found_decl_access_specifier = enumValue<fb::AccessSpecifier>(
       clava::ACCESS_SPECIFIER[node->getFoundDecl().getAccess()]);
   return out;
@@ -232,7 +232,7 @@ makeMaterializeTemporaryExprData(const clang::MaterializeTemporaryExpr *node,
                                  Context &c) {
   auto out = std::make_unique<fb::MaterializeTemporaryExprDataT>();
   out->base = makeExprData(node, c);
-  out->extending_decl = wireId(clava::getId(node->getExtendingDecl(), c.id));
+  out->extending_decl = clava::getId(node->getExtendingDecl(), c.id);
   return out;
 }
 
@@ -264,7 +264,7 @@ std::unique_ptr<fb::CallExprDataT> makeCallExprData(
     const clang::CallExpr *node, Context &c) {
   auto out = std::make_unique<fb::CallExprDataT>();
   out->base = makeExprData(node, c);
-  out->direct_callee = wireId(clava::getId(node->getDirectCallee(), c.id));
+  out->direct_callee = clava::getId(node->getDirectCallee(), c.id);
   return out;
 }
 
@@ -272,7 +272,7 @@ std::unique_ptr<fb::CXXMemberCallExprDataT> makeCXXMemberCallExprData(
     const clang::CXXMemberCallExpr *node, Context &c) {
   auto out = std::make_unique<fb::CXXMemberCallExprDataT>();
   out->base = makeCallExprData(node, c);
-  out->method_decl = wireId(clava::getId(node->getMethodDecl(), c.id));
+  out->method_decl = clava::getId(node->getMethodDecl(), c.id);
   return out;
 }
 
@@ -282,9 +282,9 @@ std::unique_ptr<fb::CXXTypeidExprDataT> makeCXXTypeidExprData(
   out->base = makeExprData(node, c);
   out->is_type_operand = node->isTypeOperand();
   if (node->isTypeOperand()) {
-    out->operand = wireId(clava::getId(node->getTypeOperand(*c.ast), c.id));
+    out->operand = clava::getId(node->getTypeOperand(*c.ast), c.id);
   } else {
-    out->operand = wireId(clava::getId(node->getExprOperand(), c.id));
+    out->operand = clava::getId(node->getExprOperand(), c.id);
   }
   return out;
 }
@@ -294,7 +294,7 @@ std::unique_ptr<fb::ExplicitCastExprDataT> makeExplicitCastExprData(
   auto out = std::make_unique<fb::ExplicitCastExprDataT>();
   out->base = makeCastExprData(node, c);
   out->type_as_written =
-      wireId(clava::getId(node->getTypeAsWritten(), c.id));
+      clava::getId(node->getTypeAsWritten(), c.id);
   return out;
 }
 
@@ -339,7 +339,7 @@ makeUnaryExprOrTypeTraitExprData(const clang::UnaryExprOrTypeTraitExpr *node,
   out->kind = enumValue<fb::UnaryExprOrTypeTrait>(
       clava::UETT_KIND[node->getKind()]);
   out->is_argument_type = node->isArgumentType();
-  out->arg_type = node->isArgumentType()?wireId(clava::getId(node->getArgumentType(), c.id)):-1;
+  out->arg_type = node->isArgumentType()?clava::getId(node->getArgumentType(), c.id):-1;
   out->source_literal = sourceText(node->getSourceRange(), c);
   return out;
 }
@@ -353,10 +353,10 @@ std::unique_ptr<fb::CXXNewExprDataT> makeCXXNewExprData(
   out->initialization_present = node->hasInitializer();
   out->init_style = enumValue<fb::NewInitStyle>(
       clava::NEW_INIT_STYLE[llvm::to_underlying(node->getInitializationStyle())]);
-  out->initializer = wireId(clava::getId(node->getInitializer(), c.id));
-  out->construct_expr = wireId(clava::getId(node->getConstructExpr(), c.id));
-  out->array_size = wireId(clava::getId(node->getArraySize(), c.id));
-  out->operator_new = wireId(clava::getId(node->getOperatorNew(), c.id));
+  out->initializer = clava::getId(node->getInitializer(), c.id);
+  out->construct_expr = clava::getId(node->getConstructExpr(), c.id);
+  out->array_size = clava::getId(node->getArraySize(), c.id);
+  out->operator_new = clava::getId(node->getOperatorNew(), c.id);
   return out;
 }
 
@@ -375,7 +375,7 @@ std::unique_ptr<fb::OffsetOfExprDataT> makeOffsetOfExprData(
   auto out = std::make_unique<fb::OffsetOfExprDataT>();
   out->base = makeExprData(node, c);
   out->source_type =
-      wireId(clava::getId(node->getTypeSourceInfo()->getType(), c.id));
+      clava::getId(node->getTypeSourceInfo()->getType(), c.id);
   for (unsigned i = 0; i < node->getNumComponents(); ++i) {
     out->components.push_back(makeOffsetOfComponent(node, i, c));
   }
@@ -392,7 +392,7 @@ std::unique_ptr<fb::LambdaExprDataT> makeLambdaExprData(
   out->has_explicit_result_type = node->hasExplicitResultType();
   out->capture_default = enumValue<fb::LambdaCaptureDefault>(
       clava::LAMBDA_CAPTURE_DEFAULT[node->getCaptureDefault()]);
-  out->lambda_class = wireId(clava::getId(node->getLambdaClass(), c.id));
+  out->lambda_class = clava::getId(node->getLambdaClass(), c.id);
   for (const auto &capture : node->captures()) {
     out->capture_kinds.push_back(enumValue<fb::LambdaCaptureKind>(
         clava::LAMBDA_CAPTURE_KIND[capture.getCaptureKind()]));
@@ -436,7 +436,7 @@ std::unique_ptr<fb::SizeOfPackExprDataT> makeSizeOfPackExprData(
   auto out = std::make_unique<fb::SizeOfPackExprDataT>();
   out->base = makeExprData(node, c);
   out->is_partially_substituted = node->isPartiallySubstituted();
-  out->pack = wireId(clava::getId(node->getPack(), c.id));
+  out->pack = clava::getId(node->getPack(), c.id);
   if (node->isPartiallySubstituted()) {
     for (const auto &arg : node->getPartialArguments()) {
       out->partial_arguments.push_back(makeTemplateArgument(arg, c));
@@ -494,7 +494,7 @@ makeCXXPseudoDestructorExprData(const clang::CXXPseudoDestructorExpr *node,
   out->qualifier = node->hasQualifier() ? qualifierString(node->getQualifier(), c)
                                         : std::string();
   out->is_arrow = node->isArrow();
-  out->destroyed_type = wireId(clava::getId(node->getDestroyedType(), c.id));
+  out->destroyed_type = clava::getId(node->getDestroyedType(), c.id);
   return out;
 }
 
@@ -512,8 +512,8 @@ std::unique_ptr<fb::MSPropertyRefExprDataT> makeMSPropertyRefExprData(
     const clang::MSPropertyRefExpr *node, Context &c) {
   auto out = std::make_unique<fb::MSPropertyRefExprDataT>();
   out->base = makeExprData(node, c);
-  out->base_expr = wireId(clava::getId(node->getBaseExpr(), c.id));
-  out->property_decl = wireId(clava::getId(node->getPropertyDecl(), c.id));
+  out->base_expr = clava::getId(node->getBaseExpr(), c.id);
+  out->property_decl = clava::getId(node->getPropertyDecl(), c.id);
   out->is_implicit_access = node->isImplicitAccess();
   out->is_arrow = node->isArrow();
   return out;

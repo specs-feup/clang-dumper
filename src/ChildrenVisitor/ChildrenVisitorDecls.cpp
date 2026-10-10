@@ -13,7 +13,7 @@
 // match their own class use DECL_CHILDREN_ENTRY_AS with the visitor's section.
 #define DECL_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
   {#CLASS, [](ClangAstDumper &self, const Decl *D,                             \
-              std::vector<std::string> &children) {                            \
+              std::vector<int64_t> &children) {                            \
     self.VISITOR(static_cast<const CLASS *>(D), children);                     \
   }}
 
@@ -66,7 +66,7 @@ void ClangAstDumper::visitChildren(const Decl *D) {
     const std::string classname = clava::getClassName(D);
     auto it = DECL_CHILDREN_VISITORS.find(classname);
 
-    std::vector<std::string> visitedChildren;
+    std::vector<int64_t> visitedChildren;
     if (it != DECL_CHILDREN_VISITORS.end()) {
         it->second(*this, D, visitedChildren);
     } else {
@@ -78,7 +78,7 @@ void ClangAstDumper::visitChildren(const Decl *D) {
 }
 
 void ClangAstDumper::VisitDeclChildren(const Decl *D,
-                                       std::vector<std::string> &children) {
+                                       std::vector<int64_t> &children) {
     // Visit attributes
     for (Decl::attr_iterator I = D->attr_begin(), E = D->attr_end(); I != E;
          ++I) {
@@ -89,13 +89,13 @@ void ClangAstDumper::VisitDeclChildren(const Decl *D,
 }
 
 void ClangAstDumper::VisitNamedDeclChildren(
-    const NamedDecl *D, std::vector<std::string> &children) {
+    const NamedDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitDeclChildren(D, children);
 }
 
 void ClangAstDumper::VisitTypeDeclChildren(const TypeDecl *D,
-                                           std::vector<std::string> &children) {
+                                           std::vector<int64_t> &children) {
     // Hierarchy
     VisitNamedDeclChildren(D, children);
 
@@ -105,7 +105,7 @@ void ClangAstDumper::VisitTypeDeclChildren(const TypeDecl *D,
 }
 
 void ClangAstDumper::VisitTagDeclChildren(const TagDecl *D,
-                                          std::vector<std::string> &children) {
+                                          std::vector<int64_t> &children) {
     // Hierarchy
     VisitTypeDeclChildren(D, children);
 
@@ -113,7 +113,7 @@ void ClangAstDumper::VisitTagDeclChildren(const TagDecl *D,
 }
 
 void ClangAstDumper::VisitEnumDeclChildren(const EnumDecl *D,
-                                           std::vector<std::string> &children) {
+                                           std::vector<int64_t> &children) {
     // Hierarchy
     VisitTagDeclChildren(D, children);
 
@@ -122,7 +122,7 @@ void ClangAstDumper::VisitEnumDeclChildren(const EnumDecl *D,
 }
 
 void ClangAstDumper::VisitValueDeclChildren(
-    const ValueDecl *D, std::vector<std::string> &children) {
+    const ValueDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitNamedDeclChildren(D, children);
 
@@ -131,7 +131,7 @@ void ClangAstDumper::VisitValueDeclChildren(
     dumpTopLevelType(D->getType());
 }
 void ClangAstDumper::VisitFieldDeclChildren(
-    const FieldDecl *D, std::vector<std::string> &children) {
+    const FieldDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitValueDeclChildren(D, children);
 
@@ -143,7 +143,7 @@ void ClangAstDumper::VisitFieldDeclChildren(
 }
 
 void ClangAstDumper::VisitFunctionDeclChildren(
-    const FunctionDecl *D, std::vector<std::string> &children) {
+    const FunctionDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitValueDeclChildren(D, children);
@@ -188,7 +188,7 @@ void ClangAstDumper::VisitFunctionDeclChildren(
 }
 
 void ClangAstDumper::VisitCXXMethodDeclChildren(
-    const CXXMethodDecl *D, std::vector<std::string> &children) {
+    const CXXMethodDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitFunctionDeclChildren(D, children);
 
@@ -208,7 +208,7 @@ void ClangAstDumper::VisitCXXMethodDeclChildren(
 }
 
 void ClangAstDumper::VisitCXXConstructorDeclChildren(
-    const CXXConstructorDecl *D, std::vector<std::string> &children) {
+    const CXXConstructorDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitCXXMethodDeclChildren(D, children);
 
@@ -243,7 +243,7 @@ void ClangAstDumper::VisitCXXConstructorDeclChildren(
 }
 
 void ClangAstDumper::VisitCXXConversionDeclChildren(
-    const CXXConversionDecl *D, std::vector<std::string> &children) {
+    const CXXConversionDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitCXXMethodDeclChildren(D, children);
 
@@ -252,13 +252,13 @@ void ClangAstDumper::VisitCXXConversionDeclChildren(
 }
 
 void ClangAstDumper::VisitRecordDeclChildren(
-    const RecordDecl *D, std::vector<std::string> &children) {
+    const RecordDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitTagDeclChildren(D, children);
 }
 
 void ClangAstDumper::VisitCXXRecordDeclChildren(
-    const CXXRecordDecl *D, std::vector<std::string> &children) {
+    const CXXRecordDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitRecordDeclChildren(D, children);
 
@@ -272,7 +272,7 @@ void ClangAstDumper::VisitCXXRecordDeclChildren(
 }
 void ClangAstDumper::VisitClassTemplateSpecializationDeclChildren(
     const ClassTemplateSpecializationDecl *D,
-    std::vector<std::string> &children) {
+    std::vector<int64_t> &children) {
     // Hierarchy
     VisitCXXRecordDeclChildren(D, children);
 
@@ -287,7 +287,7 @@ void ClangAstDumper::VisitClassTemplateSpecializationDeclChildren(
 
 void ClangAstDumper::VisitClassTemplatePartialSpecializationDeclChildren(
     const ClassTemplatePartialSpecializationDecl *D,
-    std::vector<std::string> &children) {
+    std::vector<int64_t> &children) {
     // Hierarchy and specialization arguments
     VisitClassTemplateSpecializationDeclChildren(D, children);
 
@@ -303,7 +303,7 @@ void ClangAstDumper::VisitClassTemplatePartialSpecializationDeclChildren(
 }
 
 void ClangAstDumper::VisitVarDeclChildren(const VarDecl *D,
-                                          std::vector<std::string> &children) {
+                                          std::vector<int64_t> &children) {
     // Hierarchy
     VisitValueDeclChildren(D, children);
 
@@ -313,7 +313,7 @@ void ClangAstDumper::VisitVarDeclChildren(const VarDecl *D,
 }
 
 void ClangAstDumper::VisitTemplateDeclChildren(
-    const TemplateDecl *D, std::vector<std::string> &children) {
+    const TemplateDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitNamedDeclChildren(D, children);
@@ -331,7 +331,7 @@ void ClangAstDumper::VisitTemplateDeclChildren(
 }
 
 void ClangAstDumper::VisitTemplateTemplateParmDeclChildren(
-    const TemplateTemplateParmDecl *D, std::vector<std::string> &children) {
+    const TemplateTemplateParmDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitTemplateDeclChildren(D, children);
 
@@ -341,7 +341,7 @@ void ClangAstDumper::VisitTemplateTemplateParmDeclChildren(
 }
 
 void ClangAstDumper::VisitTemplateTypeParmDeclChildren(
-    const TemplateTypeParmDecl *D, std::vector<std::string> &children) {
+    const TemplateTypeParmDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitTypeDeclChildren(D, children);
@@ -352,7 +352,7 @@ void ClangAstDumper::VisitTemplateTypeParmDeclChildren(
 }
 
 void ClangAstDumper::VisitEnumConstantDeclChildren(
-    const EnumConstantDecl *D, std::vector<std::string> &children) {
+    const EnumConstantDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitValueDeclChildren(D, children);
@@ -361,7 +361,7 @@ void ClangAstDumper::VisitEnumConstantDeclChildren(
 }
 
 void ClangAstDumper::VisitTypedefNameDeclChildren(
-    const TypedefNameDecl *D, std::vector<std::string> &children) {
+    const TypedefNameDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitTypeDeclChildren(D, children);
@@ -370,7 +370,7 @@ void ClangAstDumper::VisitTypedefNameDeclChildren(
 }
 
 void ClangAstDumper::VisitUsingDirectiveDeclChildren(
-    const UsingDirectiveDecl *D, std::vector<std::string> &children) {
+    const UsingDirectiveDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitNamedDeclChildren(D, children);
@@ -380,7 +380,7 @@ void ClangAstDumper::VisitUsingDirectiveDeclChildren(
 }
 
 void ClangAstDumper::VisitNamespaceDeclChildren(
-    const NamespaceDecl *D, std::vector<std::string> &children) {
+    const NamespaceDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitNamedDeclChildren(D, children);
@@ -389,7 +389,7 @@ void ClangAstDumper::VisitNamespaceDeclChildren(
 }
 
 void ClangAstDumper::VisitFriendDeclChildren(
-    const FriendDecl *D, std::vector<std::string> &children) {
+    const FriendDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitDeclChildren(D, children);
@@ -405,7 +405,7 @@ void ClangAstDumper::VisitFriendDeclChildren(
 }
 
 void ClangAstDumper::VisitNamespaceAliasDeclChildren(
-    const NamespaceAliasDecl *D, std::vector<std::string> &children) {
+    const NamespaceAliasDecl *D, std::vector<int64_t> &children) {
 
     // Hierarchy
     VisitNamedDeclChildren(D, children);
@@ -414,20 +414,20 @@ void ClangAstDumper::VisitNamespaceAliasDeclChildren(
 }
 
 void ClangAstDumper::VisitLinkageSpecDeclChildren(
-    const LinkageSpecDecl *D, std::vector<std::string> &children) {
+    const LinkageSpecDecl *D, std::vector<int64_t> &children) {
 
     addChildren(D->decls(), children);
 }
 
 void ClangAstDumper::VisitStaticAssertDeclChildren(
-    const StaticAssertDecl *D, std::vector<std::string> &children) {
+    const StaticAssertDecl *D, std::vector<int64_t> &children) {
 
     addChild(D->getAssertExpr(), children);
     addChild(D->getMessage(), children);
 }
 
 void ClangAstDumper::VisitNonTypeTemplateParmDeclChildren(
-    const NonTypeTemplateParmDecl *D, std::vector<std::string> &children) {
+    const NonTypeTemplateParmDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitValueDeclChildren(D, children);
 
@@ -443,7 +443,7 @@ void ClangAstDumper::VisitNonTypeTemplateParmDeclChildren(
 }
 
 void ClangAstDumper::VisitUsingDeclChildren(
-    const UsingDecl *D, std::vector<std::string> &children) {
+    const UsingDecl *D, std::vector<int64_t> &children) {
     // Hierarchy
     VisitNamedDeclChildren(D, children);
 

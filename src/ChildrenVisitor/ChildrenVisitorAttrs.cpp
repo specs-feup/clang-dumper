@@ -10,7 +10,7 @@
 
 #define ATTR_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
   {#CLASS, [](ClangAstDumper &self, const Attr *A,                             \
-              std::vector<std::string> &children) {                            \
+              std::vector<int64_t> &children) {                            \
     self.VISITOR(static_cast<const CLASS *>(A), children);                     \
   }}
 
@@ -23,7 +23,7 @@ void ClangAstDumper::visitChildren(const Attr *A) {
     const std::string classname = clava::getClassName(A);
     auto it = ATTR_CHILDREN_VISITORS.find(classname);
 
-    std::vector<std::string> visitedChildren;
+    std::vector<int64_t> visitedChildren;
     if (it != ATTR_CHILDREN_VISITORS.end()) {
         it->second(*this, A, visitedChildren);
     } else {
@@ -35,7 +35,7 @@ void ClangAstDumper::visitChildren(const Attr *A) {
 }
 
 void ClangAstDumper::VisitAlignedAttrChildren(
-    const AlignedAttr *A, std::vector<std::string> &children) {
+    const AlignedAttr *A, std::vector<int64_t> &children) {
     // No hierarchy
 
     if (A->isAlignmentExpr()) {

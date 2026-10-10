@@ -62,7 +62,6 @@ public:
       return false;
     }
 
-    clava::enableDenseIds();
     stream = std::make_unique<clava::flat::FlatStream>(*output);
     return true;
   }

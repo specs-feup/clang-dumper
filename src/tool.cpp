@@ -210,7 +210,6 @@ int main(int argc, const char *argv[]) {
       return 1;
     }
 
-    clava::enableDenseIds();
     dumpStream = std::make_unique<clava::flat::FlatStream>(*dumpOutput);
   }
 

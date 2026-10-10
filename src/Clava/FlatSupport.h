@@ -27,7 +27,6 @@ struct Context {
   std::function<uint32_t(llvm::StringRef)> fileId;
   std::function<bool(clang::SourceLocation)> isInlineAsm;
 };
-int64_t wireId(const std::string &value);
 std::unique_ptr<fb::ClavaNodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c);
 std::string qualifierString(clang::NestedNameSpecifier *qualifier, Context &c);
 std::string sourceText(clang::SourceRange range, Context &c);
@@ -46,7 +45,7 @@ std::unique_ptr<fb::StmtDataT> makeStmtData(const clang::Stmt *stmt, Context &c)
 /** A Node record with the node's wire id and Clang class name; the family's makeNode adds the payload. */
 template <class T> fb::NodeT nodeHeader(const T *node, Context &c) {
   fb::NodeT out;
-  out.id = wireId(clava::getId(node, c.id));
+  out.id = clava::getId(node, c.id);
   out.class_name = clava::getClassName(node);
   return out;
 }

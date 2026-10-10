@@ -19,7 +19,7 @@ std::unique_ptr<fb::LabelStmtDataT> makeLabelStmtData(
     const clang::LabelStmt *node, Context &c) {
   auto out = std::make_unique<fb::LabelStmtDataT>();
   out->base = makeStmtData(node, c);
-  out->label = wireId(clava::getId(node->getDecl(), c.id));
+  out->label = clava::getId(node->getDecl(), c.id);
   return out;
 }
 
@@ -27,7 +27,7 @@ std::unique_ptr<fb::GotoStmtDataT> makeGotoStmtData(
     const clang::GotoStmt *node, Context &c) {
   auto out = std::make_unique<fb::GotoStmtDataT>();
   out->base = makeStmtData(node, c);
-  out->label = wireId(clava::getId(node->getLabel(), c.id));
+  out->label = clava::getId(node->getLabel(), c.id);
   return out;
 }
 
@@ -36,7 +36,7 @@ std::unique_ptr<fb::AttributedStmtDataT> makeAttributedStmtData(
   auto out = std::make_unique<fb::AttributedStmtDataT>();
   out->base = makeStmtData(node, c);
   for (const auto *attr : node->getAttrs()) {
-    out->stmt_attributes.push_back(wireId(clava::getId(attr, c.id)));
+    out->stmt_attributes.push_back(clava::getId(attr, c.id));
   }
   return out;
 }
@@ -53,14 +53,14 @@ std::unique_ptr<fb::AsmStmtDataT> makeAsmStmtData(const clang::AsmStmt *node,
   }
   for (unsigned i = 0; i < node->getNumOutputs(); ++i) {
     auto output = std::make_unique<fb::AsmOutputT>();
-    output->expr = wireId(clava::getId(node->getOutputExpr(i), c.id));
+    output->expr = clava::getId(node->getOutputExpr(i), c.id);
     output->constraint = node->getOutputConstraint(i).str();
     output->is_plus_constraint = node->isOutputPlusConstraint(i);
     out->outputs.push_back(std::move(output));
   }
   for (unsigned i = 0; i < node->getNumInputs(); ++i) {
     auto input = std::make_unique<fb::AsmInputT>();
-    input->expr = wireId(clava::getId(node->getInputExpr(i), c.id));
+    input->expr = clava::getId(node->getInputExpr(i), c.id);
     input->constraint = node->getInputConstraint(i).str();
     out->inputs.push_back(std::move(input));
   }

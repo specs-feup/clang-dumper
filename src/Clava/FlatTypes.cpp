@@ -45,7 +45,7 @@ std::unique_ptr<fb::TypeDataT> makeTypeData(const clang::Type *type,
   out->unqualified_desugared_type = -1;
   if (desugared != clang::QualType(type, 0))
     out->unqualified_desugared_type =
-        wireId(clava::getId(desugared, c.id));
+        clava::getId(desugared, c.id);
   return out;
 }
 
@@ -107,7 +107,7 @@ std::unique_ptr<fb::QualTypeDataT> makeQualTypeData(const clang::QualType &type,
   out->address_space = isTargetAddressSpace(addressSpace)
                           ? toTargetAddressSpace(addressSpace)
                           : 0;
-  out->unqualified_type = wireId(clava::getId(type.getTypePtr(), c.id));
+  out->unqualified_type = clava::getId(type.getTypePtr(), c.id);
   return out;
 }
 
@@ -124,7 +124,7 @@ std::unique_ptr<fb::PointerTypeDataT> makePointerTypeData(
     const clang::PointerType *type, Context &c) {
   auto out = typeBase<fb::PointerTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->pointee_type = wireId(clava::getId(type->getPointeeType(), c.id));
+  out->pointee_type = clava::getId(type->getPointeeType(), c.id);
   return out;
 }
 
@@ -132,8 +132,8 @@ std::unique_ptr<fb::MemberPointerTypeDataT> makeMemberPointerTypeData(
     const clang::MemberPointerType *type, Context &c) {
   auto out = typeBase<fb::MemberPointerTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->class_type = wireId(clava::getId(type->getClass(), c.id));
-  out->pointee_type = wireId(clava::getId(type->getPointeeType(), c.id));
+  out->class_type = clava::getId(type->getClass(), c.id);
+  out->pointee_type = clava::getId(type->getPointeeType(), c.id);
   return out;
 }
 
@@ -151,7 +151,7 @@ std::unique_ptr<fb::FunctionTypeDataT> makeFunctionTypeData(
   out->reg_parm = extInfo.getHasRegParm() ? extInfo.getRegParm() : 0;
   out->calling_convention =
       enumValue<fb::CallingConvention>(clava::CALLING_CONVENTION[extInfo.getCC()]);
-  out->return_type = wireId(clava::getId(type->getReturnType(), c.id));
+  out->return_type = clava::getId(type->getReturnType(), c.id);
   return out;
 }
 
@@ -161,7 +161,7 @@ std::unique_ptr<fb::FunctionProtoTypeDataT> makeFunctionProtoTypeData(
   out->base = makeFunctionTypeData(type, c);
   out->num_parameters = static_cast<int>(type->getParamTypes().size());
   for (clang::QualType parameter : type->getParamTypes())
-    out->parameters_types.push_back(wireId(clava::getId(parameter, c.id)));
+    out->parameters_types.push_back(clava::getId(parameter, c.id));
   auto info = type->getExtProtoInfo();
   out->has_trailing_returns = static_cast<bool>(info.HasTrailingReturn);
   out->is_variadic = static_cast<bool>(info.Variadic);
@@ -175,7 +175,7 @@ std::unique_ptr<fb::TagTypeDataT> makeTagTypeData(const clang::TagType *type,
                                                   Context &c) {
   auto out = typeBase<fb::TagTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->decl = wireId(clava::getId(type->getDecl(), c.id));
+  out->decl = clava::getId(type->getDecl(), c.id);
   return out;
 }
 
@@ -186,7 +186,7 @@ std::unique_ptr<fb::ArrayTypeDataT> makeArrayTypeData(
   out->array_size_modifier = enumValue<fb::ArraySizeModifier>(
       clava::ARRAY_SIZE_MODIFIER[llvm::to_underlying(type->getSizeModifier())]);
   out->index_type_qualifiers = c99Qualifiers(type->getIndexTypeQualifiers(), c);
-  out->element_type = wireId(clava::getId(type->getElementType(), c.id));
+  out->element_type = clava::getId(type->getElementType(), c.id);
   return out;
 }
 
@@ -204,7 +204,7 @@ std::unique_ptr<fb::VariableArrayTypeDataT> makeVariableArrayTypeData(
     const clang::VariableArrayType *type, Context &c) {
   auto out = typeBase<fb::VariableArrayTypeDataT>(type);
   out->base = makeArrayTypeData(type, c);
-  out->size_expr = wireId(clava::getId(type->getSizeExpr(), c.id));
+  out->size_expr = clava::getId(type->getSizeExpr(), c.id);
   return out;
 }
 
@@ -213,7 +213,7 @@ makeDependentSizedArrayTypeData(const clang::DependentSizedArrayType *type,
                                 Context &c) {
   auto out = typeBase<fb::DependentSizedArrayTypeDataT>(type);
   out->base = makeArrayTypeData(type, c);
-  out->size_expr = wireId(clava::getId(type->getSizeExpr(), c.id));
+  out->size_expr = clava::getId(type->getSizeExpr(), c.id);
   return out;
 }
 
@@ -231,7 +231,7 @@ std::unique_ptr<fb::ElaboratedTypeDataT> makeElaboratedTypeData(
   auto out = typeBase<fb::ElaboratedTypeDataT>(type);
   out->base = makeTypeWithKeywordData(type, c);
   out->qualifier = qualifierString(type->getQualifier(), c);
-  out->named_type = wireId(clava::getId(type->getNamedType(), c.id));
+  out->named_type = clava::getId(type->getNamedType(), c.id);
   return out;
 }
 
@@ -242,7 +242,7 @@ std::unique_ptr<fb::TemplateTypeParmTypeDataT> makeTemplateTypeParmTypeData(
   out->depth = static_cast<int>(type->getDepth());
   out->index = static_cast<int>(type->getIndex());
   out->is_packed = type->isParameterPack();
-  out->decl = wireId(clava::getId(type->getDecl(), c.id));
+  out->decl = clava::getId(type->getDecl(), c.id);
   return out;
 }
 
@@ -252,10 +252,9 @@ makeTemplateSpecializationTypeData(
   auto out = typeBase<fb::TemplateSpecializationTypeDataT>(type);
   out->base = makeTypeData(type, c);
   out->is_type_alias = type->isTypeAlias();
-  out->aliased_type = type->isTypeAlias()?wireId(clava::getId(type->getAliasedType(), c.id)):-1;
+  out->aliased_type = type->isTypeAlias()?clava::getId(type->getAliasedType(), c.id):-1;
   out->template_name = templateNameText(type->getTemplateName());
-  out->template_decl = wireId(
-      clava::getId(type->getTemplateName().getAsTemplateDecl(), c.id));
+  out->template_decl = clava::getId(type->getTemplateName().getAsTemplateDecl(), c.id);
   for (const auto &arg : type->template_arguments())
     out->template_arguments.push_back(makeTemplateArgument(arg, c));
   return out;
@@ -265,7 +264,7 @@ std::unique_ptr<fb::TypedefTypeDataT> makeTypedefTypeData(
     const clang::TypedefType *type, Context &c) {
   auto out = typeBase<fb::TypedefTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->decl = wireId(clava::getId(type->getDecl(), c.id));
+  out->decl = clava::getId(type->getDecl(), c.id);
   return out;
 }
 
@@ -273,8 +272,8 @@ std::unique_ptr<fb::AdjustedTypeDataT> makeAdjustedTypeData(
     const clang::AdjustedType *type, Context &c) {
   auto out = typeBase<fb::AdjustedTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->original_type = wireId(clava::getId(type->getOriginalType(), c.id));
-  out->adjusted_type = wireId(clava::getId(type->getAdjustedType(), c.id));
+  out->original_type = clava::getId(type->getOriginalType(), c.id);
+  out->adjusted_type = clava::getId(type->getAdjustedType(), c.id);
   return out;
 }
 
@@ -282,8 +281,8 @@ std::unique_ptr<fb::DecayedTypeDataT> makeDecayedTypeData(
     const clang::DecayedType *type, Context &c) {
   auto out = typeBase<fb::DecayedTypeDataT>(type);
   out->base = makeAdjustedTypeData(type, c);
-  out->decayed_type = wireId(clava::getId(type->getDecayedType(), c.id));
-  out->pointee_type = wireId(clava::getId(type->getPointeeType(), c.id));
+  out->decayed_type = clava::getId(type->getDecayedType(), c.id);
+  out->pointee_type = clava::getId(type->getPointeeType(), c.id);
   return out;
 }
 
@@ -292,7 +291,7 @@ std::unique_ptr<fb::DecltypeTypeDataT> makeDecltypeTypeData(
   auto out = typeBase<fb::DecltypeTypeDataT>(type);
   out->base = makeTypeData(type, c);
   out->is_sugared = type->isSugared();
-  out->underlying_expr = wireId(clava::getId(type->getUnderlyingExpr(), c.id));
+  out->underlying_expr = clava::getId(type->getUnderlyingExpr(), c.id);
   return out;
 }
 
@@ -300,7 +299,7 @@ std::unique_ptr<fb::AutoTypeDataT> makeAutoTypeData(const clang::AutoType *type,
                                                     Context &c) {
   auto out = typeBase<fb::AutoTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->deduced_type = wireId(clava::getId(type->getDeducedType(), c.id));
+  out->deduced_type = clava::getId(type->getDeducedType(), c.id);
   return out;
 }
 
@@ -309,7 +308,7 @@ std::unique_ptr<fb::ReferenceTypeDataT> makeReferenceTypeData(
   auto out = typeBase<fb::ReferenceTypeDataT>(type);
   out->base = makeTypeData(type, c);
   out->pointee_type_as_written =
-      wireId(clava::getId(type->getPointeeTypeAsWritten(), c.id));
+      clava::getId(type->getPointeeTypeAsWritten(), c.id);
   return out;
 }
 
@@ -318,7 +317,7 @@ std::unique_ptr<fb::PackExpansionTypeDataT> makePackExpansionTypeData(
   auto out = typeBase<fb::PackExpansionTypeDataT>(type);
   out->base = makeTypeData(type, c);
   out->num_expansions = type->getNumExpansions().value_or(0);
-  out->pattern = wireId(clava::getId(type->getPattern(), c.id));
+  out->pattern = clava::getId(type->getPattern(), c.id);
   return out;
 }
 
@@ -327,7 +326,7 @@ std::unique_ptr<fb::TypeOfExprTypeDataT> makeTypeOfExprTypeData(
   auto out = typeBase<fb::TypeOfExprTypeDataT>(type);
   out->base = makeTypeData(type, c);
   out->is_sugared = type->isSugared();
-  out->underlying_expr = wireId(clava::getId(type->getUnderlyingExpr(), c.id));
+  out->underlying_expr = clava::getId(type->getUnderlyingExpr(), c.id);
   return out;
 }
 
@@ -335,8 +334,8 @@ std::unique_ptr<fb::AttributedTypeDataT> makeAttributedTypeData(
     const clang::AttributedType *type, Context &c) {
   auto out = typeBase<fb::AttributedTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->modified_type = wireId(clava::getId(type->getModifiedType(), c.id));
-  out->equivalent_type = wireId(clava::getId(type->getEquivalentType(), c.id));
+  out->modified_type = clava::getId(type->getModifiedType(), c.id);
+  out->equivalent_type = clava::getId(type->getEquivalentType(), c.id);
   return out;
 }
 
@@ -346,8 +345,8 @@ std::unique_ptr<fb::UnaryTransformTypeDataT> makeUnaryTransformTypeData(
   out->base = makeTypeData(type, c);
   out->kind = enumValue<fb::UnaryTransformTypeKind>(
       clava::UTT_KIND[llvm::to_underlying(type->getUTTKind())]);
-  out->underlying_type = wireId(clava::getId(type->getUnderlyingType(), c.id));
-  out->base_type = wireId(clava::getId(type->getBaseType(), c.id));
+  out->underlying_type = clava::getId(type->getUnderlyingType(), c.id);
+  out->base_type = clava::getId(type->getBaseType(), c.id);
   return out;
 }
 
@@ -357,8 +356,8 @@ makeSubstTemplateTypeParmTypeData(
   auto out = typeBase<fb::SubstTemplateTypeParmTypeDataT>(type);
   out->base = makeTypeData(type, c);
   out->replaced_parameter =
-      wireId(clava::getId(type->getReplacedParameter(), c.id));
-  out->replacement_type = wireId(clava::getId(type->getReplacementType(), c.id));
+      clava::getId(type->getReplacedParameter(), c.id);
+  out->replacement_type = clava::getId(type->getReplacementType(), c.id);
   return out;
 }
 
@@ -366,7 +365,7 @@ std::unique_ptr<fb::ComplexTypeDataT> makeComplexTypeData(
     const clang::ComplexType *type, Context &c) {
   auto out = typeBase<fb::ComplexTypeDataT>(type);
   out->base = makeTypeData(type, c);
-  out->element_type = wireId(clava::getId(type->getElementType(), c.id));
+  out->element_type = clava::getId(type->getElementType(), c.id);
   return out;
 }
 
@@ -430,7 +429,7 @@ fb::NodeT makeNode(const clang::Type *node, Context &c) {
 
 fb::NodeT makeNode(const clang::QualType &node, Context &c) {
   fb::NodeT out;
-  out.id = wireId(clava::getId(node, c.id));
+  out.id = clava::getId(node, c.id);
   out.class_name = "QualType";
   out.payload.Set(std::move(*makeQualTypeData(node, c)));
   return out;

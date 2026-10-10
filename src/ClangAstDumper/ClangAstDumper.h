@@ -41,15 +41,15 @@ private:
   // reported on the wire format ("<Id to Class Map>" payloads). Adding a
   // handler for a new/renamed Clang class means adding one table entry.
   using DeclChildrenFn = void (*)(ClangAstDumper &, const Decl *,
-                                  std::vector<std::string> &);
+                                  std::vector<int64_t> &);
   using StmtChildrenFn = void (*)(ClangAstDumper &, const Stmt *,
-                                  std::vector<std::string> &);
+                                  std::vector<int64_t> &);
   using ExprChildrenFn = void (*)(ClangAstDumper &, const Expr *,
-                                  std::vector<std::string> &);
+                                  std::vector<int64_t> &);
   using TypeChildrenFn = void (*)(ClangAstDumper &, const Type *,
-                                  std::vector<std::string> &);
+                                  std::vector<int64_t> &);
   using AttrChildrenFn = void (*)(ClangAstDumper &, const Attr *,
-                                  std::vector<std::string> &);
+                                  std::vector<int64_t> &);
 
   static const std::map<std::string, DeclChildrenFn> DECL_CHILDREN_VISITORS;
   static const std::map<std::string, StmtChildrenFn> STMT_CHILDREN_VISITORS;
@@ -110,14 +110,14 @@ public:
    * @param id
    * @return
    */
-  const void addChild(const Decl *addr, std::vector<std::string> &children);
+  const void addChild(const Decl *addr, std::vector<int64_t> &children);
   const void addChildren(DeclContext::decl_range declRange,
-                         std::vector<std::string> &children);
-  const void addChild(const Stmt *addr, std::vector<std::string> &children);
-  const void addChild(const Expr *addr, std::vector<std::string> &children);
-  const void addChild(const Type *addr, std::vector<std::string> &children);
-  const void addChild(const QualType &addr, std::vector<std::string> &children);
-  const void addChild(const Attr *addr, std::vector<std::string> &children);
+                         std::vector<int64_t> &children);
+  const void addChild(const Stmt *addr, std::vector<int64_t> &children);
+  const void addChild(const Expr *addr, std::vector<int64_t> &children);
+  const void addChild(const Type *addr, std::vector<int64_t> &children);
+  const void addChild(const QualType &addr, std::vector<int64_t> &children);
+  const void addChild(const Attr *addr, std::vector<int64_t> &children);
 
   // Private functions
 private:
@@ -125,11 +125,11 @@ private:
   // Shared implementation for the addChild() overloads; visitTop serializes
   // the node through the appropriate Top-level visit function.
   template <typename T, typename F>
-  void addChildInternal(const T *addr, std::vector<std::string> &children,
+  void addChildInternal(const T *addr, std::vector<int64_t> &children,
                         F &&visitTop);
   template <typename F>
   void addChildInternal(const QualType &addr,
-                        std::vector<std::string> &children, F &&visitTop);
+                        std::vector<int64_t> &children, F &&visitTop);
 
   // Children and data
   void visitChildrenAndData(const Decl *D);
@@ -140,7 +140,7 @@ private:
 
   // Children visitors
   void dumpVisitedChildren(const void *pointer,
-                           std::vector<std::string> children);
+                           std::vector<int64_t> children);
 
   void visitChildren(const Decl *D);
   void visitChildren(const Stmt *S);
@@ -155,156 +155,156 @@ private:
   bool isPastSystemHeaderThreshold() const;
 
   // Children visitors for Decls
-  void VisitDeclChildren(const Decl *D, std::vector<std::string> &children);
+  void VisitDeclChildren(const Decl *D, std::vector<int64_t> &children);
   void VisitNamedDeclChildren(const NamedDecl *D,
-                              std::vector<std::string> &children);
+                              std::vector<int64_t> &children);
   void VisitTypeDeclChildren(const TypeDecl *D,
-                             std::vector<std::string> &children);
+                             std::vector<int64_t> &children);
   void VisitTagDeclChildren(const TagDecl *D,
-                            std::vector<std::string> &children);
+                            std::vector<int64_t> &children);
   void VisitEnumDeclChildren(const EnumDecl *D,
-                             std::vector<std::string> &children);
+                             std::vector<int64_t> &children);
   void VisitRecordDeclChildren(const RecordDecl *D,
-                               std::vector<std::string> &children);
+                               std::vector<int64_t> &children);
   void VisitCXXRecordDeclChildren(const CXXRecordDecl *D,
-                                  std::vector<std::string> &children);
+                                  std::vector<int64_t> &children);
   void VisitClassTemplateSpecializationDeclChildren(
       const ClassTemplateSpecializationDecl *D,
-      std::vector<std::string> &children);
+      std::vector<int64_t> &children);
   void VisitClassTemplatePartialSpecializationDeclChildren(
       const ClassTemplatePartialSpecializationDecl *D,
-      std::vector<std::string> &children);
+      std::vector<int64_t> &children);
   void VisitValueDeclChildren(const ValueDecl *D,
-                              std::vector<std::string> &children);
+                              std::vector<int64_t> &children);
   void VisitFieldDeclChildren(const FieldDecl *D,
-                              std::vector<std::string> &children);
+                              std::vector<int64_t> &children);
   void VisitFunctionDeclChildren(const FunctionDecl *D,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
   void VisitCXXMethodDeclChildren(const CXXMethodDecl *D,
-                                  std::vector<std::string> &children);
+                                  std::vector<int64_t> &children);
   void VisitCXXConstructorDeclChildren(const CXXConstructorDecl *D,
-                                       std::vector<std::string> &children);
+                                       std::vector<int64_t> &children);
   void VisitCXXConversionDeclChildren(const CXXConversionDecl *D,
-                                      std::vector<std::string> &children);
+                                      std::vector<int64_t> &children);
 
   void VisitVarDeclChildren(const VarDecl *D,
-                            std::vector<std::string> &children);
+                            std::vector<int64_t> &children);
   void VisitParmVarDeclChildren(const ParmVarDecl *D,
-                                std::vector<std::string> &children);
+                                std::vector<int64_t> &children);
 
   void VisitTemplateDeclChildren(const TemplateDecl *D,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
   void
   VisitTemplateTemplateParmDeclChildren(const TemplateTemplateParmDecl *D,
-                                        std::vector<std::string> &children);
+                                        std::vector<int64_t> &children);
   void VisitTemplateTypeParmDeclChildren(const TemplateTypeParmDecl *D,
-                                         std::vector<std::string> &children);
+                                         std::vector<int64_t> &children);
   void VisitEnumConstantDeclChildren(const EnumConstantDecl *D,
-                                     std::vector<std::string> &children);
+                                     std::vector<int64_t> &children);
   void VisitTypedefNameDeclChildren(const TypedefNameDecl *D,
-                                    std::vector<std::string> &children);
+                                    std::vector<int64_t> &children);
   void VisitUsingDirectiveDeclChildren(const UsingDirectiveDecl *D,
-                                       std::vector<std::string> &children);
+                                       std::vector<int64_t> &children);
   void VisitNamespaceDeclChildren(const NamespaceDecl *D,
-                                  std::vector<std::string> &children);
+                                  std::vector<int64_t> &children);
   void VisitFriendDeclChildren(const FriendDecl *D,
-                               std::vector<std::string> &children);
+                               std::vector<int64_t> &children);
   void VisitNamespaceAliasDeclChildren(const NamespaceAliasDecl *D,
-                                       std::vector<std::string> &children);
+                                       std::vector<int64_t> &children);
   void VisitLinkageSpecDeclChildren(const LinkageSpecDecl *D,
-                                    std::vector<std::string> &children);
+                                    std::vector<int64_t> &children);
   void VisitStaticAssertDeclChildren(const StaticAssertDecl *D,
-                                     std::vector<std::string> &children);
+                                     std::vector<int64_t> &children);
   void VisitNonTypeTemplateParmDeclChildren(const NonTypeTemplateParmDecl *D,
-                                            std::vector<std::string> &children);
+                                            std::vector<int64_t> &children);
   void VisitUsingDeclChildren(const UsingDecl *D,
-                              std::vector<std::string> &children);
+                              std::vector<int64_t> &children);
 
   // Children visitors for Stmts
-  void VisitStmtChildren(const Stmt *S, std::vector<std::string> &children);
+  void VisitStmtChildren(const Stmt *S, std::vector<int64_t> &children);
   void VisitDeclStmtChildren(const DeclStmt *S,
-                             std::vector<std::string> &children);
-  void VisitIfStmtChildren(const IfStmt *S, std::vector<std::string> &children);
+                             std::vector<int64_t> &children);
+  void VisitIfStmtChildren(const IfStmt *S, std::vector<int64_t> &children);
   void VisitForStmtChildren(const ForStmt *S,
-                            std::vector<std::string> &children);
+                            std::vector<int64_t> &children);
   void VisitWhileStmtChildren(const WhileStmt *S,
-                              std::vector<std::string> &children);
-  void VisitDoStmtChildren(const DoStmt *S, std::vector<std::string> &children);
+                              std::vector<int64_t> &children);
+  void VisitDoStmtChildren(const DoStmt *S, std::vector<int64_t> &children);
   void VisitCXXForRangeStmtChildren(const CXXForRangeStmt *S,
-                                    std::vector<std::string> &children);
+                                    std::vector<int64_t> &children);
   void VisitCXXCatchStmtChildren(const CXXCatchStmt *S,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
   void VisitCXXTryStmtChildren(const CXXTryStmt *S,
-                               std::vector<std::string> &children);
+                               std::vector<int64_t> &children);
   void VisitCaseStmtChildren(const CaseStmt *S,
-                             std::vector<std::string> &children);
+                             std::vector<int64_t> &children);
   void VisitDefaultStmtChildren(const DefaultStmt *S,
-                                std::vector<std::string> &children);
+                                std::vector<int64_t> &children);
   void VisitGotoStmtChildren(const GotoStmt *S,
-                             std::vector<std::string> &children);
+                             std::vector<int64_t> &children);
   void VisitLabelStmtChildren(const LabelStmt *S,
-                              std::vector<std::string> &children);
+                              std::vector<int64_t> &children);
   void VisitAttributedStmtChildren(const AttributedStmt *S,
-                                   std::vector<std::string> &children);
+                                   std::vector<int64_t> &children);
   void VisitCapturedStmtChildren(const CapturedStmt *S,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
 
   // Children visitors for Exprs
-  void VisitExprChildren(const Expr *S, std::vector<std::string> &children);
+  void VisitExprChildren(const Expr *S, std::vector<int64_t> &children);
   void VisitInitListExprChildren(const InitListExpr *E,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
   void VisitDeclRefExprChildren(const DeclRefExpr *E,
-                                std::vector<std::string> &children);
+                                std::vector<int64_t> &children);
   void
   VisitDependentScopeDeclRefExprChildren(const DependentScopeDeclRefExpr *E,
-                                         std::vector<std::string> &children);
+                                         std::vector<int64_t> &children);
   void VisitOffsetOfExprChildren(const OffsetOfExpr *E,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
   void VisitMemberExprChildren(const MemberExpr *E,
-                               std::vector<std::string> &children);
+                               std::vector<int64_t> &children);
   void
   VisitMaterializeTemporaryExprChildren(const MaterializeTemporaryExpr *E,
-                                        std::vector<std::string> &children);
+                                        std::vector<int64_t> &children);
   void VisitOverloadExprChildren(const OverloadExpr *E,
-                                 std::vector<std::string> &children);
+                                 std::vector<int64_t> &children);
   void VisitCallExprChildren(const CallExpr *E,
-                             std::vector<std::string> &children);
+                             std::vector<int64_t> &children);
   void VisitCXXMemberCallExprChildren(const CXXMemberCallExpr *E,
-                                      std::vector<std::string> &children);
+                                      std::vector<int64_t> &children);
   void VisitCXXTypeidExprChildren(const CXXTypeidExpr *E,
-                                  std::vector<std::string> &children);
+                                  std::vector<int64_t> &children);
   void VisitExplicitCastExprChildren(const ExplicitCastExpr *E,
-                                     std::vector<std::string> &children);
+                                     std::vector<int64_t> &children);
   void VisitOpaqueValueExprChildren(const OpaqueValueExpr *E,
-                                    std::vector<std::string> &children);
+                                    std::vector<int64_t> &children);
   void
   VisitUnaryExprOrTypeTraitExprChildren(const UnaryExprOrTypeTraitExpr *E,
-                                        std::vector<std::string> &children);
+                                        std::vector<int64_t> &children);
   void VisitCXXNewExprChildren(const CXXNewExpr *E,
-                               std::vector<std::string> &children);
+                               std::vector<int64_t> &children);
   void VisitCXXDeleteExprChildren(const CXXDeleteExpr *E,
-                                  std::vector<std::string> &children);
+                                  std::vector<int64_t> &children);
   void VisitLambdaExprChildren(const LambdaExpr *E,
-                               std::vector<std::string> &children);
+                               std::vector<int64_t> &children);
   void VisitSizeOfPackExprChildren(const SizeOfPackExpr *E,
-                                   std::vector<std::string> &children);
+                                   std::vector<int64_t> &children);
   void VisitDesignatedInitExprChildren(const DesignatedInitExpr *E,
-                                       std::vector<std::string> &children);
+                                       std::vector<int64_t> &children);
   void VisitCXXConstructExprChildren(const CXXConstructExpr *E,
-                                     std::vector<std::string> &children);
+                                     std::vector<int64_t> &children);
   void VisitCXXTemporaryObjectExprChildren(const CXXTemporaryObjectExpr *E,
-                                           std::vector<std::string> &children);
+                                           std::vector<int64_t> &children);
   void
   VisitCXXDependentScopeMemberExprChildren(const CXXDependentScopeMemberExpr *E,
-                                           std::vector<std::string> &children);
+                                           std::vector<int64_t> &children);
   void VisitCXXPseudoDestructorExprChildren(const CXXPseudoDestructorExpr *E,
-                                            std::vector<std::string> &children);
+                                            std::vector<int64_t> &children);
   void VisitMSPropertyRefExprChildren(const MSPropertyRefExpr *E,
-                                      std::vector<std::string> &children);
+                                      std::vector<int64_t> &children);
 
   // Children visitors for Attributes
   void VisitAlignedAttrChildren(const AlignedAttr *A,
-                                std::vector<std::string> &children);
+                                std::vector<int64_t> &children);
   void VisitTemplateArgument(const TemplateArgument &templateArg);
   void VisitTemplateName(const TemplateName &templateArg);
   // Same as VisitTemplateArgument, but expands argument packs into their
@@ -324,65 +324,65 @@ public:
   void dumpTopLevelAttr(const Attr *attr);
 
   // Children visitors for Types
-  void VisitTypeChildren(const Type *T, std::vector<std::string> &children);
+  void VisitTypeChildren(const Type *T, std::vector<int64_t> &children);
   void VisitFunctionTypeChildren(const FunctionType *T,
-                                 std::vector<std::string> &visitedChildren);
+                                 std::vector<int64_t> &visitedChildren);
   void
   VisitFunctionProtoTypeChildren(const FunctionProtoType *T,
-                                 std::vector<std::string> &visitedChildren);
+                                 std::vector<int64_t> &visitedChildren);
   void VisitTagTypeChildren(const TagType *T,
-                            std::vector<std::string> &visitedChildren);
+                            std::vector<int64_t> &visitedChildren);
   void VisitArrayTypeChildren(const ArrayType *T,
-                              std::vector<std::string> &visitedChildren);
+                              std::vector<int64_t> &visitedChildren);
   void
   VisitVariableArrayTypeChildren(const VariableArrayType *T,
-                                 std::vector<std::string> &visitedChildren);
+                                 std::vector<int64_t> &visitedChildren);
   void VisitDependentSizedArrayTypeChildren(
       const DependentSizedArrayType *T,
-      std::vector<std::string> &visitedChildren);
+      std::vector<int64_t> &visitedChildren);
   void VisitPointerTypeChildren(const PointerType *T,
-                                std::vector<std::string> &visitedChildren);
+                                std::vector<int64_t> &visitedChildren);
   void VisitMemberPointerTypeChildren(
       const MemberPointerType *T,
-      std::vector<std::string> &visitedChildren);
+      std::vector<int64_t> &visitedChildren);
   void VisitElaboratedTypeChildren(const ElaboratedType *T,
-                                   std::vector<std::string> &visitedChildren);
+                                   std::vector<int64_t> &visitedChildren);
   void VisitReferenceTypeChildren(const ReferenceType *T,
-                                  std::vector<std::string> &visitedChildren);
+                                  std::vector<int64_t> &visitedChildren);
   void
   VisitInjectedClassNameTypeChildren(const InjectedClassNameType *T,
-                                     std::vector<std::string> &visitedChildren);
+                                     std::vector<int64_t> &visitedChildren);
   void
   VisitTemplateTypeParmTypeChildren(const TemplateTypeParmType *T,
-                                    std::vector<std::string> &visitedChildren);
+                                    std::vector<int64_t> &visitedChildren);
   void VisitSubstTemplateTypeParmTypeChildren(
       const SubstTemplateTypeParmType *T,
-      std::vector<std::string> &visitedChildren);
+      std::vector<int64_t> &visitedChildren);
   void VisitTemplateSpecializationTypeChildren(
       const TemplateSpecializationType *T,
-      std::vector<std::string> &visitedChildren);
+      std::vector<int64_t> &visitedChildren);
   void VisitTypedefTypeChildren(const TypedefType *T,
-                                std::vector<std::string> &visitedChildren);
+                                std::vector<int64_t> &visitedChildren);
   void VisitAdjustedTypeChildren(const AdjustedType *T,
-                                 std::vector<std::string> &visitedChildren);
+                                 std::vector<int64_t> &visitedChildren);
   void VisitDecayedTypeChildren(const DecayedType *T,
-                                std::vector<std::string> &visitedChildren);
+                                std::vector<int64_t> &visitedChildren);
   void VisitDecltypeTypeChildren(const DecltypeType *T,
-                                 std::vector<std::string> &visitedChildren);
+                                 std::vector<int64_t> &visitedChildren);
   void VisitAutoTypeChildren(const AutoType *T,
-                             std::vector<std::string> &visitedChildren);
+                             std::vector<int64_t> &visitedChildren);
   void
   VisitPackExpansionTypeChildren(const PackExpansionType *T,
-                                 std::vector<std::string> &visitedChildren);
+                                 std::vector<int64_t> &visitedChildren);
   void VisitTypeOfExprTypeChildren(const TypeOfExprType *T,
-                                   std::vector<std::string> &visitedChildren);
+                                   std::vector<int64_t> &visitedChildren);
   void VisitAttributedTypeChildren(const AttributedType *T,
-                                   std::vector<std::string> &visitedChildren);
+                                   std::vector<int64_t> &visitedChildren);
   void
   VisitUnaryTransformTypeChildren(const UnaryTransformType *T,
-                                  std::vector<std::string> &visitedChildren);
+                                  std::vector<int64_t> &visitedChildren);
   void VisitComplexTypeChildren(const ComplexType *T,
-                                std::vector<std::string> &visitedChildren);
+                                std::vector<int64_t> &visitedChildren);
 
   // Children visitors for other types of classes
   void VisitNestedNameSpecifierChildren(NestedNameSpecifier *qualifier);

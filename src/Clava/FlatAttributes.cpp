@@ -11,7 +11,7 @@ std::unique_ptr<fb::AttributeDataT> makeAttributeData(const Attr *a, Context &c)
 std::unique_ptr<fb::AlignedAttrDataT> makeAlignedAttrData(const AlignedAttr *a, Context &c) {
  auto out=std::make_unique<fb::AlignedAttrDataT>();out->base=makeAttributeData(a,c);
  out->spelling=a->getSpelling();out->is_expression=a->isAlignmentExpr();
- out->alignment=a->isAlignmentExpr()?wireId(clava::getId(a->getAlignmentExpr(),c.id)):wireId(clava::getId(a->getAlignmentType()->getType(),c.id));return out;
+ out->alignment=a->isAlignmentExpr()?clava::getId(a->getAlignmentExpr(),c.id):clava::getId(a->getAlignmentType()->getType(),c.id);return out;
 }
 std::unique_ptr<fb::OpenCLUnrollHintAttrDataT> makeOpenCLUnrollHintAttrData(const OpenCLUnrollHintAttr *a, Context &c) {
  auto out=std::make_unique<fb::OpenCLUnrollHintAttrDataT>();out->base=makeAttributeData(a,c);out->unroll_hint=a->getUnrollHint();return out;

@@ -12,14 +12,14 @@ namespace {
 template <typename T>
 void visitArrayTypeWithSizeExpr(
     ClangAstDumper &dumper, const T *type,
-    std::vector<std::string> &children) {
+    std::vector<int64_t> &children) {
     dumper.VisitArrayTypeChildren(type, children);
     dumper.VisitStmtTop(type->getSizeExpr());
 }
 
 template <typename T>
 void visitTypeWithDecl(ClangAstDumper &dumper, const T *type,
-                       std::vector<std::string> &children) {
+                       std::vector<int64_t> &children) {
     dumper.VisitTypeChildren(type, children);
     dumper.VisitDeclTop(type->getDecl());
 }
@@ -27,7 +27,7 @@ void visitTypeWithDecl(ClangAstDumper &dumper, const T *type,
 template <typename T>
 void visitTypeWithUnderlyingExpr(
     ClangAstDumper &dumper, const T *type,
-    std::vector<std::string> &children) {
+    std::vector<int64_t> &children) {
     dumper.VisitTypeChildren(type, children);
     dumper.VisitStmtTop(type->getUnderlyingExpr());
 }
@@ -38,7 +38,7 @@ void visitTypeWithUnderlyingExpr(
 // visitor (e.g. EnumType and RecordType use the TagType visitor).
 #define TYPE_CHILDREN_ENTRY(CLASS, VISITOR)                                    \
   {#CLASS, [](ClangAstDumper &self, const Type *T,                             \
-              std::vector<std::string> &children) {                            \
+              std::vector<int64_t> &children) {                            \
     self.VISITOR(static_cast<const CLASS *>(T), children);                     \
   }}
 
@@ -88,7 +88,7 @@ void ClangAstDumper::visitChildren(const Type *T) {
     const std::string classname = clava::getClassName(T);
     auto it = TYPE_CHILDREN_VISITORS.find(classname);
 
-    std::vector<std::string> visitedChildren;
+    std::vector<int64_t> visitedChildren;
     if (it != TYPE_CHILDREN_VISITORS.end()) {
         it->second(*this, T, visitedChildren);
     } else {
@@ -100,7 +100,7 @@ void ClangAstDumper::visitChildren(const Type *T) {
 }
 
 void ClangAstDumper::visitChildren(const QualType &T) {
-    std::vector<std::string> visitedChildren;
+    std::vector<int64_t> visitedChildren;
 
     VisitTypeTop(T.getTypePtr());
 
@@ -112,7 +112,7 @@ void ClangAstDumper::visitChildren(const QualType &T) {
 }
 
 void ClangAstDumper::VisitTypeChildren(
-    const Type *T, std::vector<std::string> &visitedChildren) {
+    const Type *T, std::vector<int64_t> &visitedChildren) {
 
     // If has sugar, visit desugared type
     QualType singleStepDesugar =
@@ -124,7 +124,7 @@ void ClangAstDumper::VisitTypeChildren(
 }
 
 void ClangAstDumper::VisitFunctionTypeChildren(
-    const FunctionType *T, std::vector<std::string> &visitedChildren) {
+    const FunctionType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -133,7 +133,7 @@ void ClangAstDumper::VisitFunctionTypeChildren(
 }
 
 void ClangAstDumper::VisitFunctionProtoTypeChildren(
-    const FunctionProtoType *T, std::vector<std::string> &visitedChildren) {
+    const FunctionProtoType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitFunctionTypeChildren(T, visitedChildren);
 
@@ -160,7 +160,7 @@ void ClangAstDumper::VisitFunctionProtoTypeChildren(
 }
 
 void ClangAstDumper::VisitTagTypeChildren(
-    const TagType *T, std::vector<std::string> &visitedChildren) {
+    const TagType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -169,7 +169,7 @@ void ClangAstDumper::VisitTagTypeChildren(
 }
 
 void ClangAstDumper::VisitArrayTypeChildren(
-    const ArrayType *T, std::vector<std::string> &visitedChildren) {
+    const ArrayType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -178,18 +178,18 @@ void ClangAstDumper::VisitArrayTypeChildren(
 }
 
 void ClangAstDumper::VisitVariableArrayTypeChildren(
-    const VariableArrayType *T, std::vector<std::string> &visitedChildren) {
+    const VariableArrayType *T, std::vector<int64_t> &visitedChildren) {
     visitArrayTypeWithSizeExpr(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitDependentSizedArrayTypeChildren(
     const DependentSizedArrayType *T,
-    std::vector<std::string> &visitedChildren) {
+    std::vector<int64_t> &visitedChildren) {
     visitArrayTypeWithSizeExpr(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitPointerTypeChildren(
-    const PointerType *T, std::vector<std::string> &visitedChildren) {
+    const PointerType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -198,7 +198,7 @@ void ClangAstDumper::VisitPointerTypeChildren(
 }
 
 void ClangAstDumper::VisitMemberPointerTypeChildren(
-    const MemberPointerType *T, std::vector<std::string> &visitedChildren) {
+    const MemberPointerType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -207,7 +207,7 @@ void ClangAstDumper::VisitMemberPointerTypeChildren(
 }
 
 void ClangAstDumper::VisitElaboratedTypeChildren(
-    const ElaboratedType *T, std::vector<std::string> &visitedChildren) {
+    const ElaboratedType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -216,7 +216,7 @@ void ClangAstDumper::VisitElaboratedTypeChildren(
 }
 
 void ClangAstDumper::VisitReferenceTypeChildren(
-    const ReferenceType *T, std::vector<std::string> &visitedChildren) {
+    const ReferenceType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -224,18 +224,18 @@ void ClangAstDumper::VisitReferenceTypeChildren(
 }
 
 void ClangAstDumper::VisitInjectedClassNameTypeChildren(
-    const InjectedClassNameType *T, std::vector<std::string> &visitedChildren) {
+    const InjectedClassNameType *T, std::vector<int64_t> &visitedChildren) {
     visitTypeWithDecl(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitTemplateTypeParmTypeChildren(
-    const TemplateTypeParmType *T, std::vector<std::string> &visitedChildren) {
+    const TemplateTypeParmType *T, std::vector<int64_t> &visitedChildren) {
     visitTypeWithDecl(*this, T, visitedChildren);
 }
 
 void ClangAstDumper::VisitSubstTemplateTypeParmTypeChildren(
     const SubstTemplateTypeParmType *T,
-    std::vector<std::string> &visitedChildren) {
+    std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -245,7 +245,7 @@ void ClangAstDumper::VisitSubstTemplateTypeParmTypeChildren(
 
 void ClangAstDumper::VisitTemplateSpecializationTypeChildren(
     const TemplateSpecializationType *T,
-    std::vector<std::string> &visitedChildren) {
+    std::vector<int64_t> &visitedChildren) {
 
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
@@ -265,7 +265,7 @@ void ClangAstDumper::VisitTemplateSpecializationTypeChildren(
 };
 
 void ClangAstDumper::VisitTypedefTypeChildren(
-    const TypedefType *T, std::vector<std::string> &visitedChildren) {
+    const TypedefType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -274,7 +274,7 @@ void ClangAstDumper::VisitTypedefTypeChildren(
 };
 
 void ClangAstDumper::VisitAdjustedTypeChildren(
-    const AdjustedType *T, std::vector<std::string> &visitedChildren) {
+    const AdjustedType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -286,7 +286,7 @@ void ClangAstDumper::VisitAdjustedTypeChildren(
 };
 
 void ClangAstDumper::VisitDecayedTypeChildren(
-    const DecayedType *T, std::vector<std::string> &visitedChildren) {
+    const DecayedType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitAdjustedTypeChildren(T, visitedChildren);
 
@@ -296,12 +296,12 @@ void ClangAstDumper::VisitDecayedTypeChildren(
 };
 
 void ClangAstDumper::VisitDecltypeTypeChildren(
-    const DecltypeType *T, std::vector<std::string> &visitedChildren) {
+    const DecltypeType *T, std::vector<int64_t> &visitedChildren) {
     visitTypeWithUnderlyingExpr(*this, T, visitedChildren);
 };
 
 void ClangAstDumper::VisitAutoTypeChildren(
-    const AutoType *T, std::vector<std::string> &visitedChildren) {
+    const AutoType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -309,7 +309,7 @@ void ClangAstDumper::VisitAutoTypeChildren(
 };
 
 void ClangAstDumper::VisitPackExpansionTypeChildren(
-    const PackExpansionType *T, std::vector<std::string> &visitedChildren) {
+    const PackExpansionType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -319,12 +319,12 @@ void ClangAstDumper::VisitPackExpansionTypeChildren(
 };
 
 void ClangAstDumper::VisitTypeOfExprTypeChildren(
-    const TypeOfExprType *T, std::vector<std::string> &visitedChildren) {
+    const TypeOfExprType *T, std::vector<int64_t> &visitedChildren) {
     visitTypeWithUnderlyingExpr(*this, T, visitedChildren);
 };
 
 void ClangAstDumper::VisitAttributedTypeChildren(
-    const AttributedType *T, std::vector<std::string> &visitedChildren) {
+    const AttributedType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -333,7 +333,7 @@ void ClangAstDumper::VisitAttributedTypeChildren(
 };
 
 void ClangAstDumper::VisitUnaryTransformTypeChildren(
-    const UnaryTransformType *T, std::vector<std::string> &visitedChildren) {
+    const UnaryTransformType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 
@@ -342,7 +342,7 @@ void ClangAstDumper::VisitUnaryTransformTypeChildren(
 };
 
 void ClangAstDumper::VisitComplexTypeChildren(
-    const ComplexType *T, std::vector<std::string> &visitedChildren) {
+    const ComplexType *T, std::vector<int64_t> &visitedChildren) {
     // Hierarchy
     VisitTypeChildren(T, visitedChildren);
 

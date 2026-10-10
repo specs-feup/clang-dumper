@@ -130,7 +130,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DR) {
             if (fullLocation.isValid() && fullLocation.hasManager() &&
                 !fullLocation.isInSystemHeader()) {
                 astwire::v2::TopLevelT record;record.kind=astwire::v2::TopLevelKind::Decl;
-                record.node=clava::flat::wireId(clava::getId(D,id));
+                record.node=clava::getId(D,id);
                 clava::flat::FlatStream::current().record(std::move(record));
             }
         } catch (const std::exception &e) {

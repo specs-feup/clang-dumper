@@ -57,10 +57,6 @@ std::unordered_map<const void *, uint32_t> &denseIds() {
     return ids;
 }
 
-bool forceDenseIds=false;
-bool denseIdsEnabled() {
-    return forceDenseIds;
-}
 
 } // namespace
 
@@ -99,85 +95,30 @@ const std::string clava::getClassName(const Attr *A) {
     return kindName + "Attr";
 }
 
-const std::string clava::getId(const void *addr, int id) {
+/** Dense id of a node within the current translation unit, numbered from 1 in visiting order. */
+int64_t clava::getId(const void *addr, int id) {
     if (addr == nullptr) {
-        return "0_" + std::to_string(id);
+        return NULL_GENERIC;
     }
-
-    if (denseIdsEnabled()) {
-        auto &ids = denseIds();
-        const auto entry =
-            ids.try_emplace(addr, static_cast<uint32_t>(ids.size() + 1)).first;
-        return "@" + std::to_string(entry->second);
-    }
-
-    char buffer[64];
-    std::snprintf(buffer, sizeof(buffer), "%p_%d", addr, id);
-
-    return buffer;
+    auto &ids = denseIds();
+    return ids.try_emplace(addr, static_cast<uint32_t>(ids.size() + 1)).first->second;
 }
-
-void clava::enableDenseIds() {forceDenseIds=true;}
 
 void clava::resetDenseIds() { denseIds().clear(); }
 
 size_t clava::denseIdCount() { return denseIds().size(); }
 
-const std::string clava::getId(const Decl *addr, int id) {
-    if (addr == nullptr) {
-        return "nullptr_decl";
-    }
-
-    return getId((void *)addr, id);
+int64_t clava::getId(const Decl *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_DECL; }
+int64_t clava::getId(const Stmt *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_STMT; }
+int64_t clava::getId(const Expr *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_EXPR; }
+int64_t clava::getId(std::optional<const Expr *> addr, int id) {
+    return addr.has_value() ? getId(addr.value(), id) : NULL_EXPR;
 }
-
-const std::string clava::getId(const Stmt *addr, int id) {
-    if (addr == nullptr) {
-        return "nullptr_stmt";
-    }
-
-    return getId((void *)addr, id);
+int64_t clava::getId(const Type *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_TYPE; }
+int64_t clava::getId(const QualType &addr, int id) {
+    return addr.isNull() ? NULL_TYPE : getId(addr.getAsOpaquePtr(), id);
 }
-
-const std::string clava::getId(const Expr *addr, int id) {
-    if (addr == nullptr) {
-        return "nullptr_expr";
-    }
-
-    return getId((void *)addr, id);
-}
-
-const std::string clava::getId(std::optional<const Expr *> addr, int id) {
-    if (!addr.has_value()) {
-        return "nullptr_expr";
-    }
-
-    return getId(addr.value(), id);
-}
-
-const std::string clava::getId(const Type *addr, int id) {
-    if (addr == nullptr) {
-        return "nullptr_type";
-    }
-
-    return getId((void *)addr, id);
-}
-
-const std::string clava::getId(const QualType &addr, int id) {
-    if (addr.isNull()) {
-        return "nullptr_type";
-    }
-
-    return getId(addr.getAsOpaquePtr(), id);
-}
-
-const std::string clava::getId(const Attr *addr, int id) {
-    if (addr == nullptr) {
-        return "nullptr_attr";
-    }
-
-    return getId((void *)addr, id);
-}
+int64_t clava::getId(const Attr *addr, int id) { return addr ? getId((const void *)addr, id) : NULL_ATTR; }
 
 namespace {
 

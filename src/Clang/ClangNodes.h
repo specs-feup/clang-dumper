@@ -68,13 +68,17 @@ const std::string getClassName(const Attr *A);
  * @param id
  * @return
  */
-const std::string getId(const Decl *addr, int id);
-const std::string getId(const Stmt *addr, int id);
-const std::string getId(const Expr *addr, int id);
-const std::string getId(std::optional<const Expr *> addr, int id);
-const std::string getId(const Type *addr, int id);
-const std::string getId(const QualType &addr, int id);
-const std::string getId(const Attr *addr, int id);
+/** Wire ids of typed null references; positive ids are nodes. */
+constexpr int64_t NULL_TYPE = -1, NULL_DECL = -2, NULL_EXPR = -3, NULL_STMT = -4, NULL_ATTR = -5,
+                  NULL_GENERIC = -6;
+
+int64_t getId(const Decl *addr, int id);
+int64_t getId(const Stmt *addr, int id);
+int64_t getId(const Expr *addr, int id);
+int64_t getId(std::optional<const Expr *> addr, int id);
+int64_t getId(const Type *addr, int id);
+int64_t getId(const QualType &addr, int id);
+int64_t getId(const Attr *addr, int id);
 
 /**
  * Should only be used internally by functions of this include.
@@ -82,11 +86,10 @@ const std::string getId(const Attr *addr, int id);
  * @param id
  * @return
  */
-const std::string getId(const void *addr, int id);
+int64_t getId(const void *addr, int id);
 
 /** Resets the per-translation-unit dense pointer IDs used by wire pilots. */
 void resetDenseIds();
-void enableDenseIds();
 
 /** Returns the number of non-null pointers assigned a dense wire ID. */
 size_t denseIdCount();
