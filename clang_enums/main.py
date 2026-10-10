@@ -4,7 +4,6 @@ Clang Enum Extractor
 
 Extracts C++ enum definitions from Clang/LLVM headers and generates:
 - C++ string arrays for runtime enum-to-string conversion
-- Java enum value lists
 
 Usage:
     python -m clang_enums <llvm_dir> <output_dir>
@@ -21,7 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from .codegen import write_cpp_file, write_java_files
+from .codegen import write_cpp_file
 from .config import HEADERS
 from .extractor import EnumExtractor
 from .models import EnumConfig, HeaderConfig
@@ -168,10 +167,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     # Create output directories
     output_dir = args.output_dir.resolve()
     cpp_output_dir = output_dir / "enums_cpp"
-    java_output_dir = output_dir / "enums_java"
     
     cpp_output_dir.mkdir(parents=True, exist_ok=True)
-    java_output_dir.mkdir(parents=True, exist_ok=True)
     
     logger.info(f"Output directory: {output_dir}")
     
@@ -204,11 +201,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 # Write C++ file
                 cpp_path = write_cpp_file(cpp_output_dir, result.header_name, result.enums)
                 logger.info(f"Generated: {cpp_path}")
-                
-                # Write Java files
-                java_paths = write_java_files(java_output_dir, result.header_name, result.enums)
-                for path in java_paths:
-                    logger.info(f"Generated: {path}")
+
     
     if all_errors:
         logger.warning(f"Completed with {len(all_errors)} error(s)")

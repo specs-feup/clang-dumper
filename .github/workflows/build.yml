@@ -38,7 +38,7 @@ jobs:
 
       - name: Generate enum files
         run: |
-          rm -rf src/enums_cpp src/enums_java
+          rm -rf src/enums_cpp
           python3 -m clang_enums /usr/lib/llvm-${LLVM_VERSION}/lib/cmake/llvm src/
 
       - name: Upload enum artifacts
@@ -47,7 +47,6 @@ jobs:
           name: generated-enums
           path: |
             src/enums_cpp/
-            src/enums_java/
           retention-days: 1
           if-no-files-found: error
 

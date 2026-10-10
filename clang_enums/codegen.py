@@ -1,5 +1,5 @@
 """
-Code generation for C++ and Java enum outputs.
+Code generation for the C++ enum name arrays.
 """
 
 from pathlib import Path
@@ -53,27 +53,6 @@ def generate_cpp_file(enums: list[tuple[EnumConfig, list[str]]]) -> str:
     return "\n".join(parts)
 
 
-def generate_java_enum_values(enum_config: EnumConfig, values: list[str]) -> str:
-    """
-    Generate Java enum values list.
-    
-    Args:
-        enum_config: The enum configuration.
-        values: The raw enum values extracted from the header.
-        
-    Returns:
-        Comma-separated list of enum values ending with semicolon.
-    """
-    # Filter excluded and map values
-    mapped_values = [
-        enum_config.mapper(v)
-        for v in values
-        if v not in enum_config.exclude
-    ]
-    
-    return ",\n".join(mapped_values) + ";"
-
-
 def write_cpp_file(
     output_dir: Path,
     header_name: str,
@@ -97,33 +76,3 @@ def write_cpp_file(
     output_path.write_text(content)
     
     return output_path
-
-
-def write_java_files(
-    output_dir: Path,
-    header_name: str,
-    enums: list[tuple[EnumConfig, list[str]]],
-) -> list[Path]:
-    """
-    Write Java enum value files (one per enum).
-    
-    Args:
-        output_dir: Directory to write the files to.
-        header_name: Name of the source header (e.g., "Type.h").
-        enums: List of (enum_config, values) tuples.
-        
-    Returns:
-        List of paths to the written files.
-    """
-    written_files = []
-    
-    for enum_config, values in enums:
-        filename = f"enums_{header_name.replace('.', '_')}_{enum_config.complete_name}.txt"
-        output_path = output_dir / filename
-        
-        content = generate_java_enum_values(enum_config, values)
-        output_path.write_text(content)
-        
-        written_files.append(output_path)
-    
-    return written_files
