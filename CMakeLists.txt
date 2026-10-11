@@ -318,6 +318,7 @@ add_custom_command(
     BYPRODUCTS
         "${AST_WIRE_V2_DIR}/attributes_generated.h"
         "${AST_WIRE_V2_DIR}/common_generated.h"
+        "${AST_WIRE_V2_DIR}/complete.bfbs"
         "${AST_WIRE_V2_DIR}/complete_generated.h"
         "${AST_WIRE_V2_DIR}/decls_generated.h"
         "${AST_WIRE_V2_DIR}/enums_generated.h"
@@ -388,6 +389,7 @@ add_custom_command(TARGET tool POST_BUILD
         "${CMAKE_CURRENT_SOURCE_DIR}/scripts/write_release_manifest.py"
         --local-output-dir "$<TARGET_FILE_DIR:tool>"
         --tool "$<TARGET_FILE:tool>"
+        --bfbs "${AST_WIRE_V2_DIR}/complete.bfbs"
         --platform "${_clang_dumper_platform}"
         --arch "${_clang_dumper_arch}"
     COMMENT "Write local dumper schema/tool release manifest"

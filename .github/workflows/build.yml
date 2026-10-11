@@ -158,6 +158,7 @@ jobs:
           mkdir -p dist
           cp build/tool dist/clang-dumper-linux-${{ matrix.arch }}
           cp build/libplugin.so dist/clang-dumper-linux-${{ matrix.arch }}-plugin.so
+          cp build/wire-v2/complete.bfbs dist/clang-dumper-wire-schema-v2.bfbs
 
       - name: Package Linux includes
         run: scripts/package_includes.sh linux ${{ matrix.arch }} dist/${{ matrix.include-package }}
@@ -195,6 +196,16 @@ jobs:
         with:
           name: linux-${{ matrix.arch }}-includes
           path: dist/${{ matrix.include-package }}
+          retention-days: 1
+          if-no-files-found: error
+
+      # The binary schema is platform-independent; one copy goes into the release.
+      - name: Upload wire binary schema
+        if: matrix.arch == 'x64'
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-wire-schema-bfbs
+          path: dist/clang-dumper-wire-schema-v2.bfbs
           retention-days: 1
           if-no-files-found: error
 

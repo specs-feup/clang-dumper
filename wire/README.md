@@ -13,7 +13,8 @@ build/verify_flatbuffers source.clv2
 The build fetches the FlatBuffers commit pinned in [`flatbuffers-version.env`](../flatbuffers-version.env) and
 builds its own `flatc`; cross builds supply a host `flatc` from the same commit.
 `scripts/generate_complete_wire.py` runs `flatc` and writes the schema hash and enum lookup headers into the
-build directory.
+build directory, together with the binary schema `complete.bfbs`. Releases and local build manifests publish it as
+`clang-dumper-wire-schema-v2.bfbs`; Clava's build fetches it for the selected release.
 
 ## Stream
 
@@ -42,6 +43,6 @@ Clava binds payload tables by name at run time, so names are the contract:
    dispatch; add a `FLAT_PAYLOAD(ClangClass, makeXData)` line there for a new Clang class.
 3. Add Clang child visiting in `src/ChildrenVisitor/` for a new Clang node kind.
 4. Run `test/run_tests.py` for the tool and the plugin, then the Clava parser tests against the local build.
-5. Publish a release candidate tag (such as `v18.1.8_5-rc4`); the release job packages the schema and writes
-   `clang-dumper-release-manifest.json`. In Clava, select the tag and refresh its schema resource (see Clava's
+5. Publish a release candidate tag (such as `v18.1.8_7-rc4`); the release job packages the schema and writes
+   `clang-dumper-release-manifest.json`. In Clava, select the tag in `clang-dumper-release.tag` (see Clava's
    `ClangAstParser/WIRE_FORMAT.md`).

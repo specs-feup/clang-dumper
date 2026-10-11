@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the native FlatBuffers bindings, enum lookup and schema hash for the AST wire schema."""
+"""Generate the native FlatBuffers bindings, enum lookup, schema hash and binary schema for the AST wire schema."""
 
 from __future__ import annotations
 
@@ -118,6 +118,11 @@ def generate(flatc: str, output: Path) -> None:
             ],
             check=True,
         )
+        # Binary schema (reflection) for consumers that read the stream without generated code, such as Clava.
+        subprocess.run(
+            [flatc, "--binary", "--schema", "-I", str(SCHEMA_DIR), "-o", str(generated), str(SCHEMA_DIR / "complete.fbs")],
+            check=True,
+        )
         generate_enum_support(generated, files)
         (generated / "FlatSchemaHash.h").write_text(
             "#pragma once\n"
@@ -127,7 +132,7 @@ def generate(flatc: str, output: Path) -> None:
             encoding="utf-8",
         )
 
-        # Only touch changed headers, so unchanged schemas do not trigger rebuilds.
+        # Only touch changed outputs, so unchanged schemas do not trigger rebuilds.
         for source in generated.iterdir():
             target = output / source.name
             if not target.exists() or target.read_bytes() != source.read_bytes():

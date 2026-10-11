@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "wire" / "v2"
 SCHEMA_ASSET = "clang-dumper-wire-schema-v2.zip"
+BFBS_ASSET = "clang-dumper-wire-schema-v2.bfbs"
 MANIFEST_NAME = "clang-dumper-release-manifest.json"
 
 
@@ -103,6 +104,8 @@ def classify_release_asset(filename: str) -> tuple[str, str, str]:
         return "any", "any", "generated-enums"
     if filename == SCHEMA_ASSET:
         return "any", "any", "wire-schema"
+    if filename == BFBS_ASSET:
+        return "any", "any", "wire-schema-bfbs"
 
     patterns = (
         (r"^clang-dumper-(linux|macos)-(.+?)-plugin[.]so$", "plugin"),
@@ -137,13 +140,16 @@ def write_release(asset_dir: Path, llvm_major: int) -> None:
     )
 
 
-def write_local_build(output_dir: Path, tool_path: Path, platform: str, arch: str) -> None:
+def write_local_build(output_dir: Path, tool_path: Path, bfbs_path: Path, platform: str, arch: str) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     schema_path, digest = write_schema_archive(output_dir / SCHEMA_ASSET)
     schema_asset_digest = hashlib.sha256(schema_path.read_bytes()).hexdigest()
+    bfbs_asset = output_dir / BFBS_ASSET
+    bfbs_asset.write_bytes(bfbs_path.read_bytes())
     llvm_major = llvm_major_pin()
     assets = [
         asset_entry(schema_path, "any", "any", "wire-schema"),
+        asset_entry(bfbs_asset, "any", "any", "wire-schema-bfbs"),
         asset_entry(tool_path, platform, arch, "tool", llvm_major),
     ]
     write_json(
@@ -159,6 +165,7 @@ def main() -> None:
     modes.add_argument("--local-output-dir", type=Path, help="Write a local build manifest here")
     parser.add_argument("--llvm-major", type=int)
     parser.add_argument("--tool", type=Path)
+    parser.add_argument("--bfbs", type=Path, help="Binary schema built from wire/v2/complete.fbs")
     parser.add_argument("--platform", choices=("linux", "macos", "windows"))
     parser.add_argument("--arch")
     args = parser.parse_args()
@@ -171,13 +178,15 @@ def main() -> None:
 
     if not args.tool or not args.tool.is_file():
         parser.error("--local-output-dir requires an existing --tool file")
+    if not args.bfbs or not args.bfbs.is_file():
+        parser.error("--local-output-dir requires an existing --bfbs file")
     if not args.platform or not args.arch:
         parser.error("--local-output-dir requires --platform and --arch")
     output_dir = args.local_output_dir.resolve()
     tool_path = args.tool.resolve()
     if tool_path.parent != output_dir:
         parser.error("the local tool must be in the manifest output directory")
-    write_local_build(output_dir, tool_path, args.platform, args.arch)
+    write_local_build(output_dir, tool_path, args.bfbs.resolve(), args.platform, args.arch)
 
 
 if __name__ == "__main__":
