@@ -61,7 +61,9 @@ inline obj::NodeT makeNode(const clang::Expr *node, Context &c) {
   if (out.class_name == "ImplicitCastExpr") { out.payload.Set(std::move(*makeCastExprData(static_cast<const clang::ImplicitCastExpr *>(node), c))); return out; }
   if (out.class_name == "CastExpr") { out.payload.Set(std::move(*makeCastExprData(static_cast<const clang::CastExpr *>(node), c))); return out; }
   if (out.class_name == "CXXFunctionalCastExpr") { out.payload.Set(std::move(*makeCastExprData(static_cast<const clang::CXXFunctionalCastExpr *>(node), c))); return out; }
+  if (out.class_name == "SourceLocExpr") { out.payload.Set(std::move(*makeSourceLocExprData(static_cast<const clang::SourceLocExpr *>(node), c))); return out; }
   if (out.class_name == "CStyleCastExpr") { out.payload.Set(std::move(*makeExplicitCastExprData(static_cast<const clang::CStyleCastExpr *>(node), c))); return out; }
+  if (out.class_name == "BuiltinBitCastExpr") { out.payload.Set(std::move(*makeExplicitCastExprData(static_cast<const clang::BuiltinBitCastExpr *>(node), c))); return out; }
   if (out.class_name == "CXXAddrspaceCastExpr") { out.payload.Set(std::move(*makeCXXNamedCastExprData(static_cast<const clang::CXXAddrspaceCastExpr *>(node), c))); return out; }
   if (out.class_name == "CXXConstCastExpr") { out.payload.Set(std::move(*makeCXXNamedCastExprData(static_cast<const clang::CXXConstCastExpr *>(node), c))); return out; }
   if (out.class_name == "CXXDynamicCastExpr") { out.payload.Set(std::move(*makeCXXNamedCastExprData(static_cast<const clang::CXXDynamicCastExpr *>(node), c))); return out; }

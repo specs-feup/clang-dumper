@@ -51,6 +51,26 @@ void templateArguments(std::vector<std::unique_ptr<obj::TemplateArgumentT>> &out
   }
 }
 
+obj::SourceLocIdentKind sourceLocIdentKind(clang::SourceLocIdentKind kind) {
+  switch (kind) {
+  case clang::SourceLocIdentKind::Function:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_FUNCTION;
+  case clang::SourceLocIdentKind::FuncSig:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_FUNC_SIG;
+  case clang::SourceLocIdentKind::File:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_FILE;
+  case clang::SourceLocIdentKind::FileName:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_FILE_NAME;
+  case clang::SourceLocIdentKind::Line:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_LINE;
+  case clang::SourceLocIdentKind::Column:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_COLUMN;
+  case clang::SourceLocIdentKind::SourceLocStruct:
+    return obj::SourceLocIdentKind::SOURCE_LOC_IDENT_KIND_SOURCE_LOC_STRUCT;
+  }
+  throw std::invalid_argument("Unsupported Clang source location builtin kind");
+}
+
 } // namespace
 
 std::unique_ptr<obj::ExprDataT> makeExprData(const clang::Expr *node,
@@ -61,6 +81,25 @@ std::unique_ptr<obj::ExprDataT> makeExprData(const clang::Expr *node,
   out->value_kind = valueKind(node->getValueKind());
   out->object_kind = objectKind(node->getObjectKind());
   out->is_default_argument = node->isDefaultArgument();
+  return out;
+}
+
+std::unique_ptr<obj::SourceLocExprDataT> makeSourceLocExprData(
+    const clang::SourceLocExpr *node, Context &c) {
+  auto out = std::make_unique<obj::SourceLocExprDataT>();
+  out->base = makeExprData(node, c);
+  out->ident_kind = sourceLocIdentKind(node->getIdentKind());
+
+  const auto *parentContext = node->getParentContext();
+  const clang::Decl *parentDecl = nullptr;
+  // The translation unit is the global root context, not an emitted Decl node.
+  if (parentContext && !parentContext->isTranslationUnit()) {
+    parentDecl = clang::Decl::castFromDeclContext(parentContext);
+    if (!parentDecl) {
+      throw std::invalid_argument("SourceLocExpr parent context has no declaration");
+    }
+  }
+  out->parent_context = wireId(clava::getId(parentDecl, c.id));
   return out;
 }
 

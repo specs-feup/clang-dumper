@@ -150,6 +150,7 @@ inline void encode(const obj::CXXDeleteExprDataT &src, pb::CXXDeleteExprData *ds
 inline void encode(const obj::OffsetOfExprDataT &src, pb::OffsetOfExprData *dst);
 inline void encode(const obj::LambdaExprDataT &src, pb::LambdaExprData *dst);
 inline void encode(const obj::PredefinedExprDataT &src, pb::PredefinedExprData *dst);
+inline void encode(const obj::SourceLocExprDataT &src, pb::SourceLocExprData *dst);
 inline void encode(const obj::SizeOfPackExprDataT &src, pb::SizeOfPackExprData *dst);
 inline void encode(const obj::ArrayInitLoopExprDataT &src, pb::ArrayInitLoopExprData *dst);
 inline void encode(const obj::DesignatedInitExprDataT &src, pb::DesignatedInitExprData *dst);
@@ -1115,6 +1116,12 @@ inline void encode(const obj::PredefinedExprDataT &src, pb::PredefinedExprData *
   dst->set_predefined_type(static_cast<pb::PredefinedIdType>(static_cast<int>(src.predefined_type) + 1));
 }
 
+inline void encode(const obj::SourceLocExprDataT &src, pb::SourceLocExprData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_ident_kind(static_cast<pb::SourceLocIdentKind>(static_cast<int>(src.ident_kind) + 1));
+  dst->set_parent_context(src.parent_context);
+}
+
 inline void encode(const obj::SizeOfPackExprDataT &src, pb::SizeOfPackExprData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_is_partially_substituted(src.is_partially_substituted);
@@ -1458,6 +1465,7 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::MemberPointerTypeDataT>()) encode(*value, dst->mutable_member_pointer_type_data());
   if (const auto *value = src.payload.get<obj::CXXUnresolvedConstructExprDataT>()) encode(*value, dst->mutable_c_x_x_unresolved_construct_expr_data());
   if (const auto *value = src.payload.get<obj::FriendDeclDataT>()) encode(*value, dst->mutable_friend_decl_data());
+  if (const auto *value = src.payload.get<obj::SourceLocExprDataT>()) encode(*value, dst->mutable_source_loc_expr_data());
 }
 
 template <typename T> inline void setRecord(const T &, pb::Record *) {

@@ -634,6 +634,19 @@ enum PredefinedIdType {
   PREDEFINEDIDTYPE_PRETTYFUNCTIONNOVIRTUAL = 8;
 }
 
+// The builtin represented by Clang's SourceLocExpr. Keep these names aligned
+// with clang::SourceLocIdentKind in the pinned Clang headers.
+enum SourceLocIdentKind {
+  SOURCE_LOC_IDENT_KIND_UNSPECIFIED = 0;
+  SOURCE_LOC_IDENT_KIND_FUNCTION = 1;
+  SOURCE_LOC_IDENT_KIND_FUNC_SIG = 2;
+  SOURCE_LOC_IDENT_KIND_FILE = 3;
+  SOURCE_LOC_IDENT_KIND_FILE_NAME = 4;
+  SOURCE_LOC_IDENT_KIND_LINE = 5;
+  SOURCE_LOC_IDENT_KIND_COLUMN = 6;
+  SOURCE_LOC_IDENT_KIND_SOURCE_LOC_STRUCT = 7;
+}
+
 enum StringKind {
   STRINGKIND_UNSPECIFIED = 0;
   STRINGKIND_ORDINARY = 1;
@@ -2042,6 +2055,12 @@ message PredefinedExprData {
   optional PredefinedIdType predefined_type = 2;
 }
 
+message SourceLocExprData {
+  ExprData base = 1;
+  optional SourceLocIdentKind ident_kind = 2;
+  optional sint64 parent_context = 3;
+}
+
 message SizeOfPackExprData {
   ExprData base = 1;
   optional bool is_partially_substituted = 2;
@@ -2366,6 +2385,7 @@ message Node {
     MemberPointerTypeData member_pointer_type_data = 115;
     CXXUnresolvedConstructExprData c_x_x_unresolved_construct_expr_data = 116;
     FriendDeclData friend_decl_data = 117;
+    SourceLocExprData source_loc_expr_data = 118;
   }
 }
 

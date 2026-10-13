@@ -63,6 +63,7 @@ std::unique_ptr<obj::ExplicitCastExprDataT> makeCStyleCastExprData( const clang:
 std::unique_ptr<obj::ExplicitCastExprDataT> makeExplicitCastExprData( const clang::ExplicitCastExpr *node, Context &c);
 std::unique_ptr<obj::ExplicitSpecifierT> makeExplicitSpecifier(const clang::ExplicitSpecifier &s, Context &c);
 std::unique_ptr<obj::ExprDataT> makeExprData(const clang::Expr *node, Context &c);
+std::unique_ptr<obj::SourceLocExprDataT> makeSourceLocExprData(const clang::SourceLocExpr *node, Context &c);
 std::unique_ptr<obj::FieldDeclDataT> makeFieldDeclData( const clang::FieldDecl *decl, Context &c);
 std::unique_ptr<obj::FloatingLiteralDataT> makeFloatingLiteralData( const clang::FloatingLiteral *node, Context &c);
 std::unique_ptr<obj::FormatAttrDataT> makeFormatAttrData(const FormatAttr *a, Context &c);
