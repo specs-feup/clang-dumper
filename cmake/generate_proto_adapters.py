@@ -29,13 +29,19 @@ REQUIRED_HEADER_FIELDS = {
     "llvm_major",
     "schema_sha256",
 }
-# Keep this aligned with the scalar-reference entry in the Java reader's
-# NESTED_OPTIONAL_FIELDS. Protobuf optional presence alone does not mean that
-# the Clava data key is optional; other optional sint64 fields retain their
-# historical always-encoded native representation.
+# Protobuf optional presence alone does not make a Clava data key optional.
+# These are the schema fields whose Clava keys explicitly preserve absence.
 SEMANTIC_OPTIONAL_REFERENCE_FIELDS = {
     ("ExplicitSpecifier", "expr"),
+    ("CXXFoldExprData", "lhs"),
+    ("CXXFoldExprData", "rhs"),
+    ("CXXFoldExprData", "init"),
+    ("CXXFoldExprData", "callee"),
 }
+SEMANTIC_OPTIONAL_SCALAR_FIELDS = {
+    ("CXXFoldExprData", "num_expansions"),
+}
+SEMANTIC_OPTIONAL_FIELDS = SEMANTIC_OPTIONAL_REFERENCE_FIELDS | SEMANTIC_OPTIONAL_SCALAR_FIELDS
 UNION_MEMBERS = {
     "TemplateArgument": "value",
     "TemplateName": "value",
@@ -134,6 +140,8 @@ def object_field_type(message: descriptor_pb2.DescriptorProto,
     if field.type == field.TYPE_MESSAGE:
         return f"std::unique_ptr<{value_type}>"
     if (message.name, field.name) in SEMANTIC_OPTIONAL_REFERENCE_FIELDS:
+        return f"std::optional<{value_type}>"
+    if (message.name, field.name) in SEMANTIC_OPTIONAL_SCALAR_FIELDS:
         return f"std::optional<{value_type}>"
     return value_type
 
@@ -257,7 +265,7 @@ def encode_body(message: descriptor_pb2.DescriptorProto) -> list[str]:
             lines.append("  }")
         elif field.type == field.TYPE_MESSAGE:
             lines.append(f"  if ({source}) encode(*{source}, dst->mutable_{cpp_field(field.name)}());")
-        elif (message.name, field.name) in SEMANTIC_OPTIONAL_REFERENCE_FIELDS:
+        elif (message.name, field.name) in SEMANTIC_OPTIONAL_FIELDS:
             lines.append(f"  if ({source}.has_value()) {{")
             lines.append(f"    {setter(field, f'(*{source})', 'dst')}")
             lines.append("  }")

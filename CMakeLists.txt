@@ -861,6 +861,12 @@ if(TARGET plugin)
             --clang "${CLANG_ENUMS_HOST_CLANG}"
             --verifier "$<TARGET_FILE:verify_protobuf>"
             --descriptor "${PROTO_DESCRIPTOR}")
+    add_test(NAME proto_header_expression_support_test
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_header_expression_support.py"
+            --plugin "$<TARGET_FILE:plugin>"
+            --clang "${CLANG_ENUMS_HOST_CLANG}"
+            --verifier "$<TARGET_FILE:verify_protobuf>"
+            --descriptor "${PROTO_DESCRIPTOR}")
 endif()
 
 if(TARGET plugin)

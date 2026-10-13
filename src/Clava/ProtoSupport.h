@@ -1136,6 +1136,8 @@ struct Context {
   std::function<bool(clang::SourceLocation)> isInlineAsm;
 };
 int64_t wireId(const std::string &value);
+std::unique_ptr<obj::RangeT> makeSourceRange(clang::SourceRange range, Context &c);
+std::unique_ptr<obj::SourceLocationT> makeSourceLocation(clang::SourceLocation location, Context &c);
 std::unique_ptr<obj::NodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c);
 std::string qualifierString(clang::NestedNameSpecifier *qualifier, Context &c);
 std::string sourceText(clang::SourceRange range, Context &c);

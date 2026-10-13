@@ -77,6 +77,7 @@ inline void encode(const obj::VarTemplateSpecializationDeclDataT &src, pb::VarTe
 inline void encode(const obj::VarTemplatePartialSpecializationDeclDataT &src, pb::VarTemplatePartialSpecializationDeclData *dst);
 inline void encode(const obj::TemplateTypeParmDeclDataT &src, pb::TemplateTypeParmDeclData *dst);
 inline void encode(const obj::UnresolvedUsingTypenameDeclDataT &src, pb::UnresolvedUsingTypenameDeclData *dst);
+inline void encode(const obj::UnresolvedUsingValueDeclDataT &src, pb::UnresolvedUsingValueDeclData *dst);
 inline void encode(const obj::EnumDeclDataT &src, pb::EnumDeclData *dst);
 inline void encode(const obj::CXXRecordDeclDataT &src, pb::CXXRecordDeclData *dst);
 inline void encode(const obj::ClassTemplateSpecializationDeclDataT &src, pb::ClassTemplateSpecializationDeclData *dst);
@@ -139,6 +140,7 @@ inline void encode(const obj::CXXTemporaryObjectExprDataT &src, pb::CXXTemporary
 inline void encode(const obj::MemberExprDataT &src, pb::MemberExprData *dst);
 inline void encode(const obj::MaterializeTemporaryExprDataT &src, pb::MaterializeTemporaryExprData *dst);
 inline void encode(const obj::BinaryOperatorDataT &src, pb::BinaryOperatorData *dst);
+inline void encode(const obj::CXXFoldExprDataT &src, pb::CXXFoldExprData *dst);
 inline void encode(const obj::UnresolvedMemberExprDataT &src, pb::UnresolvedMemberExprData *dst);
 inline void encode(const obj::UnresolvedLookupExprDataT &src, pb::UnresolvedLookupExprData *dst);
 inline void encode(const obj::CallExprDataT &src, pb::CallExprData *dst);
@@ -200,6 +202,7 @@ inline void encode(const obj::SourceLocationT &src, pb::SourceLocation *dst) {
   dst->set_file(src.file);
   dst->set_line(src.line);
   dst->set_column(src.column);
+  dst->set_is_macro(src.is_macro);
 }
 
 inline void encode(const obj::SourceInfoT &src, pb::SourceInfo *dst) {
@@ -628,6 +631,16 @@ inline void encode(const obj::UnresolvedUsingTypenameDeclDataT &src, pb::Unresol
   dst->set_is_pack_expansion(src.is_pack_expansion);
 }
 
+inline void encode(const obj::UnresolvedUsingValueDeclDataT &src, pb::UnresolvedUsingValueDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_qualifier(src.qualifier);
+  dst->set_is_pack_expansion(src.is_pack_expansion);
+  if (src.qualifier_source_range) encode(*src.qualifier_source_range, dst->mutable_qualifier_source_range());
+  if (src.using_location) encode(*src.using_location, dst->mutable_using_location());
+  if (src.ellipsis_location) encode(*src.ellipsis_location, dst->mutable_ellipsis_location());
+  if (src.name_location) encode(*src.name_location, dst->mutable_name_location());
+}
+
 inline void encode(const obj::EnumDeclDataT &src, pb::EnumDeclData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_enum_scope_kind(static_cast<pb::EnumScopeType>(static_cast<int>(src.enum_scope_kind) + 1));
@@ -1044,6 +1057,32 @@ inline void encode(const obj::MaterializeTemporaryExprDataT &src, pb::Materializ
 inline void encode(const obj::BinaryOperatorDataT &src, pb::BinaryOperatorData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
   dst->set_op(static_cast<pb::BinaryOperatorKind>(static_cast<int>(src.op) + 1));
+}
+
+inline void encode(const obj::CXXFoldExprDataT &src, pb::CXXFoldExprData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_op(static_cast<pb::BinaryOperatorKind>(static_cast<int>(src.op) + 1));
+  if (src.lhs.has_value()) {
+    dst->set_lhs((*src.lhs));
+  }
+  if (src.rhs.has_value()) {
+    dst->set_rhs((*src.rhs));
+  }
+  if (src.init.has_value()) {
+    dst->set_init((*src.init));
+  }
+  dst->set_pattern(src.pattern);
+  if (src.callee.has_value()) {
+    dst->set_callee((*src.callee));
+  }
+  if (src.num_expansions.has_value()) {
+    dst->set_num_expansions((*src.num_expansions));
+  }
+  dst->set_is_left_fold(src.is_left_fold);
+  dst->set_is_right_fold(src.is_right_fold);
+  if (src.l_paren_loc) encode(*src.l_paren_loc, dst->mutable_l_paren_loc());
+  if (src.ellipsis_loc) encode(*src.ellipsis_loc, dst->mutable_ellipsis_loc());
+  if (src.r_paren_loc) encode(*src.r_paren_loc, dst->mutable_r_paren_loc());
 }
 
 inline void encode(const obj::UnresolvedMemberExprDataT &src, pb::UnresolvedMemberExprData *dst) {
@@ -1517,6 +1556,8 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::VarTemplateSpecializationDeclDataT>()) encode(*value, dst->mutable_var_template_specialization_decl_data());
   if (const auto *value = src.payload.get<obj::VarTemplatePartialSpecializationDeclDataT>()) encode(*value, dst->mutable_var_template_partial_specialization_decl_data());
   if (const auto *value = src.payload.get<obj::CXXDeductionGuideDeclDataT>()) encode(*value, dst->mutable_c_x_x_deduction_guide_decl_data());
+  if (const auto *value = src.payload.get<obj::UnresolvedUsingValueDeclDataT>()) encode(*value, dst->mutable_unresolved_using_value_decl_data());
+  if (const auto *value = src.payload.get<obj::CXXFoldExprDataT>()) encode(*value, dst->mutable_c_x_x_fold_expr_data());
 }
 
 template <typename T> inline void setRecord(const T &, pb::Record *) {

@@ -80,6 +80,7 @@ struct VarTemplateSpecializationDeclDataT;
 struct VarTemplatePartialSpecializationDeclDataT;
 struct TemplateTypeParmDeclDataT;
 struct UnresolvedUsingTypenameDeclDataT;
+struct UnresolvedUsingValueDeclDataT;
 struct EnumDeclDataT;
 struct CXXRecordDeclDataT;
 struct ClassTemplateSpecializationDeclDataT;
@@ -142,6 +143,7 @@ struct CXXTemporaryObjectExprDataT;
 struct MemberExprDataT;
 struct MaterializeTemporaryExprDataT;
 struct BinaryOperatorDataT;
+struct CXXFoldExprDataT;
 struct UnresolvedMemberExprDataT;
 struct UnresolvedLookupExprDataT;
 struct CallExprDataT;
@@ -264,6 +266,7 @@ struct SourceLocationT {
   uint32_t file{};
   uint32_t line{};
   uint32_t column{};
+  bool is_macro{};
 };
 
 struct SourceInfoT {
@@ -635,6 +638,16 @@ struct UnresolvedUsingTypenameDeclDataT {
   std::unique_ptr<TypeDeclDataT> base{};
   std::string qualifier{};
   bool is_pack_expansion{};
+};
+
+struct UnresolvedUsingValueDeclDataT {
+  std::unique_ptr<ValueDeclDataT> base{};
+  std::string qualifier{};
+  bool is_pack_expansion{};
+  std::unique_ptr<RangeT> qualifier_source_range{};
+  std::unique_ptr<SourceLocationT> using_location{};
+  std::unique_ptr<SourceLocationT> ellipsis_location{};
+  std::unique_ptr<SourceLocationT> name_location{};
 };
 
 struct EnumDeclDataT {
@@ -1029,6 +1042,22 @@ struct MaterializeTemporaryExprDataT {
 struct BinaryOperatorDataT {
   std::unique_ptr<ExprDataT> base{};
   BinaryOperatorKind op{};
+};
+
+struct CXXFoldExprDataT {
+  std::unique_ptr<ExprDataT> base{};
+  BinaryOperatorKind op{};
+  std::optional<int64_t> lhs{};
+  std::optional<int64_t> rhs{};
+  std::optional<int64_t> init{};
+  int64_t pattern{};
+  std::optional<int64_t> callee{};
+  std::optional<uint32_t> num_expansions{};
+  bool is_left_fold{};
+  bool is_right_fold{};
+  std::unique_ptr<SourceLocationT> l_paren_loc{};
+  std::unique_ptr<SourceLocationT> ellipsis_loc{};
+  std::unique_ptr<SourceLocationT> r_paren_loc{};
 };
 
 struct UnresolvedMemberExprDataT {

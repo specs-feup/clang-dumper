@@ -280,6 +280,36 @@ std::unique_ptr<obj::BinaryOperatorDataT> makeBinaryOperatorData(
   return out;
 }
 
+std::unique_ptr<obj::CXXFoldExprDataT> makeCXXFoldExprData(
+    const clang::CXXFoldExpr *node, Context &c) {
+  auto out = std::make_unique<obj::CXXFoldExprDataT>();
+  out->base = makeExprData(node, c);
+  out->op = enumValue<obj::BinaryOperatorKind>(
+      clava::BINARY_OPERATOR_KIND[node->getOperator()]);
+
+  if (const auto *lhs = node->getLHS())
+    out->lhs = wireId(clava::getId(lhs, c.id));
+  if (const auto *rhs = node->getRHS())
+    out->rhs = wireId(clava::getId(rhs, c.id));
+  if (const auto *init = node->getInit())
+    out->init = wireId(clava::getId(init, c.id));
+
+  const auto *pattern = node->getPattern();
+  if (pattern == nullptr)
+    throw std::invalid_argument("CXXFoldExpr has no pack pattern");
+  out->pattern = wireId(clava::getId(pattern, c.id));
+
+  if (const auto *callee = node->getCallee())
+    out->callee = wireId(clava::getId(callee, c.id));
+  out->num_expansions = node->getNumExpansions();
+  out->is_left_fold = node->isLeftFold();
+  out->is_right_fold = node->isRightFold();
+  out->l_paren_loc = makeSourceLocation(node->getLParenLoc(), c);
+  out->ellipsis_loc = makeSourceLocation(node->getEllipsisLoc(), c);
+  out->r_paren_loc = makeSourceLocation(node->getRParenLoc(), c);
+  return out;
+}
+
 std::unique_ptr<obj::UnresolvedMemberExprDataT> makeUnresolvedMemberExprData(
     const clang::UnresolvedMemberExpr *node, Context &c) {
   auto out = std::make_unique<obj::UnresolvedMemberExprDataT>();

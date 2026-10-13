@@ -321,6 +321,25 @@ makeUnresolvedUsingTypenameDeclData(
   return out;
 }
 
+std::unique_ptr<obj::UnresolvedUsingValueDeclDataT>
+makeUnresolvedUsingValueDeclData(
+    const clang::UnresolvedUsingValueDecl *decl, Context &c) {
+  auto out = std::make_unique<obj::UnresolvedUsingValueDeclDataT>();
+  out->base = makeValueDeclData(decl, c);
+  out->qualifier = qualifierString(decl->getQualifier(), c);
+  out->is_pack_expansion = decl->isPackExpansion();
+
+  const auto qualifierLoc = decl->getQualifierLoc();
+  if (qualifierLoc) {
+    out->qualifier_source_range =
+        makeSourceRange(qualifierLoc.getSourceRange(), c);
+  }
+  out->using_location = makeSourceLocation(decl->getUsingLoc(), c);
+  out->ellipsis_location = makeSourceLocation(decl->getEllipsisLoc(), c);
+  out->name_location = makeSourceLocation(decl->getNameInfo().getLoc(), c);
+  return out;
+}
+
 std::unique_ptr<obj::EnumDeclDataT> makeEnumDeclData(const clang::EnumDecl *decl,
                                                     Context &c) {
   auto out = declBase<obj::EnumDeclDataT>(decl, c);

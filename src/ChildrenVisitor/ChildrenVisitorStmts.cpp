@@ -79,6 +79,7 @@ const std::map<std::string, ClangAstDumper::ExprChildrenFn>
         EXPR_CHILDREN_ENTRY(DesignatedInitExpr,
                             VisitDesignatedInitExprChildren),
         EXPR_CHILDREN_ENTRY(CXXConstructExpr, VisitCXXConstructExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXFoldExpr, VisitExprChildren),
         EXPR_CHILDREN_ENTRY(CXXUnresolvedConstructExpr,
                             VisitCXXUnresolvedConstructExprChildren),
         EXPR_CHILDREN_ENTRY(CXXTemporaryObjectExpr,

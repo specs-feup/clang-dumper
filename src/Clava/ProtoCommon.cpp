@@ -42,6 +42,34 @@ static std::unique_ptr<obj::RangeT> range(clang::SourceLocation begin, clang::So
   }
   return out;
 }
+std::unique_ptr<obj::RangeT> makeSourceRange(clang::SourceRange sourceRange,
+                                             Context &c) {
+  return range(sourceRange.getBegin(), sourceRange.getEnd(), c);
+}
+std::unique_ptr<obj::SourceLocationT>
+makeSourceLocation(clang::SourceLocation location, Context &c) {
+  if (location.isInvalid())
+    return nullptr;
+
+  auto &sourceManager = c.ast->getSourceManager();
+  const bool isMacro = location.isMacroID();
+  auto expanded = sourceManager.getExpansionLoc(location);
+  if (expanded.isInvalid())
+    return nullptr;
+
+  auto filename = sourceManager.getFilename(expanded);
+  if (filename.empty())
+    filename = sourceManager.getBufferName(expanded);
+  if (filename.empty())
+    return nullptr;
+
+  auto out = std::make_unique<obj::SourceLocationT>();
+  out->file = c.fileId(filename);
+  out->line = sourceManager.getExpansionLineNumber(location);
+  out->column = sourceManager.getExpansionColumnNumber(location);
+  out->is_macro = isMacro;
+  return out;
+}
 std::unique_ptr<obj::NodeDataT> makeNodeData(clang::SourceLocation begin, clang::SourceLocation end, Context &c) {
   auto out=std::make_unique<obj::NodeDataT>();out->source=std::make_unique<obj::SourceInfoT>();
   auto &s=*out->source;auto &sm=c.ast->getSourceManager();begin=unsplit(sm,begin);end=unsplit(sm,end);

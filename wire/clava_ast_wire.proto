@@ -1182,6 +1182,7 @@ message SourceLocation {
   optional uint32 file = 1;
   optional uint32 line = 2;
   optional uint32 column = 3;
+  optional bool is_macro = 4;
 }
 
 message SourceInfo {
@@ -1595,6 +1596,16 @@ message UnresolvedUsingTypenameDeclData {
   optional bool is_pack_expansion = 3;
 }
 
+message UnresolvedUsingValueDeclData {
+  ValueDeclData base = 1;
+  optional string qualifier = 2;
+  optional bool is_pack_expansion = 3;
+  Range qualifier_source_range = 4;
+  SourceLocation using_location = 5;
+  SourceLocation ellipsis_location = 6;
+  SourceLocation name_location = 7;
+}
+
 message EnumDeclData {
   TagDeclData base = 1;
   optional EnumScopeType enum_scope_kind = 2;
@@ -1990,6 +2001,22 @@ message MaterializeTemporaryExprData {
 message BinaryOperatorData {
   ExprData base = 1;
   optional BinaryOperatorKind op = 2;
+}
+
+message CXXFoldExprData {
+  ExprData base = 1;
+  optional BinaryOperatorKind op = 2;
+  optional sint64 lhs = 3;
+  optional sint64 rhs = 4;
+  optional sint64 init = 5;
+  optional sint64 pattern = 6;
+  optional sint64 callee = 7;
+  optional uint32 num_expansions = 8;
+  optional bool is_left_fold = 9;
+  optional bool is_right_fold = 10;
+  SourceLocation l_paren_loc = 11;
+  SourceLocation ellipsis_loc = 12;
+  SourceLocation r_paren_loc = 13;
 }
 
 message UnresolvedMemberExprData {
@@ -2430,6 +2457,8 @@ message Node {
     VarTemplateSpecializationDeclData var_template_specialization_decl_data = 119;
     VarTemplatePartialSpecializationDeclData var_template_partial_specialization_decl_data = 120;
     CXXDeductionGuideDeclData c_x_x_deduction_guide_decl_data = 121;
+    UnresolvedUsingValueDeclData unresolved_using_value_decl_data = 122;
+    CXXFoldExprData c_x_x_fold_expr_data = 123;
   }
 }
 

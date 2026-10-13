@@ -233,6 +233,8 @@ private:
                                             std::vector<std::string> &children);
   void VisitUsingDeclChildren(const UsingDecl *D,
                               std::vector<std::string> &children);
+  void VisitUnresolvedUsingValueDeclChildren(
+      const UnresolvedUsingValueDecl *D, std::vector<std::string> &children);
 
   // Children visitors for Stmts
   void VisitStmtChildren(const Stmt *S, std::vector<std::string> &children);
@@ -324,14 +326,10 @@ private:
                                 std::vector<std::string> &children);
   void VisitTemplateArgument(const TemplateArgument &templateArg);
   void VisitTemplateName(const TemplateName &templateArg);
-  // Same as VisitTemplateArgument, but expands argument packs into their
-  // elements.
-  void VisitTemplateArgChildren(const TemplateArgument &arg);
-
 private:
-  // Shared implementation of VisitTemplateArgument/VisitTemplateArgChildren
-  void visitTemplateArgument(const TemplateArgument &templateArg,
-                             bool expandPacks);
+  // The wire encoder recursively serializes pack elements, so the graph
+  // prewalk visits their referenced nodes as well.
+  void visitTemplateArgument(const TemplateArgument &templateArg);
 
 public:
 

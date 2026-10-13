@@ -65,6 +65,8 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(VarTemplatePartialSpecializationDecl,
                             VisitVarTemplatePartialSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(UsingDecl, VisitUsingDeclChildren),
+        DECL_CHILDREN_ENTRY(UnresolvedUsingValueDecl,
+                            VisitUnresolvedUsingValueDeclChildren),
 };
 
 void ClangAstDumper::visitChildren(const Decl *D) {
@@ -515,4 +517,9 @@ void ClangAstDumper::VisitUsingDeclChildren(
     VisitNamedDeclChildren(D, children);
 
     ClangAstDumper::VisitNestedNameSpecifierChildren(D->getQualifier());
+}
+
+void ClangAstDumper::VisitUnresolvedUsingValueDeclChildren(
+    const UnresolvedUsingValueDecl *D, std::vector<std::string> &children) {
+    VisitValueDeclChildren(D, children);
 }

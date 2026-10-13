@@ -248,11 +248,9 @@ const void ClangAstDumper::addChild(const Attr *addr,
                    [this](const Attr *A) { VisitAttrTop(A); });
 };
 
-// Shared implementation of VisitTemplateArgument() and
-// VisitTemplateArgChildren(). They differ in a single point: whether
-// argument packs are expanded into their elements.
-void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
-                                           bool expandPacks) {
+// The wire encoder recursively serializes pack elements, so the graph
+// prewalk must visit their referenced nodes as well.
+void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg) {
   switch (templateArg.getKind()) {
   case TemplateArgument::ArgKind::Type:
     VisitTypeTop(templateArg.getAsType());
@@ -261,14 +259,11 @@ void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
     VisitStmtTop(templateArg.getAsExpr());
     break;
   case TemplateArgument::ArgKind::Pack:
-    if (expandPacks) {
-      for (auto currentArg = templateArg.pack_begin(),
-                endArg = templateArg.pack_end();
-           currentArg != endArg; ++currentArg) {
-        visitTemplateArgument(*currentArg, expandPacks);
-      }
+    for (auto currentArg = templateArg.pack_begin(),
+              endArg = templateArg.pack_end();
+         currentArg != endArg; ++currentArg) {
+      visitTemplateArgument(*currentArg);
     }
-    // Non-expanding visitors ignore packs
     break;
   case TemplateArgument::ArgKind::Integral:
     // Do nothing
@@ -300,12 +295,7 @@ void ClangAstDumper::visitTemplateArgument(const TemplateArgument &templateArg,
 
 void ClangAstDumper::VisitTemplateArgument(
     const TemplateArgument &templateArg) {
-  visitTemplateArgument(templateArg, /*expandPacks=*/false);
-};
-
-void ClangAstDumper::VisitTemplateArgChildren(
-    const TemplateArgument &templateArg) {
-  visitTemplateArgument(templateArg, /*expandPacks=*/true);
+  visitTemplateArgument(templateArg);
 };
 
 void ClangAstDumper::VisitTemplateName(const TemplateName &templateName) {

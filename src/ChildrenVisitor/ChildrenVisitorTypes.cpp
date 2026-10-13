@@ -231,7 +231,7 @@ void ClangAstDumper::VisitDependentTemplateSpecializationTypeChildren(
     if (auto *qualifier = T->getQualifier())
         VisitNestedNameSpecifierChildren(qualifier);
     for (const auto &argument : T->template_arguments())
-        VisitTemplateArgChildren(argument);
+        VisitTemplateArgument(argument);
 }
 
 void ClangAstDumper::VisitReferenceTypeChildren(
@@ -271,7 +271,7 @@ void ClangAstDumper::VisitTemplateSpecializationTypeChildren(
 
     // Visit each argument
     for (auto &arg : T->template_arguments()) {
-        VisitTemplateArgChildren(arg);
+        VisitTemplateArgument(arg);
     }
 
     // Visit type alias
