@@ -525,6 +525,12 @@ template <> inline obj::TemplateKind enumValue<obj::TemplateKind>(std::string_vi
   if (name == "DEPENDENT_FUNCTION_TEMPLATE_SPECIALIZATION") return static_cast<obj::TemplateKind>(4);
   throw std::invalid_argument("Unknown wire enum: "+std::string(name));
 }
+template <> inline obj::DeductionCandidateKind enumValue<obj::DeductionCandidateKind>(std::string_view name) {
+  if (name == "Normal") return static_cast<obj::DeductionCandidateKind>(0);
+  if (name == "Copy") return static_cast<obj::DeductionCandidateKind>(1);
+  if (name == "Aggregate") return static_cast<obj::DeductionCandidateKind>(2);
+  throw std::invalid_argument("Unknown wire enum: "+std::string(name));
+}
 template <> inline obj::TemplateSpecializationKind enumValue<obj::TemplateSpecializationKind>(std::string_view name) {
   if (name == "Undeclared") return static_cast<obj::TemplateSpecializationKind>(0);
   if (name == "ImplicitInstantiation") return static_cast<obj::TemplateSpecializationKind>(1);

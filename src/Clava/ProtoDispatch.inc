@@ -1,5 +1,6 @@
 inline obj::NodeT makeNode(const clang::Decl *node, Context &c) {
   obj::NodeT out; out.id = wireId(clava::getId(node, c.id)); out.class_name = clava::getClassName(node);
+  if (out.class_name == "CXXDeductionGuideDecl") { out.payload.Set(std::move(*makeCXXDeductionGuideDeclData(static_cast<const clang::CXXDeductionGuideDecl *>(node), c))); return out; }
   if (out.class_name == "CXXConstructorDecl") { out.payload.Set(std::move(*makeCXXConstructorDeclData(static_cast<const clang::CXXConstructorDecl *>(node), c))); return out; }
   if (out.class_name == "CXXConversionDecl") { out.payload.Set(std::move(*makeCXXConversionDeclData(static_cast<const clang::CXXConversionDecl *>(node), c))); return out; }
   if (out.class_name == "CXXDestructorDecl") { out.payload.Set(std::move(*makeCXXMethodDeclData(static_cast<const clang::CXXDestructorDecl *>(node), c))); return out; }

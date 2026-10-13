@@ -66,6 +66,7 @@ inline void encode(const obj::ValueDeclDataT &src, pb::ValueDeclData *dst);
 inline void encode(const obj::DeclaratorDeclDataT &src, pb::DeclaratorDeclData *dst);
 inline void encode(const obj::TemplateDeclDataT &src, pb::TemplateDeclData *dst);
 inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst);
+inline void encode(const obj::CXXDeductionGuideDeclDataT &src, pb::CXXDeductionGuideDeclData *dst);
 inline void encode(const obj::CXXMethodDeclDataT &src, pb::CXXMethodDeclData *dst);
 inline void encode(const obj::CXXConstructorDeclDataT &src, pb::CXXConstructorDeclData *dst);
 inline void encode(const obj::CXXConversionDeclDataT &src, pb::CXXConversionDeclData *dst);
@@ -222,7 +223,9 @@ inline void encode(const obj::CXXBaseSpecifierT &src, pb::CXXBaseSpecifier *dst)
 
 inline void encode(const obj::ExplicitSpecifierT &src, pb::ExplicitSpecifier *dst) {
   dst->set_kind(static_cast<pb::ExplicitSpecKind>(static_cast<int>(src.kind) + 1));
-  dst->set_expr(src.expr);
+  if (src.expr.has_value()) {
+    dst->set_expr((*src.expr));
+  }
   dst->set_is_specified(src.is_specified);
 }
 
@@ -516,6 +519,16 @@ inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst)
   for (const auto &value : src.template_parameter_list_sizes) {
     dst->add_template_parameter_list_sizes(value);
   }
+}
+
+inline void encode(const obj::CXXDeductionGuideDeclDataT &src, pb::CXXDeductionGuideDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_deduced_template(src.deduced_template);
+  dst->set_corresponding_constructor(src.corresponding_constructor);
+  dst->set_is_explicit(src.is_explicit);
+  if (src.explicit_specifier) encode(*src.explicit_specifier, dst->mutable_explicit_specifier());
+  dst->set_deduction_candidate_kind(static_cast<pb::DeductionCandidateKind>(static_cast<int>(src.deduction_candidate_kind) + 1));
+  dst->set_template_requires_clause(src.template_requires_clause);
 }
 
 inline void encode(const obj::CXXMethodDeclDataT &src, pb::CXXMethodDeclData *dst) {
@@ -1503,6 +1516,7 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::SourceLocExprDataT>()) encode(*value, dst->mutable_source_loc_expr_data());
   if (const auto *value = src.payload.get<obj::VarTemplateSpecializationDeclDataT>()) encode(*value, dst->mutable_var_template_specialization_decl_data());
   if (const auto *value = src.payload.get<obj::VarTemplatePartialSpecializationDeclDataT>()) encode(*value, dst->mutable_var_template_partial_specialization_decl_data());
+  if (const auto *value = src.payload.get<obj::CXXDeductionGuideDeclDataT>()) encode(*value, dst->mutable_c_x_x_deduction_guide_decl_data());
 }
 
 template <typename T> inline void setRecord(const T &, pb::Record *) {

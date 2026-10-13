@@ -192,6 +192,8 @@ private:
                               std::vector<std::string> &children);
   void VisitFunctionDeclChildren(const FunctionDecl *D,
                                  std::vector<std::string> &children);
+  void VisitCXXDeductionGuideDeclChildren(
+      const CXXDeductionGuideDecl *D, std::vector<std::string> &children);
   void VisitCXXMethodDeclChildren(const CXXMethodDecl *D,
                                   std::vector<std::string> &children);
   void VisitCXXConstructorDeclChildren(const CXXConstructorDecl *D,

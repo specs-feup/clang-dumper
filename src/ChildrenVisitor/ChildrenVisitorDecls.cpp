@@ -7,6 +7,8 @@
 #include "../Clava/ClavaConstants.h"
 #include "../Clava/HandlerCoverage.h"
 
+#include <clang/AST/ParentMapContext.h>
+
 #include <string>
 
 // Selects the children visitor by class name. Entries whose visitor does not
@@ -21,6 +23,8 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
     ClangAstDumper::DECL_CHILDREN_VISITORS = {
         DECL_CHILDREN_ENTRY(CXXConstructorDecl, VisitCXXConstructorDeclChildren),
         DECL_CHILDREN_ENTRY(CXXConversionDecl, VisitCXXConversionDeclChildren),
+        DECL_CHILDREN_ENTRY(CXXDeductionGuideDecl,
+                            VisitCXXDeductionGuideDeclChildren),
         DECL_CHILDREN_ENTRY(CXXDestructorDecl, VisitCXXMethodDeclChildren),
         DECL_CHILDREN_ENTRY(CXXMethodDecl, VisitCXXMethodDeclChildren),
         DECL_CHILDREN_ENTRY(EnumDecl, VisitEnumDeclChildren),
@@ -185,6 +189,29 @@ void ClangAstDumper::VisitFunctionDeclChildren(
     // Visit body
     if (D->doesThisDeclarationHaveABody()) {
         addChild(D->getBody(), children);
+    }
+}
+
+void ClangAstDumper::VisitCXXDeductionGuideDeclChildren(
+    const CXXDeductionGuideDecl *D, std::vector<std::string> &children) {
+    VisitFunctionDeclChildren(D, children);
+    VisitDeclTop(D->getDeducedTemplate());
+    VisitDeclTop(D->getCorrespondingConstructor());
+    VisitStmtTop(D->getExplicitSpecifier().getExpr());
+    for (unsigned listIndex = 0; listIndex < D->getNumTemplateParameterLists(); ++listIndex) {
+        if (const auto *parameters = D->getTemplateParameterList(listIndex)) {
+            VisitStmtTop(parameters->getRequiresClause());
+        }
+    }
+    if (const auto *functionTemplate = D->getDescribedFunctionTemplate()) {
+        VisitStmtTop(functionTemplate->getTemplateParameters()->getRequiresClause());
+    } else {
+        for (const auto &parent : D->getASTContext().getParents(*D)) {
+            if (const auto *functionTemplate = parent.get<FunctionTemplateDecl>()) {
+                VisitStmtTop(functionTemplate->getTemplateParameters()->getRequiresClause());
+                break;
+            }
+        }
     }
 }
 

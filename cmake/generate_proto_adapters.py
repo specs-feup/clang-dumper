@@ -29,6 +29,13 @@ REQUIRED_HEADER_FIELDS = {
     "llvm_major",
     "schema_sha256",
 }
+# Keep this aligned with the scalar-reference entry in the Java reader's
+# NESTED_OPTIONAL_FIELDS. Protobuf optional presence alone does not mean that
+# the Clava data key is optional; other optional sint64 fields retain their
+# historical always-encoded native representation.
+SEMANTIC_OPTIONAL_REFERENCE_FIELDS = {
+    ("ExplicitSpecifier", "expr"),
+}
 UNION_MEMBERS = {
     "TemplateArgument": "value",
     "TemplateName": "value",
@@ -117,7 +124,8 @@ def field_type(field: descriptor_pb2.FieldDescriptorProto,
         raise ValueError(f"unsupported protobuf field type {field.type} for {field.name}") from exc
 
 
-def object_field_type(field: descriptor_pb2.FieldDescriptorProto) -> str:
+def object_field_type(message: descriptor_pb2.DescriptorProto,
+                      field: descriptor_pb2.FieldDescriptorProto) -> str:
     value_type = field_type(field)
     if field.label == field.LABEL_REPEATED:
         if field.type == field.TYPE_MESSAGE:
@@ -125,6 +133,8 @@ def object_field_type(field: descriptor_pb2.FieldDescriptorProto) -> str:
         return f"std::vector<{value_type}>"
     if field.type == field.TYPE_MESSAGE:
         return f"std::unique_ptr<{value_type}>"
+    if (message.name, field.name) in SEMANTIC_OPTIONAL_REFERENCE_FIELDS:
+        return f"std::optional<{value_type}>"
     return value_type
 
 
@@ -151,6 +161,7 @@ def object_header(file_desc: descriptor_pb2.FileDescriptorProto) -> str:
         "// Generated from protoc's FileDescriptorSet; do not edit by hand.",
         "#include <cstdint>",
         "#include <memory>",
+        "#include <optional>",
         "#include <string>",
         "#include <string_view>",
         "#include <type_traits>",
@@ -190,7 +201,7 @@ def object_header(file_desc: descriptor_pb2.FileDescriptorProto) -> str:
         lines.append(f"struct {item.name}T {{")
         for field in item.field:
             if not is_real_oneof(item, field):
-                lines.append(f"  {object_field_type(field)} {cpp_field(field.name)}{{}};")
+                lines.append(f"  {object_field_type(item, field)} {cpp_field(field.name)}{{}};")
         real_oneofs = [
             oneof.name for oneof in item.oneof_decl if not oneof.name.startswith("_")
         ]
@@ -246,6 +257,10 @@ def encode_body(message: descriptor_pb2.DescriptorProto) -> list[str]:
             lines.append("  }")
         elif field.type == field.TYPE_MESSAGE:
             lines.append(f"  if ({source}) encode(*{source}, dst->mutable_{cpp_field(field.name)}());")
+        elif (message.name, field.name) in SEMANTIC_OPTIONAL_REFERENCE_FIELDS:
+            lines.append(f"  if ({source}.has_value()) {{")
+            lines.append(f"    {setter(field, f'(*{source})', 'dst')}")
+            lines.append("  }")
         else:
             lines.append(f"  {setter(field, source, 'dst')}")
     if real_oneof:
@@ -361,6 +376,17 @@ def validate_descriptor(file_desc: descriptor_pb2.FileDescriptorProto,
     missing = TRANSPORT_MESSAGES - by_name.keys()
     if missing:
         raise ValueError(f"missing transport messages: {sorted(missing)}")
+    for message_name, field_name in SEMANTIC_OPTIONAL_REFERENCE_FIELDS:
+        message = by_name.get(message_name)
+        field = None
+        if message is not None:
+            field = next((item for item in message.field if item.name == field_name), None)
+        if (field is None or field.label == field.LABEL_REPEATED
+                or field.type != field.TYPE_SINT64 or not field.proto3_optional):
+            raise ValueError(
+                f"semantic optional reference must be proto3 optional sint64: "
+                f"{message_name}.{field_name}"
+            )
     header = by_name["Header"]
     header_fields = {field.name: field for field in header.field}
     missing_header = REQUIRED_HEADER_FIELDS - header_fields.keys()

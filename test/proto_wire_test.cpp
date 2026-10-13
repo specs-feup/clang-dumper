@@ -1,11 +1,13 @@
 #include "clava_ast_wire.pb.h"
 #include "ProtoSchemaHash.h"
+#include "ProtoEncode.h"
 
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -15,7 +17,7 @@ namespace {
 constexpr std::string_view Magic = "CLAVAPB1";
 constexpr uint64_t MaxFrameBytes = 64 * 1024 * 1024;
 constexpr uint32_t ProtocolMajor = 1;
-constexpr uint32_t ProtocolMinor = 3;
+constexpr uint32_t ProtocolMinor = 4;
 
 bool validRecord(const astwire::v1::Record &record) {
   switch (record.record_case()) {
@@ -107,6 +109,43 @@ bool validEnvelope(const astwire::v1::Envelope &envelope) {
     return false;
   }
   return false;
+}
+
+void testSemanticOptionalAdapterPresence() {
+  const auto require = [](bool condition, const char *message) {
+    if (!condition) {
+      throw std::runtime_error(message);
+    }
+  };
+
+  clava::proto::obj::ExplicitSpecifierT explicitSpecifier;
+  explicitSpecifier.kind =
+      clava::proto::obj::ExplicitSpecKind::EXPLICITSPECKIND_RESOLVEDTRUE;
+  explicitSpecifier.is_specified = true;
+
+  astwire::v1::ExplicitSpecifier withoutExpression;
+  clava::proto::encode(explicitSpecifier, &withoutExpression);
+  require(withoutExpression.has_kind(), "ExplicitSpecifier.kind lost presence");
+  require(withoutExpression.kind() == astwire::v1::EXPLICITSPECKIND_RESOLVEDTRUE,
+          "ExplicitSpecifier.kind changed value");
+  require(withoutExpression.has_is_specified() && withoutExpression.is_specified(),
+          "ExplicitSpecifier.is_specified lost presence or value");
+  require(!withoutExpression.has_expr(), "absent ExplicitSpecifier.expr was encoded");
+
+  explicitSpecifier.expr = 73;
+  astwire::v1::ExplicitSpecifier withExpression;
+  clava::proto::encode(explicitSpecifier, &withExpression);
+  require(withExpression.has_expr() && withExpression.expr() == 73,
+          "present ExplicitSpecifier.expr lost presence or value");
+
+  clava::proto::obj::CXXDeductionGuideDeclDataT guide;
+  guide.deduced_template = 41;
+  astwire::v1::CXXDeductionGuideDeclData encodedGuide;
+  clava::proto::encode(guide, &encodedGuide);
+  require(encodedGuide.has_deduced_template(),
+          "required deduced_template reference lost presence");
+  require(encodedGuide.deduced_template() == 41,
+          "required deduced_template reference changed value");
 }
 
 bool readEnvelope(std::string_view input, size_t &offset,
@@ -313,6 +352,7 @@ bool validStreamFile(const char *path) {
 } // namespace
 
 int main(int argc, char **argv) {
+  testSemanticOptionalAdapterPresence();
   if (argc == 2) {
     if (!validStreamFile(argv[1])) {
       std::cerr << "Invalid Protobuf AST stream: " << argv[1] << "\n";

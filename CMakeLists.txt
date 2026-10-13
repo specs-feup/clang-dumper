@@ -394,7 +394,7 @@ add_dependencies(proto_adapter_regenerate proto_artifact_verify)
 enable_testing()
 add_executable(verify_protobuf test/proto_wire_test.cpp "${PROTO_CPP}")
 target_compile_features(verify_protobuf PRIVATE cxx_std_20)
-target_include_directories(verify_protobuf PRIVATE "${PROTO_GEN_DIR}")
+target_include_directories(verify_protobuf PRIVATE "${PROTO_GEN_DIR}" "${CMAKE_SOURCE_DIR}/src/Clava")
 target_link_libraries(verify_protobuf PRIVATE protobuf::libprotobuf)
 add_dependencies(verify_protobuf ast_wire_proto)
 add_test(NAME proto_wire_test COMMAND verify_protobuf)
@@ -851,6 +851,12 @@ if(TARGET plugin)
             --verifier "$<TARGET_FILE:verify_protobuf>")
     add_test(NAME proto_var_template_specializations_test
         COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_var_template_specializations.py"
+            --plugin "$<TARGET_FILE:plugin>"
+            --clang "${CLANG_ENUMS_HOST_CLANG}"
+            --verifier "$<TARGET_FILE:verify_protobuf>"
+            --descriptor "${PROTO_DESCRIPTOR}")
+    add_test(NAME proto_cxx_deduction_guides_test
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_cxx_deduction_guides.py"
             --plugin "$<TARGET_FILE:plugin>"
             --clang "${CLANG_ENUMS_HOST_CLANG}"
             --verifier "$<TARGET_FILE:verify_protobuf>"

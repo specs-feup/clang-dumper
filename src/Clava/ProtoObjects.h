@@ -2,6 +2,7 @@
 // Generated from protoc's FileDescriptorSet; do not edit by hand.
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -68,6 +69,7 @@ struct ValueDeclDataT;
 struct DeclaratorDeclDataT;
 struct TemplateDeclDataT;
 struct FunctionDeclDataT;
+struct CXXDeductionGuideDeclDataT;
 struct CXXMethodDeclDataT;
 struct CXXConstructorDeclDataT;
 struct CXXConversionDeclDataT;
@@ -209,6 +211,7 @@ enum class AttributeKind : int32_t { ATTRIBUTEKIND_ADDRESSSPACE = 0, ATTRIBUTEKI
 enum class FormatAttrKind : int32_t { FORMATATTRKIND_PRINTF = 0, FORMATATTRKIND_SCANF = 1, FORMATATTRKIND_STRFTIME = 2, FORMATATTRKIND_GNU_PRINTF = 3, FORMATATTRKIND_GNU_SCANF = 4, FORMATATTRKIND_GNU_STRFTIME = 5, FORMATATTRKIND_STRFMON = 6, FORMATATTRKIND_MS_PRINTF = 7, FORMATATTRKIND_MS_SCANF = 8, FORMATATTRKIND_MS_STRFTIME = 9, FORMATATTRKIND_NSSTRING = 10, };
 enum class VisibilityType : int32_t { VISIBILITYTYPE_DEFAULT = 0, VISIBILITYTYPE_HIDDEN = 1, VISIBILITYTYPE_PROTECTED = 2, };
 enum class ExplicitSpecKind : int32_t { EXPLICITSPECKIND_RESOLVEDFALSE = 0, EXPLICITSPECKIND_RESOLVEDTRUE = 1, EXPLICITSPECKIND_UNRESOLVED = 2, };
+enum class DeductionCandidateKind : int32_t { DEDUCTIONCANDIDATEKIND_NORMAL = 0, DEDUCTIONCANDIDATEKIND_COPY = 1, DEDUCTIONCANDIDATEKIND_AGGREGATE = 2, };
 enum class InitializationStyle : int32_t { INITIALIZATIONSTYLE_CINIT = 0, INITIALIZATIONSTYLE_CALL_INIT = 1, INITIALIZATIONSTYLE_LIST_INIT = 2, INITIALIZATIONSTYLE_PARENLISTINIT = 3, };
 enum class LanguageId : int32_t { LANGUAGEID_C = 0, LANGUAGEID_CXX = 1, };
 enum class Linkage : int32_t { LINKAGE_INVALID = 0, LINKAGE_NONE = 1, LINKAGE_INTERNAL = 2, LINKAGE_UNIQUEEXTERNAL = 3, LINKAGE_VISIBLENONE = 4, LINKAGE_MODULE = 5, LINKAGE_EXTERNAL = 6, };
@@ -284,7 +287,7 @@ struct CXXBaseSpecifierT {
 
 struct ExplicitSpecifierT {
   ExplicitSpecKind kind{};
-  int64_t expr{};
+  std::optional<int64_t> expr{};
   bool is_specified{};
 };
 
@@ -537,6 +540,16 @@ struct FunctionDeclDataT {
   std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
   std::vector<int64_t> template_parameters{};
   std::vector<uint32_t> template_parameter_list_sizes{};
+};
+
+struct CXXDeductionGuideDeclDataT {
+  std::unique_ptr<FunctionDeclDataT> base{};
+  int64_t deduced_template{};
+  int64_t corresponding_constructor{};
+  bool is_explicit{};
+  std::unique_ptr<ExplicitSpecifierT> explicit_specifier{};
+  DeductionCandidateKind deduction_candidate_kind{};
+  int64_t template_requires_clause{};
 };
 
 struct CXXMethodDeclDataT {

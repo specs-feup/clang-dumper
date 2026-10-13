@@ -17,6 +17,7 @@ std::unique_ptr<obj::CXXConstructExprDataT> makeCXXConstructExprData( const clan
 std::unique_ptr<obj::CXXUnresolvedConstructExprDataT> makeCXXUnresolvedConstructExprData(const clang::CXXUnresolvedConstructExpr *node, Context &c);
 std::unique_ptr<obj::CXXConstructorDeclDataT> makeCXXConstructorDeclData( const clang::CXXConstructorDecl *decl, Context &c);
 std::unique_ptr<obj::CXXConversionDeclDataT> makeCXXConversionDeclData( const clang::CXXConversionDecl *decl, Context &c);
+std::unique_ptr<obj::CXXDeductionGuideDeclDataT> makeCXXDeductionGuideDeclData(const clang::CXXDeductionGuideDecl *decl, Context &c);
 std::unique_ptr<obj::CXXCtorInitializerT> makeCXXCtorInitializer(const clang::CXXCtorInitializer *i, Context &c);
 std::unique_ptr<obj::CXXDeleteExprDataT> makeCXXDeleteExprData( const clang::CXXDeleteExpr *node, Context &c);
 std::unique_ptr<obj::CXXDependentScopeMemberExprDataT> makeCXXDependentScopeMemberExprData( const clang::CXXDependentScopeMemberExpr *node, Context &c);

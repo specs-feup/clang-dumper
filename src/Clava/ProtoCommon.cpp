@@ -114,7 +114,9 @@ std::unique_ptr<obj::CXXBaseSpecifierT> makeCXXBaseSpecifier(const clang::CXXBas
   v->access_specifier_semantic=enumValue<obj::AccessSpecifier>(clava::ACCESS_SPECIFIER[b.getAccessSpecifier()]);v->type=wireId(clava::getId(b.getType(),c.id));return v;
 }
 std::unique_ptr<obj::ExplicitSpecifierT> makeExplicitSpecifier(const clang::ExplicitSpecifier &s, Context &c) {
-  auto v=std::make_unique<obj::ExplicitSpecifierT>();v->kind=enumValue<obj::ExplicitSpecKind>(clava::EXPLICIT_SPEC_KIND[static_cast<unsigned>(s.getKind())]);v->expr=wireId(clava::getId(s.getExpr(),c.id));v->is_specified=s.isSpecified();return v;
+  auto v=std::make_unique<obj::ExplicitSpecifierT>();v->kind=enumValue<obj::ExplicitSpecKind>(clava::EXPLICIT_SPEC_KIND[static_cast<unsigned>(s.getKind())]);
+  if (const auto *expr = s.getExpr()) v->expr=wireId(clava::getId(expr,c.id));
+  v->is_specified=s.isSpecified();return v;
 }
 std::unique_ptr<obj::CXXCtorInitializerT> makeCXXCtorInitializer(const clang::CXXCtorInitializer *i, Context &c) {
   auto v=std::make_unique<obj::CXXCtorInitializerT>();

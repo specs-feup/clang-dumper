@@ -4,6 +4,7 @@
 #include "../ClangEnums/ClangEnums.h"
 
 #include <clang/Basic/SourceManager.h>
+#include <clang/AST/ParentMapContext.h>
 #include <llvm/ADT/STLForwardCompat.h>
 
 namespace clava::proto {
@@ -160,6 +161,64 @@ std::unique_ptr<obj::FunctionDeclDataT> makeFunctionDeclData(
           wireId(clava::getId(parameter, c.id)));
     }
   }
+  return out;
+}
+
+std::unique_ptr<obj::CXXDeductionGuideDeclDataT>
+makeCXXDeductionGuideDeclData(const clang::CXXDeductionGuideDecl *decl,
+                              Context &c) {
+  auto out = std::make_unique<obj::CXXDeductionGuideDeclDataT>();
+  out->base = makeFunctionDeclData(decl, c);
+
+  const auto *deducedTemplate = decl->getDeducedTemplate();
+  if (deducedTemplate == nullptr) {
+    throw std::invalid_argument("CXXDeductionGuideDecl has no deduced template");
+  }
+  out->deduced_template =
+      wireId(clava::getId(deducedTemplate, c.id));
+
+  out->corresponding_constructor =
+      wireId(clava::getId(decl->getCorrespondingConstructor(), c.id));
+
+  out->is_explicit = decl->isExplicit();
+  out->explicit_specifier = makeExplicitSpecifier(decl->getExplicitSpecifier(), c);
+  switch (decl->getDeductionCandidateKind()) {
+  case clang::DeductionCandidate::Normal:
+    out->deduction_candidate_kind =
+        enumValue<obj::DeductionCandidateKind>("Normal");
+    break;
+  case clang::DeductionCandidate::Copy:
+    out->deduction_candidate_kind =
+        enumValue<obj::DeductionCandidateKind>("Copy");
+    break;
+  case clang::DeductionCandidate::Aggregate:
+    out->deduction_candidate_kind =
+        enumValue<obj::DeductionCandidateKind>("Aggregate");
+    break;
+  default:
+    throw std::invalid_argument("Unknown CXX deduction candidate kind");
+  }
+
+  const clang::Expr *requiresClause = nullptr;
+  for (unsigned listIndex = 0; listIndex < decl->getNumTemplateParameterLists(); ++listIndex) {
+    if (const auto *parameters = decl->getTemplateParameterList(listIndex)) {
+      if (const auto *clause = parameters->getRequiresClause())
+        requiresClause = clause;
+    }
+  }
+  if (requiresClause == nullptr) {
+    if (const auto *functionTemplate = decl->getDescribedFunctionTemplate()) {
+      requiresClause = functionTemplate->getTemplateParameters()->getRequiresClause();
+    } else {
+      for (const auto &parent : c.ast->getParents(*decl)) {
+        if (const auto *functionTemplate = parent.get<clang::FunctionTemplateDecl>()) {
+          requiresClause = functionTemplate->getTemplateParameters()->getRequiresClause();
+          break;
+        }
+      }
+    }
+  }
+  out->template_requires_clause = wireId(clava::getId(requiresClause, c.id));
   return out;
 }
 

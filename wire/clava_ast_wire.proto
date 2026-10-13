@@ -460,6 +460,13 @@ enum ExplicitSpecKind {
   EXPLICITSPECKIND_UNRESOLVED = 3;
 }
 
+enum DeductionCandidateKind {
+  DEDUCTIONCANDIDATEKIND_UNSPECIFIED = 0;
+  DEDUCTIONCANDIDATEKIND_NORMAL = 1;
+  DEDUCTIONCANDIDATEKIND_COPY = 2;
+  DEDUCTIONCANDIDATEKIND_AGGREGATE = 3;
+}
+
 enum InitializationStyle {
   INITIALIZATIONSTYLE_UNSPECIFIED = 0;
   INITIALIZATIONSTYLE_CINIT = 1;
@@ -1493,6 +1500,16 @@ message FunctionDeclData {
   repeated uint32 template_parameter_list_sizes = 15;
 }
 
+message CXXDeductionGuideDeclData {
+  FunctionDeclData base = 1;
+  optional sint64 deduced_template = 2;
+  optional sint64 corresponding_constructor = 3;
+  optional bool is_explicit = 4;
+  ExplicitSpecifier explicit_specifier = 5;
+  optional DeductionCandidateKind deduction_candidate_kind = 6;
+  optional sint64 template_requires_clause = 7;
+}
+
 message CXXMethodDeclData {
   FunctionDeclData base = 1;
   optional sint64 record = 2;
@@ -2412,6 +2429,7 @@ message Node {
     SourceLocExprData source_loc_expr_data = 118;
     VarTemplateSpecializationDeclData var_template_specialization_decl_data = 119;
     VarTemplatePartialSpecializationDeclData var_template_partial_specialization_decl_data = 120;
+    CXXDeductionGuideDeclData c_x_x_deduction_guide_decl_data = 121;
   }
 }
 
