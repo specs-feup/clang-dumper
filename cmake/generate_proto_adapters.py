@@ -33,6 +33,9 @@ REQUIRED_HEADER_FIELDS = {
 # These are the schema fields whose Clava keys explicitly preserve absence.
 SEMANTIC_OPTIONAL_REFERENCE_FIELDS = {
     ("ExplicitSpecifier", "expr"),
+    ("TemplateDeclData", "template_decl"),
+    ("MaterializeTemporaryExprData", "extending_decl"),
+    ("MaterializeTemporaryExprData", "lifetime_extended_temporary_decl"),
     ("CXXFoldExprData", "lhs"),
     ("CXXFoldExprData", "rhs"),
     ("CXXFoldExprData", "init"),

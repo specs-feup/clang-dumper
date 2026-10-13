@@ -1,6 +1,8 @@
 inline obj::NodeT makeNode(const clang::Decl *node, Context &c) {
   obj::NodeT out; out.id = wireId(clava::getId(node, c.id)); out.class_name = clava::getClassName(node);
   if (out.class_name == "CXXDeductionGuideDecl") { out.payload.Set(std::move(*makeCXXDeductionGuideDeclData(static_cast<const clang::CXXDeductionGuideDecl *>(node), c))); return out; }
+  if (out.class_name == "BuiltinTemplateDecl") { out.payload.Set(std::move(*makeBuiltinTemplateDeclData(static_cast<const clang::BuiltinTemplateDecl *>(node), c))); return out; }
+  if (out.class_name == "LifetimeExtendedTemporaryDecl") { out.payload.Set(std::move(*makeLifetimeExtendedTemporaryDeclData(static_cast<const clang::LifetimeExtendedTemporaryDecl *>(node), c))); return out; }
   if (out.class_name == "CXXConstructorDecl") { out.payload.Set(std::move(*makeCXXConstructorDeclData(static_cast<const clang::CXXConstructorDecl *>(node), c))); return out; }
   if (out.class_name == "CXXConversionDecl") { out.payload.Set(std::move(*makeCXXConversionDeclData(static_cast<const clang::CXXConversionDecl *>(node), c))); return out; }
   if (out.class_name == "CXXDestructorDecl") { out.payload.Set(std::move(*makeCXXMethodDeclData(static_cast<const clang::CXXDestructorDecl *>(node), c))); return out; }
@@ -87,6 +89,7 @@ inline obj::NodeT makeNode(const clang::Expr *node, Context &c) {
   if (out.class_name == "MaterializeTemporaryExpr") { out.payload.Set(std::move(*makeMaterializeTemporaryExprData(static_cast<const clang::MaterializeTemporaryExpr *>(node), c))); return out; }
   if (out.class_name == "BinaryOperator") { out.payload.Set(std::move(*makeBinaryOperatorData(static_cast<const clang::BinaryOperator *>(node), c))); return out; }
   if (out.class_name == "CXXFoldExpr") { out.payload.Set(std::move(*makeCXXFoldExprData(static_cast<const clang::CXXFoldExpr *>(node), c))); return out; }
+  if (out.class_name == "CXXRewrittenBinaryOperator") { out.payload.Set(std::move(*makeCXXRewrittenBinaryOperatorData(static_cast<const clang::CXXRewrittenBinaryOperator *>(node), c))); return out; }
   if (out.class_name == "UnaryOperator") { out.payload.Set(std::move(*makeUnaryOperatorData(static_cast<const clang::UnaryOperator *>(node), c))); return out; }
   if (out.class_name == "CompoundAssignOperator") { out.payload.Set(std::move(*makeBinaryOperatorData(static_cast<const clang::CompoundAssignOperator *>(node), c))); return out; }
   if (out.class_name == "CallExpr") { out.payload.Set(std::move(*makeCallExprData(static_cast<const clang::CallExpr *>(node), c))); return out; }

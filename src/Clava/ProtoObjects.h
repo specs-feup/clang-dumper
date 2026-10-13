@@ -68,6 +68,7 @@ struct RecordDeclDataT;
 struct ValueDeclDataT;
 struct DeclaratorDeclDataT;
 struct TemplateDeclDataT;
+struct BuiltinTemplateDeclDataT;
 struct FunctionDeclDataT;
 struct CXXDeductionGuideDeclDataT;
 struct CXXMethodDeclDataT;
@@ -144,6 +145,8 @@ struct MemberExprDataT;
 struct MaterializeTemporaryExprDataT;
 struct BinaryOperatorDataT;
 struct CXXFoldExprDataT;
+struct CXXRewrittenBinaryOperatorDataT;
+struct LifetimeExtendedTemporaryDeclDataT;
 struct UnresolvedMemberExprDataT;
 struct UnresolvedLookupExprDataT;
 struct CallExprDataT;
@@ -220,6 +223,8 @@ enum class Linkage : int32_t { LINKAGE_INVALID = 0, LINKAGE_NONE = 1, LINKAGE_IN
 enum class NameKind : int32_t { NAMEKIND_IDENTIFIER = 0, NAMEKIND_OBJ_C_ZERO_ARG_SELECTOR = 1, NAMEKIND_OBJ_C_ONE_ARG_SELECTOR = 2, NAMEKIND_OBJ_C_MULTI_ARG_SELECTOR = 3, NAMEKIND_CXX_CONSTRUCTOR_NAME = 4, NAMEKIND_CXX_DESTRUCTOR_NAME = 5, NAMEKIND_CXX_CONVERSION_FUNCTION_NAME = 6, NAMEKIND_CXX_DEDUCTION_GUIDE_NAME = 7, NAMEKIND_CXX_OPERATOR_NAME = 8, NAMEKIND_CXX_LITERAL_OPERATOR_NAME = 9, NAMEKIND_CXX_USING_DIRECTIVE = 10, };
 enum class StorageClass : int32_t { STORAGECLASS_NONE = 0, STORAGECLASS_EXTERN = 1, STORAGECLASS_STATIC = 2, STORAGECLASS_PRIVATEEXTERN = 3, STORAGECLASS_AUTO = 4, STORAGECLASS_REGISTER = 5, };
 enum class TemplateKind : int32_t { TEMPLATEKIND_NON_TEMPLATE = 0, TEMPLATEKIND_FUNCTION_TEMPLATE = 1, TEMPLATEKIND_MEMBER_SPECIALIZATION = 2, TEMPLATEKIND_FUNCTION_TEMPLATE_SPECIALIZATION = 3, TEMPLATEKIND_DEPENDENT_FUNCTION_TEMPLATE_SPECIALIZATION = 4, };
+enum class BuiltinTemplateKind : int32_t { BUILTINTEMPLATEKIND_MAKE_INTEGER_SEQ = 0, BUILTINTEMPLATEKIND_TYPE_PACK_ELEMENT = 1, };
+enum class StorageDuration : int32_t { STORAGEDURATION_FULL_EXPRESSION = 0, STORAGEDURATION_AUTOMATIC = 1, STORAGEDURATION_THREAD = 2, STORAGEDURATION_STATIC = 3, STORAGEDURATION_DYNAMIC = 4, };
 enum class TemplateSpecializationKind : int32_t { TEMPLATESPECIALIZATIONKIND_UNDECLARED = 0, TEMPLATESPECIALIZATIONKIND_IMPLICITINSTANTIATION = 1, TEMPLATESPECIALIZATIONKIND_EXPLICITSPECIALIZATION = 2, TEMPLATESPECIALIZATIONKIND_EXPLICITINSTANTIATIONDECLARATION = 3, TEMPLATESPECIALIZATIONKIND_EXPLICITINSTANTIATIONDEFINITION = 4, };
 enum class Visibility : int32_t { VISIBILITY_HIDDEN = 0, VISIBILITY_PROTECTED = 1, VISIBILITY_DEFAULT = 2, };
 enum class BinaryOperatorKind : int32_t { BINARYOPERATORKIND_PTRMEMD = 0, BINARYOPERATORKIND_PTRMEMI = 1, BINARYOPERATORKIND_MUL = 2, BINARYOPERATORKIND_DIV = 3, BINARYOPERATORKIND_REM = 4, BINARYOPERATORKIND_ADD = 5, BINARYOPERATORKIND_SUB = 6, BINARYOPERATORKIND_SHL = 7, BINARYOPERATORKIND_SHR = 8, BINARYOPERATORKIND_CMP = 9, BINARYOPERATORKIND_LT = 10, BINARYOPERATORKIND_GT = 11, BINARYOPERATORKIND_LE = 12, BINARYOPERATORKIND_GE = 13, BINARYOPERATORKIND_EQ = 14, BINARYOPERATORKIND_NE = 15, BINARYOPERATORKIND_AND = 16, BINARYOPERATORKIND_XOR = 17, BINARYOPERATORKIND_OR = 18, BINARYOPERATORKIND_LAND = 19, BINARYOPERATORKIND_LOR = 20, BINARYOPERATORKIND_ASSIGN = 21, BINARYOPERATORKIND_MULASSIGN = 22, BINARYOPERATORKIND_DIVASSIGN = 23, BINARYOPERATORKIND_REMASSIGN = 24, BINARYOPERATORKIND_ADDASSIGN = 25, BINARYOPERATORKIND_SUBASSIGN = 26, BINARYOPERATORKIND_SHLASSIGN = 27, BINARYOPERATORKIND_SHRASSIGN = 28, BINARYOPERATORKIND_ANDASSIGN = 29, BINARYOPERATORKIND_XORASSIGN = 30, BINARYOPERATORKIND_ORASSIGN = 31, BINARYOPERATORKIND_COMMA = 32, };
@@ -524,7 +529,12 @@ struct DeclaratorDeclDataT {
 struct TemplateDeclDataT {
   std::unique_ptr<NamedDeclDataT> base{};
   std::vector<int64_t> template_parameters{};
-  int64_t template_decl{};
+  std::optional<int64_t> template_decl{};
+};
+
+struct BuiltinTemplateDeclDataT {
+  std::unique_ptr<TemplateDeclDataT> base{};
+  BuiltinTemplateKind builtin_kind{};
 };
 
 struct FunctionDeclDataT {
@@ -1036,7 +1046,8 @@ struct MemberExprDataT {
 
 struct MaterializeTemporaryExprDataT {
   std::unique_ptr<ExprDataT> base{};
-  int64_t extending_decl{};
+  std::optional<int64_t> extending_decl{};
+  std::optional<int64_t> lifetime_extended_temporary_decl{};
 };
 
 struct BinaryOperatorDataT {
@@ -1058,6 +1069,25 @@ struct CXXFoldExprDataT {
   std::unique_ptr<SourceLocationT> l_paren_loc{};
   std::unique_ptr<SourceLocationT> ellipsis_loc{};
   std::unique_ptr<SourceLocationT> r_paren_loc{};
+};
+
+struct CXXRewrittenBinaryOperatorDataT {
+  std::unique_ptr<ExprDataT> base{};
+  BinaryOperatorKind op{};
+  int64_t lhs{};
+  int64_t rhs{};
+  int64_t semantic_form{};
+  int64_t inner_bin_op{};
+  bool is_reversed{};
+  std::unique_ptr<SourceLocationT> operator_location{};
+};
+
+struct LifetimeExtendedTemporaryDeclDataT {
+  std::unique_ptr<DeclDataT> base{};
+  int64_t extending_decl{};
+  int64_t temporary_expr{};
+  StorageDuration storage_duration{};
+  uint32_t mangling_number{};
 };
 
 struct UnresolvedMemberExprDataT {

@@ -54,6 +54,8 @@ const std::map<std::string, ClangAstDumper::ExprChildrenFn>
         EXPR_CHILDREN_ENTRY(MemberExpr, VisitMemberExprChildren),
         EXPR_CHILDREN_ENTRY(MaterializeTemporaryExpr,
                             VisitMaterializeTemporaryExprChildren),
+        EXPR_CHILDREN_ENTRY(CXXRewrittenBinaryOperator,
+                            VisitCXXRewrittenBinaryOperatorChildren),
         EXPR_CHILDREN_ENTRY(UnresolvedLookupExpr, VisitOverloadExprChildren),
         EXPR_CHILDREN_ENTRY(UnresolvedMemberExpr, VisitOverloadExprChildren),
         EXPR_CHILDREN_ENTRY(CallExpr, VisitCallExprChildren),
@@ -368,6 +370,27 @@ void ClangAstDumper::VisitMaterializeTemporaryExprChildren(
 
     // Visit type
     VisitDeclTop(E->getExtendingDecl());
+    VisitDeclTop(E->getLifetimeExtendedTemporaryDecl());
+}
+
+void ClangAstDumper::VisitCXXRewrittenBinaryOperatorChildren(
+    const CXXRewrittenBinaryOperator *E,
+    std::vector<std::string> &children) {
+    VisitExprChildren(E, children);
+
+    const auto decomposed = E->getDecomposedForm();
+    if (decomposed.LHS == nullptr || decomposed.RHS == nullptr ||
+        decomposed.InnerBinOp == nullptr || E->getSemanticForm() == nullptr) {
+        throw std::invalid_argument(
+            "CXXRewrittenBinaryOperator has incomplete graph links");
+    }
+
+    // The native child edge is the rewritten semantic expression. Keep the
+    // source-order operands and decomposed inner operator reachable as typed
+    // references without replacing that native child structure.
+    VisitStmtTop(decomposed.LHS);
+    VisitStmtTop(decomposed.RHS);
+    VisitStmtTop(decomposed.InnerBinOp);
 }
 
 void ClangAstDumper::VisitOverloadExprChildren(

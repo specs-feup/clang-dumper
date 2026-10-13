@@ -526,6 +526,21 @@ enum TemplateKind {
   TEMPLATEKIND_DEPENDENT_FUNCTION_TEMPLATE_SPECIALIZATION = 5;
 }
 
+enum BuiltinTemplateKind {
+  BUILTINTEMPLATEKIND_UNSPECIFIED = 0;
+  BUILTINTEMPLATEKIND_MAKE_INTEGER_SEQ = 1;
+  BUILTINTEMPLATEKIND_TYPE_PACK_ELEMENT = 2;
+}
+
+enum StorageDuration {
+  STORAGEDURATION_UNSPECIFIED = 0;
+  STORAGEDURATION_FULL_EXPRESSION = 1;
+  STORAGEDURATION_AUTOMATIC = 2;
+  STORAGEDURATION_THREAD = 3;
+  STORAGEDURATION_STATIC = 4;
+  STORAGEDURATION_DYNAMIC = 5;
+}
+
 enum TemplateSpecializationKind {
   TEMPLATESPECIALIZATIONKIND_UNSPECIFIED = 0;
   TEMPLATESPECIALIZATIONKIND_UNDECLARED = 1;
@@ -1483,6 +1498,11 @@ message TemplateDeclData {
   optional sint64 template_decl = 3;
 }
 
+message BuiltinTemplateDeclData {
+  TemplateDeclData base = 1;
+  optional BuiltinTemplateKind builtin_kind = 2;
+}
+
 message FunctionDeclData {
   DeclaratorDeclData base = 1;
   optional bool is_constexpr = 2;
@@ -1996,6 +2016,7 @@ message MemberExprData {
 message MaterializeTemporaryExprData {
   ExprData base = 1;
   optional sint64 extending_decl = 2;
+  optional sint64 lifetime_extended_temporary_decl = 3;
 }
 
 message BinaryOperatorData {
@@ -2017,6 +2038,25 @@ message CXXFoldExprData {
   SourceLocation l_paren_loc = 11;
   SourceLocation ellipsis_loc = 12;
   SourceLocation r_paren_loc = 13;
+}
+
+message CXXRewrittenBinaryOperatorData {
+  ExprData base = 1;
+  optional BinaryOperatorKind op = 2;
+  optional sint64 lhs = 3;
+  optional sint64 rhs = 4;
+  optional sint64 semantic_form = 5;
+  optional sint64 inner_bin_op = 6;
+  optional bool is_reversed = 7;
+  SourceLocation operator_location = 8;
+}
+
+message LifetimeExtendedTemporaryDeclData {
+  DeclData base = 1;
+  optional sint64 extending_decl = 2;
+  optional sint64 temporary_expr = 3;
+  optional StorageDuration storage_duration = 4;
+  optional uint32 mangling_number = 5;
 }
 
 message UnresolvedMemberExprData {
@@ -2459,6 +2499,9 @@ message Node {
     CXXDeductionGuideDeclData c_x_x_deduction_guide_decl_data = 121;
     UnresolvedUsingValueDeclData unresolved_using_value_decl_data = 122;
     CXXFoldExprData c_x_x_fold_expr_data = 123;
+    BuiltinTemplateDeclData builtin_template_decl_data = 124;
+    CXXRewrittenBinaryOperatorData c_x_x_rewritten_binary_operator_data = 125;
+    LifetimeExtendedTemporaryDeclData lifetime_extended_temporary_decl_data = 126;
   }
 }
 

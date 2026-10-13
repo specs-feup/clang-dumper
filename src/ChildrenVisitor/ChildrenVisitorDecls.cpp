@@ -40,6 +40,7 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(TypeDecl, VisitTypeDeclChildren),
         DECL_CHILDREN_ENTRY(FieldDecl, VisitFieldDeclChildren),
         DECL_CHILDREN_ENTRY(ClassTemplateDecl, VisitTemplateDeclChildren),
+        DECL_CHILDREN_ENTRY(BuiltinTemplateDecl, VisitTemplateDeclChildren),
         DECL_CHILDREN_ENTRY(FunctionTemplateDecl, VisitTemplateDeclChildren),
         DECL_CHILDREN_ENTRY(TypeAliasTemplateDecl, VisitTemplateDeclChildren),
         DECL_CHILDREN_ENTRY(VarTemplateDecl, VisitTemplateDeclChildren),
@@ -67,6 +68,8 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(UsingDecl, VisitUsingDeclChildren),
         DECL_CHILDREN_ENTRY(UnresolvedUsingValueDecl,
                             VisitUnresolvedUsingValueDeclChildren),
+        DECL_CHILDREN_ENTRY(LifetimeExtendedTemporaryDecl,
+                            VisitLifetimeExtendedTemporaryDeclChildren),
 };
 
 void ClangAstDumper::visitChildren(const Decl *D) {
@@ -389,8 +392,26 @@ void ClangAstDumper::VisitTemplateDeclChildren(
         }
     }
 
-    addChild(D->getTemplatedDecl(), children);
-    VisitDeclTop(D->getTemplatedDecl());
+    if (const auto *templatedDecl = D->getTemplatedDecl()) {
+        addChild(templatedDecl, children);
+        VisitDeclTop(templatedDecl);
+    }
+}
+
+void ClangAstDumper::VisitLifetimeExtendedTemporaryDeclChildren(
+    const LifetimeExtendedTemporaryDecl *D,
+    std::vector<std::string> &children) {
+    VisitDeclChildren(D, children);
+
+    const auto *extendingDecl = D->getExtendingDecl();
+    const auto *temporaryExpr = D->getTemporaryExpr();
+    if (extendingDecl == nullptr || temporaryExpr == nullptr) {
+        throw std::invalid_argument(
+            "LifetimeExtendedTemporaryDecl has incomplete graph links");
+    }
+
+    VisitDeclTop(extendingDecl);
+    addChild(temporaryExpr, children);
 }
 
 void ClangAstDumper::VisitTemplateTemplateParmDeclChildren(

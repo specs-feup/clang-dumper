@@ -198,6 +198,103 @@ class HeaderExpressionSupportTest(unittest.TestCase):
         self.assertTrue(using_data.base.base.decl_name == "value")
         self.assertTrue(using_data.base.base.base.base.source.expansion.HasField("line"))
 
+        builtin_templates = [node for node in nodes.values()
+                            if node.class_name == "BuiltinTemplateDecl"]
+        self.assertTrue(builtin_templates, "fixture did not emit builtin template declarations")
+        builtin_kinds = {}
+        for node in builtin_templates:
+            self.assertEqual(node.WhichOneof("node"), "builtin_template_decl_data")
+            data = node.builtin_template_decl_data
+            name = decl_name(data)
+            if name not in {"__make_integer_seq", "__type_pack_element"}:
+                continue
+            self.assertTrue(data.HasField("builtin_kind"))
+            self.assertFalse(data.base.HasField("template_decl"),
+                             "builtin template must not invent an underlying declaration")
+            self.assertTrue(data.base.template_parameters)
+            self.assertTrue(all(parameter in nodes for parameter in data.base.template_parameters))
+            builtin_kinds[name] = data.DESCRIPTOR.fields_by_name["builtin_kind"].enum_type \
+                .values_by_number[data.builtin_kind].name
+        self.assertEqual(builtin_kinds, {
+            "__make_integer_seq": "BUILTINTEMPLATEKIND_MAKE_INTEGER_SEQ",
+            "__type_pack_element": "BUILTINTEMPLATEKIND_TYPE_PACK_ELEMENT",
+        })
+
+        hidden_emitted = subprocess.run(
+            [str(ARGS.clang), "-fvisibility=hidden", *command[1:]],
+            capture_output=True, check=False)
+        self.assertEqual(hidden_emitted.returncode, 0,
+                         f"plugin failed with hidden visibility: {hidden_emitted.stderr!r}")
+        hidden_nodes = [record.node for envelope in read_envelopes(hidden_emitted.stdout, self.envelope_type)
+                        if envelope.WhichOneof("payload") == "chunk"
+                        for record in envelope.chunk.records if record.WhichOneof("record") == "node"]
+        hidden_builtin = next(node.builtin_template_decl_data for node in hidden_nodes
+                              if node.class_name == "BuiltinTemplateDecl"
+                              and decl_name(node.builtin_template_decl_data) == "__make_integer_seq")
+        self.assertTrue(hidden_builtin.base.base.HasField("visibility"))
+        self.assertEqual("VISIBILITY_HIDDEN",
+                         hidden_builtin.base.base.DESCRIPTOR.fields_by_name["visibility"].enum_type
+                         .values_by_number[hidden_builtin.base.base.visibility].name)
+
+        rewritten = [node for node in nodes.values()
+                     if node.class_name == "CXXRewrittenBinaryOperator"]
+        self.assertEqual(len(rewritten), 2, "fixture should emit both rewritten comparison forms")
+        expected_operators = {"left < right": "BINARYOPERATORKIND_LT",
+                              "left > right": "BINARYOPERATORKIND_GT"}
+        observed_operators = set()
+        for node in rewritten:
+            self.assertEqual(node.WhichOneof("node"), "c_x_x_rewritten_binary_operator_data")
+            data = node.c_x_x_rewritten_binary_operator_data
+            for field in ("op", "lhs", "rhs", "semantic_form", "inner_bin_op",
+                          "is_reversed", "operator_location"):
+                self.assertTrue(data.HasField(field), f"missing rewritten-operator {field}")
+            references = (data.lhs, data.rhs, data.semantic_form, data.inner_bin_op)
+            self.assertTrue(all(reference in nodes for reference in references))
+            self.assertNotEqual(data.lhs, data.rhs)
+            self.assertNotEqual(data.semantic_form, data.inner_bin_op)
+
+            line_number = data.base.base.base.source.expansion.line
+            source_line = source_lines[line_number - 1]
+            source_expression = source_line.split("return ", 1)[1].split(";", 1)[0]
+            self.assertIn(source_expression, expected_operators)
+            self.assertEqual(expected_operators[source_expression],
+                             data.DESCRIPTOR.fields_by_name["op"].enum_type
+                             .values_by_number[data.op].name)
+            self.assertTrue(data.is_reversed,
+                            "only the reversed <=> candidate accepts the non-commutative operand types")
+            self.assertEqual(line_number, data.operator_location.line)
+            self.assertEqual(source_line.index(source_expression.split()[1]) + 1,
+                             data.operator_location.column)
+            observed_operators.add(source_expression)
+        self.assertEqual(observed_operators, set(expected_operators))
+
+        lifetime_decls = [node for node in nodes.values()
+                          if node.class_name == "LifetimeExtendedTemporaryDecl"]
+        self.assertTrue(lifetime_decls, "fixture did not emit lifetime-extended temporaries")
+        lifetime_ids = {node.id for node in lifetime_decls}
+        for node in lifetime_decls:
+            self.assertEqual(node.WhichOneof("node"), "lifetime_extended_temporary_decl_data")
+            data = node.lifetime_extended_temporary_decl_data
+            self.assertTrue(data.HasField("extending_decl"))
+            self.assertTrue(data.HasField("temporary_expr"))
+            self.assertTrue(data.HasField("storage_duration"))
+            self.assertTrue(data.HasField("mangling_number"))
+            self.assertIn(data.extending_decl, nodes)
+            self.assertIn(data.temporary_expr, nodes)
+            self.assertIn(data.temporary_expr, children[node.id])
+            self.assertEqual(nodes[data.extending_decl].class_name, "VarDecl")
+
+        materialized = [node for node in nodes.values()
+                        if node.class_name == "MaterializeTemporaryExpr"
+                        and node.materialize_temporary_expr_data.HasField(
+                            "lifetime_extended_temporary_decl")]
+        self.assertTrue(materialized, "materialization nodes lost their lifetime declaration link")
+        for node in materialized:
+            data = node.materialize_temporary_expr_data
+            self.assertIn(data.lifetime_extended_temporary_decl, lifetime_ids)
+            owner = nodes[data.lifetime_extended_temporary_decl].lifetime_extended_temporary_decl_data
+            self.assertEqual(data.extending_decl, owner.extending_decl)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--plugin", type=Path, required=True)

@@ -11,6 +11,7 @@ std::unique_ptr<obj::AttributedTypeDataT> makeAttributedTypeData( const clang::A
 std::unique_ptr<obj::AutoTypeDataT> makeAutoTypeData(const clang::AutoType *type, Context &c);
 std::unique_ptr<obj::BinaryOperatorDataT> makeBinaryOperatorData( const clang::BinaryOperator *node, Context &c);
 std::unique_ptr<obj::CXXFoldExprDataT> makeCXXFoldExprData(const clang::CXXFoldExpr *node, Context &c);
+std::unique_ptr<obj::CXXRewrittenBinaryOperatorDataT> makeCXXRewrittenBinaryOperatorData(const clang::CXXRewrittenBinaryOperator *node, Context &c);
 std::unique_ptr<obj::BuiltinTypeDataT> makeBuiltinTypeData( const clang::BuiltinType *type, Context &c);
 std::unique_ptr<obj::CXXBaseSpecifierT> makeCXXBaseSpecifier(const clang::CXXBaseSpecifier &b, Context &c);
 std::unique_ptr<obj::CXXBoolLiteralExprDataT> makeCXXBoolLiteralExprData( const clang::CXXBoolLiteralExpr *node, Context &c);
@@ -19,6 +20,8 @@ std::unique_ptr<obj::CXXUnresolvedConstructExprDataT> makeCXXUnresolvedConstruct
 std::unique_ptr<obj::CXXConstructorDeclDataT> makeCXXConstructorDeclData( const clang::CXXConstructorDecl *decl, Context &c);
 std::unique_ptr<obj::CXXConversionDeclDataT> makeCXXConversionDeclData( const clang::CXXConversionDecl *decl, Context &c);
 std::unique_ptr<obj::CXXDeductionGuideDeclDataT> makeCXXDeductionGuideDeclData(const clang::CXXDeductionGuideDecl *decl, Context &c);
+std::unique_ptr<obj::BuiltinTemplateDeclDataT> makeBuiltinTemplateDeclData(const clang::BuiltinTemplateDecl *decl, Context &c);
+std::unique_ptr<obj::LifetimeExtendedTemporaryDeclDataT> makeLifetimeExtendedTemporaryDeclData(const clang::LifetimeExtendedTemporaryDecl *decl, Context &c);
 std::unique_ptr<obj::UnresolvedUsingValueDeclDataT> makeUnresolvedUsingValueDeclData(const clang::UnresolvedUsingValueDecl *decl, Context &c);
 std::unique_ptr<obj::CXXCtorInitializerT> makeCXXCtorInitializer(const clang::CXXCtorInitializer *i, Context &c);
 std::unique_ptr<obj::CXXDeleteExprDataT> makeCXXDeleteExprData( const clang::CXXDeleteExpr *node, Context &c);

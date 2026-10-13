@@ -17,7 +17,7 @@ namespace {
 constexpr std::string_view Magic = "CLAVAPB1";
 constexpr uint64_t MaxFrameBytes = 64 * 1024 * 1024;
 constexpr uint32_t ProtocolMajor = 1;
-constexpr uint32_t ProtocolMinor = 5;
+constexpr uint32_t ProtocolMinor = 6;
 
 bool validRecord(const astwire::v1::Record &record) {
   switch (record.record_case()) {

@@ -65,6 +65,7 @@ inline void encode(const obj::RecordDeclDataT &src, pb::RecordDeclData *dst);
 inline void encode(const obj::ValueDeclDataT &src, pb::ValueDeclData *dst);
 inline void encode(const obj::DeclaratorDeclDataT &src, pb::DeclaratorDeclData *dst);
 inline void encode(const obj::TemplateDeclDataT &src, pb::TemplateDeclData *dst);
+inline void encode(const obj::BuiltinTemplateDeclDataT &src, pb::BuiltinTemplateDeclData *dst);
 inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst);
 inline void encode(const obj::CXXDeductionGuideDeclDataT &src, pb::CXXDeductionGuideDeclData *dst);
 inline void encode(const obj::CXXMethodDeclDataT &src, pb::CXXMethodDeclData *dst);
@@ -141,6 +142,8 @@ inline void encode(const obj::MemberExprDataT &src, pb::MemberExprData *dst);
 inline void encode(const obj::MaterializeTemporaryExprDataT &src, pb::MaterializeTemporaryExprData *dst);
 inline void encode(const obj::BinaryOperatorDataT &src, pb::BinaryOperatorData *dst);
 inline void encode(const obj::CXXFoldExprDataT &src, pb::CXXFoldExprData *dst);
+inline void encode(const obj::CXXRewrittenBinaryOperatorDataT &src, pb::CXXRewrittenBinaryOperatorData *dst);
+inline void encode(const obj::LifetimeExtendedTemporaryDeclDataT &src, pb::LifetimeExtendedTemporaryDeclData *dst);
 inline void encode(const obj::UnresolvedMemberExprDataT &src, pb::UnresolvedMemberExprData *dst);
 inline void encode(const obj::UnresolvedLookupExprDataT &src, pb::UnresolvedLookupExprData *dst);
 inline void encode(const obj::CallExprDataT &src, pb::CallExprData *dst);
@@ -497,7 +500,14 @@ inline void encode(const obj::TemplateDeclDataT &src, pb::TemplateDeclData *dst)
   for (const auto &value : src.template_parameters) {
     dst->add_template_parameters(value);
   }
-  dst->set_template_decl(src.template_decl);
+  if (src.template_decl.has_value()) {
+    dst->set_template_decl((*src.template_decl));
+  }
+}
+
+inline void encode(const obj::BuiltinTemplateDeclDataT &src, pb::BuiltinTemplateDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_builtin_kind(static_cast<pb::BuiltinTemplateKind>(static_cast<int>(src.builtin_kind) + 1));
 }
 
 inline void encode(const obj::FunctionDeclDataT &src, pb::FunctionDeclData *dst) {
@@ -1051,7 +1061,12 @@ inline void encode(const obj::MemberExprDataT &src, pb::MemberExprData *dst) {
 
 inline void encode(const obj::MaterializeTemporaryExprDataT &src, pb::MaterializeTemporaryExprData *dst) {
   if (src.base) encode(*src.base, dst->mutable_base());
-  dst->set_extending_decl(src.extending_decl);
+  if (src.extending_decl.has_value()) {
+    dst->set_extending_decl((*src.extending_decl));
+  }
+  if (src.lifetime_extended_temporary_decl.has_value()) {
+    dst->set_lifetime_extended_temporary_decl((*src.lifetime_extended_temporary_decl));
+  }
 }
 
 inline void encode(const obj::BinaryOperatorDataT &src, pb::BinaryOperatorData *dst) {
@@ -1083,6 +1098,25 @@ inline void encode(const obj::CXXFoldExprDataT &src, pb::CXXFoldExprData *dst) {
   if (src.l_paren_loc) encode(*src.l_paren_loc, dst->mutable_l_paren_loc());
   if (src.ellipsis_loc) encode(*src.ellipsis_loc, dst->mutable_ellipsis_loc());
   if (src.r_paren_loc) encode(*src.r_paren_loc, dst->mutable_r_paren_loc());
+}
+
+inline void encode(const obj::CXXRewrittenBinaryOperatorDataT &src, pb::CXXRewrittenBinaryOperatorData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_op(static_cast<pb::BinaryOperatorKind>(static_cast<int>(src.op) + 1));
+  dst->set_lhs(src.lhs);
+  dst->set_rhs(src.rhs);
+  dst->set_semantic_form(src.semantic_form);
+  dst->set_inner_bin_op(src.inner_bin_op);
+  dst->set_is_reversed(src.is_reversed);
+  if (src.operator_location) encode(*src.operator_location, dst->mutable_operator_location());
+}
+
+inline void encode(const obj::LifetimeExtendedTemporaryDeclDataT &src, pb::LifetimeExtendedTemporaryDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_extending_decl(src.extending_decl);
+  dst->set_temporary_expr(src.temporary_expr);
+  dst->set_storage_duration(static_cast<pb::StorageDuration>(static_cast<int>(src.storage_duration) + 1));
+  dst->set_mangling_number(src.mangling_number);
 }
 
 inline void encode(const obj::UnresolvedMemberExprDataT &src, pb::UnresolvedMemberExprData *dst) {
@@ -1558,6 +1592,9 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::CXXDeductionGuideDeclDataT>()) encode(*value, dst->mutable_c_x_x_deduction_guide_decl_data());
   if (const auto *value = src.payload.get<obj::UnresolvedUsingValueDeclDataT>()) encode(*value, dst->mutable_unresolved_using_value_decl_data());
   if (const auto *value = src.payload.get<obj::CXXFoldExprDataT>()) encode(*value, dst->mutable_c_x_x_fold_expr_data());
+  if (const auto *value = src.payload.get<obj::BuiltinTemplateDeclDataT>()) encode(*value, dst->mutable_builtin_template_decl_data());
+  if (const auto *value = src.payload.get<obj::CXXRewrittenBinaryOperatorDataT>()) encode(*value, dst->mutable_c_x_x_rewritten_binary_operator_data());
+  if (const auto *value = src.payload.get<obj::LifetimeExtendedTemporaryDeclDataT>()) encode(*value, dst->mutable_lifetime_extended_temporary_decl_data());
 }
 
 template <typename T> inline void setRecord(const T &, pb::Record *) {

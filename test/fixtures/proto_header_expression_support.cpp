@@ -48,3 +48,38 @@ void instantiate_folds() {
   (void)binary_right_fold(1, 2);
   (void)overloaded_fold(Addable{}, Addable{});
 }
+
+template <class T, T... Values>
+struct IntegerSequence {};
+
+using IntegerSequenceThree = __make_integer_seq<IntegerSequence, int, 3>;
+using PackedFloat = __type_pack_element<1, int, float>;
+
+struct ThreeWayLeft {
+  int value;
+};
+
+struct ThreeWayRight {
+  int value;
+};
+
+int operator<=>(ThreeWayRight right, ThreeWayLeft left) {
+  return left.value - right.value;
+}
+
+bool rewritten_less(ThreeWayLeft left, ThreeWayRight right) {
+  return left < right;
+}
+
+bool rewritten_greater(ThreeWayLeft left, ThreeWayRight right) {
+  return left > right;
+}
+
+struct LifetimeType {
+  int value;
+};
+
+void lifetime_extension() {
+  const LifetimeType &extended = LifetimeType{7};
+  (void)extended;
+}

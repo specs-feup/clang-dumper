@@ -267,7 +267,11 @@ makeMaterializeTemporaryExprData(const clang::MaterializeTemporaryExpr *node,
                                  Context &c) {
   auto out = std::make_unique<obj::MaterializeTemporaryExprDataT>();
   out->base = makeExprData(node, c);
-  out->extending_decl = wireId(clava::getId(node->getExtendingDecl(), c.id));
+  if (const auto *extendingDecl = node->getExtendingDecl())
+    out->extending_decl = wireId(clava::getId(extendingDecl, c.id));
+  if (const auto *temporaryDecl = node->getLifetimeExtendedTemporaryDecl())
+    out->lifetime_extended_temporary_decl =
+        wireId(clava::getId(temporaryDecl, c.id));
   return out;
 }
 
@@ -307,6 +311,29 @@ std::unique_ptr<obj::CXXFoldExprDataT> makeCXXFoldExprData(
   out->l_paren_loc = makeSourceLocation(node->getLParenLoc(), c);
   out->ellipsis_loc = makeSourceLocation(node->getEllipsisLoc(), c);
   out->r_paren_loc = makeSourceLocation(node->getRParenLoc(), c);
+  return out;
+}
+
+std::unique_ptr<obj::CXXRewrittenBinaryOperatorDataT>
+makeCXXRewrittenBinaryOperatorData(
+    const clang::CXXRewrittenBinaryOperator *node, Context &c) {
+  auto out = std::make_unique<obj::CXXRewrittenBinaryOperatorDataT>();
+  out->base = makeExprData(node, c);
+
+  const auto decomposed = node->getDecomposedForm();
+  if (decomposed.LHS == nullptr || decomposed.RHS == nullptr ||
+      decomposed.InnerBinOp == nullptr || node->getSemanticForm() == nullptr)
+    throw std::invalid_argument(
+        "CXXRewrittenBinaryOperator has an incomplete syntactic or semantic form");
+
+  out->op = enumValue<obj::BinaryOperatorKind>(
+      clava::BINARY_OPERATOR_KIND[decomposed.Opcode]);
+  out->lhs = wireId(clava::getId(decomposed.LHS, c.id));
+  out->rhs = wireId(clava::getId(decomposed.RHS, c.id));
+  out->semantic_form = wireId(clava::getId(node->getSemanticForm(), c.id));
+  out->inner_bin_op = wireId(clava::getId(decomposed.InnerBinOp, c.id));
+  out->is_reversed = node->isReversed();
+  out->operator_location = makeSourceLocation(node->getOperatorLoc(), c);
   return out;
 }
 

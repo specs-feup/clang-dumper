@@ -4,6 +4,7 @@
 #include "../ClangEnums/ClangEnums.h"
 
 #include <clang/Basic/SourceManager.h>
+#include <clang/Basic/Builtins.h>
 #include <clang/AST/ParentMapContext.h>
 #include <llvm/ADT/STLForwardCompat.h>
 
@@ -43,6 +44,32 @@ obj::TemplateKind templateKind(clang::FunctionDecl::TemplatedKind kind) {
   return enumValue<obj::TemplateKind>("NON_TEMPLATE");
 }
 
+obj::BuiltinTemplateKind builtinTemplateKind(clang::BuiltinTemplateKind kind) {
+  switch (kind) {
+  case clang::BTK__make_integer_seq:
+    return obj::BuiltinTemplateKind::BUILTINTEMPLATEKIND_MAKE_INTEGER_SEQ;
+  case clang::BTK__type_pack_element:
+    return obj::BuiltinTemplateKind::BUILTINTEMPLATEKIND_TYPE_PACK_ELEMENT;
+  }
+  throw std::invalid_argument("Unsupported Clang builtin template kind");
+}
+
+obj::StorageDuration storageDuration(clang::StorageDuration duration) {
+  switch (duration) {
+  case clang::SD_FullExpression:
+    return obj::StorageDuration::STORAGEDURATION_FULL_EXPRESSION;
+  case clang::SD_Automatic:
+    return obj::StorageDuration::STORAGEDURATION_AUTOMATIC;
+  case clang::SD_Thread:
+    return obj::StorageDuration::STORAGEDURATION_THREAD;
+  case clang::SD_Static:
+    return obj::StorageDuration::STORAGEDURATION_STATIC;
+  case clang::SD_Dynamic:
+    return obj::StorageDuration::STORAGEDURATION_DYNAMIC;
+  }
+  throw std::invalid_argument("Unsupported Clang temporary storage duration");
+}
+
 } // namespace
 
 std::unique_ptr<obj::DeclDataT> makeDeclData(const clang::Decl *decl,
@@ -70,8 +97,14 @@ std::unique_ptr<obj::NamedDeclDataT> makeNamedDeclData(
   out->is_cxx_instance_member = decl->isCXXInstanceMember();
   out->linkage = enumValue<obj::Linkage>(
       clava::LINKAGE[llvm::to_underlying(decl->getFormalLinkage())]);
+  // Clang 18's getVisibility() crashes while recomputing visibility for its
+  // implicit BuiltinTemplateDecls. They have no per-declaration visibility
+  // attributes, so use the active value-visibility mode from their AST.
+  const auto visibility = llvm::isa<clang::BuiltinTemplateDecl>(decl)
+                              ? decl->getASTContext().getLangOpts().getValueVisibilityMode()
+                              : decl->getVisibility();
   out->visibility = enumValue<obj::Visibility>(
-      clava::VISIBILITY[llvm::to_underlying(decl->getVisibility())]);
+      clava::VISIBILITY[llvm::to_underlying(visibility)]);
   return out;
 }
 
@@ -125,7 +158,38 @@ std::unique_ptr<obj::TemplateDeclDataT> makeTemplateDeclData(
     for (auto *param : *params)
       out->template_parameters.push_back(wireId(clava::getId(param, c.id)));
   }
-  out->template_decl = wireId(clava::getId(decl->getTemplatedDecl(), c.id));
+  if (const auto *templatedDecl = decl->getTemplatedDecl())
+    out->template_decl = wireId(clava::getId(templatedDecl, c.id));
+  return out;
+}
+
+std::unique_ptr<obj::BuiltinTemplateDeclDataT> makeBuiltinTemplateDeclData(
+    const clang::BuiltinTemplateDecl *decl, Context &c) {
+  auto out = std::make_unique<obj::BuiltinTemplateDeclDataT>();
+  out->base = makeTemplateDeclData(decl, c);
+  out->builtin_kind = builtinTemplateKind(decl->getBuiltinTemplateKind());
+  return out;
+}
+
+std::unique_ptr<obj::LifetimeExtendedTemporaryDeclDataT>
+makeLifetimeExtendedTemporaryDeclData(
+    const clang::LifetimeExtendedTemporaryDecl *decl, Context &c) {
+  auto out = std::make_unique<obj::LifetimeExtendedTemporaryDeclDataT>();
+  out->base = makeDeclData(decl, c);
+
+  const auto *extendingDecl = decl->getExtendingDecl();
+  if (extendingDecl == nullptr)
+    throw std::invalid_argument(
+        "LifetimeExtendedTemporaryDecl has no extending declaration");
+  out->extending_decl = wireId(clava::getId(extendingDecl, c.id));
+
+  const auto *temporaryExpr = decl->getTemporaryExpr();
+  if (temporaryExpr == nullptr)
+    throw std::invalid_argument(
+        "LifetimeExtendedTemporaryDecl has no temporary expression");
+  out->temporary_expr = wireId(clava::getId(temporaryExpr, c.id));
+  out->storage_duration = storageDuration(decl->getStorageDuration());
+  out->mangling_number = decl->getManglingNumber();
   return out;
 }
 

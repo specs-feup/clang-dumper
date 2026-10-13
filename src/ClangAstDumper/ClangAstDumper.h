@@ -208,6 +208,9 @@ private:
 
   void VisitTemplateDeclChildren(const TemplateDecl *D,
                                  std::vector<std::string> &children);
+  void VisitLifetimeExtendedTemporaryDeclChildren(
+      const LifetimeExtendedTemporaryDecl *D,
+      std::vector<std::string> &children);
   void
   VisitTemplateTemplateParmDeclChildren(const TemplateTemplateParmDecl *D,
                                         std::vector<std::string> &children);
@@ -281,6 +284,9 @@ private:
   void
   VisitMaterializeTemporaryExprChildren(const MaterializeTemporaryExpr *E,
                                         std::vector<std::string> &children);
+  void VisitCXXRewrittenBinaryOperatorChildren(
+      const CXXRewrittenBinaryOperator *E,
+      std::vector<std::string> &children);
   void VisitOverloadExprChildren(const OverloadExpr *E,
                                  std::vector<std::string> &children);
   void VisitCallExprChildren(const CallExpr *E,
