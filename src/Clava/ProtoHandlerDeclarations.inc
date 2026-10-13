@@ -150,6 +150,7 @@ std::unique_ptr<obj::ValueDeclDataT> makeEnumConstantDeclData( const clang::Enum
 std::unique_ptr<obj::ValueDeclDataT> makeIndirectFieldDeclData( const clang::IndirectFieldDecl *decl, Context &c);
 std::unique_ptr<obj::ValueDeclDataT> makeValueDeclData( const clang::ValueDecl *decl, Context &c);
 std::unique_ptr<obj::VarDeclDataT> makeVarDeclData(const clang::VarDecl *decl, Context &c);
-std::unique_ptr<obj::VarDeclDataT> makeVarTemplateSpecializationDeclData( const clang::VarTemplateSpecializationDecl *decl, Context &c);
+std::unique_ptr<obj::VarTemplateSpecializationDeclDataT> makeVarTemplateSpecializationDeclData(const clang::VarTemplateSpecializationDecl *decl, Context &c);
+std::unique_ptr<obj::VarTemplatePartialSpecializationDeclDataT> makeVarTemplatePartialSpecializationDeclData(const clang::VarTemplatePartialSpecializationDecl *decl, Context &c);
 std::unique_ptr<obj::VariableArrayTypeDataT> makeVariableArrayTypeData( const clang::VariableArrayType *type, Context &c);
 std::unique_ptr<obj::VisibilityAttrDataT> makeVisibilityAttrData(const VisibilityAttr *a, Context &c);

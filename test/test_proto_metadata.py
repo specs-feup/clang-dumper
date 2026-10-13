@@ -272,7 +272,7 @@ class ProtoMetadataTest(unittest.TestCase):
             self.assertEqual(checked.returncode, 0, checked.stderr)
             envelopes = read_envelopes(dump, envelope_type)
 
-        self.assertEqual(envelopes[0].header.protocol_minor, 2)
+        self.assertEqual(envelopes[0].header.protocol_minor, 3)
         self.assertEqual(
             envelopes[0].header.schema_sha256,
             hashlib.sha256(ARGS.schema.read_bytes()).hexdigest().encode("ascii"),

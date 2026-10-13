@@ -849,6 +849,12 @@ if(TARGET plugin)
             --plugin "$<TARGET_FILE:plugin>"
             --clang "${CLANG_ENUMS_HOST_CLANG}"
             --verifier "$<TARGET_FILE:verify_protobuf>")
+    add_test(NAME proto_var_template_specializations_test
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/test/test_proto_var_template_specializations.py"
+            --plugin "$<TARGET_FILE:plugin>"
+            --clang "${CLANG_ENUMS_HOST_CLANG}"
+            --verifier "$<TARGET_FILE:verify_protobuf>"
+            --descriptor "${PROTO_DESCRIPTOR}")
 endif()
 
 if(TARGET plugin)

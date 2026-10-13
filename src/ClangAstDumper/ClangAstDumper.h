@@ -180,6 +180,12 @@ private:
   void VisitClassTemplatePartialSpecializationDeclChildren(
       const ClassTemplatePartialSpecializationDecl *D,
       std::vector<std::string> &children);
+  void VisitVarTemplateSpecializationDeclChildren(
+      const VarTemplateSpecializationDecl *D,
+      std::vector<std::string> &children);
+  void VisitVarTemplatePartialSpecializationDeclChildren(
+      const VarTemplatePartialSpecializationDecl *D,
+      std::vector<std::string> &children);
   void VisitValueDeclChildren(const ValueDecl *D,
                               std::vector<std::string> &children);
   void VisitFieldDeclChildren(const FieldDecl *D,

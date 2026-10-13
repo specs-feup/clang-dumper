@@ -56,9 +56,10 @@ const std::map<std::string, ClangAstDumper::DeclChildrenFn>
         DECL_CHILDREN_ENTRY(StaticAssertDecl, VisitStaticAssertDeclChildren),
         DECL_CHILDREN_ENTRY(NonTypeTemplateParmDecl,
                             VisitNonTypeTemplateParmDeclChildren),
-        // TODO: Check if needs more data to dump
         DECL_CHILDREN_ENTRY(VarTemplateSpecializationDecl,
-                            VisitVarDeclChildren),
+                            VisitVarTemplateSpecializationDeclChildren),
+        DECL_CHILDREN_ENTRY(VarTemplatePartialSpecializationDecl,
+                            VisitVarTemplatePartialSpecializationDeclChildren),
         DECL_CHILDREN_ENTRY(UsingDecl, VisitUsingDeclChildren),
 };
 
@@ -293,6 +294,45 @@ void ClangAstDumper::VisitClassTemplatePartialSpecializationDeclChildren(
         for (const auto *parameter : *parameters) {
             VisitDeclTop(parameter);
         }
+    }
+}
+
+void ClangAstDumper::VisitVarTemplateSpecializationDeclChildren(
+    const VarTemplateSpecializationDecl *D,
+    std::vector<std::string> &children) {
+    VisitVarDeclChildren(D, children);
+    VisitDeclTop(D->getSpecializedTemplate());
+
+    auto specialized = D->getSpecializedTemplateOrPartial();
+    if (auto *partial = specialized.dyn_cast<
+            VarTemplatePartialSpecializationDecl *>()) {
+        VisitDeclTop(partial);
+    }
+
+    for (const auto &argument : D->getTemplateArgs().asArray()) {
+        VisitTemplateArgument(argument);
+    }
+    for (const auto &argument : D->getTemplateInstantiationArgs().asArray()) {
+        VisitTemplateArgument(argument);
+    }
+}
+
+void ClangAstDumper::VisitVarTemplatePartialSpecializationDeclChildren(
+    const VarTemplatePartialSpecializationDecl *D,
+    std::vector<std::string> &children) {
+    VisitVarTemplateSpecializationDeclChildren(D, children);
+    if (auto *parameters = D->getTemplateParameters()) {
+        for (const auto *parameter : *parameters) {
+            VisitDeclTop(parameter);
+        }
+    }
+    if (auto *arguments = D->getTemplateArgsAsWritten()) {
+        for (const auto &argument : arguments->arguments()) {
+            VisitTemplateArgument(argument.getArgument());
+        }
+    }
+    if (auto *origin = D->getInstantiatedFromMember()) {
+        VisitDeclTop(origin);
     }
 }
 

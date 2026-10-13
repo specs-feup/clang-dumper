@@ -12,6 +12,7 @@
 namespace astwire::v1obj {
 
 struct RangeT;
+struct SourceLocationT;
 struct SourceInfoT;
 struct NodeDataT;
 struct CXXBaseSpecifierT;
@@ -73,6 +74,8 @@ struct CXXConversionDeclDataT;
 struct FieldDeclDataT;
 struct ParmVarDeclDataT;
 struct VarDeclDataT;
+struct VarTemplateSpecializationDeclDataT;
+struct VarTemplatePartialSpecializationDeclDataT;
 struct TemplateTypeParmDeclDataT;
 struct UnresolvedUsingTypenameDeclDataT;
 struct EnumDeclDataT;
@@ -252,6 +255,12 @@ struct RangeT {
   uint32_t end_file{};
   uint32_t end_line{};
   uint32_t end_column{};
+};
+
+struct SourceLocationT {
+  uint32_t file{};
+  uint32_t line{};
+  uint32_t column{};
 };
 
 struct SourceInfoT {
@@ -582,6 +591,24 @@ struct VarDeclDataT {
   bool is_static_data_member{};
   bool is_out_of_line{};
   bool has_global_storage{};
+};
+
+struct VarTemplateSpecializationDeclDataT {
+  std::unique_ptr<VarDeclDataT> base{};
+  int64_t specialized_template{};
+  int64_t specialized_partial_specialization{};
+  TemplateSpecializationKind specialization_kind{};
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments{};
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_instantiation_arguments{};
+  std::unique_ptr<SourceLocationT> point_of_instantiation{};
+};
+
+struct VarTemplatePartialSpecializationDeclDataT {
+  std::unique_ptr<VarTemplateSpecializationDeclDataT> base{};
+  std::vector<int64_t> template_parameters{};
+  int64_t instantiated_from_member{};
+  bool is_member_specialization{};
+  std::vector<std::unique_ptr<TemplateArgumentT>> template_arguments_as_written{};
 };
 
 struct TemplateTypeParmDeclDataT {

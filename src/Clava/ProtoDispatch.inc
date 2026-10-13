@@ -38,7 +38,8 @@ inline obj::NodeT makeNode(const clang::Decl *node, Context &c) {
   if (out.class_name == "TemplateTemplateParmDecl") { out.payload.Set(std::move(*makeTemplateTemplateParmDeclData(static_cast<const clang::TemplateTemplateParmDecl *>(node), c))); return out; }
   if (out.class_name == "MSPropertyDecl") { out.payload.Set(std::move(*makeMSPropertyDeclData(static_cast<const clang::MSPropertyDecl *>(node), c))); return out; }
   if (out.class_name == "UsingDecl") { out.payload.Set(std::move(*makeUsingDeclData(static_cast<const clang::UsingDecl *>(node), c))); return out; }
-  if (out.class_name == "VarTemplateSpecializationDecl") { out.payload.Set(std::move(*makeVarDeclData(static_cast<const clang::VarTemplateSpecializationDecl *>(node), c))); return out; }
+  if (out.class_name == "VarTemplatePartialSpecializationDecl") { out.payload.Set(std::move(*makeVarTemplatePartialSpecializationDeclData(static_cast<const clang::VarTemplatePartialSpecializationDecl *>(node), c))); return out; }
+  if (out.class_name == "VarTemplateSpecializationDecl") { out.payload.Set(std::move(*makeVarTemplateSpecializationDeclData(static_cast<const clang::VarTemplateSpecializationDecl *>(node), c))); return out; }
   recordHandlerFallback("decl data", out.class_name);
   out.payload.Set(std::move(*makeDeclData(node, c))); return out;
 }

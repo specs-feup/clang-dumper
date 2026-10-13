@@ -10,6 +10,7 @@ namespace pb = ::astwire::v1;
 namespace obj = ::astwire::v1obj;
 
 inline void encode(const obj::RangeT &src, pb::Range *dst);
+inline void encode(const obj::SourceLocationT &src, pb::SourceLocation *dst);
 inline void encode(const obj::SourceInfoT &src, pb::SourceInfo *dst);
 inline void encode(const obj::NodeDataT &src, pb::NodeData *dst);
 inline void encode(const obj::CXXBaseSpecifierT &src, pb::CXXBaseSpecifier *dst);
@@ -71,6 +72,8 @@ inline void encode(const obj::CXXConversionDeclDataT &src, pb::CXXConversionDecl
 inline void encode(const obj::FieldDeclDataT &src, pb::FieldDeclData *dst);
 inline void encode(const obj::ParmVarDeclDataT &src, pb::ParmVarDeclData *dst);
 inline void encode(const obj::VarDeclDataT &src, pb::VarDeclData *dst);
+inline void encode(const obj::VarTemplateSpecializationDeclDataT &src, pb::VarTemplateSpecializationDeclData *dst);
+inline void encode(const obj::VarTemplatePartialSpecializationDeclDataT &src, pb::VarTemplatePartialSpecializationDeclData *dst);
 inline void encode(const obj::TemplateTypeParmDeclDataT &src, pb::TemplateTypeParmDeclData *dst);
 inline void encode(const obj::UnresolvedUsingTypenameDeclDataT &src, pb::UnresolvedUsingTypenameDeclData *dst);
 inline void encode(const obj::EnumDeclDataT &src, pb::EnumDeclData *dst);
@@ -190,6 +193,12 @@ inline void encode(const obj::RangeT &src, pb::Range *dst) {
   dst->set_end_file(src.end_file);
   dst->set_end_line(src.end_line);
   dst->set_end_column(src.end_column);
+}
+
+inline void encode(const obj::SourceLocationT &src, pb::SourceLocation *dst) {
+  dst->set_file(src.file);
+  dst->set_line(src.line);
+  dst->set_column(src.column);
 }
 
 inline void encode(const obj::SourceInfoT &src, pb::SourceInfo *dst) {
@@ -565,6 +574,32 @@ inline void encode(const obj::VarDeclDataT &src, pb::VarDeclData *dst) {
   dst->set_is_static_data_member(src.is_static_data_member);
   dst->set_is_out_of_line(src.is_out_of_line);
   dst->set_has_global_storage(src.has_global_storage);
+}
+
+inline void encode(const obj::VarTemplateSpecializationDeclDataT &src, pb::VarTemplateSpecializationDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  dst->set_specialized_template(src.specialized_template);
+  dst->set_specialized_partial_specialization(src.specialized_partial_specialization);
+  dst->set_specialization_kind(static_cast<pb::TemplateSpecializationKind>(static_cast<int>(src.specialization_kind) + 1));
+  for (const auto &value : src.template_arguments) {
+    if (value) encode(*value, dst->add_template_arguments());
+  }
+  for (const auto &value : src.template_instantiation_arguments) {
+    if (value) encode(*value, dst->add_template_instantiation_arguments());
+  }
+  if (src.point_of_instantiation) encode(*src.point_of_instantiation, dst->mutable_point_of_instantiation());
+}
+
+inline void encode(const obj::VarTemplatePartialSpecializationDeclDataT &src, pb::VarTemplatePartialSpecializationDeclData *dst) {
+  if (src.base) encode(*src.base, dst->mutable_base());
+  for (const auto &value : src.template_parameters) {
+    dst->add_template_parameters(value);
+  }
+  dst->set_instantiated_from_member(src.instantiated_from_member);
+  dst->set_is_member_specialization(src.is_member_specialization);
+  for (const auto &value : src.template_arguments_as_written) {
+    if (value) encode(*value, dst->add_template_arguments_as_written());
+  }
 }
 
 inline void encode(const obj::TemplateTypeParmDeclDataT &src, pb::TemplateTypeParmDeclData *dst) {
@@ -1466,6 +1501,8 @@ inline void encode(const obj::NodeT &src, pb::Node *dst) {
   if (const auto *value = src.payload.get<obj::CXXUnresolvedConstructExprDataT>()) encode(*value, dst->mutable_c_x_x_unresolved_construct_expr_data());
   if (const auto *value = src.payload.get<obj::FriendDeclDataT>()) encode(*value, dst->mutable_friend_decl_data());
   if (const auto *value = src.payload.get<obj::SourceLocExprDataT>()) encode(*value, dst->mutable_source_loc_expr_data());
+  if (const auto *value = src.payload.get<obj::VarTemplateSpecializationDeclDataT>()) encode(*value, dst->mutable_var_template_specialization_decl_data());
+  if (const auto *value = src.payload.get<obj::VarTemplatePartialSpecializationDeclDataT>()) encode(*value, dst->mutable_var_template_partial_specialization_decl_data());
 }
 
 template <typename T> inline void setRecord(const T &, pb::Record *) {

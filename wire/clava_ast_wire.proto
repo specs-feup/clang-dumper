@@ -1171,6 +1171,12 @@ message Range {
   optional uint32 end_column = 6;
 }
 
+message SourceLocation {
+  optional uint32 file = 1;
+  optional uint32 line = 2;
+  optional uint32 column = 3;
+}
+
 message SourceInfo {
   Range expansion = 1;
   optional bool is_macro = 2;
@@ -1539,6 +1545,24 @@ message VarDeclData {
   optional bool is_static_data_member = 7;
   optional bool is_out_of_line = 8;
   optional bool has_global_storage = 9;
+}
+
+message VarTemplateSpecializationDeclData {
+  VarDeclData base = 1;
+  optional sint64 specialized_template = 2;
+  optional sint64 specialized_partial_specialization = 3;
+  optional TemplateSpecializationKind specialization_kind = 4;
+  repeated TemplateArgument template_arguments = 5;
+  repeated TemplateArgument template_instantiation_arguments = 6;
+  SourceLocation point_of_instantiation = 7;
+}
+
+message VarTemplatePartialSpecializationDeclData {
+  VarTemplateSpecializationDeclData base = 1;
+  repeated sint64 template_parameters = 2;
+  optional sint64 instantiated_from_member = 3;
+  optional bool is_member_specialization = 4;
+  repeated TemplateArgument template_arguments_as_written = 5;
 }
 
 message TemplateTypeParmDeclData {
@@ -2386,6 +2410,8 @@ message Node {
     CXXUnresolvedConstructExprData c_x_x_unresolved_construct_expr_data = 116;
     FriendDeclData friend_decl_data = 117;
     SourceLocExprData source_loc_expr_data = 118;
+    VarTemplateSpecializationDeclData var_template_specialization_decl_data = 119;
+    VarTemplatePartialSpecializationDeclData var_template_partial_specialization_decl_data = 120;
   }
 }
 

@@ -3,6 +3,7 @@
 #include "../Clang/ClangNodes.h"
 #include "../ClangEnums/ClangEnums.h"
 
+#include <clang/Basic/SourceManager.h>
 #include <llvm/ADT/STLForwardCompat.h>
 
 namespace clava::proto {
@@ -471,9 +472,75 @@ std::unique_ptr<obj::NamedDeclDataT> makeLabelDeclData(
     const clang::LabelDecl *decl, Context &c) {
   return makeNamedDeclData(decl, c);
 }
-std::unique_ptr<obj::VarDeclDataT> makeVarTemplateSpecializationDeclData(
+std::unique_ptr<obj::VarTemplateSpecializationDeclDataT>
+makeVarTemplateSpecializationDeclData(
     const clang::VarTemplateSpecializationDecl *decl, Context &c) {
-  return makeVarDeclData(decl, c);
+  auto out = std::make_unique<obj::VarTemplateSpecializationDeclDataT>();
+  out->base = makeVarDeclData(decl, c);
+  out->specialized_template =
+      wireId(clava::getId(decl->getSpecializedTemplate(), c.id));
+  auto specialized = decl->getSpecializedTemplateOrPartial();
+  if (auto *partial = specialized.dyn_cast<
+          clang::VarTemplatePartialSpecializationDecl *>()) {
+    out->specialized_partial_specialization =
+        wireId(clava::getId(partial, c.id));
+  } else {
+    out->specialized_partial_specialization = wireId("nullptr_decl");
+  }
+  out->specialization_kind = enumValue<obj::TemplateSpecializationKind>(
+      clava::TEMPLATE_SPECIALIZATION_KIND[
+          decl->getSpecializationKind()]);
+  for (const auto &arg : decl->getTemplateArgs().asArray()) {
+    out->template_arguments.push_back(makeTemplateArgument(arg, c));
+  }
+  for (const auto &arg : decl->getTemplateInstantiationArgs().asArray()) {
+    out->template_instantiation_arguments.push_back(
+        makeTemplateArgument(arg, c));
+  }
+  auto point = decl->getPointOfInstantiation();
+  if (point.isValid()) {
+    auto &sourceManager = c.ast->getSourceManager();
+    point = sourceManager.getExpansionLoc(point);
+    auto filename = sourceManager.getFilename(point);
+    if (filename.empty()) {
+      filename = sourceManager.getBufferName(point);
+    }
+    auto location = std::make_unique<obj::SourceLocationT>();
+    location->file = c.fileId(filename);
+    location->line = sourceManager.getExpansionLineNumber(point);
+    location->column = sourceManager.getExpansionColumnNumber(point);
+    out->point_of_instantiation = std::move(location);
+  }
+  return out;
+}
+
+std::unique_ptr<obj::VarTemplatePartialSpecializationDeclDataT>
+makeVarTemplatePartialSpecializationDeclData(
+    const clang::VarTemplatePartialSpecializationDecl *decl, Context &c) {
+  auto out = std::make_unique<obj::VarTemplatePartialSpecializationDeclDataT>();
+  out->base = makeVarTemplateSpecializationDeclData(decl, c);
+  if (auto *parameters = decl->getTemplateParameters()) {
+    for (const auto *parameter : *parameters) {
+      out->template_parameters.push_back(
+          wireId(clava::getId(parameter, c.id)));
+    }
+  }
+  if (auto *arguments = decl->getTemplateArgsAsWritten()) {
+    for (const auto &argument : arguments->arguments()) {
+      out->template_arguments_as_written.push_back(
+          makeTemplateArgument(argument.getArgument(), c));
+    }
+  }
+  if (auto *origin = decl->getInstantiatedFromMember()) {
+    out->instantiated_from_member = wireId(clava::getId(origin, c.id));
+  } else {
+    out->instantiated_from_member = wireId("nullptr_decl");
+  }
+  // Clang exposes this read-only query without a const qualifier.
+  out->is_member_specialization =
+      const_cast<clang::VarTemplatePartialSpecializationDecl *>(decl)
+          ->isMemberSpecialization();
+  return out;
 }
 
 std::unique_ptr<obj::ClassTemplatePartialSpecializationDeclDataT>
