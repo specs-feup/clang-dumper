@@ -14,6 +14,8 @@ attribute "clang_value";
 attribute "clang_enum";
 attribute "clang_class";
 attribute "clang_manual";
+attribute "clang_root";
+attribute "clang_nodes";
 
 // References are signed 64-bit IDs: positive values address TU-local nodes;
 // -1 type, -2 decl, -3 expr, -4 stmt, -5 attr and -6 generic preserve null kinds.

@@ -115,39 +115,6 @@ std::unique_ptr<fb::QualTypeDataT> makeQualTypeData(const clang::QualType &type,
 // The builders of the other type payloads, generated from wire/v2/types.fbs.
 #include "types_builders.inc"
 
-/** Payload builder per emitted Clang class; other classes use the base Type payload. */
-fb::NodeT makeNode(const clang::Type *node, Context &c) {
-  auto out = nodeHeader(node, c);
-  FLAT_PAYLOAD(BuiltinType, makeBuiltinTypeData)
-  FLAT_PAYLOAD(PointerType, makePointerTypeData)
-  FLAT_PAYLOAD(MemberPointerType, makeMemberPointerTypeData)
-  FLAT_PAYLOAD(FunctionProtoType, makeFunctionProtoTypeData)
-  FLAT_PAYLOAD(FunctionNoProtoType, makeFunctionTypeData)
-  FLAT_PAYLOAD(ConstantArrayType, makeConstantArrayTypeData)
-  FLAT_PAYLOAD(VariableArrayType, makeVariableArrayTypeData)
-  FLAT_PAYLOAD(IncompleteArrayType, makeArrayTypeData)
-  FLAT_PAYLOAD(DependentSizedArrayType, makeDependentSizedArrayTypeData)
-  FLAT_PAYLOAD(RecordType, makeTagTypeData)
-  FLAT_PAYLOAD(EnumType, makeTagTypeData)
-  FLAT_PAYLOAD(ElaboratedType, makeElaboratedTypeData)
-  FLAT_PAYLOAD(TemplateTypeParmType, makeTemplateTypeParmTypeData)
-  FLAT_PAYLOAD(TemplateSpecializationType, makeTemplateSpecializationTypeData)
-  FLAT_PAYLOAD(TypedefType, makeTypedefTypeData)
-  FLAT_PAYLOAD(DecayedType, makeDecayedTypeData)
-  FLAT_PAYLOAD(DecltypeType, makeDecltypeTypeData)
-  FLAT_PAYLOAD(AutoType, makeAutoTypeData)
-  FLAT_PAYLOAD(LValueReferenceType, makeReferenceTypeData)
-  FLAT_PAYLOAD(RValueReferenceType, makeReferenceTypeData)
-  FLAT_PAYLOAD(TypeOfExprType, makeTypeOfExprTypeData)
-  FLAT_PAYLOAD(PackExpansionType, makePackExpansionTypeData)
-  FLAT_PAYLOAD(UnaryTransformType, makeUnaryTransformTypeData)
-  FLAT_PAYLOAD(AttributedType, makeAttributedTypeData)
-  FLAT_PAYLOAD(SubstTemplateTypeParmType, makeSubstTemplateTypeParmTypeData)
-  FLAT_PAYLOAD(ComplexType, makeComplexTypeData)
-  out.payload.Set(std::move(*makeTypeData(node, c)));
-  return out;
-}
-
 fb::NodeT makeNode(const clang::QualType &node, Context &c) {
   fb::NodeT out;
   out.id = clava::getId(node, c.id);

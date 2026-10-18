@@ -25,28 +25,36 @@ records. Positive node ids are dense within a translation unit; -1 to -6 are typ
 The entry point is `wire/v2/complete.fbs`. Its schema hash is SHA-256 over the `wire/v2/*.fbs` files sorted by
 path, hashing for each file its UTF-8 path (`wire/v2/<name>`), a NUL byte, its bytes and a NUL byte.
 
-## Naming contract with Clava
+## The schema drives both sides
 
-Clava generates a Java data class per node payload table from the binary schema, so names are the contract:
+Node payload tables carry the attributes that generate the dumper's payload builders
+(`scripts/generate_builders.py`, into `<family>_builders.inc`) and Clava's Java data classes, so a field is added
+or changed in the schema only.
 
 - A node payload table is named after its Clava class plus `Data` (`FunctionDeclData` is the data of
-  `FunctionDecl`); a `base` field holds the parent class's payload.
-- A field is the snake case of the Clava property name (`is_cxx_class_member` is `isCxxClassMember`). Document
-  fields with `///` comments; they become the Javadoc of the generated getters.
+  `FunctionDecl`), and its `base` field holds the parent class's payload.
+- A field's Clang value is, by convention, `node->isBar()` for `is_bar`, `node->hasBar()` for `has_bar` and
+  `node->getBar()` otherwise, converted by the field's type. `clang: "<expr>"` gives another Clang value and
+  `clang_value: "<expr>"` the final field value (helpers live in the family's `src/Clava/Flat*.cpp`). Enums go
+  through the `clava::<ENUM_NAME>` name table; `clang_enum` names another.
+- Node references are `long` ids typed by `ref: "<ClavaClass>"`; `optional` makes the Java value an `Optional`
+  (for strings too, where empty means absent) and `nullable` turns a null reference into a typed null node.
+- A table's Clang class is its name without `Data`; `clang_class` names another. `clang_manual` keeps a
+  hand-written builder in the family's `.cpp` file.
+- `clang_root` marks a family's root table, which also gets the family's `makeNode`: nodes get the table of their
+  Clang class, or of a table listing their class in `clang_nodes`, and otherwise the root's payload.
+- Document fields with `///` comments; they become the Javadoc of the generated Java getters.
 - Scalars are declared `= null` so absence is visible. Mark a field `(wire_optional)` only when absence is a valid
   value; Clava rejects any other absent field.
 - Enum values are matched to Java enum constants by name.
 
-A new field is not read by Clava until its `ClavaAst/wire-fields.txt` gives it a Java type (see Clava's
-`ClangAstParser/WIRE_FORMAT.md`).
-
 ## Adding or changing a node or field
 
-1. Edit the schema under `wire/v2/`. A new node table also goes into `NodePayload` in `complete.fbs`.
-2. Build the payload in the matching `src/Clava/Flat*.cpp` file. Each file ends with its family's `makeNode`
-   dispatch; add a `FLAT_PAYLOAD(ClangClass, makeXData)` line there for a new Clang class.
+1. Edit the schema under `wire/v2/`. A new node table also goes into `NodePayload` in `complete.fbs`; a new
+   family file goes into `GENERATED_FAMILIES` in `scripts/generate_complete_wire.py`.
+2. Add `clang`/`clang_value` attributes where the convention does not hold, and helpers for values that need code.
 3. Add Clang child visiting in `src/ChildrenVisitor/` for a new Clang node kind.
 4. Run `test/run_tests.py` for the tool and the plugin, then the Clava parser tests against the local build.
 5. Publish a release candidate tag (such as `v18.1.8_7-rc4`); the release job packages the schema and writes
-   `clang-dumper-release-manifest.json`. In Clava, select the tag in `clang-dumper-release.tag` and bind new fields in
-   `wire-fields.txt` (see Clava's `ClangAstParser/WIRE_FORMAT.md`).
+   `clang-dumper-release-manifest.json`. In Clava, select the tag in `clang-dumper-release.tag`; its build
+   regenerates the data classes, and code using a changed field no longer compiles until it is updated.

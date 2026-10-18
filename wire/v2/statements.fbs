@@ -4,7 +4,7 @@ namespace astwire.v2;
 // Each table mirrors one native statement handler. Inheritance is explicit
 // because FlatBuffers tables do not inherit: `base` contains the full parent
 // payload and ultimately ClavaNodeData/source information.
-table StmtData (clang_manual) {
+table StmtData (clang_manual, clang_root) {
   base:ClavaNodeData (required);
 }
 

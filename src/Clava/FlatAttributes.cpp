@@ -22,16 +22,4 @@ static std::vector<int32_t> nonNullArguments(const clang::NonNullAttr *node) {
 
 #include "attributes_builders.inc"
 
-/** Payload builder per emitted Clang class; other classes use the base Attr payload. */
-fb::NodeT makeNode(const clang::Attr *node, Context &c) {
-  auto out = nodeHeader(node, c);
-  FLAT_PAYLOAD(AlignedAttr, makeAlignedAttrData)
-  FLAT_PAYLOAD(OpenCLUnrollHintAttr, makeOpenCLUnrollHintAttrData)
-  FLAT_PAYLOAD(FormatAttr, makeFormatAttrData)
-  FLAT_PAYLOAD(NonNullAttr, makeNonNullAttrData)
-  FLAT_PAYLOAD(VisibilityAttr, makeVisibilityAttrData)
-  out.payload.Set(std::move(*makeAttributeData(node, c)));
-  return out;
-}
-
 } // namespace clava::flat

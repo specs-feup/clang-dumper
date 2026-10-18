@@ -3,7 +3,7 @@ namespace astwire.v2;
 
 // Expression handlers use explicit base composition. Every concrete payload
 // carries the complete ClavaNodeData -> StmtData -> ExprData ancestry through base.
-table ExprData {
+table ExprData (clang_root) {
   base:StmtData (required);
   type:long = null (ref: "Type", optional);
   value_kind:ValueKind = null (clang_value: "valueKind(node->getValueKind())");
@@ -11,7 +11,7 @@ table ExprData {
   is_default_argument:bool = null;
 }
 
-table CastExprData {
+table CastExprData (clang_nodes: "CXXFunctionalCastExpr") {
   base:ExprData (required);
   cast_kind:CastKind = null (clang_enum: "CAST_KIND");
 }
@@ -124,7 +124,7 @@ table MaterializeTemporaryExprData {
   extending_decl:long = null (ref: "Decl", optional);
 }
 
-table BinaryOperatorData {
+table BinaryOperatorData (clang_nodes: "CompoundAssignOperator") {
   base:ExprData (required);
   op:BinaryOperatorKind = null (clang: "node->getOpcode()", clang_enum: "BINARY_OPERATOR_KIND");
 }
@@ -139,7 +139,7 @@ table UnresolvedLookupExprData {
   requires_adl:bool = null (clang: "node->requiresADL()");
 }
 
-table CallExprData {
+table CallExprData (clang_nodes: "CXXOperatorCallExpr UserDefinedLiteral") {
   base:ExprData (required);
   direct_callee:long = null (ref: "FunctionDecl", optional);
 }
@@ -155,12 +155,12 @@ table CXXTypeidExprData {
   operand:long = null (ref: "ClavaNode", clang_value: "node->isTypeOperand() ? clava::getId(node->getTypeOperand(*c.ast), c.id) : clava::getId(node->getExprOperand(), c.id)");
 }
 
-table ExplicitCastExprData {
+table ExplicitCastExprData (clang_nodes: "CStyleCastExpr") {
   base:CastExprData (required);
   type_as_written:long = null (ref: "Type");
 }
 
-table CXXNamedCastExprData {
+table CXXNamedCastExprData (clang_nodes: "CXXAddrspaceCastExpr CXXConstCastExpr CXXDynamicCastExpr CXXReinterpretCastExpr CXXStaticCastExpr") {
   base:ExplicitCastExprData (required);
   cast_name:string (required);
 }

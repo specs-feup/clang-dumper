@@ -1,6 +1,6 @@
 include "common.fbs";
 namespace astwire.v2;
-table AttributeData (clang_class: "Attr", clang_manual) {
+table AttributeData (clang_class: "Attr", clang_manual, clang_root) {
   base:ClavaNodeData (required);
   kind:AttributeKind = null;
   is_implicit:bool = null;

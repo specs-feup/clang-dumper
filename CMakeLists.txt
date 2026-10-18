@@ -329,6 +329,7 @@ add_custom_command(
         "${AST_WIRE_V2_DIR}/statements_generated.h"
         "${AST_WIRE_V2_DIR}/types_generated.h"
         "${AST_WIRE_V2_DIR}/attributes_builders.inc"
+        "${AST_WIRE_V2_DIR}/decls_builders.inc"
         "${AST_WIRE_V2_DIR}/expressions_builders.inc"
         "${AST_WIRE_V2_DIR}/statements_builders.inc"
         "${AST_WIRE_V2_DIR}/types_builders.inc"

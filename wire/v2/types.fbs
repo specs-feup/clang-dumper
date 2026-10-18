@@ -3,7 +3,7 @@ namespace astwire.v2;
 
 // Types have no source node base.  QualTypeData composes TypeData with the
 // qualifier-specific fields used by the top-level QualType records.
-table TypeData (clang_manual) {
+table TypeData (clang_manual, clang_root) {
   type_as_string:string (required);
   type_dependency:TypeDependency = null;
   is_variably_modified:bool = null;
@@ -12,7 +12,7 @@ table TypeData (clang_manual) {
   unqualified_desugared_type:long = null (ref: "Type", optional);
 }
 
-table QualTypeData (clang_manual) {
+table QualTypeData (clang_manual, clang_class: "QualType") {
   base:TypeData (required);
   c99_qualifiers:[C99Qualifier] (required);
   address_space_qualifier:AddressSpaceQualifierV2 = null;
@@ -39,7 +39,7 @@ table MemberPointerTypeData {
   pointee_type:long = null (ref: "Type");
 }
 
-table FunctionTypeData {
+table FunctionTypeData (clang_nodes: "FunctionNoProtoType") {
   base:TypeData (required);
   is_const:bool = null;
   is_volatile:bool = null;
@@ -63,7 +63,7 @@ table FunctionProtoTypeData {
   exception_specification:ExceptionSpecification (required, clang_value: "makeExceptionSpecification(node, c)");
 }
 
-table ArrayTypeData {
+table ArrayTypeData (clang_nodes: "IncompleteArrayType") {
   base:TypeData (required);
   array_size_modifier:ArraySizeModifier = null (clang: "node->getSizeModifier()");
   index_type_qualifiers:[C99Qualifier] (required, clang_value: "c99Qualifiers(node->getIndexTypeQualifiers(), c)");
@@ -85,7 +85,7 @@ table DependentSizedArrayTypeData {
   size_expr:long = null (ref: "Expr", optional);
 }
 
-table TagTypeData {
+table TagTypeData (clang_nodes: "EnumType RecordType") {
   base:TypeData (required);
   decl:long = null (ref: "TagDecl");
 }
@@ -147,7 +147,7 @@ table AutoTypeData {
   deduced_type:long = null (ref: "Type", optional);
 }
 
-table ReferenceTypeData {
+table ReferenceTypeData (clang_nodes: "LValueReferenceType RValueReferenceType") {
   base:TypeData (required);
   pointee_type_as_written:long = null (ref: "Type");
 }
