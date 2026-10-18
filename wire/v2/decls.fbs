@@ -161,7 +161,7 @@ table ParmVarDeclData {
 }
 
 table VarDeclData (clang_nodes: "VarTemplateSpecializationDecl") {
-  base:ValueDeclData (required);
+  base:DeclaratorDeclData (required);
   /// The storage class as written in the source.
   storage_class:StorageClass = null (clang_enum: "STORAGE_CLASS");
   tls_kind:TLSKind = null (clang: "node->getTLSKind()");

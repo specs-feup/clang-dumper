@@ -12,8 +12,8 @@ table AlignedAttrData {
   base:AttributeData (required);
   spelling:string (required);
   is_expression:bool = null (clang: "node->isAlignmentExpr()");
-  /// The alignment expression, or the alignment type when is_expression is false.
-  alignment:long = null (ref: "ClavaNode", clang_value: "node->isAlignmentExpr() ? clava::getId(node->getAlignmentExpr(), c.id) : clava::getId(node->getAlignmentType()->getType(), c.id)");
+  /// The alignment expression, or the alignment type when is_expression is false; absent when no alignment is written.
+  alignment:long = null (ref: "ClavaNode", optional, clang_value: "node->isAlignmentExpr() ? clava::getId(node->getAlignmentExpr(), c.id) : clava::getId(node->getAlignmentType()->getType(), c.id)");
 }
 table OpenCLUnrollHintAttrData {
   base:AttributeData (required);
