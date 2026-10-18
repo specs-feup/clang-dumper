@@ -118,9 +118,9 @@ def generate(flatc: str, output: Path) -> None:
             ],
             check=True,
         )
-        # Binary schema (reflection) for consumers that read the stream without generated code, such as Clava.
+        # Binary schema (reflection, with /// field docs) from which Clava generates its node data classes.
         subprocess.run(
-            [flatc, "--binary", "--schema", "-I", str(SCHEMA_DIR), "-o", str(generated), str(SCHEMA_DIR / "complete.fbs")],
+            [flatc, "--binary", "--schema", "--bfbs-comments", "-I", str(SCHEMA_DIR), "-o", str(generated), str(SCHEMA_DIR / "complete.fbs")],
             check=True,
         )
         generate_enum_support(generated, files)

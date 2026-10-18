@@ -22,7 +22,9 @@ table QualTypeData {
 
 table BuiltinTypeData {
   base:TypeData (required);
+  /// The kind of the built-in.
   kind:BuiltinKind = null;
+  /// Optional, the literal code for this built-in type.
   kind_literal:string (required);
 }
 
@@ -42,6 +44,7 @@ table FunctionTypeData {
   is_const:bool = null;
   is_volatile:bool = null;
   is_restrict:bool = null;
+  /// Redundant: FunctionType.hasNoReturn() computes it.
   no_return:bool = null;
   produces_result:bool = null;
   uses_reg_parm:bool = null;
@@ -140,6 +143,7 @@ table DecltypeTypeData {
 
 table AutoTypeData {
   base:TypeData (required);
+  /// The type deduced for this auto type, or empty if it's either not been deduced or was deduced to a dependent type.
   deduced_type:long = null;
 }
 
@@ -163,6 +167,8 @@ table PackExpansionTypeData {
 table UnaryTransformTypeData {
   base:TypeData (required);
   kind:UnaryTransformTypeKind = null;
+  /// The transformed type, when Clang has resolved it. Dependent unary
+  /// transforms can have no underlying type while still having a base type.
   underlying_type:long = null;
   base_type:long = null;
 }
@@ -181,6 +187,7 @@ table SubstTemplateTypeParmTypeData {
 
 table ComplexTypeData {
   base:TypeData (required);
+  /// The element type.
   element_type:long = null;
 }
 

@@ -42,10 +42,12 @@ table FloatingLiteralData  {
   value:double = null;
 }
 
-table StringLiteralData  {
+table StringLiteralData {
   base:LiteralData (required);
   string_kind:StringKind = null;
+  /// Number of characters of the string.
   length:long = null;
+  /// Number of bytes per character.
   char_byte_width:int = null;
   string_bytes:[ubyte] (required);
 }
@@ -60,26 +62,35 @@ table CompoundLiteralExprData  {
   is_file_scope:bool = null;
 }
 
-table InitListExprData  {
+table InitListExprData {
   base:ExprData (required);
+  /// OPTIONAL - If this initializer list initializes an array with more elements than there are initializers in the
+  /// list, specifies an expression to be used for value initialization of the rest of the elements.
   array_filler:long = null;
   is_explicit:bool = null;
   is_string_literal_init:bool = null;
+  /// Represents the initializer list as written by the user, which may contain C99 designated initializers
+  /// (represented as DesignatedInitExprs), initializations of sub-object members without explicit braces, and so on.
+  /// If the syntactic and semantic forms are the same for this initializer, it returns empty.
   syntactic_form:long = null;
   semantic_form:long = null;
 }
 
-table DeclRefExprData  {
+table DeclRefExprData {
   base:ExprData (required);
+  /// The nested-name qualifier that precedes the name, or empty string if it has none.
   qualifier:string (required);
   template_arguments:[TemplateArgument] (required);
   decl:long = null;
 }
 
-table OverloadExprData  {
+table OverloadExprData {
   base:ExprData (required);
+  /// The nested-name qualifier that precedes the name, or empty string if it has none.
   qualifier:string (required);
+  /// The looked up name.
   name:string (required);
+  /// The declarations in the unresolved set.
   unresolved_decls:[long] (required);
   template_arguments:[TemplateArgument] (required);
 }
@@ -122,8 +133,9 @@ table UnresolvedMemberExprData  {
   base:OverloadExprData (required);
 }
 
-table UnresolvedLookupExprData  {
+table UnresolvedLookupExprData {
   base:OverloadExprData (required);
+  /// True if this declaration should be extended by argument-dependent lookup.
   requires_adl:bool = null;
 }
 
@@ -239,11 +251,15 @@ table DesignatedInitExprData  {
   designators:[Designator] (required);
 }
 
-table DependentScopeDeclRefExprData  {
+table DependentScopeDeclRefExprData {
   base:ExprData (required);
+  /// The name that this expression refers to.
   decl_name:string (required);
+  /// The nested-name qualifier that precedes the name, or empty string if it has none.
   qualifier:string (required);
+  /// True if the name was preceded by the template keyword.
   has_template_keyword:bool = null;
+  /// The explicit template arguments of this lookup.
   template_arguments:[TemplateArgument] (required);
 }
 
