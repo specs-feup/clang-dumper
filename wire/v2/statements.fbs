@@ -4,26 +4,26 @@ namespace astwire.v2;
 // Each table mirrors one native statement handler. Inheritance is explicit
 // because FlatBuffers tables do not inherit: `base` contains the full parent
 // payload and ultimately ClavaNodeData/source information.
-table StmtData  {
+table StmtData (clang_manual) {
   base:ClavaNodeData (required);
 }
 
-table LabelStmtData  {
+table LabelStmtData {
   base:StmtData (required);
-  label:long = null;
+  label:long = null (ref: "LabelDecl", clang: "node->getDecl()");
 }
 
-table GotoStmtData  {
+table GotoStmtData {
   base:StmtData (required);
-  label:long = null;
+  label:long = null (ref: "LabelDecl");
 }
 
-table AttributedStmtData  {
+table AttributedStmtData {
   base:StmtData (required);
-  stmt_attributes:[long] (required);
+  stmt_attributes:[long] (required, ref: "Attribute", clang: "node->getAttrs()");
 }
 
-table AsmStmtData  {
+table AsmStmtData (clang_manual) {
   base:StmtData (required);
   is_simple:bool = null;
   is_volatile:bool = null;
@@ -32,7 +32,7 @@ table AsmStmtData  {
   inputs:[AsmInput] (required);
 }
 
-table GCCAsmStmtData  {
+table GCCAsmStmtData (clang_manual) {
   base:AsmStmtData (required);
   asm_string:string (required);
   is_goto:bool = null;
@@ -40,7 +40,7 @@ table GCCAsmStmtData  {
   is_inline:bool = null;
 }
 
-table MSAsmStmtData  {
+table MSAsmStmtData {
   base:AsmStmtData (required);
-  asm_string:string (required);
+  asm_string:string (required, clang_value: "getSourceMSAsmString(node, c)");
 }

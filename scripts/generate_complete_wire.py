@@ -17,7 +17,7 @@ import generate_builders
 
 ROOT = Path(__file__).resolve().parents[1]
 # Schema files whose payload builders are generated (see generate_builders.py).
-GENERATED_FAMILIES = ("types.fbs",)
+GENERATED_FAMILIES = ("attributes.fbs", "expressions.fbs", "statements.fbs", "types.fbs")
 SCHEMA_DIR = ROOT / "wire" / "v2"
 
 

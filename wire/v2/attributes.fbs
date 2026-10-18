@@ -1,6 +1,6 @@
 include "common.fbs";
 namespace astwire.v2;
-table AttributeData {
+table AttributeData (clang_class: "Attr", clang_manual) {
   base:ClavaNodeData (required);
   kind:AttributeKind = null;
   is_implicit:bool = null;
@@ -8,19 +8,28 @@ table AttributeData {
   is_late_parsed:bool = null;
   is_pack_expansion:bool = null;
 }
-table AlignedAttrData { base:AttributeData (required); spelling:string (required); is_expression:bool = null; alignment:long = null; }
+table AlignedAttrData {
+  base:AttributeData (required);
+  spelling:string (required);
+  is_expression:bool = null (clang: "node->isAlignmentExpr()");
+  /// The alignment expression, or the alignment type when is_expression is false.
+  alignment:long = null (ref: "ClavaNode", clang_value: "node->isAlignmentExpr() ? clava::getId(node->getAlignmentExpr(), c.id) : clava::getId(node->getAlignmentType()->getType(), c.id)");
+}
 table OpenCLUnrollHintAttrData {
   base:AttributeData (required);
   unroll_hint:int = null;
 }
 table FormatAttrData {
   base:AttributeData (required);
-  type:FormatAttrKind = null;
-  format_index:int = null;
+  type:FormatAttrKind = null (clang_value: "enumValue<fb::FormatAttrKind>(node->getType()->getName().str())");
+  format_index:int = null (clang: "node->getFormatIdx()");
   first_arg:int = null;
 }
-table NonNullAttrData { base:AttributeData (required); arguments:[int] (required); }
+table NonNullAttrData {
+  base:AttributeData (required);
+  arguments:[int] (required, clang_value: "nonNullArguments(node)");
+}
 table VisibilityAttrData {
   base:AttributeData (required);
-  visibility_type:VisibilityType = null;
+  visibility_type:VisibilityType = null (clang: "node->getVisibility()", clang_enum: "VISIBILITY_ATTR_TYPE");
 }
