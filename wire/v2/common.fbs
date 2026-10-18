@@ -4,6 +4,16 @@ namespace astwire.v2;
 // This schema uses standard FlatBuffers types and presence declarations.
 attribute "wire_optional";
 
+// Generation attributes (see wire/README.md): what a reference points to, and where a field's value comes from
+// when the Clang accessor does not follow the naming convention.
+attribute "ref";
+attribute "optional";
+attribute "nullable";
+attribute "clang";
+attribute "clang_value";
+attribute "clang_enum";
+attribute "clang_manual";
+
 // References are signed 64-bit IDs: positive values address TU-local nodes;
 // -1 type, -2 decl, -3 expr, -4 stmt, -5 attr and -6 generic preserve null kinds.
 // Every reference-bearing field is eagerly resolved before publishing the AST.

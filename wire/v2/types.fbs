@@ -3,21 +3,21 @@ namespace astwire.v2;
 
 // Types have no source node base.  QualTypeData composes TypeData with the
 // qualifier-specific fields used by the top-level QualType records.
-table TypeData {
+table TypeData (clang_manual) {
   type_as_string:string (required);
   type_dependency:TypeDependency = null;
   is_variably_modified:bool = null;
   contains_unexpanded_parameter_pack:bool = null;
   is_from_ast:bool = null;
-  unqualified_desugared_type:long = null;
+  unqualified_desugared_type:long = null (ref: "Type", optional);
 }
 
-table QualTypeData {
+table QualTypeData (clang_manual) {
   base:TypeData (required);
   c99_qualifiers:[C99Qualifier] (required);
   address_space_qualifier:AddressSpaceQualifierV2 = null;
   address_space:long = null;
-  unqualified_type:long = null;
+  unqualified_type:long = null (ref: "Type");
 }
 
 table BuiltinTypeData {
@@ -25,18 +25,18 @@ table BuiltinTypeData {
   /// The kind of the built-in.
   kind:BuiltinKind = null;
   /// Optional, the literal code for this built-in type.
-  kind_literal:string (required);
+  kind_literal:string (required, clang_value: "node->getName(c.ast->getPrintingPolicy()).str()");
 }
 
 table PointerTypeData {
   base:TypeData (required);
-  pointee_type:long = null;
+  pointee_type:long = null (ref: "Type");
 }
 
 table MemberPointerTypeData {
   base:TypeData (required);
-  class_type:long = null;
-  pointee_type:long = null;
+  class_type:long = null (ref: "Type", clang: "node->getClass()");
+  pointee_type:long = null (ref: "Type");
 }
 
 table FunctionTypeData {
@@ -45,150 +45,150 @@ table FunctionTypeData {
   is_volatile:bool = null;
   is_restrict:bool = null;
   /// Redundant: FunctionType.hasNoReturn() computes it.
-  no_return:bool = null;
-  produces_result:bool = null;
-  uses_reg_parm:bool = null;
-  reg_parm:long = null;
-  calling_convention:CallingConvention = null;
-  return_type:long = null;
+  no_return:bool = null (clang: "node->getExtInfo().getNoReturn()");
+  produces_result:bool = null (clang: "node->getExtInfo().getProducesResult()");
+  uses_reg_parm:bool = null (clang: "node->getExtInfo().getHasRegParm()");
+  reg_parm:long = null (clang: "node->getExtInfo().getHasRegParm() ? node->getExtInfo().getRegParm() : 0");
+  calling_convention:CallingConvention = null (clang: "node->getExtInfo().getCC()");
+  return_type:long = null (ref: "Type");
 }
 
 table FunctionProtoTypeData {
   base:FunctionTypeData (required);
-  num_parameters:int = null;
-  parameters_types:[long] (required);
-  has_trailing_returns:bool = null;
-  is_variadic:bool = null;
-  reference_qualifier:ReferenceQualifier = null;
-  exception_specification:ExceptionSpecification (required);
+  num_parameters:int = null (clang: "node->getParamTypes().size()");
+  parameters_types:[long] (required, ref: "Type", clang: "node->getParamTypes()");
+  has_trailing_returns:bool = null (clang: "node->getExtProtoInfo().HasTrailingReturn");
+  is_variadic:bool = null (clang: "node->getExtProtoInfo().Variadic");
+  reference_qualifier:ReferenceQualifier = null (clang: "node->getExtProtoInfo().RefQualifier");
+  exception_specification:ExceptionSpecification (required, clang_value: "makeExceptionSpecification(node, c)");
 }
 
 table ArrayTypeData {
   base:TypeData (required);
-  array_size_modifier:ArraySizeModifier = null;
-  index_type_qualifiers:[C99Qualifier] (required);
-  element_type:long = null;
+  array_size_modifier:ArraySizeModifier = null (clang: "node->getSizeModifier()");
+  index_type_qualifiers:[C99Qualifier] (required, clang_value: "c99Qualifiers(node->getIndexTypeQualifiers(), c)");
+  element_type:long = null (ref: "Type");
 }
 
 table ConstantArrayTypeData {
   base:ArrayTypeData (required);
-  array_size:string (required);
+  array_size:string (required, clang_value: "unsignedDecimal(node->getSize())");
 }
 
 table VariableArrayTypeData {
   base:ArrayTypeData (required);
-  size_expr:long = null;
+  size_expr:long = null (ref: "Expr", nullable);
 }
 
 table DependentSizedArrayTypeData {
   base:ArrayTypeData (required);
-  size_expr:long = null;
+  size_expr:long = null (ref: "Expr", optional);
 }
 
 table TagTypeData {
   base:TypeData (required);
-  decl:long = null;
+  decl:long = null (ref: "TagDecl");
 }
 
 table TypeWithKeywordData {
   base:TypeData (required);
-  elaborated_type_keyword:ElaboratedTypeKeyword = null;
+  elaborated_type_keyword:ElaboratedTypeKeyword = null (clang: "node->getKeyword()");
 }
 
 table ElaboratedTypeData {
   base:TypeWithKeywordData (required);
-  qualifier:string (required);
-  named_type:long = null;
+  qualifier:string (required, clang_value: "qualifierString(node->getQualifier(), c)");
+  named_type:long = null (ref: "Type");
 }
 
 table TemplateTypeParmTypeData {
   base:TypeData (required);
   depth:int = null;
   index:int = null;
-  is_packed:bool = null;
-  decl:long = null;
+  is_packed:bool = null (clang: "node->isParameterPack()");
+  decl:long = null (ref: "Decl", optional);
 }
 
 table TemplateSpecializationTypeData {
   base:TypeData (required);
   is_type_alias:bool = null;
-  aliased_type:long = null;
-  template_name:string (required);
-  template_decl:long = null;
-  template_arguments:[TemplateArgument] (required);
+  aliased_type:long = null (ref: "Type", optional, clang_value: "node->isTypeAlias() ? clava::getId(node->getAliasedType(), c.id) : -1");
+  template_name:string (required, clang_value: "templateNameText(node->getTemplateName())");
+  template_decl:long = null (ref: "TemplateDecl", optional, clang: "node->getTemplateName().getAsTemplateDecl()");
+  template_arguments:[TemplateArgument] (required, clang: "node->template_arguments()");
 }
 
 table TypedefTypeData {
   base:TypeData (required);
-  decl:long = null;
+  decl:long = null (ref: "TypedefNameDecl");
 }
 
 table AdjustedTypeData {
   base:TypeData (required);
-  original_type:long = null;
-  adjusted_type:long = null;
+  original_type:long = null (ref: "Type");
+  adjusted_type:long = null (ref: "Type");
 }
 
 table DecayedTypeData {
   base:AdjustedTypeData (required);
-  decayed_type:long = null;
-  pointee_type:long = null;
+  decayed_type:long = null (ref: "Type");
+  pointee_type:long = null (ref: "Type");
 }
 
 table DecltypeTypeData {
   base:TypeData (required);
   is_sugared:bool = null;
-  underlying_expr:long = null;
+  underlying_expr:long = null (ref: "Expr");
 }
 
 table AutoTypeData {
   base:TypeData (required);
   /// The type deduced for this auto type, or empty if it's either not been deduced or was deduced to a dependent type.
-  deduced_type:long = null;
+  deduced_type:long = null (ref: "Type", optional);
 }
 
 table ReferenceTypeData {
   base:TypeData (required);
-  pointee_type_as_written:long = null;
+  pointee_type_as_written:long = null (ref: "Type");
 }
 
 table TypeOfExprTypeData {
   base:TypeData (required);
   is_sugared:bool = null;
-  underlying_expr:long = null;
+  underlying_expr:long = null (ref: "Expr");
 }
 
 table PackExpansionTypeData {
   base:TypeData (required);
-  num_expansions:int = null;
-  pattern:long = null;
+  num_expansions:int = null (clang: "node->getNumExpansions().value_or(0)");
+  pattern:long = null (ref: "Type");
 }
 
 table UnaryTransformTypeData {
   base:TypeData (required);
-  kind:UnaryTransformTypeKind = null;
+  kind:UnaryTransformTypeKind = null (clang: "node->getUTTKind()", clang_enum: "UTT_KIND");
   /// The transformed type, when Clang has resolved it. Dependent unary
   /// transforms can have no underlying type while still having a base type.
-  underlying_type:long = null;
-  base_type:long = null;
+  underlying_type:long = null (ref: "Type", optional);
+  base_type:long = null (ref: "Type");
 }
 
 table AttributedTypeData {
   base:TypeData (required);
-  modified_type:long = null;
-  equivalent_type:long = null;
+  modified_type:long = null (ref: "Type");
+  equivalent_type:long = null (ref: "Type");
 }
 
 table SubstTemplateTypeParmTypeData {
   base:TypeData (required);
-  replaced_parameter:long = null;
-  replacement_type:long = null;
+  replaced_parameter:long = null (ref: "TemplateTypeParmDecl");
+  replacement_type:long = null (ref: "Type");
 }
 
 table ComplexTypeData {
   base:TypeData (required);
   /// The element type.
-  element_type:long = null;
+  element_type:long = null (ref: "Type");
 }
 
 union TypePayload {

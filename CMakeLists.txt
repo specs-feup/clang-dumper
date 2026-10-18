@@ -328,11 +328,14 @@ add_custom_command(
         "${AST_WIRE_V2_DIR}/records_generated.h"
         "${AST_WIRE_V2_DIR}/statements_generated.h"
         "${AST_WIRE_V2_DIR}/types_generated.h"
+        "${AST_WIRE_V2_DIR}/types_builders.inc"
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
         --flatc "${AST_WIRE_FLATC}"
+        --reflection "${flatbuffers_SOURCE_DIR}/reflection/reflection.fbs"
         --out "${AST_WIRE_V2_DIR}"
     DEPENDS ${AST_WIRE_V2_SCHEMAS}
         "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_complete_wire.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_builders.py"
         "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers-version.env"
         ${AST_WIRE_FLATC_DEPENDENCY}
     VERBATIM)

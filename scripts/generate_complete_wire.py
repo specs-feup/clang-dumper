@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Generate the native FlatBuffers bindings, enum lookup, schema hash and binary schema for the AST wire schema."""
+"""Generate the native FlatBuffers bindings, payload builders, enum lookup, schema hash and binary schema for the AST
+wire schema."""
 
 from __future__ import annotations
 
@@ -11,8 +12,12 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import generate_builders
+
 
 ROOT = Path(__file__).resolve().parents[1]
+# Schema files whose payload builders are generated (see generate_builders.py).
+GENERATED_FAMILIES = ("types.fbs",)
 SCHEMA_DIR = ROOT / "wire" / "v2"
 
 
@@ -97,7 +102,7 @@ def generate_enum_support(destination: Path, files: list[Path]) -> None:
     (destination / "FlatEnumSupport.h").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def generate(flatc: str, output: Path) -> None:
+def generate(flatc: str, reflection: Path, output: Path) -> None:
     verify_flatc(flatc)
     output.mkdir(parents=True, exist_ok=True)
     files = schema_files()
@@ -123,6 +128,10 @@ def generate(flatc: str, output: Path) -> None:
             [flatc, "--binary", "--schema", "--bfbs-comments", "-I", str(SCHEMA_DIR), "-o", str(generated), str(SCHEMA_DIR / "complete.fbs")],
             check=True,
         )
+        bfbs = generated / "complete.bfbs"
+        builders = generate_builders.Generator(generate_builders.schema_json(flatc, reflection, bfbs))
+        for family in GENERATED_FAMILIES:
+            (generated / (Path(family).stem + "_builders.inc")).write_text(builders.family(family), encoding="utf-8")
         generate_enum_support(generated, files)
         (generated / "FlatSchemaHash.h").write_text(
             "#pragma once\n"
@@ -143,9 +152,10 @@ def generate(flatc: str, output: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--flatc", required=True, help="Pinned FlatBuffers compiler")
+    parser.add_argument("--reflection", type=Path, required=True, help="FlatBuffers' reflection/reflection.fbs")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    generate(args.flatc, args.out)
+    generate(args.flatc, args.reflection, args.out)
 
 
 if __name__ == "__main__":
