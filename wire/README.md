@@ -14,7 +14,7 @@ The build fetches the FlatBuffers commit pinned in [`flatbuffers-version.env`](.
 builds its own `flatc`; cross builds supply a host `flatc` from the same commit.
 `scripts/generate_complete_wire.py` runs `flatc` and writes the schema hash and enum lookup headers into the
 build directory, together with the binary schema `complete.bfbs`. Releases and local build manifests publish it as
-`clang-dumper-wire-schema-v2.bfbs`; Clava's build fetches it for the selected release.
+`clang-dumper-wire-schema-v2.bfbs`; Clava's build generates its node data classes from it.
 
 ## Stream
 
@@ -27,14 +27,18 @@ path, hashing for each file its UTF-8 path (`wire/v2/<name>`), a NUL byte, its b
 
 ## Naming contract with Clava
 
-Clava binds payload tables by name at run time, so names are the contract:
+Clava generates a Java data class per node payload table from the binary schema, so names are the contract:
 
-- A node payload table is named after its Clava class plus `Data` (`FunctionDeclData` fills `FunctionDecl`); a
-  `base` field holds the parent class's payload.
-- A field is the snake case of the Clava `DataKey` name (`is_cxx_class_member` fills `isCxxClassMember`).
+- A node payload table is named after its Clava class plus `Data` (`FunctionDeclData` is the data of
+  `FunctionDecl`); a `base` field holds the parent class's payload.
+- A field is the snake case of the Clava property name (`is_cxx_class_member` is `isCxxClassMember`). Document
+  fields with `///` comments; they become the Javadoc of the generated getters.
 - Scalars are declared `= null` so absence is visible. Mark a field `(wire_optional)` only when absence is a valid
   value; Clava rejects any other absent field.
-- Enums are read by ordinal; their value names must equal the Java enum constants.
+- Enum values are matched to Java enum constants by name.
+
+A new field is not read by Clava until its `ClavaAst/wire-fields.txt` gives it a Java type (see Clava's
+`ClangAstParser/WIRE_FORMAT.md`).
 
 ## Adding or changing a node or field
 
@@ -44,5 +48,5 @@ Clava binds payload tables by name at run time, so names are the contract:
 3. Add Clang child visiting in `src/ChildrenVisitor/` for a new Clang node kind.
 4. Run `test/run_tests.py` for the tool and the plugin, then the Clava parser tests against the local build.
 5. Publish a release candidate tag (such as `v18.1.8_7-rc4`); the release job packages the schema and writes
-   `clang-dumper-release-manifest.json`. In Clava, select the tag in `clang-dumper-release.tag` (see Clava's
-   `ClangAstParser/WIRE_FORMAT.md`).
+   `clang-dumper-release-manifest.json`. In Clava, select the tag in `clang-dumper-release.tag` and bind new fields in
+   `wire-fields.txt` (see Clava's `ClangAstParser/WIRE_FORMAT.md`).
