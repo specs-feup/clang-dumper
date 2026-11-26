@@ -107,9 +107,10 @@ clang::tooling::ArgumentsAdjuster getResourceDirFallbackAdjuster() {
       return args;
     }
 
-    auto adjusted = args;
-    adjusted.push_back("-resource-dir=" + *fallback);
-    return adjusted;
+    // Inserts before a '--' end-of-options delimiter, as ClangTool does for
+    // its own '-resource-dir'
+    auto option = "-resource-dir=" + *fallback;
+    return clang::tooling::getInsertArgumentAdjuster(option.c_str())(args, "");
   };
 }
 
