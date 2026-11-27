@@ -148,8 +148,8 @@ jobs:
       - name: Check tool runtime dependencies
         run: |
           ldd build/tool
-          if ldd build/tool | grep -E 'lib(clang|LLVM)'; then
-            echo "tool still depends on LLVM/Clang dynamic libraries"
+          if ldd build/tool | grep -E 'lib(clang|LLVM|zstd)'; then
+            echo "tool depends on LLVM, Clang or zstd dynamic libraries"
             exit 1
           fi
 
@@ -290,8 +290,9 @@ jobs:
         if: ${{ steps.test_tool.outcome == 'success' && steps.test_plugin.outcome == 'success' }}
         run: |
           otool -L build/tool
-          if otool -L build/tool | grep -E 'lib(clang|LLVM)'; then
-            echo "tool still depends on LLVM/Clang dynamic libraries"
+          # Only macOS system libraries may be loaded at run time
+          if otool -L build/tool | tail -n +2 | grep -v -E '^[[:space:]]*/(usr/lib|System/Library)/'; then
+            echo "tool depends on dynamic libraries outside macOS itself"
             exit 1
           fi
 
