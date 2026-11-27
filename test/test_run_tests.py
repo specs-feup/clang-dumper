@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from run_tests import (
     check_address_consistency,
+    compare_build_outputs,
     normalize_captured_output,
     normalize_static_output,
     normalize_system_source_blocks,
@@ -331,6 +332,38 @@ class AddressConsistencyTest(unittest.TestCase):
         )
         self.assertEqual(len(errors), 1)
         self.assertIn("Inconsistent address for", errors[0])
+
+
+class CompareBuildOutputsTest(unittest.TestCase):
+    def test_accepts_outputs_that_differ_only_in_addresses(self) -> None:
+        dump = "<Id to Class Map>\n{a}\nFunctionDecl\n{b}\n{a}\n"
+        self.assertIsNone(
+            compare_build_outputs(
+                (0, "", dump.format(a="0x5555_1", b="0x6666_1")),
+                (0, "", dump.format(a="0x7777_1", b="00000000aaaaaaaa_1")),
+            )
+        )
+
+    def test_rejects_moved_diagnostic(self) -> None:
+        warning = "input.c:1:5: warning: unused variable 'x'\n"
+        dump = "<VarDeclData>\n0x5555_1\n"
+        mismatch = compare_build_outputs(
+            (0, "", warning + dump),
+            (0, "", dump + warning),
+        )
+        self.assertIsNotNone(mismatch)
+        self.assertIn("stderr differs at line 1", mismatch)
+
+    def test_rejects_different_address_identity(self) -> None:
+        mismatch = compare_build_outputs(
+            (0, "", "0x5555_1\n0x5555_1\n"),
+            (0, "", "0x7777_1\n0x8888_1\n"),
+        )
+        self.assertIsNotNone(mismatch)
+
+    def test_rejects_different_exit_codes(self) -> None:
+        mismatch = compare_build_outputs((0, "", ""), (1, "", ""))
+        self.assertEqual(mismatch, "Exit code 0, compared build exited with 1")
 
 
 if __name__ == "__main__":

@@ -1060,6 +1060,56 @@ def run_tool_and_normalize(
     return proc.returncode, stdout, raw_stderr, normalized_stderr, placeholder_to_raw
 
 
+_ADDR_TOKEN_RE = re.compile(r"(?:0x[0-9a-fA-F]+|[0-9a-fA-F]{16})_\d+")
+
+
+def rename_addresses(raw_output: str) -> str:
+    """Number node addresses by first appearance, leaving all other text untouched."""
+    placeholders: dict[str, str] = {}
+
+    def placeholder(match: re.Match[str]) -> str:
+        key = canonical_raw_address(match.group(0))
+        if key not in placeholders:
+            placeholders[key] = f"ADDR_{len(placeholders) + 1:03d}"
+        return placeholders[key]
+
+    return _ADDR_TOKEN_RE.sub(placeholder, raw_output)
+
+
+def compare_build_outputs(
+    result: tuple[int, str, str],
+    other: tuple[int, str, str],
+) -> Optional[str]:
+    """
+    Compare (return code, stdout, raw stderr) of two builds on the same input.
+
+    Only node addresses are renamed, so diagnostics, system-header content and
+    platform spellings must match exactly. Returns a failure message or None.
+    """
+    if result[0] != other[0]:
+        return f"Exit code {result[0]}, compared build exited with {other[0]}"
+
+    for stream, text, other_text in (
+        ("stdout", result[1], other[1]),
+        ("stderr", result[2], other[2]),
+    ):
+        lines = rename_addresses(text).splitlines()
+        other_lines = rename_addresses(other_text).splitlines()
+        for number, (line, other_line) in enumerate(zip(lines, other_lines), 1):
+            if line != other_line:
+                return (
+                    f"{stream} differs at line {number}:\n"
+                    f"  This build:     {line!r}\n"
+                    f"  Compared build: {other_line!r}"
+                )
+        if len(lines) != len(other_lines):
+            return (
+                f"{stream} line count differs: {len(lines)} vs {len(other_lines)}"
+            )
+
+    return None
+
+
 def discover_tests(inputs_dir: Path) -> list[Path]:
     """Discover test input files in the inputs directory."""
     extensions = {
@@ -1105,9 +1155,13 @@ def run_single_test(
     clang_path: Optional[str] = None,
     global_flags: Optional[list[str]] = None,
     system_header_threshold: Optional[int] = 1,
+    compare_path: Optional[str] = None,
 ) -> tuple[str, str]:
     """
     Run a single test case.
+
+    With compare_path, the test compares this build against another build of
+    the same mode instead of against the expected files.
 
     Returns:
         tuple: (status, message) where status is one of TestStatus values
@@ -1128,6 +1182,34 @@ def run_single_test(
             f"Missing features: {', '.join(sorted(missing_features))}",
         )
 
+    flags = list(global_flags or []) + config.flags
+    if input_file.suffix == ".cu":
+        flags.extend(flag for flag in CUDA_TEST_FLAGS if flag not in flags)
+    threshold = (
+        config.system_header_threshold
+        if config.system_header_threshold is not None
+        else system_header_threshold
+    )
+
+    def run(target_path: str) -> tuple[int, str, str, str, dict[str, list[str]]]:
+        return run_tool_and_normalize(
+            mode,
+            target_path,
+            str(input_file),
+            config.id,
+            inputs_dir_str,
+            clang_path,
+            flags,
+            threshold,
+        )
+
+    if compare_path is not None:
+        result, other = run(path), run(compare_path)
+        mismatch = compare_build_outputs(result[:3], other[:3])
+        if mismatch is None:
+            return TestStatus.PASS, "PASSED"
+        return TestStatus.FAIL, mismatch
+
     expected_file_name = f"{test_name}.expected"
     expected_file = expected_dir / expected_file_name
     expected_source = "shared"
@@ -1141,27 +1223,13 @@ def run_single_test(
     missing_expected = not generate and not expected_file.exists()
 
     # Run the tool/plugin with streaming normalization
-    flags = list(global_flags or []) + config.flags
-    if input_file.suffix == ".cu":
-        flags.extend(flag for flag in CUDA_TEST_FLAGS if flag not in flags)
     (
         return_code,
         stdout,
         raw_output,
         normalized_output,
         placeholder_to_raw,
-    ) = run_tool_and_normalize(
-        mode,
-        path,
-        str(input_file),
-        config.id,
-        inputs_dir_str,
-        clang_path,
-        flags,
-        config.system_header_threshold
-        if config.system_header_threshold is not None
-        else system_header_threshold,
-    )
+    ) = run(path)
 
     if raw_output_dir is not None:
         raw_output_dir.mkdir(parents=True, exist_ok=True)
@@ -1266,6 +1334,16 @@ def main():
         help="Generate expected output files instead of comparing",
     )
     parser.add_argument(
+        "--compare-path",
+        default=None,
+        help=(
+            "Compare against another build of the same mode instead of the "
+            "expected files. Exit codes, stdout and stderr must match after "
+            "renaming node addresses; nothing else is normalized. Use it to "
+            "check that a change leaves the dump unchanged."
+        ),
+    )
+    parser.add_argument(
         "--test-dir",
         default=None,
         help="Path to test directory (default: directory containing this script)",
@@ -1333,6 +1411,10 @@ def main():
     # Validate plugin mode requirements
     if args.mode == "plugin" and args.clang_path is None:
         parser.error("--clang-path is required when using --mode plugin")
+    if args.compare_path is not None and args.generate:
+        parser.error("--compare-path cannot be combined with --generate")
+    if args.compare_path is not None and not Path(args.compare_path).exists():
+        parser.error(f"--compare-path not found: {args.compare_path}")
 
     # Resolve paths
     if args.test_dir:
@@ -1351,7 +1433,7 @@ def main():
         print(f"ERROR: Inputs directory not found: {inputs_dir}", file=sys.stderr)
         sys.exit(1)
 
-    if not args.generate and not expected_dir.exists():
+    if not args.generate and args.compare_path is None and not expected_dir.exists():
         print(f"ERROR: Expected directory not found: {expected_dir}", file=sys.stderr)
         sys.exit(1)
 
@@ -1464,6 +1546,8 @@ def main():
         print(f"Extra compiler args: {shlex.join(global_flags)}")
     if args.baseline_platform:
         print(f"Baseline platform: {args.baseline_platform}")
+    if args.compare_path:
+        print(f"Comparing against: {args.compare_path}")
     print()
 
     passed = 0
@@ -1520,6 +1604,7 @@ def main():
                 clang_path=clang_path,
                 global_flags=global_flags,
                 system_header_threshold=args.system_header_threshold,
+                compare_path=args.compare_path,
             ): test_file
             for test_file in tests
         }
