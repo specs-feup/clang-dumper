@@ -394,6 +394,14 @@ else()
             list(APPEND LLVM_LIBS_CLEAN "${${name}_ARCHIVE}")
         elseif(name STREQUAL "xml2")
             message(STATUS "Skipping llvm-config system library -lxml2 for static tool link")
+        elseif(name STREQUAL "zstd")
+            # zstd is not part of a base OS install, so the tool links its static
+            # archive and runs where zstd is not installed.
+            find_library(ZSTD_STATIC_LIB NAMES libzstd.a)
+            if(NOT ZSTD_STATIC_LIB)
+                message(FATAL_ERROR "Static libzstd.a not found; install zstd's static library (libzstd-dev on Debian/Ubuntu)")
+            endif()
+            list(APPEND LLVM_LIBS_CLEAN "${ZSTD_STATIC_LIB}")
         else()
             find_library("${name}_SYSTEM_LIB"
                 NAMES "${name}"
