@@ -26,11 +26,6 @@ int main(int argc, const char *argv[]) {
   llvm::InitializeNativeTargetAsmPrinter();
   llvm::InitializeNativeTargetAsmParser();
 
-  // Errs is the main way we dump information, we tested if making it buffered
-  // improved performance but could not detect a significant difference
-  // llvm::errs().SetBuffered();
-
-
   auto OptionsParser =
       clang::tooling::CommonOptionsParser::create(argc, argv, MyToolCategory);
 

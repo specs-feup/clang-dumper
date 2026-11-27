@@ -298,11 +298,17 @@ void DumpResources::init(int runId, int systemLevelThreshold) {
     DumpResources::runId = runId;
     DumpResources::systemHeaderThreshold = systemLevelThreshold;
 
+    // The dump is written to llvm::errs(), which is unbuffered by default and
+    // would issue one write syscall per insertion. Clang diagnostics use the
+    // same stream object, so buffering keeps their order relative to the dump.
+    llvm::errs().SetBuffered();
+
     if (HandlerCoverageReport) {
         clava::enableHandlerCoverageReport();
     }
 }
 
 void DumpResources::finish() {
+    llvm::errs().flush();
     clava::reportHandlerCoverage();
 }
