@@ -2,6 +2,7 @@
 #include <clang/Tooling/Tooling.h>
 
 #include "Clang/ClangAst.h"
+#include "ResourceDir.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/TargetSelect.h"
 
@@ -37,6 +38,7 @@ int main(int argc, const char *argv[]) {
 
   clang::tooling::ClangTool Tool((*OptionsParser).getCompilations(),
                                  (*OptionsParser).getSourcePathList());
+  Tool.appendArgumentsAdjuster(clava::getResourceDirFallbackAdjuster());
 
   DumpResources::init(UserIdOption.getValue(),
                       UserSystemHeaderThresholdOption.getValue());
