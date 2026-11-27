@@ -149,10 +149,10 @@ ADDR_005
 ADDR_005
 TypedefDecl
 <SYSTEM_INCLUDE>/c++/limits
-339
+346
 3
 <SYSTEM_INCLUDE>/c++/limits
-339
+346
 18
 0
 1
@@ -215,10 +215,10 @@ ADDR_008
 ADDR_008
 TypedefDecl
 <SYSTEM_INCLUDE>/c++/limits
-441
+464
 3
 <SYSTEM_INCLUDE>/c++/limits
-441
+464
 33
 0
 1
@@ -312,14 +312,40 @@ ADDR_012
 0
 <AttributeData>
 ADDR_012
-ExcludeFromExplicitInstantiationAttr
+WarnUnusedResultAttr
 <SYSTEM_INCLUDE>/c++/limits
-446
+469
 3
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+1128
+33
+<end>
+1
+WarnUnusedResult
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_012
+WarnUnusedResultAttr
+<Top Level Attributes>
+ADDR_012
+<Visited Children>
+ADDR_013
+0
+<AttributeData>
+ADDR_013
+ExcludeFromExplicitInstantiationAttr
+<SYSTEM_INCLUDE>/c++/limits
+469
+21
+<end>
+1
+<SYSTEM_INCLUDE>/c++/__config
+447
 72
 <end>
 1
@@ -329,27 +355,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_012
+ADDR_013
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_012
-<Visited Children>
 ADDR_013
+<Visited Children>
+ADDR_014
 0
 <AttributeData>
-ADDR_013
+ADDR_014
 AbiTagAttr
 <SYSTEM_INCLUDE>/c++/limits
-446
-3
+469
+21
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -357,34 +383,34 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_013
+ADDR_014
 AbiTagAttr
 <Top Level Attributes>
-ADDR_013
+ADDR_014
 <Top Level Types>
 ADDR_011
 <Visited Children>
-ADDR_014
+ADDR_015
 0
 <StmtData>
-ADDR_014
+ADDR_015
 CompoundStmt
 <SYSTEM_INCLUDE>/c++/limits
-446
-71
+469
+89
 <SYSTEM_INCLUDE>/c++/limits
-446
-95
+469
+113
 0
 1
 <Id to Class Map>
-ADDR_014
+ADDR_015
 CompoundStmt
 <Visited Children>
-ADDR_015
+ADDR_016
 0
 <TagTypeData>
-ADDR_015
+ADDR_016
 RecordType
 std::numeric_limits<double>
 NONE
@@ -392,15 +418,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_016
+ADDR_017
 <Id to Class Map>
-ADDR_015
+ADDR_016
 RecordType
 <Visited Children>
-ADDR_017
+ADDR_018
 0
 <TemplateTypeParmTypeData>
-ADDR_017
+ADDR_018
 TemplateTypeParmType
 _Tp
 DEPENDENT
@@ -411,21 +437,21 @@ nullptr_type
 0
 0
 0
-ADDR_018
+ADDR_019
 <Id to Class Map>
-ADDR_017
+ADDR_018
 TemplateTypeParmType
 <Visited Children>
-ADDR_018
+ADDR_019
 0
 <TemplateTypeParmDeclData>
-ADDR_018
+ADDR_019
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 11
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 17
 0
 1
@@ -442,18 +468,18 @@ _Tp
 0
 None
 Default
-ADDR_017
+ADDR_018
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_018
+ADDR_019
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_019
+ADDR_020
 0
 <BuiltinTypeData>
-ADDR_019
+ADDR_020
 BuiltinType
 bool
 NONE
@@ -464,15 +490,15 @@ nullptr_type
 Bool
 bool
 <Id to Class Map>
-ADDR_019
+ADDR_020
 BuiltinType
 <Top Level Types>
-ADDR_019
-<Visited Children>
 ADDR_020
+<Visited Children>
+ADDR_021
 0
 <BuiltinTypeData>
-ADDR_020
+ADDR_021
 BuiltinType
 <dependent type>
 DEPENDENT
@@ -483,25 +509,25 @@ nullptr_type
 Dependent
 <dependent type>
 <Id to Class Map>
-ADDR_020
+ADDR_021
 BuiltinType
 <Top Level Types>
-ADDR_020
-<Visited Children>
 ADDR_021
+<Visited Children>
+ADDR_022
 0
 <DependentScopeDeclRefExprData>
-ADDR_021
+ADDR_022
 DependentScopeDeclRefExpr
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 29
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 49
 0
 1
-ADDR_020
+ADDR_021
 1
 0
 0
@@ -510,19 +536,19 @@ is_arithmetic<_Tp>::
 0
 0
 <Id to Class Map>
-ADDR_021
+ADDR_022
 DependentScopeDeclRefExpr
 <Visited Children>
-ADDR_022
+ADDR_023
 0
 <NonTypeTemplateParmDeclData>
-ADDR_022
+ADDR_023
 NonTypeTemplateParmDecl
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 22
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 49
 0
 1
@@ -539,22 +565,22 @@ NonTypeTemplateParmDecl
 0
 External
 Default
-ADDR_019
+ADDR_020
 0
-ADDR_021
+ADDR_022
 0
 0
 0
 0
 0
 <Id to Class Map>
-ADDR_022
+ADDR_023
 NonTypeTemplateParmDecl
 <Visited Children>
-ADDR_023
+ADDR_024
 0
 <TypeData>
-ADDR_023
+ADDR_024
 InjectedClassNameType
 __libcpp_numeric_limits<_Tp, >
 DEPENDENT
@@ -563,19 +589,19 @@ DEPENDENT
 0
 nullptr_type
 <Id to Class Map>
-ADDR_023
+ADDR_024
 InjectedClassNameType
 <Visited Children>
-ADDR_024
+ADDR_025
 0
 <CXXRecordDeclData>
-ADDR_024
+ADDR_025
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/limits
-136
+135
 1
 <SYSTEM_INCLUDE>/c++/limits
-177
+176
 1
 0
 1
@@ -592,26 +618,26 @@ __libcpp_numeric_limits
 0
 External
 Default
-ADDR_023
+ADDR_024
 Class
 1
 0
 0
-ADDR_024
+ADDR_025
 <Id to Class Map>
-ADDR_024
+ADDR_025
 CXXRecordDecl
 <Visited Children>
-ADDR_025
+ADDR_026
 0
 <TemplateDeclData>
-ADDR_025
+ADDR_026
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/limits
-135
+134
 1
 <SYSTEM_INCLUDE>/c++/limits
-177
+176
 1
 0
 1
@@ -629,23 +655,23 @@ __libcpp_numeric_limits
 External
 Default
 2
-ADDR_018
-ADDR_022
-ADDR_024
-<Id to Class Map>
+ADDR_019
+ADDR_023
 ADDR_025
+<Id to Class Map>
+ADDR_026
 ClassTemplateDecl
 <Visited Children>
-ADDR_026
+ADDR_027
 0
 <ClassTemplateSpecializationDeclData>
-ADDR_026
+ADDR_027
 ClassTemplateSpecializationDecl
 <SYSTEM_INCLUDE>/c++/limits
-336
+343
 1
 <SYSTEM_INCLUDE>/c++/limits
-383
+398
 1
 0
 1
@@ -662,13 +688,13 @@ __libcpp_numeric_limits
 0
 External
 Default
-ADDR_027
+ADDR_028
 Class
 1
 0
 0
+ADDR_027
 ADDR_026
-ADDR_025
 ExplicitSpecialization
 2
 Type
@@ -676,13 +702,13 @@ ADDR_002
 Integral
 1
 <Id to Class Map>
-ADDR_026
+ADDR_027
 ClassTemplateSpecializationDecl
 <Visited Children>
-ADDR_027
+ADDR_028
 0
 <TagTypeData>
-ADDR_027
+ADDR_028
 RecordType
 std::__libcpp_numeric_limits<double, true>
 NONE
@@ -690,15 +716,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_026
-<Id to Class Map>
 ADDR_027
+<Id to Class Map>
+ADDR_028
 RecordType
 <Visited Children>
-ADDR_028
+ADDR_029
 0
 <TemplateTypeParmTypeData>
-ADDR_028
+ADDR_029
 TemplateTypeParmType
 _Tp
 DEPENDENT
@@ -709,109 +735,21 @@ nullptr_type
 0
 0
 0
-ADDR_029
+ADDR_030
 <Id to Class Map>
-ADDR_028
+ADDR_029
 TemplateTypeParmType
 <Visited Children>
-ADDR_029
+ADDR_030
 0
 <TemplateTypeParmDeclData>
-ADDR_029
-TemplateTypeParmDecl
-<SYSTEM_INCLUDE>/c++/__type_traits/remove_cv.h
-28
-11
-<SYSTEM_INCLUDE>/c++/__type_traits/remove_cv.h
-28
-17
-0
-1
-0
-0
-1
-0
-0
-0
-std
-_Tp
-0
-0
-0
-None
-Default
-ADDR_028
-CLASS
-0
-nullptr_type
-<Id to Class Map>
-ADDR_029
-TemplateTypeParmDecl
-<Visited Children>
 ADDR_030
-0
-<SubstTemplateTypeParmTypeData>
-ADDR_030
-SubstTemplateTypeParmType
-double
-NONE
-0
-0
-0
-ADDR_002
-ADDR_029
-ADDR_002
-<Id to Class Map>
-ADDR_030
-SubstTemplateTypeParmType
-<Visited Children>
-ADDR_031
-0
-<UnaryTransformTypeData>
-ADDR_031
-UnaryTransformType
-__remove_cv(double)
-NONE
-0
-0
-0
-ADDR_030
-RemoveCV
-ADDR_030
-ADDR_030
-<Id to Class Map>
-ADDR_031
-UnaryTransformType
-<Visited Children>
-ADDR_032
-0
-<TemplateTypeParmTypeData>
-ADDR_032
-TemplateTypeParmType
-_Tp
-DEPENDENT
-0
-0
-0
-nullptr_type
-0
-0
-0
-ADDR_033
-<Id to Class Map>
-ADDR_032
-TemplateTypeParmType
-<Visited Children>
-ADDR_033
-0
-<TemplateTypeParmDeclData>
-ADDR_033
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/limits
-438
+461
 11
 <SYSTEM_INCLUDE>/c++/limits
-438
+461
 17
 0
 1
@@ -828,18 +766,18 @@ _Tp
 0
 None
 Default
-ADDR_032
+ADDR_029
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_033
+ADDR_030
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_034
+ADDR_031
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_034
+ADDR_031
 SubstTemplateTypeParmType
 double
 NONE
@@ -847,179 +785,56 @@ NONE
 0
 0
 ADDR_002
-ADDR_033
+ADDR_030
 ADDR_002
 <Id to Class Map>
-ADDR_034
+ADDR_031
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_035
+ADDR_032
 0
-<UnaryTransformTypeData>
-ADDR_035
-UnaryTransformType
-__remove_cv(_Tp)
-DEPENDENT
+<TemplateSpecializationTypeData>
+ADDR_032
+TemplateSpecializationType
+__libcpp_numeric_limits<double>
+NONE
 0
 0
 0
-nullptr_type
-RemoveCV
-nullptr_type
 ADDR_028
-<Id to Class Map>
-ADDR_035
-UnaryTransformType
-<Visited Children>
-ADDR_036
-0
-<TypedefNameDeclData>
-ADDR_036
-TypeAliasDecl
-<SYSTEM_INCLUDE>/c++/__type_traits/remove_cv.h
-29
-1
-<SYSTEM_INCLUDE>/c++/__type_traits/remove_cv.h
-29
-38
-0
-1
-0
-0
-0
-0
-0
-0
-std
-__remove_cv_t
-0
-0
-0
-None
-Default
-nullptr_type
-ADDR_035
-<Id to Class Map>
-ADDR_036
-TypeAliasDecl
-<Visited Children>
-ADDR_037
-0
-<TemplateDeclData>
-ADDR_037
-TypeAliasTemplateDecl
-<SYSTEM_INCLUDE>/c++/__type_traits/remove_cv.h
-28
-1
-<SYSTEM_INCLUDE>/c++/__type_traits/remove_cv.h
-29
-38
-0
-1
-0
-0
-0
-0
-0
-0
-std
-__remove_cv_t
-0
-0
-0
-External
-Default
-1
-ADDR_029
-ADDR_036
-<Id to Class Map>
-ADDR_037
-TypeAliasTemplateDecl
-<Visited Children>
-ADDR_038
-0
-<TemplateSpecializationTypeData>
-ADDR_038
-TemplateSpecializationType
-__remove_cv_t<double>
-NONE
-0
-0
-0
-ADDR_031
-1
-ADDR_031
-__remove_cv_t
-ADDR_037
-1
-Type
-ADDR_034
-<Id to Class Map>
-ADDR_038
-TemplateSpecializationType
-<Visited Children>
-ADDR_039
-0
-<ElaboratedTypeData>
-ADDR_039
-ElaboratedType
-__remove_cv_t<double>
-NONE
-0
-0
-0
-ADDR_038
-None
-
-ADDR_038
-<Id to Class Map>
-ADDR_039
-ElaboratedType
-<Visited Children>
-ADDR_040
-0
-<TemplateSpecializationTypeData>
-ADDR_040
-TemplateSpecializationType
-__libcpp_numeric_limits<__remove_cv_t<double>>
-NONE
-0
-0
-0
-ADDR_027
 0
 nullptr_type
 __libcpp_numeric_limits
-ADDR_025
+ADDR_026
 1
 Type
-ADDR_039
+ADDR_031
 <Id to Class Map>
-ADDR_040
+ADDR_032
 TemplateSpecializationType
 <Visited Children>
-ADDR_041
+ADDR_033
 0
 <ElaboratedTypeData>
-ADDR_041
+ADDR_033
 ElaboratedType
-__libcpp_numeric_limits<__remove_cv_t<double>>
+__libcpp_numeric_limits<double>
 NONE
 0
 0
 0
-ADDR_040
+ADDR_032
 None
 
-ADDR_040
+ADDR_032
 <Id to Class Map>
-ADDR_041
+ADDR_033
 ElaboratedType
 <Visited Children>
-ADDR_042
+ADDR_034
 0
 <TypeData>
-ADDR_042
+ADDR_034
 InjectedClassNameType
 numeric_limits<_Tp>
 DEPENDENT
@@ -1028,109 +843,15 @@ DEPENDENT
 0
 nullptr_type
 <Id to Class Map>
-ADDR_042
+ADDR_034
 InjectedClassNameType
 <Visited Children>
-ADDR_043
-0
-<TemplateTypeParmTypeData>
-ADDR_043
-TemplateTypeParmType
-type-parameter-0-0
-DEPENDENT
-0
-0
-0
-nullptr_type
-0
-0
-0
-nullptr_decl
-<Id to Class Map>
-ADDR_043
-TemplateTypeParmType
-<Visited Children>
-ADDR_044
-0
-<SubstTemplateTypeParmTypeData>
-ADDR_044
-SubstTemplateTypeParmType
-type-parameter-0-0
-DEPENDENT
-0
-0
-0
-ADDR_043
-ADDR_029
-ADDR_043
-<Id to Class Map>
-ADDR_044
-SubstTemplateTypeParmType
-<Visited Children>
-ADDR_045
-0
-<UnaryTransformTypeData>
-ADDR_045
-UnaryTransformType
-__remove_cv(type-parameter-0-0)
-DEPENDENT
-0
-0
-0
-nullptr_type
-RemoveCV
-nullptr_type
-ADDR_044
-<Id to Class Map>
-ADDR_045
-UnaryTransformType
-<Visited Children>
-ADDR_046
+ADDR_035
 0
 <TemplateSpecializationTypeData>
-ADDR_046
+ADDR_035
 TemplateSpecializationType
-__remove_cv_t<_Tp>
-DEPENDENT
-0
-0
-0
-ADDR_045
-1
-ADDR_045
-__remove_cv_t
-ADDR_037
-1
-Type
-ADDR_032
-<Id to Class Map>
-ADDR_046
-TemplateSpecializationType
-<Visited Children>
-ADDR_047
-0
-<ElaboratedTypeData>
-ADDR_047
-ElaboratedType
-__remove_cv_t<_Tp>
-DEPENDENT
-0
-0
-0
-ADDR_046
-None
-
-ADDR_046
-<Id to Class Map>
-ADDR_047
-ElaboratedType
-<Visited Children>
-ADDR_048
-0
-<TemplateSpecializationTypeData>
-ADDR_048
-TemplateSpecializationType
-__libcpp_numeric_limits<__remove_cv_t<_Tp>>
+__libcpp_numeric_limits<_Tp>
 DEPENDENT
 0
 0
@@ -1139,42 +860,42 @@ nullptr_type
 0
 nullptr_type
 __libcpp_numeric_limits
-ADDR_025
+ADDR_026
 1
 Type
-ADDR_047
+ADDR_029
 <Id to Class Map>
-ADDR_048
+ADDR_035
 TemplateSpecializationType
 <Visited Children>
-ADDR_049
+ADDR_036
 0
 <ElaboratedTypeData>
-ADDR_049
+ADDR_036
 ElaboratedType
-__libcpp_numeric_limits<__remove_cv_t<_Tp>>
+__libcpp_numeric_limits<_Tp>
 DEPENDENT
 0
 0
 0
-ADDR_048
+ADDR_035
 None
 
-ADDR_048
+ADDR_035
 <Id to Class Map>
-ADDR_049
+ADDR_036
 ElaboratedType
 <Visited Children>
-ADDR_050
+ADDR_037
 0
 <CXXRecordDeclData>
-ADDR_050
+ADDR_037
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/limits
-439
+462
 1
 <SYSTEM_INCLUDE>/c++/limits
-483
+518
 1
 0
 1
@@ -1191,7 +912,7 @@ numeric_limits
 0
 External
 Default
-ADDR_042
+ADDR_034
 Class
 1
 0
@@ -1200,22 +921,22 @@ Class
 0
 PRIVATE
 PRIVATE
-ADDR_049
-ADDR_050
+ADDR_036
+ADDR_037
 <Id to Class Map>
-ADDR_050
+ADDR_037
 CXXRecordDecl
 <Visited Children>
-ADDR_051
+ADDR_038
 0
 <TemplateDeclData>
-ADDR_051
+ADDR_038
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/limits
-438
+461
 1
 <SYSTEM_INCLUDE>/c++/limits
-483
+518
 1
 0
 1
@@ -1233,22 +954,22 @@ numeric_limits
 External
 Default
 1
-ADDR_033
-ADDR_050
+ADDR_030
+ADDR_037
 <Id to Class Map>
-ADDR_051
+ADDR_038
 ClassTemplateDecl
 <Visited Children>
-ADDR_016
+ADDR_017
 0
 <ClassTemplateSpecializationDeclData>
-ADDR_016
+ADDR_017
 ClassTemplateSpecializationDecl
 <SYSTEM_INCLUDE>/c++/limits
-438
+461
 1
 <SYSTEM_INCLUDE>/c++/limits
-483
+518
 1
 0
 1
@@ -1265,7 +986,7 @@ numeric_limits
 0
 External
 Default
-ADDR_015
+ADDR_016
 Class
 1
 0
@@ -1274,45 +995,46 @@ Class
 0
 PRIVATE
 PRIVATE
-ADDR_041
-ADDR_016
-ADDR_051
+ADDR_033
+ADDR_017
+ADDR_038
 ImplicitInstantiation
 1
 Type
 ADDR_002
 <Id to Class Map>
-ADDR_016
+ADDR_017
 ClassTemplateSpecializationDecl
 <Visited Children>
-ADDR_052
+ADDR_039
 1
-ADDR_014
+ADDR_015
 <CXXMethodDeclData>
-ADDR_052
+ADDR_039
 CXXMethodDecl
 <SYSTEM_INCLUDE>/c++/limits
-446
-3
+469
+21
 <SYSTEM_INCLUDE>/c++/limits
-446
-95
+469
+113
 1
 <SYSTEM_INCLUDE>/c++/__config
-743
+408
 39
 <SYSTEM_INCLUDE>/c++/limits
-446
-95
+469
+113
 1
 0
 1
 1
 0
 0
-2
+3
 ADDR_012
 ADDR_013
+ADDR_014
 std::numeric_limits<double>
 max
 0
@@ -1331,10 +1053,10 @@ Static
 0
 0
 nullptr_decl
-ADDR_052
+ADDR_039
 nullptr_decl
 0
-ADDR_016
+ADDR_017
 0
 1
 0
@@ -1348,13 +1070,13 @@ nullptr_type
 1
 0
 <Id to Class Map>
-ADDR_052
+ADDR_039
 CXXMethodDecl
 <Visited Children>
-ADDR_053
+ADDR_040
 0
 <DeclRefExprData>
-ADDR_053
+ADDR_040
 DeclRefExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -1370,15 +1092,15 @@ ADDR_011
 0
 std::numeric_limits<double>::
 0
-ADDR_052
+ADDR_039
 <Id to Class Map>
-ADDR_053
+ADDR_040
 DeclRefExpr
 <Visited Children>
-ADDR_054
+ADDR_041
 0
 <PointerTypeData>
-ADDR_054
+ADDR_041
 PointerType
 type (*)() noexcept
 NONE
@@ -1388,16 +1110,16 @@ NONE
 nullptr_type
 ADDR_011
 <Id to Class Map>
-ADDR_054
+ADDR_041
 PointerType
 <Top Level Types>
-ADDR_054
+ADDR_041
 <Visited Children>
-ADDR_055
+ADDR_042
 1
-ADDR_053
+ADDR_040
 <ExprData>
-ADDR_055
+ADDR_042
 ImplicitCastExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -1407,21 +1129,21 @@ ImplicitCastExpr
 48
 0
 0
-ADDR_054
+ADDR_041
 0
 0
 0
 <Id to Class Map>
-ADDR_055
+ADDR_042
 ImplicitCastExpr
 <Top Level Types>
 ADDR_010
 <Visited Children>
-ADDR_056
+ADDR_043
 1
-ADDR_055
+ADDR_042
 <CallExprData>
-ADDR_056
+ADDR_043
 CallExpr
 <TEST_DIR>/dbl_max.cpp
 5
@@ -1435,14 +1157,14 @@ ADDR_010
 0
 0
 0
-ADDR_052
+ADDR_039
 <Id to Class Map>
-ADDR_056
+ADDR_043
 CallExpr
 <Visited Children>
 ADDR_004
 1
-ADDR_056
+ADDR_043
 <VarDeclData>
 ADDR_004
 VarDecl

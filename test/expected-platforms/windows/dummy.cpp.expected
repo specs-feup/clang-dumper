@@ -104,10 +104,10 @@ PreferredNameAttr
 37
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -126,11 +126,11 @@ ADDR_005
 <AccessSpecDeclData>
 ADDR_005
 AccessSpecDecl
-<SYSTEM_INCLUDE>/c++/ostream
-209
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+41
 1
-<SYSTEM_INCLUDE>/c++/ostream
-209
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+41
 7
 0
 1
@@ -253,11 +253,11 @@ ADDR_011
 <TypedefNameDeclData>
 ADDR_011
 TypedefDecl
-<SYSTEM_INCLUDE>/c++/ostream
-211
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+43
 3
-<SYSTEM_INCLUDE>/c++/ostream
-211
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+43
 18
 0
 1
@@ -305,16 +305,16 @@ ADDR_013
 ADDR_013
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-80
+44
 11
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-80
+44
 17
 0
 1
 0
 0
-1
+0
 0
 0
 0
@@ -335,33 +335,39 @@ TemplateTypeParmDecl
 <Visited Children>
 ADDR_014
 0
-<AttributeData>
+<CXXRecordDeclData>
 ADDR_014
-DeprecatedAttr
-<SYSTEM_INCLUDE>/c++/__string/char_traits.h
-81
-8
-<SYSTEM_INCLUDE>/c++/__string/char_traits.h
-83
-90
+CXXRecordDecl
+<SYSTEM_INCLUDE>/c++/__fwd/string.h
+23
 1
-<SYSTEM_INCLUDE>/c++/__config
-975
-53
-<SYSTEM_INCLUDE>/c++/__config
-975
-69
+<SYSTEM_INCLUDE>/c++/__fwd/string.h
+23
+29
+0
 1
-Deprecated
 0
 0
 0
 0
+0
+0
+std
+char_traits
+0
+0
+0
+External
+Default
+ADDR_015
+Struct
+0
+0
+0
+nullptr_decl
 <Id to Class Map>
 ADDR_014
-DeprecatedAttr
-<Top Level Attributes>
-ADDR_014
+CXXRecordDecl
 <Visited Children>
 ADDR_015
 0
@@ -384,11 +390,11 @@ ADDR_016
 ADDR_016
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-81
+45
 1
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-172
-1
+45
+8
 0
 1
 0
@@ -396,8 +402,7 @@ CXXRecordDecl
 0
 0
 0
-1
-ADDR_014
+0
 std
 char_traits
 0
@@ -407,10 +412,10 @@ External
 Default
 ADDR_015
 Struct
-1
 0
 0
-ADDR_016
+0
+nullptr_decl
 <Id to Class Map>
 ADDR_016
 CXXRecordDecl
@@ -421,11 +426,11 @@ ADDR_017
 ADDR_017
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-80
+44
 1
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-172
-1
+45
+8
 0
 1
 0
@@ -454,10 +459,10 @@ ADDR_018
 ADDR_018
 ClassTemplateSpecializationDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-177
+79
 1
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-269
+171
 1
 0
 1
@@ -579,44 +584,8 @@ TemplateTypeParmDecl
 <Visited Children>
 ADDR_024
 0
-<CXXRecordDeclData>
-ADDR_024
-CXXRecordDecl
-<SYSTEM_INCLUDE>/c++/__fwd/string.h
-23
-1
-<SYSTEM_INCLUDE>/c++/__fwd/string.h
-23
-29
-0
-1
-0
-0
-0
-0
-0
-0
-std
-char_traits
-0
-0
-0
-External
-Default
-ADDR_015
-Struct
-0
-0
-0
-ADDR_016
-<Id to Class Map>
-ADDR_024
-CXXRecordDecl
-<Visited Children>
-ADDR_025
-0
 <TemplateDeclData>
-ADDR_025
+ADDR_024
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__fwd/string.h
 22
@@ -641,15 +610,15 @@ External
 Default
 1
 ADDR_023
-ADDR_024
+ADDR_014
 <Id to Class Map>
-ADDR_025
+ADDR_024
 ClassTemplateDecl
 <Visited Children>
-ADDR_026
+ADDR_025
 0
 <TemplateSpecializationTypeData>
-ADDR_026
+ADDR_025
 TemplateSpecializationType
 char_traits<_CharT>
 DEPENDENT
@@ -660,30 +629,30 @@ nullptr_type
 0
 nullptr_type
 char_traits
-ADDR_025
+ADDR_024
 1
 Type
 ADDR_007
 <Id to Class Map>
-ADDR_026
+ADDR_025
 TemplateSpecializationType
 <Visited Children>
-ADDR_027
+ADDR_026
 0
 <ElaboratedTypeData>
-ADDR_027
+ADDR_026
 ElaboratedType
 char_traits<_CharT>
 DEPENDENT
 0
 0
 0
-ADDR_026
+ADDR_025
 None
 
-ADDR_026
+ADDR_025
 <Id to Class Map>
-ADDR_027
+ADDR_026
 ElaboratedType
 <Visited Children>
 ADDR_021
@@ -715,15 +684,15 @@ Default
 ADDR_020
 CLASS
 0
-ADDR_027
+ADDR_026
 <Id to Class Map>
 ADDR_021
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_028
+ADDR_027
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_028
+ADDR_027
 SubstTemplateTypeParmType
 std::char_traits<char>
 NONE
@@ -734,35 +703,35 @@ ADDR_019
 ADDR_021
 ADDR_019
 <Id to Class Map>
-ADDR_028
+ADDR_027
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_029
+ADDR_028
 0
 <TypedefTypeData>
-ADDR_029
+ADDR_028
 TypedefType
 std::ostream::traits_type
 NONE
 0
 0
 0
-ADDR_028
-ADDR_030
-<Id to Class Map>
+ADDR_027
 ADDR_029
+<Id to Class Map>
+ADDR_028
 TypedefType
 <Visited Children>
-ADDR_030
+ADDR_029
 0
 <TypedefNameDeclData>
-ADDR_030
+ADDR_029
 TypedefDecl
-<SYSTEM_INCLUDE>/c++/ostream
-212
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+44
 3
-<SYSTEM_INCLUDE>/c++/ostream
-212
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+44
 19
 0
 1
@@ -779,22 +748,22 @@ traits_type
 0
 None
 Default
-ADDR_029
 ADDR_028
+ADDR_027
 <Id to Class Map>
-ADDR_030
+ADDR_029
 TypedefDecl
 <Visited Children>
-ADDR_031
+ADDR_030
 0
 <TypedefNameDeclData>
-ADDR_031
+ADDR_030
 TypeAliasDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-180
+82
 3
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-180
+82
 22
 0
 1
@@ -811,16 +780,16 @@ int_type
 0
 None
 Default
-ADDR_032
+ADDR_031
 ADDR_002
 <Id to Class Map>
-ADDR_031
+ADDR_030
 TypeAliasDecl
 <Visited Children>
-ADDR_032
+ADDR_031
 0
 <TypedefTypeData>
-ADDR_032
+ADDR_031
 TypedefType
 std::char_traits<char>::int_type
 NONE
@@ -828,39 +797,39 @@ NONE
 0
 0
 ADDR_002
-ADDR_031
+ADDR_030
 <Id to Class Map>
-ADDR_032
+ADDR_031
 TypedefType
 <Visited Children>
-ADDR_033
+ADDR_032
 0
 <ElaboratedTypeData>
-ADDR_033
+ADDR_032
 ElaboratedType
 typename traits_type::int_type
 NONE
 0
 0
 0
-ADDR_032
+ADDR_031
 Typename
 traits_type::
-ADDR_032
+ADDR_031
 <Id to Class Map>
-ADDR_033
+ADDR_032
 ElaboratedType
 <Visited Children>
-ADDR_034
+ADDR_033
 0
 <TypedefNameDeclData>
-ADDR_034
+ADDR_033
 TypedefDecl
-<SYSTEM_INCLUDE>/c++/ostream
-213
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+45
 3
-<SYSTEM_INCLUDE>/c++/ostream
-213
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+45
 42
 0
 1
@@ -878,15 +847,15 @@ int_type
 None
 Default
 nullptr_type
-ADDR_033
+ADDR_032
 <Id to Class Map>
-ADDR_034
+ADDR_033
 TypedefDecl
 <Visited Children>
-ADDR_035
+ADDR_034
 0
 <TemplateTypeParmTypeData>
-ADDR_035
+ADDR_034
 TemplateTypeParmType
 _State
 DEPENDENT
@@ -897,21 +866,21 @@ nullptr_type
 0
 0
 0
-ADDR_036
-<Id to Class Map>
 ADDR_035
+<Id to Class Map>
+ADDR_034
 TemplateTypeParmType
 <Visited Children>
-ADDR_036
+ADDR_035
 0
 <TemplateTypeParmDeclData>
-ADDR_036
+ADDR_035
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/iosfwd
-134
+131
 11
 <SYSTEM_INCLUDE>/c++/iosfwd
-134
+131
 17
 0
 1
@@ -928,18 +897,18 @@ _State
 0
 None
 Default
-ADDR_035
+ADDR_034
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_036
+ADDR_035
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_037
+ADDR_036
 0
 <CXXRecordDeclData>
-ADDR_037
+ADDR_036
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/__ios/fpos.h
 23
@@ -962,20 +931,20 @@ fpos
 0
 External
 Default
-ADDR_038
+ADDR_037
 Class
 1
 0
 0
-ADDR_037
+ADDR_036
 <Id to Class Map>
-ADDR_037
+ADDR_036
 CXXRecordDecl
 <Visited Children>
-ADDR_038
+ADDR_037
 0
 <TypeData>
-ADDR_038
+ADDR_037
 InjectedClassNameType
 fpos<_StateT>
 DEPENDENT
@@ -984,19 +953,19 @@ DEPENDENT
 0
 nullptr_type
 <Id to Class Map>
-ADDR_038
+ADDR_037
 InjectedClassNameType
 <Visited Children>
-ADDR_039
+ADDR_038
 0
 <CXXRecordDeclData>
-ADDR_039
+ADDR_038
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/iosfwd
-135
+132
 1
 <SYSTEM_INCLUDE>/c++/iosfwd
-135
+132
 28
 0
 1
@@ -1013,26 +982,26 @@ fpos
 0
 External
 Default
-ADDR_038
+ADDR_037
 Class
 0
 0
 0
-ADDR_037
+ADDR_036
 <Id to Class Map>
-ADDR_039
+ADDR_038
 CXXRecordDecl
 <Visited Children>
-ADDR_040
+ADDR_039
 0
 <TemplateDeclData>
-ADDR_040
+ADDR_039
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/iosfwd
-134
+131
 1
 <SYSTEM_INCLUDE>/c++/iosfwd
-135
+132
 28
 0
 1
@@ -1050,16 +1019,16 @@ fpos
 External
 Default
 1
-ADDR_036
-ADDR_039
+ADDR_035
+ADDR_038
 <Id to Class Map>
-ADDR_040
+ADDR_039
 ClassTemplateDecl
 <Visited Children>
-ADDR_041
+ADDR_040
 0
 <AttributeData>
-ADDR_041
+ADDR_040
 MaxFieldAlignmentAttr
 <invalid>
 0
@@ -1070,15 +1039,15 @@ MaxFieldAlignment
 0
 0
 <Id to Class Map>
-ADDR_041
+ADDR_040
 MaxFieldAlignmentAttr
 <Top Level Attributes>
-ADDR_041
+ADDR_040
 <Visited Children>
-ADDR_042
+ADDR_041
 0
 <CXXRecordDeclData>
-ADDR_042
+ADDR_041
 CXXRecordDecl
 <SYSTEM_INCLUDE>/wchar.h
 1145
@@ -1094,7 +1063,7 @@ CXXRecordDecl
 0
 0
 1
-ADDR_041
+ADDR_040
 
 _Mbstatet
 0
@@ -1102,20 +1071,20 @@ _Mbstatet
 0
 External
 Default
-ADDR_043
+ADDR_042
 Struct
 1
 0
 0
-ADDR_042
+ADDR_041
 <Id to Class Map>
-ADDR_042
+ADDR_041
 CXXRecordDecl
 <Visited Children>
-ADDR_043
+ADDR_042
 0
 <TagTypeData>
-ADDR_043
+ADDR_042
 RecordType
 _Mbstatet
 NONE
@@ -1123,21 +1092,21 @@ NONE
 0
 0
 nullptr_type
-ADDR_042
+ADDR_041
 <Id to Class Map>
-ADDR_043
+ADDR_042
 RecordType
 <Visited Children>
-ADDR_044
+ADDR_043
 0
 <ClassTemplateSpecializationDeclData>
-ADDR_044
+ADDR_043
 ClassTemplateSpecializationDecl
 <SYSTEM_INCLUDE>/c++/iosfwd
-134
+131
 1
 <SYSTEM_INCLUDE>/c++/iosfwd
-135
+132
 28
 0
 1
@@ -1154,25 +1123,25 @@ fpos
 0
 External
 Default
-ADDR_045
+ADDR_044
 Class
 0
 0
 0
 nullptr_decl
-ADDR_040
+ADDR_039
 Undeclared
 1
 Type
-ADDR_043
+ADDR_042
 <Id to Class Map>
-ADDR_044
+ADDR_043
 ClassTemplateSpecializationDecl
 <Visited Children>
-ADDR_045
+ADDR_044
 0
 <TagTypeData>
-ADDR_045
+ADDR_044
 RecordType
 std::fpos<_Mbstatet>
 NONE
@@ -1180,33 +1149,33 @@ NONE
 0
 0
 nullptr_type
-ADDR_044
+ADDR_043
 <Id to Class Map>
-ADDR_045
+ADDR_044
 RecordType
 <Visited Children>
-ADDR_046
+ADDR_045
 0
 <ElaboratedTypeData>
-ADDR_046
+ADDR_045
 ElaboratedType
 struct _Mbstatet
 NONE
 0
 0
 0
-ADDR_043
+ADDR_042
 Struct
 
-ADDR_043
+ADDR_042
 <Id to Class Map>
-ADDR_046
+ADDR_045
 ElaboratedType
 <Visited Children>
-ADDR_047
+ADDR_046
 0
 <TypedefNameDeclData>
-ADDR_047
+ADDR_046
 TypedefDecl
 <SYSTEM_INCLUDE>/wchar.h
 1145
@@ -1229,50 +1198,50 @@ _Mbstatet
 0
 None
 Default
-ADDR_048
-ADDR_046
-<Id to Class Map>
 ADDR_047
+ADDR_045
+<Id to Class Map>
+ADDR_046
 TypedefDecl
 <Visited Children>
-ADDR_048
+ADDR_047
 0
 <TypedefTypeData>
-ADDR_048
+ADDR_047
 TypedefType
 _Mbstatet
 NONE
 0
 0
 0
+ADDR_045
 ADDR_046
+<Id to Class Map>
+ADDR_047
+TypedefType
+<Visited Children>
+ADDR_048
+0
+<ElaboratedTypeData>
+ADDR_048
+ElaboratedType
+_Mbstatet
+NONE
+0
+0
+0
+ADDR_047
+None
+
 ADDR_047
 <Id to Class Map>
 ADDR_048
-TypedefType
-<Visited Children>
-ADDR_049
-0
-<ElaboratedTypeData>
-ADDR_049
-ElaboratedType
-_Mbstatet
-NONE
-0
-0
-0
-ADDR_048
-None
-
-ADDR_048
-<Id to Class Map>
-ADDR_049
 ElaboratedType
 <Visited Children>
-ADDR_050
+ADDR_049
 0
 <TypedefNameDeclData>
-ADDR_050
+ADDR_049
 TypedefDecl
 <SYSTEM_INCLUDE>/wchar.h
 1149
@@ -1295,111 +1264,111 @@ mbstate_t
 0
 None
 Default
-ADDR_051
-ADDR_049
-<Id to Class Map>
 ADDR_050
+ADDR_048
+<Id to Class Map>
+ADDR_049
 TypedefDecl
 <Visited Children>
-ADDR_051
+ADDR_050
 0
 <TypedefTypeData>
-ADDR_051
+ADDR_050
 TypedefType
 mbstate_t
 NONE
 0
 0
 0
+ADDR_048
 ADDR_049
+<Id to Class Map>
+ADDR_050
+TypedefType
+<Visited Children>
+ADDR_051
+0
+<TypeData>
+ADDR_051
+UsingType
+mbstate_t
+NONE
+0
+0
+0
 ADDR_050
 <Id to Class Map>
 ADDR_051
-TypedefType
+UsingType
 <Visited Children>
 ADDR_052
 0
-<TypeData>
+<ElaboratedTypeData>
 ADDR_052
-UsingType
+ElaboratedType
 mbstate_t
 NONE
 0
 0
 0
 ADDR_051
-<Id to Class Map>
-ADDR_052
-UsingType
-<Visited Children>
-ADDR_053
-0
-<ElaboratedTypeData>
-ADDR_053
-ElaboratedType
-mbstate_t
-NONE
-0
-0
-0
-ADDR_052
 None
 
-ADDR_052
+ADDR_051
 <Id to Class Map>
-ADDR_053
+ADDR_052
 ElaboratedType
 <Visited Children>
-ADDR_054
+ADDR_053
 0
 <TemplateSpecializationTypeData>
-ADDR_054
+ADDR_053
 TemplateSpecializationType
 fpos<mbstate_t>
 NONE
 0
 0
 0
-ADDR_045
+ADDR_044
 0
 nullptr_type
 fpos
-ADDR_040
+ADDR_039
 1
 Type
-ADDR_053
+ADDR_052
 <Id to Class Map>
-ADDR_054
+ADDR_053
 TemplateSpecializationType
 <Visited Children>
-ADDR_055
+ADDR_054
 0
 <ElaboratedTypeData>
-ADDR_055
+ADDR_054
 ElaboratedType
 fpos<mbstate_t>
 NONE
 0
 0
 0
-ADDR_054
+ADDR_053
 None
 
-ADDR_054
+ADDR_053
 <Id to Class Map>
-ADDR_055
+ADDR_054
 ElaboratedType
 <Visited Children>
-ADDR_056
+ADDR_055
 0
 <TypedefNameDeclData>
-ADDR_056
+ADDR_055
 TypedefDecl
 <SYSTEM_INCLUDE>/c++/iosfwd
-136
+133
 1
 <SYSTEM_INCLUDE>/c++/iosfwd
-136
+133
 25
 0
 1
@@ -1416,56 +1385,56 @@ streampos
 0
 None
 Default
-ADDR_057
-ADDR_055
-<Id to Class Map>
 ADDR_056
+ADDR_054
+<Id to Class Map>
+ADDR_055
 TypedefDecl
 <Visited Children>
-ADDR_057
+ADDR_056
 0
 <TypedefTypeData>
-ADDR_057
+ADDR_056
 TypedefType
 std::streampos
 NONE
 0
 0
 0
+ADDR_054
 ADDR_055
-ADDR_056
 <Id to Class Map>
-ADDR_057
+ADDR_056
 TypedefType
 <Visited Children>
-ADDR_058
+ADDR_057
 0
 <ElaboratedTypeData>
-ADDR_058
+ADDR_057
 ElaboratedType
 streampos
 NONE
 0
 0
 0
-ADDR_057
+ADDR_056
 None
 
-ADDR_057
+ADDR_056
 <Id to Class Map>
-ADDR_058
+ADDR_057
 ElaboratedType
 <Visited Children>
-ADDR_059
+ADDR_058
 0
 <TypedefNameDeclData>
-ADDR_059
+ADDR_058
 TypeAliasDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-182
+84
 3
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-182
+84
 22
 0
 1
@@ -1482,72 +1451,72 @@ pos_type
 0
 None
 Default
-ADDR_060
-ADDR_058
-<Id to Class Map>
 ADDR_059
+ADDR_057
+<Id to Class Map>
+ADDR_058
 TypeAliasDecl
 <Visited Children>
-ADDR_060
+ADDR_059
 0
 <TypedefTypeData>
-ADDR_060
+ADDR_059
 TypedefType
 std::char_traits<char>::pos_type
 NONE
 0
 0
 0
+ADDR_057
 ADDR_058
-ADDR_059
 <Id to Class Map>
-ADDR_060
+ADDR_059
 TypedefType
 <Visited Children>
-ADDR_061
+ADDR_060
 0
 <ElaboratedTypeData>
-ADDR_061
+ADDR_060
 ElaboratedType
 typename traits_type::pos_type
 NONE
 0
 0
 0
-ADDR_060
+ADDR_059
 Typename
 traits_type::
-ADDR_060
+ADDR_059
 <Id to Class Map>
-ADDR_061
+ADDR_060
 ElaboratedType
 <Visited Children>
-ADDR_062
+ADDR_061
 0
 <TypedefTypeData>
-ADDR_062
+ADDR_061
 TypedefType
 std::ostream::pos_type
 NONE
 0
 0
 0
-ADDR_061
-ADDR_063
-<Id to Class Map>
+ADDR_060
 ADDR_062
+<Id to Class Map>
+ADDR_061
 TypedefType
 <Visited Children>
-ADDR_063
+ADDR_062
 0
 <TypedefNameDeclData>
-ADDR_063
+ADDR_062
 TypedefDecl
-<SYSTEM_INCLUDE>/c++/ostream
-214
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+46
 3
-<SYSTEM_INCLUDE>/c++/ostream
-214
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+46
 42
 0
 1
@@ -1564,16 +1533,16 @@ pos_type
 0
 None
 Default
-ADDR_062
 ADDR_061
+ADDR_060
 <Id to Class Map>
-ADDR_063
+ADDR_062
 TypedefDecl
 <Visited Children>
-ADDR_064
+ADDR_063
 0
 <BuiltinTypeData>
-ADDR_064
+ADDR_063
 BuiltinType
 long long
 NONE
@@ -1584,19 +1553,19 @@ nullptr_type
 LongLong
 long long
 <Id to Class Map>
-ADDR_064
+ADDR_063
 BuiltinType
 <Visited Children>
-ADDR_065
+ADDR_064
 0
 <TypedefNameDeclData>
-ADDR_065
+ADDR_064
 TypeAliasDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-36
+38
 1
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-36
+38
 24
 0
 1
@@ -1613,56 +1582,56 @@ streamoff
 0
 None
 Default
-ADDR_066
-ADDR_064
-<Id to Class Map>
 ADDR_065
+ADDR_063
+<Id to Class Map>
+ADDR_064
 TypeAliasDecl
 <Visited Children>
-ADDR_066
+ADDR_065
 0
 <TypedefTypeData>
-ADDR_066
+ADDR_065
 TypedefType
 std::streamoff
 NONE
 0
 0
 0
+ADDR_063
 ADDR_064
-ADDR_065
 <Id to Class Map>
-ADDR_066
+ADDR_065
 TypedefType
 <Visited Children>
-ADDR_067
+ADDR_066
 0
 <ElaboratedTypeData>
-ADDR_067
+ADDR_066
 ElaboratedType
 streamoff
 NONE
 0
 0
 0
-ADDR_066
+ADDR_065
 None
 
-ADDR_066
+ADDR_065
 <Id to Class Map>
-ADDR_067
+ADDR_066
 ElaboratedType
 <Visited Children>
-ADDR_068
+ADDR_067
 0
 <TypedefNameDeclData>
-ADDR_068
+ADDR_067
 TypeAliasDecl
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-181
+83
 3
 <SYSTEM_INCLUDE>/c++/__string/char_traits.h
-181
+83
 22
 0
 1
@@ -1679,72 +1648,72 @@ off_type
 0
 None
 Default
-ADDR_069
-ADDR_067
-<Id to Class Map>
 ADDR_068
+ADDR_066
+<Id to Class Map>
+ADDR_067
 TypeAliasDecl
 <Visited Children>
-ADDR_069
+ADDR_068
 0
 <TypedefTypeData>
-ADDR_069
+ADDR_068
 TypedefType
 std::char_traits<char>::off_type
 NONE
 0
 0
 0
+ADDR_066
 ADDR_067
-ADDR_068
 <Id to Class Map>
-ADDR_069
+ADDR_068
 TypedefType
 <Visited Children>
-ADDR_070
+ADDR_069
 0
 <ElaboratedTypeData>
-ADDR_070
+ADDR_069
 ElaboratedType
 typename traits_type::off_type
 NONE
 0
 0
 0
-ADDR_069
+ADDR_068
 Typename
 traits_type::
-ADDR_069
+ADDR_068
 <Id to Class Map>
-ADDR_070
+ADDR_069
 ElaboratedType
 <Visited Children>
-ADDR_071
+ADDR_070
 0
 <TypedefTypeData>
-ADDR_071
+ADDR_070
 TypedefType
 std::ostream::off_type
 NONE
 0
 0
 0
-ADDR_070
-ADDR_072
-<Id to Class Map>
+ADDR_069
 ADDR_071
+<Id to Class Map>
+ADDR_070
 TypedefType
 <Visited Children>
-ADDR_072
+ADDR_071
 0
 <TypedefNameDeclData>
-ADDR_072
+ADDR_071
 TypedefDecl
-<SYSTEM_INCLUDE>/c++/ostream
-215
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+47
 3
-<SYSTEM_INCLUDE>/c++/ostream
-215
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+47
 42
 0
 1
@@ -1761,24 +1730,24 @@ off_type
 0
 None
 Default
-ADDR_071
 ADDR_070
+ADDR_069
 <Id to Class Map>
-ADDR_072
+ADDR_071
 TypedefDecl
 <Visited Children>
-ADDR_073
+ADDR_072
 0
 <AttributeData>
-ADDR_073
+ADDR_072
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-218
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+50
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -1788,27 +1757,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_073
+ADDR_072
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_073
+ADDR_072
 <Visited Children>
-ADDR_074
+ADDR_073
 0
 <AttributeData>
-ADDR_074
+ADDR_073
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-218
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+50
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -1816,15 +1785,15 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_074
+ADDR_073
 AbiTagAttr
 <Top Level Attributes>
-ADDR_074
+ADDR_073
 <Visited Children>
-ADDR_075
+ADDR_074
 0
 <BuiltinTypeData>
-ADDR_075
+ADDR_074
 BuiltinType
 void
 NONE
@@ -1835,13 +1804,13 @@ nullptr_type
 Void
 void
 <Id to Class Map>
-ADDR_075
+ADDR_074
 BuiltinType
 <Visited Children>
-ADDR_076
+ADDR_075
 0
 <AttributeData>
-ADDR_076
+ADDR_075
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 31
@@ -1851,10 +1820,10 @@ PreferredNameAttr
 39
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -1863,15 +1832,15 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_076
+ADDR_075
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_076
+ADDR_075
 <Visited Children>
-ADDR_077
+ADDR_076
 0
 <TemplateTypeParmTypeData>
-ADDR_077
+ADDR_076
 TemplateTypeParmType
 _CharT
 DEPENDENT
@@ -1882,15 +1851,15 @@ nullptr_type
 0
 0
 0
-ADDR_078
-<Id to Class Map>
 ADDR_077
+<Id to Class Map>
+ADDR_076
 TemplateTypeParmType
 <Visited Children>
-ADDR_078
+ADDR_077
 0
 <TemplateTypeParmDeclData>
-ADDR_078
+ADDR_077
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 21
@@ -1913,18 +1882,18 @@ _CharT
 0
 None
 Default
-ADDR_077
+ADDR_076
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_078
+ADDR_077
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_079
+ADDR_078
 0
 <TemplateTypeParmTypeData>
-ADDR_079
+ADDR_078
 TemplateTypeParmType
 _Traits
 DEPENDENT
@@ -1935,15 +1904,15 @@ nullptr_type
 0
 1
 0
-ADDR_080
-<Id to Class Map>
 ADDR_079
+<Id to Class Map>
+ADDR_078
 TemplateTypeParmType
 <Visited Children>
-ADDR_081
+ADDR_080
 0
 <TemplateSpecializationTypeData>
-ADDR_081
+ADDR_080
 TemplateSpecializationType
 char_traits<_CharT>
 DEPENDENT
@@ -1954,36 +1923,36 @@ nullptr_type
 0
 nullptr_type
 char_traits
-ADDR_025
+ADDR_024
 1
 Type
-ADDR_077
+ADDR_076
 <Id to Class Map>
-ADDR_081
+ADDR_080
 TemplateSpecializationType
 <Visited Children>
-ADDR_082
+ADDR_081
 0
 <ElaboratedTypeData>
-ADDR_082
+ADDR_081
 ElaboratedType
 char_traits<_CharT>
 DEPENDENT
 0
 0
 0
-ADDR_081
+ADDR_080
 None
 
-ADDR_081
+ADDR_080
 <Id to Class Map>
-ADDR_082
+ADDR_081
 ElaboratedType
 <Visited Children>
-ADDR_080
+ADDR_079
 0
 <TemplateTypeParmDeclData>
-ADDR_080
+ADDR_079
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 21
@@ -2006,18 +1975,18 @@ _Traits
 0
 None
 Default
-ADDR_079
+ADDR_078
 CLASS
 0
-ADDR_082
+ADDR_081
 <Id to Class Map>
-ADDR_080
+ADDR_079
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_083
+ADDR_082
 0
 <AttributeData>
-ADDR_083
+ADDR_082
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 31
@@ -2027,10 +1996,10 @@ PreferredNameAttr
 39
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -2039,15 +2008,15 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_083
+ADDR_082
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_083
+ADDR_082
 <Visited Children>
-ADDR_084
+ADDR_083
 0
 <AttributeData>
-ADDR_084
+ADDR_083
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 31
@@ -2057,10 +2026,10 @@ PreferredNameAttr
 102
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -2069,21 +2038,21 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_084
+ADDR_083
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_084
+ADDR_083
 <Visited Children>
-ADDR_085
+ADDR_084
 0
 <CXXRecordDeclData>
-ADDR_085
+ADDR_084
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/streambuf
-128
+131
 1
 <SYSTEM_INCLUDE>/c++/streambuf
-287
+294
 1
 0
 1
@@ -2093,8 +2062,8 @@ CXXRecordDecl
 0
 0
 2
+ADDR_082
 ADDR_083
-ADDR_084
 std
 basic_streambuf
 0
@@ -2102,20 +2071,20 @@ basic_streambuf
 0
 External
 Default
-ADDR_086
+ADDR_085
 Class
 1
 0
 0
-ADDR_085
+ADDR_084
 <Id to Class Map>
-ADDR_085
+ADDR_084
 CXXRecordDecl
 <Visited Children>
-ADDR_086
+ADDR_085
 0
 <TypeData>
-ADDR_086
+ADDR_085
 InjectedClassNameType
 basic_streambuf<_CharT, _Traits>
 DEPENDENT
@@ -2124,13 +2093,13 @@ DEPENDENT
 0
 nullptr_type
 <Id to Class Map>
-ADDR_086
+ADDR_085
 InjectedClassNameType
 <Visited Children>
-ADDR_087
+ADDR_086
 0
 <CXXRecordDeclData>
-ADDR_087
+ADDR_086
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 22
@@ -2153,20 +2122,20 @@ basic_streambuf
 0
 External
 Default
-ADDR_086
+ADDR_085
 Class
 0
 0
 0
-ADDR_085
+ADDR_084
 <Id to Class Map>
-ADDR_087
+ADDR_086
 CXXRecordDecl
 <Visited Children>
-ADDR_088
+ADDR_087
 0
 <TemplateDeclData>
-ADDR_088
+ADDR_087
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__fwd/streambuf.h
 21
@@ -2190,23 +2159,23 @@ basic_streambuf
 External
 Default
 2
-ADDR_078
-ADDR_080
-ADDR_087
+ADDR_077
+ADDR_079
+ADDR_086
 <Id to Class Map>
-ADDR_088
+ADDR_087
 ClassTemplateDecl
 <Visited Children>
-ADDR_089
+ADDR_088
 0
 <ClassTemplateSpecializationDeclData>
-ADDR_089
+ADDR_088
 ClassTemplateSpecializationDecl
 <SYSTEM_INCLUDE>/c++/streambuf
-424
+431
 1
 <SYSTEM_INCLUDE>/c++/streambuf
-424
+431
 76
 0
 1
@@ -2216,7 +2185,7 @@ ClassTemplateSpecializationDecl
 0
 0
 1
-ADDR_076
+ADDR_075
 std
 basic_streambuf
 0
@@ -2224,13 +2193,13 @@ basic_streambuf
 0
 External
 Default
-ADDR_090
+ADDR_089
 Class
 1
 0
 0
-ADDR_089
 ADDR_088
+ADDR_087
 ExplicitInstantiationDeclaration
 2
 Type
@@ -2238,13 +2207,13 @@ ADDR_006
 Type
 ADDR_019
 <Id to Class Map>
-ADDR_089
+ADDR_088
 ClassTemplateSpecializationDecl
 <Visited Children>
-ADDR_090
+ADDR_089
 0
 <TagTypeData>
-ADDR_090
+ADDR_089
 RecordType
 std::streambuf
 NONE
@@ -2252,15 +2221,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_089
+ADDR_088
 <Id to Class Map>
-ADDR_090
+ADDR_089
 RecordType
 <Visited Children>
-ADDR_091
+ADDR_090
 0
 <ElaboratedTypeData>
-ADDR_091
+ADDR_090
 ElaboratedType
 char_type
 NONE
@@ -2272,31 +2241,31 @@ None
 
 ADDR_010
 <Id to Class Map>
-ADDR_091
+ADDR_090
 ElaboratedType
 <Visited Children>
-ADDR_092
+ADDR_091
 0
 <ElaboratedTypeData>
-ADDR_092
+ADDR_091
 ElaboratedType
 traits_type
 NONE
 0
 0
 0
-ADDR_029
+ADDR_028
 None
 
-ADDR_029
+ADDR_028
 <Id to Class Map>
-ADDR_092
+ADDR_091
 ElaboratedType
 <Visited Children>
-ADDR_093
+ADDR_092
 0
 <TemplateTypeParmTypeData>
-ADDR_093
+ADDR_092
 TemplateTypeParmType
 _CharT
 DEPENDENT
@@ -2307,21 +2276,21 @@ nullptr_type
 0
 0
 0
-ADDR_094
-<Id to Class Map>
 ADDR_093
+<Id to Class Map>
+ADDR_092
 TemplateTypeParmType
 <Visited Children>
-ADDR_094
+ADDR_093
 0
 <TemplateTypeParmDeclData>
-ADDR_094
+ADDR_093
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/streambuf
-127
+130
 11
 <SYSTEM_INCLUDE>/c++/streambuf
-127
+130
 17
 0
 1
@@ -2338,18 +2307,18 @@ _CharT
 0
 None
 Default
-ADDR_093
+ADDR_092
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_094
+ADDR_093
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_095
+ADDR_094
 0
 <TemplateTypeParmTypeData>
-ADDR_095
+ADDR_094
 TemplateTypeParmType
 _Traits
 DEPENDENT
@@ -2360,21 +2329,21 @@ nullptr_type
 0
 1
 0
-ADDR_096
-<Id to Class Map>
 ADDR_095
+<Id to Class Map>
+ADDR_094
 TemplateTypeParmType
 <Visited Children>
-ADDR_096
+ADDR_095
 0
 <TemplateTypeParmDeclData>
-ADDR_096
+ADDR_095
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/streambuf
-127
+130
 25
 <SYSTEM_INCLUDE>/c++/streambuf
-127
+130
 31
 0
 1
@@ -2391,24 +2360,24 @@ _Traits
 0
 None
 Default
-ADDR_095
+ADDR_094
 CLASS
 0
-ADDR_082
+ADDR_081
 <Id to Class Map>
-ADDR_096
+ADDR_095
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_097
+ADDR_096
 0
 <TemplateDeclData>
-ADDR_097
+ADDR_096
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/streambuf
-127
+130
 1
 <SYSTEM_INCLUDE>/c++/streambuf
-287
+294
 1
 0
 1
@@ -2426,59 +2395,59 @@ basic_streambuf
 External
 Default
 2
-ADDR_094
-ADDR_096
-ADDR_085
+ADDR_093
+ADDR_095
+ADDR_084
 <Id to Class Map>
-ADDR_097
+ADDR_096
 ClassTemplateDecl
 <Visited Children>
-ADDR_098
+ADDR_097
 0
 <TemplateSpecializationTypeData>
-ADDR_098
+ADDR_097
 TemplateSpecializationType
 basic_streambuf<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_090
+ADDR_089
 0
 nullptr_type
 basic_streambuf
-ADDR_097
+ADDR_096
 2
 Type
-ADDR_091
+ADDR_090
 Type
-ADDR_092
+ADDR_091
 <Id to Class Map>
-ADDR_098
+ADDR_097
 TemplateSpecializationType
 <Visited Children>
-ADDR_099
+ADDR_098
 0
 <ElaboratedTypeData>
-ADDR_099
+ADDR_098
 ElaboratedType
 basic_streambuf<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_098
+ADDR_097
 None
 
-ADDR_098
+ADDR_097
 <Id to Class Map>
-ADDR_099
+ADDR_098
 ElaboratedType
 <Visited Children>
-ADDR_100
+ADDR_099
 0
 <PointerTypeData>
-ADDR_100
+ADDR_099
 PointerType
 basic_streambuf<char_type, traits_type> *
 NONE
@@ -2486,15 +2455,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_099
+ADDR_098
 <Id to Class Map>
-ADDR_100
+ADDR_099
 PointerType
 <Visited Children>
-ADDR_101
+ADDR_100
 0
 <FunctionProtoTypeData>
-ADDR_101
+ADDR_100
 FunctionProtoType
 void (basic_streambuf<char_type, traits_type> *)
 NONE
@@ -2510,25 +2479,25 @@ nullptr_type
 0
 0
 C
-ADDR_075
+ADDR_074
 1
 1
-ADDR_100
+ADDR_099
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_101
+ADDR_100
 FunctionProtoType
 <Top Level Types>
-ADDR_101
+ADDR_100
 <Visited Children>
-ADDR_102
+ADDR_101
 0
 <PointerTypeData>
-ADDR_102
+ADDR_101
 PointerType
 std::ostream *
 NONE
@@ -2536,21 +2505,21 @@ NONE
 0
 0
 nullptr_type
-ADDR_103
-<Id to Class Map>
 ADDR_102
+<Id to Class Map>
+ADDR_101
 PointerType
 <Visited Children>
-ADDR_104
+ADDR_103
 0
 <CXXConstructorDeclData>
-ADDR_104
+ADDR_103
 CXXConstructorDecl
-<SYSTEM_INCLUDE>/c++/ostream
-218
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+50
 3
-<SYSTEM_INCLUDE>/c++/ostream
-220
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+52
 3
 0
 1
@@ -2560,8 +2529,8 @@ CXXConstructorDecl
 0
 0
 2
+ADDR_072
 ADDR_073
-ADDR_074
 std::ostream
 basic_ostream
 3
@@ -2569,7 +2538,7 @@ basic_ostream
 1
 External
 Default
-ADDR_101
+ADDR_100
 0
 0
 2
@@ -2580,10 +2549,10 @@ None
 0
 0
 nullptr_decl
-ADDR_104
+ADDR_103
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -2592,8 +2561,8 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 1
 0
 0
@@ -2603,16 +2572,16 @@ ResolvedTrue
 nullptr_expr
 1
 <Id to Class Map>
-ADDR_104
+ADDR_103
 CXXConstructorDecl
 <Visited Children>
-ADDR_106
+ADDR_105
 0
 <AttributeData>
-ADDR_106
+ADDR_105
 OverrideAttr
-<SYSTEM_INCLUDE>/c++/ostream
-221
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+53
 20
 <end>
 0
@@ -2623,15 +2592,15 @@ Override
 0
 0
 <Id to Class Map>
-ADDR_106
+ADDR_105
 OverrideAttr
 <Top Level Attributes>
-ADDR_106
+ADDR_105
 <Visited Children>
-ADDR_107
+ADDR_106
 0
 <FunctionProtoTypeData>
-ADDR_107
+ADDR_106
 FunctionProtoType
 void () noexcept
 NONE
@@ -2647,7 +2616,7 @@ nullptr_type
 0
 0
 C
-ADDR_075
+ADDR_074
 0
 0
 0
@@ -2656,18 +2625,18 @@ None
 BasicNoexcept
 0
 <Id to Class Map>
-ADDR_107
+ADDR_106
 FunctionProtoType
 <Top Level Types>
-ADDR_107
+ADDR_106
 <Visited Children>
-ADDR_108
+ADDR_107
 0
 <AttributeData>
-ADDR_108
+ADDR_107
 OverrideAttr
 <SYSTEM_INCLUDE>/c++/ios
-555
+590
 16
 <end>
 0
@@ -2678,30 +2647,30 @@ Override
 0
 0
 <Id to Class Map>
-ADDR_108
+ADDR_107
 OverrideAttr
 <Top Level Attributes>
-ADDR_108
-<Top Level Types>
 ADDR_107
+<Top Level Types>
+ADDR_106
 <Visited Children>
-ADDR_109
+ADDR_108
 0
 <AttributeData>
-ADDR_109
+ADDR_108
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-30
+32
 7
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-30
+32
 33
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -2710,15 +2679,15 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_109
+ADDR_108
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_109
+ADDR_108
 <Visited Children>
-ADDR_110
+ADDR_109
 0
 <TagTypeData>
-ADDR_110
+ADDR_109
 RecordType
 std::ios
 NONE
@@ -2726,21 +2695,21 @@ NONE
 0
 0
 nullptr_type
-ADDR_111
-<Id to Class Map>
 ADDR_110
+<Id to Class Map>
+ADDR_109
 RecordType
 <Visited Children>
-ADDR_112
+ADDR_111
 0
 <CXXRecordDeclData>
-ADDR_112
+ADDR_111
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/ios
-252
+249
 1
 <SYSTEM_INCLUDE>/c++/ios
-407
+410
 1
 0
 1
@@ -2757,20 +2726,20 @@ ios_base
 0
 External
 Default
-ADDR_113
+ADDR_112
 Class
 1
 0
 0
-ADDR_112
+ADDR_111
 <Id to Class Map>
-ADDR_112
+ADDR_111
 CXXRecordDecl
 <Visited Children>
-ADDR_113
+ADDR_112
 0
 <TagTypeData>
-ADDR_113
+ADDR_112
 RecordType
 std::ios_base
 NONE
@@ -2778,33 +2747,33 @@ NONE
 0
 0
 nullptr_type
-ADDR_112
+ADDR_111
 <Id to Class Map>
-ADDR_113
+ADDR_112
 RecordType
 <Visited Children>
-ADDR_114
+ADDR_113
 0
 <ElaboratedTypeData>
-ADDR_114
+ADDR_113
 ElaboratedType
 ios_base
 NONE
 0
 0
 0
-ADDR_113
+ADDR_112
 None
 
-ADDR_113
+ADDR_112
 <Id to Class Map>
-ADDR_114
+ADDR_113
 ElaboratedType
 <Visited Children>
-ADDR_115
+ADDR_114
 0
 <TemplateTypeParmTypeData>
-ADDR_115
+ADDR_114
 TemplateTypeParmType
 _CharT
 DEPENDENT
@@ -2815,21 +2784,21 @@ nullptr_type
 0
 0
 0
-ADDR_116
-<Id to Class Map>
 ADDR_115
+<Id to Class Map>
+ADDR_114
 TemplateTypeParmType
 <Visited Children>
-ADDR_116
+ADDR_115
 0
 <TemplateTypeParmDeclData>
-ADDR_116
+ADDR_115
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-21
+23
 11
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-21
+23
 17
 0
 1
@@ -2846,18 +2815,18 @@ _CharT
 0
 None
 Default
-ADDR_115
+ADDR_114
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_116
+ADDR_115
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_117
+ADDR_116
 0
 <TemplateTypeParmTypeData>
-ADDR_117
+ADDR_116
 TemplateTypeParmType
 _Traits
 DEPENDENT
@@ -2868,15 +2837,15 @@ nullptr_type
 0
 1
 0
-ADDR_118
-<Id to Class Map>
 ADDR_117
+<Id to Class Map>
+ADDR_116
 TemplateTypeParmType
 <Visited Children>
-ADDR_119
+ADDR_118
 0
 <TemplateSpecializationTypeData>
-ADDR_119
+ADDR_118
 TemplateSpecializationType
 char_traits<_CharT>
 DEPENDENT
@@ -2887,42 +2856,42 @@ nullptr_type
 0
 nullptr_type
 char_traits
-ADDR_025
+ADDR_024
 1
 Type
-ADDR_115
+ADDR_114
 <Id to Class Map>
-ADDR_119
+ADDR_118
 TemplateSpecializationType
 <Visited Children>
-ADDR_120
+ADDR_119
 0
 <ElaboratedTypeData>
-ADDR_120
+ADDR_119
 ElaboratedType
 char_traits<_CharT>
 DEPENDENT
 0
 0
 0
-ADDR_119
+ADDR_118
 None
 
-ADDR_119
+ADDR_118
 <Id to Class Map>
-ADDR_120
+ADDR_119
 ElaboratedType
 <Visited Children>
-ADDR_118
+ADDR_117
 0
 <TemplateTypeParmDeclData>
-ADDR_118
+ADDR_117
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-21
+23
 25
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-21
+23
 59
 0
 1
@@ -2939,31 +2908,31 @@ _Traits
 0
 None
 Default
-ADDR_117
+ADDR_116
 CLASS
 0
-ADDR_120
+ADDR_119
 <Id to Class Map>
-ADDR_118
+ADDR_117
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_121
+ADDR_120
 0
 <AttributeData>
-ADDR_121
+ADDR_120
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-30
+32
 7
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-30
+32
 33
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -2972,28 +2941,28 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_121
+ADDR_120
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_121
+ADDR_120
 <Visited Children>
-ADDR_122
+ADDR_121
 0
 <AttributeData>
-ADDR_122
+ADDR_121
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-30
+32
 35
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-30
+32
 90
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -3002,21 +2971,21 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_122
+ADDR_121
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_122
+ADDR_121
 <Visited Children>
-ADDR_123
+ADDR_122
 0
 <CXXRecordDeclData>
-ADDR_123
+ADDR_122
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/ios
-520
+555
 1
 <SYSTEM_INCLUDE>/c++/ios
-587
+630
 1
 0
 1
@@ -3026,8 +2995,8 @@ CXXRecordDecl
 0
 0
 2
+ADDR_120
 ADDR_121
-ADDR_122
 std
 basic_ios
 0
@@ -3035,7 +3004,7 @@ basic_ios
 0
 External
 Default
-ADDR_124
+ADDR_123
 Class
 1
 0
@@ -3044,16 +3013,16 @@ Class
 0
 PUBLIC
 PUBLIC
-ADDR_114
-ADDR_123
+ADDR_113
+ADDR_122
 <Id to Class Map>
-ADDR_123
+ADDR_122
 CXXRecordDecl
 <Visited Children>
-ADDR_124
+ADDR_123
 0
 <TypeData>
-ADDR_124
+ADDR_123
 InjectedClassNameType
 basic_ios<_CharT, _Traits>
 DEPENDENT
@@ -3062,19 +3031,19 @@ DEPENDENT
 0
 nullptr_type
 <Id to Class Map>
-ADDR_124
+ADDR_123
 InjectedClassNameType
 <Visited Children>
-ADDR_125
+ADDR_124
 0
 <CXXRecordDeclData>
-ADDR_125
+ADDR_124
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-22
+24
 1
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-22
+24
 28
 0
 1
@@ -3091,7 +3060,7 @@ basic_ios
 0
 External
 Default
-ADDR_124
+ADDR_123
 Class
 0
 0
@@ -3100,22 +3069,22 @@ Class
 0
 PUBLIC
 PUBLIC
-ADDR_114
-ADDR_123
+ADDR_113
+ADDR_122
 <Id to Class Map>
-ADDR_125
+ADDR_124
 CXXRecordDecl
 <Visited Children>
-ADDR_126
+ADDR_125
 0
 <TemplateDeclData>
-ADDR_126
+ADDR_125
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-21
+23
 1
 <SYSTEM_INCLUDE>/c++/__fwd/ios.h
-22
+24
 28
 0
 1
@@ -3133,23 +3102,23 @@ basic_ios
 External
 Default
 2
-ADDR_116
-ADDR_118
-ADDR_125
+ADDR_115
+ADDR_117
+ADDR_124
 <Id to Class Map>
-ADDR_126
+ADDR_125
 ClassTemplateDecl
 <Visited Children>
-ADDR_111
+ADDR_110
 0
 <ClassTemplateSpecializationDeclData>
-ADDR_111
+ADDR_110
 ClassTemplateSpecializationDecl
 <SYSTEM_INCLUDE>/c++/ios
-698
+741
 1
 <SYSTEM_INCLUDE>/c++/ios
-698
+741
 70
 0
 1
@@ -3159,7 +3128,7 @@ ClassTemplateSpecializationDecl
 0
 0
 1
-ADDR_109
+ADDR_108
 std
 basic_ios
 0
@@ -3167,7 +3136,7 @@ basic_ios
 0
 External
 Default
-ADDR_110
+ADDR_109
 Class
 1
 0
@@ -3176,9 +3145,9 @@ Class
 0
 PUBLIC
 PUBLIC
-ADDR_114
-ADDR_111
-ADDR_126
+ADDR_113
+ADDR_110
+ADDR_125
 ExplicitInstantiationDeclaration
 2
 Type
@@ -3186,15 +3155,15 @@ ADDR_006
 Type
 ADDR_019
 <Id to Class Map>
-ADDR_111
+ADDR_110
 ClassTemplateSpecializationDecl
 <Top Level Types>
-ADDR_107
+ADDR_106
 <Visited Children>
-ADDR_127
+ADDR_126
 0
 <PointerTypeData>
-ADDR_127
+ADDR_126
 PointerType
 std::ios_base *
 NONE
@@ -3202,21 +3171,21 @@ NONE
 0
 0
 nullptr_type
-ADDR_113
+ADDR_112
 <Id to Class Map>
-ADDR_127
+ADDR_126
 PointerType
 <Visited Children>
-ADDR_128
+ADDR_127
 0
 <CXXMethodDeclData>
-ADDR_128
+ADDR_127
 CXXDestructorDecl
 <SYSTEM_INCLUDE>/c++/ios
-328
+325
 3
 <SYSTEM_INCLUDE>/c++/ios
-328
+325
 21
 0
 1
@@ -3233,7 +3202,7 @@ std::ios_base
 1
 External
 Default
-ADDR_107
+ADDR_106
 0
 0
 0
@@ -3244,30 +3213,30 @@ None
 0
 0
 nullptr_decl
-ADDR_128
+ADDR_127
 nullptr_decl
 0
+ADDR_111
+0
+0
+1
+0
+0
+1
+0
+0
+ADDR_126
 ADDR_112
 0
 0
-1
-0
-0
-1
-0
-0
-ADDR_127
-ADDR_113
-0
-0
 <Id to Class Map>
-ADDR_128
+ADDR_127
 CXXDestructorDecl
 <Visited Children>
-ADDR_129
+ADDR_128
 0
 <PointerTypeData>
-ADDR_129
+ADDR_128
 PointerType
 std::ios *
 NONE
@@ -3275,21 +3244,21 @@ NONE
 0
 0
 nullptr_type
-ADDR_110
+ADDR_109
 <Id to Class Map>
-ADDR_129
+ADDR_128
 PointerType
 <Visited Children>
-ADDR_130
+ADDR_129
 0
 <CXXMethodDeclData>
-ADDR_130
+ADDR_129
 CXXDestructorDecl
 <SYSTEM_INCLUDE>/c++/ios
-555
+590
 3
 <SYSTEM_INCLUDE>/c++/ios
-555
+590
 16
 0
 1
@@ -3299,7 +3268,7 @@ CXXDestructorDecl
 0
 0
 1
-ADDR_108
+ADDR_107
 std::basic_ios<char>
 ~basic_ios
 4
@@ -3307,7 +3276,7 @@ std::basic_ios<char>
 1
 External
 Default
-ADDR_107
+ADDR_106
 0
 0
 2
@@ -3318,37 +3287,37 @@ None
 0
 0
 nullptr_decl
-ADDR_130
+ADDR_129
 nullptr_decl
 0
-ADDR_111
-1
-ADDR_128
-0
-1
-0
-0
-1
-0
-0
-ADDR_129
 ADDR_110
+1
+ADDR_127
+0
+1
+0
+0
+1
+0
+0
+ADDR_128
+ADDR_109
 0
 0
 <Id to Class Map>
-ADDR_130
+ADDR_129
 CXXDestructorDecl
 <Visited Children>
-ADDR_131
+ADDR_130
 0
 <CXXMethodDeclData>
-ADDR_131
+ADDR_130
 CXXDestructorDecl
-<SYSTEM_INCLUDE>/c++/ostream
-221
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+53
 3
-<SYSTEM_INCLUDE>/c++/ostream
-221
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+53
 20
 0
 1
@@ -3358,7 +3327,7 @@ CXXDestructorDecl
 0
 0
 1
-ADDR_106
+ADDR_105
 std::ostream
 ~basic_ostream
 4
@@ -3366,7 +3335,7 @@ std::ostream
 1
 External
 Default
-ADDR_107
+ADDR_106
 0
 0
 2
@@ -3377,460 +3346,31 @@ None
 0
 0
 nullptr_decl
-ADDR_131
+ADDR_130
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 1
-ADDR_130
-0
-1
-0
+ADDR_129
 0
 1
 0
 0
+1
+0
+0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_131
+ADDR_130
 CXXDestructorDecl
 <Visited Children>
-ADDR_132
-0
-<AccessSpecDeclData>
-ADDR_132
-AccessSpecDecl
-<SYSTEM_INCLUDE>/c++/ostream
-223
-1
-<SYSTEM_INCLUDE>/c++/ostream
-223
-10
-0
-1
-0
-0
-0
-0
-0
-0
-PROTECTED
-<Id to Class Map>
-ADDR_132
-AccessSpecDecl
-<Visited Children>
-ADDR_133
-0
-<AttributeData>
-ADDR_133
-ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-224
-10
-<end>
-1
-<SYSTEM_INCLUDE>/c++/__config
-782
-72
-<end>
-1
-ExcludeFromExplicitInstantiation
-0
-1
-0
-0
-<Id to Class Map>
-ADDR_133
-ExcludeFromExplicitInstantiationAttr
-<Top Level Attributes>
-ADDR_133
-<Visited Children>
-ADDR_134
-0
-<ReferenceTypeData>
-ADDR_134
-RValueReferenceType
-ostream &&
-NONE
-0
-0
-0
-nullptr_type
-ADDR_135
-<Id to Class Map>
-ADDR_134
-RValueReferenceType
-<Visited Children>
-ADDR_136
-0
-<FunctionProtoTypeData>
-ADDR_136
-FunctionProtoType
-void (ostream &&)
-NONE
-0
-0
-0
-nullptr_type
-0
-0
-0
-0
-0
-0
-0
-C
-ADDR_075
-1
-1
-ADDR_134
-0
-0
-None
-None
-0
-<Id to Class Map>
-ADDR_136
-FunctionProtoType
-<Top Level Types>
-ADDR_136
-<Visited Children>
-ADDR_137
-0
-<CXXConstructorDeclData>
-ADDR_137
-CXXConstructorDecl
-<SYSTEM_INCLUDE>/c++/ostream
-224
-3
-<SYSTEM_INCLUDE>/c++/ostream
-224
-67
-0
-1
-0
-0
-0
-0
-0
-1
-ADDR_133
-std::ostream
-basic_ostream
-3
-1
-1
-External
-Default
-ADDR_136
-0
-0
-2
-None
-1
-0
-0
-0
-0
-nullptr_decl
-ADDR_137
-nullptr_decl
-0
-ADDR_105
-0
-0
-1
-0
-0
-0
-0
-0
-ADDR_102
-ADDR_103
-0
-0
-0
-0
-0
-ResolvedFalse
-nullptr_expr
-0
-<Id to Class Map>
-ADDR_137
-CXXConstructorDecl
-<Visited Children>
-ADDR_138
-0
-<AttributeData>
-ADDR_138
-ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-227
-10
-<end>
-1
-<SYSTEM_INCLUDE>/c++/__config
-782
-72
-<end>
-1
-ExcludeFromExplicitInstantiation
-0
-1
-0
-0
-<Id to Class Map>
-ADDR_138
-ExcludeFromExplicitInstantiationAttr
-<Top Level Attributes>
-ADDR_138
-<Visited Children>
-ADDR_139
-0
-<FunctionProtoTypeData>
-ADDR_139
-FunctionProtoType
-ostream &(ostream &&)
-NONE
-0
-0
-0
-nullptr_type
-0
-0
-0
-0
-0
-0
-0
-C
-ADDR_140
-1
-1
-ADDR_134
-0
-0
-None
-None
-0
-<Id to Class Map>
-ADDR_139
-FunctionProtoType
-<Top Level Types>
-ADDR_139
-<Visited Children>
-ADDR_141
-0
-<CXXMethodDeclData>
-ADDR_141
-CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-227
-3
-<SYSTEM_INCLUDE>/c++/ostream
-227
-78
-0
-1
-0
-0
-0
-0
-0
-1
-ADDR_138
-std::ostream
-operator=
-6
-1
-1
-External
-Default
-ADDR_139
-0
-0
-2
-None
-1
-0
-0
-0
-0
-nullptr_decl
-ADDR_141
-nullptr_decl
-0
-ADDR_105
-0
-0
-1
-0
-0
-0
-0
-1
-ADDR_102
-ADDR_103
-0
-0
-<Id to Class Map>
-ADDR_141
-CXXMethodDecl
-<Visited Children>
-ADDR_142
-0
-<AttributeData>
-ADDR_142
-ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-229
-10
-<end>
-1
-<SYSTEM_INCLUDE>/c++/__config
-782
-72
-<end>
-1
-ExcludeFromExplicitInstantiation
-0
-0
-0
-0
-<Id to Class Map>
-ADDR_142
-ExcludeFromExplicitInstantiationAttr
-<Top Level Attributes>
-ADDR_142
-<Visited Children>
-ADDR_143
-0
-<AttributeData>
-ADDR_143
-AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-229
-10
-<end>
-1
-<SYSTEM_INCLUDE>/c++/__config
-857
-26
-<SYSTEM_INCLUDE>/c++/__config
-857
-77
-1
-AbiTag
-0
-0
-0
-0
-<Id to Class Map>
-ADDR_143
-AbiTagAttr
-<Top Level Attributes>
-ADDR_143
-<Visited Children>
-ADDR_144
-0
-<FunctionProtoTypeData>
-ADDR_144
-FunctionProtoType
-void (ostream &)
-NONE
-0
-0
-0
-nullptr_type
-0
-0
-0
-0
-0
-0
-0
-C
-ADDR_075
-1
-1
-ADDR_140
-0
-0
-None
-None
-0
-<Id to Class Map>
-ADDR_144
-FunctionProtoType
-<Top Level Types>
-ADDR_144
-<Visited Children>
-ADDR_145
-0
-<CXXMethodDeclData>
-ADDR_145
-CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-229
-3
-<SYSTEM_INCLUDE>/c++/ostream
-231
-3
-0
-1
-0
-0
-0
-0
-0
-2
-ADDR_142
-ADDR_143
-std::ostream
-swap
-0
-1
-1
-External
-Default
-ADDR_144
-0
-0
-2
-None
-1
-0
-0
-0
-0
-nullptr_decl
-ADDR_145
-nullptr_decl
-0
-ADDR_105
-0
-0
-1
-0
-0
-0
-0
-0
-ADDR_102
-ADDR_103
-1
-0
-<Id to Class Map>
-ADDR_145
-CXXMethodDecl
-<Visited Children>
-ADDR_146
+ADDR_131
 0
 <QualTypeData>
-ADDR_146
+ADDR_131
 QualType
 const std::ostream
 NONE
@@ -3842,35 +3382,35 @@ nullptr_type
 CONST
 NONE
 0
-ADDR_103
+ADDR_102
 <Id to Class Map>
-ADDR_146
+ADDR_131
 QualType
 <Visited Children>
-ADDR_147
+ADDR_132
 0
 <QualTypeData>
-ADDR_147
+ADDR_132
 QualType
 const ostream
 NONE
 0
 0
 0
-ADDR_103
+ADDR_102
 1
 CONST
 NONE
 0
-ADDR_135
+ADDR_133
 <Id to Class Map>
-ADDR_147
+ADDR_132
 QualType
 <Visited Children>
-ADDR_148
+ADDR_134
 0
 <ReferenceTypeData>
-ADDR_148
+ADDR_134
 LValueReferenceType
 const ostream &
 NONE
@@ -3878,15 +3418,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_147
+ADDR_132
 <Id to Class Map>
-ADDR_148
+ADDR_134
 LValueReferenceType
 <Visited Children>
-ADDR_149
+ADDR_135
 0
 <FunctionProtoTypeData>
-ADDR_149
+ADDR_135
 FunctionProtoType
 void (const ostream &)
 NONE
@@ -3902,31 +3442,31 @@ nullptr_type
 0
 0
 C
-ADDR_075
+ADDR_074
 1
 1
-ADDR_148
+ADDR_134
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_149
+ADDR_135
 FunctionProtoType
 <Top Level Types>
-ADDR_149
+ADDR_135
 <Visited Children>
-ADDR_150
+ADDR_136
 0
 <CXXConstructorDeclData>
-ADDR_150
+ADDR_136
 CXXConstructorDecl
-<SYSTEM_INCLUDE>/c++/ostream
-233
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+55
 3
-<SYSTEM_INCLUDE>/c++/ostream
-233
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+55
 63
 0
 1
@@ -3943,7 +3483,7 @@ basic_ostream
 1
 External
 Default
-ADDR_149
+ADDR_135
 0
 0
 2
@@ -3954,10 +3494,10 @@ None
 1
 0
 nullptr_decl
-ADDR_150
+ADDR_136
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -3966,8 +3506,8 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 0
@@ -3977,13 +3517,13 @@ ResolvedFalse
 nullptr_expr
 0
 <Id to Class Map>
-ADDR_150
+ADDR_136
 CXXConstructorDecl
 <Visited Children>
-ADDR_151
+ADDR_137
 0
 <FunctionProtoTypeData>
-ADDR_151
+ADDR_137
 FunctionProtoType
 ostream &(const ostream &)
 NONE
@@ -3999,31 +3539,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_148
+ADDR_134
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_151
+ADDR_137
 FunctionProtoType
 <Top Level Types>
-ADDR_151
+ADDR_137
 <Visited Children>
-ADDR_152
+ADDR_139
 0
 <CXXMethodDeclData>
-ADDR_152
+ADDR_139
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-234
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+56
 3
-<SYSTEM_INCLUDE>/c++/ostream
-234
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+56
 63
 0
 1
@@ -4040,7 +3580,7 @@ operator=
 1
 External
 Default
-ADDR_151
+ADDR_137
 0
 0
 2
@@ -4051,10 +3591,10 @@ None
 1
 0
 nullptr_decl
-ADDR_152
+ADDR_139
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -4063,24 +3603,453 @@ ADDR_105
 0
 1
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_152
+ADDR_139
 CXXMethodDecl
 <Visited Children>
-ADDR_153
+ADDR_140
 0
 <AccessSpecDeclData>
-ADDR_153
+ADDR_140
 AccessSpecDecl
-<SYSTEM_INCLUDE>/c++/ostream
-236
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+58
 1
-<SYSTEM_INCLUDE>/c++/ostream
-236
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+58
+10
+0
+1
+0
+0
+0
+0
+0
+0
+PROTECTED
+<Id to Class Map>
+ADDR_140
+AccessSpecDecl
+<Visited Children>
+ADDR_141
+0
+<AttributeData>
+ADDR_141
+ExcludeFromExplicitInstantiationAttr
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+59
+10
+<end>
+1
+<SYSTEM_INCLUDE>/c++/__config
+447
+72
+<end>
+1
+ExcludeFromExplicitInstantiation
+0
+1
+0
+0
+<Id to Class Map>
+ADDR_141
+ExcludeFromExplicitInstantiationAttr
+<Top Level Attributes>
+ADDR_141
+<Visited Children>
+ADDR_142
+0
+<ReferenceTypeData>
+ADDR_142
+RValueReferenceType
+ostream &&
+NONE
+0
+0
+0
+nullptr_type
+ADDR_133
+<Id to Class Map>
+ADDR_142
+RValueReferenceType
+<Visited Children>
+ADDR_143
+0
+<FunctionProtoTypeData>
+ADDR_143
+FunctionProtoType
+void (ostream &&)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_074
+1
+1
+ADDR_142
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_143
+FunctionProtoType
+<Top Level Types>
+ADDR_143
+<Visited Children>
+ADDR_144
+0
+<CXXConstructorDeclData>
+ADDR_144
+CXXConstructorDecl
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+59
+3
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+59
+67
+0
+1
+0
+0
+0
+0
+0
+1
+ADDR_141
+std::ostream
+basic_ostream
+3
+1
+1
+External
+Default
+ADDR_143
+0
+0
+2
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_144
+nullptr_decl
+0
+ADDR_104
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_101
+ADDR_102
+0
+0
+0
+0
+0
+ResolvedFalse
+nullptr_expr
+0
+<Id to Class Map>
+ADDR_144
+CXXConstructorDecl
+<Visited Children>
+ADDR_145
+0
+<AttributeData>
+ADDR_145
+ExcludeFromExplicitInstantiationAttr
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+62
+10
+<end>
+1
+<SYSTEM_INCLUDE>/c++/__config
+447
+72
+<end>
+1
+ExcludeFromExplicitInstantiation
+0
+1
+0
+0
+<Id to Class Map>
+ADDR_145
+ExcludeFromExplicitInstantiationAttr
+<Top Level Attributes>
+ADDR_145
+<Visited Children>
+ADDR_146
+0
+<FunctionProtoTypeData>
+ADDR_146
+FunctionProtoType
+ostream &(ostream &&)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_138
+1
+1
+ADDR_142
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_146
+FunctionProtoType
+<Top Level Types>
+ADDR_146
+<Visited Children>
+ADDR_147
+0
+<CXXMethodDeclData>
+ADDR_147
+CXXMethodDecl
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+62
+3
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+62
+78
+0
+1
+0
+0
+0
+0
+0
+1
+ADDR_145
+std::ostream
+operator=
+6
+1
+1
+External
+Default
+ADDR_146
+0
+0
+2
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_147
+nullptr_decl
+0
+ADDR_104
+0
+0
+1
+0
+0
+0
+0
+1
+ADDR_101
+ADDR_102
+0
+0
+<Id to Class Map>
+ADDR_147
+CXXMethodDecl
+<Visited Children>
+ADDR_148
+0
+<AttributeData>
+ADDR_148
+ExcludeFromExplicitInstantiationAttr
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+64
+10
+<end>
+1
+<SYSTEM_INCLUDE>/c++/__config
+447
+72
+<end>
+1
+ExcludeFromExplicitInstantiation
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_148
+ExcludeFromExplicitInstantiationAttr
+<Top Level Attributes>
+ADDR_148
+<Visited Children>
+ADDR_149
+0
+<AttributeData>
+ADDR_149
+AbiTagAttr
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+64
+10
+<end>
+1
+<SYSTEM_INCLUDE>/c++/__config
+545
+22
+<SYSTEM_INCLUDE>/c++/__config
+545
+73
+1
+AbiTag
+0
+0
+0
+0
+<Id to Class Map>
+ADDR_149
+AbiTagAttr
+<Top Level Attributes>
+ADDR_149
+<Visited Children>
+ADDR_150
+0
+<FunctionProtoTypeData>
+ADDR_150
+FunctionProtoType
+void (ostream &)
+NONE
+0
+0
+0
+nullptr_type
+0
+0
+0
+0
+0
+0
+0
+C
+ADDR_074
+1
+1
+ADDR_138
+0
+0
+None
+None
+0
+<Id to Class Map>
+ADDR_150
+FunctionProtoType
+<Top Level Types>
+ADDR_150
+<Visited Children>
+ADDR_151
+0
+<CXXMethodDeclData>
+ADDR_151
+CXXMethodDecl
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+64
+3
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+66
+3
+0
+1
+0
+0
+0
+0
+0
+2
+ADDR_148
+ADDR_149
+std::ostream
+swap
+0
+1
+1
+External
+Default
+ADDR_150
+0
+0
+2
+None
+1
+0
+0
+0
+0
+nullptr_decl
+ADDR_151
+nullptr_decl
+0
+ADDR_104
+0
+0
+1
+0
+0
+0
+0
+0
+ADDR_101
+ADDR_102
+1
+0
+<Id to Class Map>
+ADDR_151
+CXXMethodDecl
+<Visited Children>
+ADDR_152
+0
+<AccessSpecDeclData>
+ADDR_152
+AccessSpecDecl
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+68
+1
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+68
 7
 0
 1
@@ -4092,13 +4061,13 @@ AccessSpecDecl
 0
 PUBLIC
 <Id to Class Map>
-ADDR_153
+ADDR_152
 AccessSpecDecl
 <Visited Children>
-ADDR_154
+ADDR_153
 0
 <TagTypeData>
-ADDR_154
+ADDR_153
 RecordType
 std::ostream::sentry
 NONE
@@ -4106,21 +4075,21 @@ NONE
 0
 0
 nullptr_type
-ADDR_155
-<Id to Class Map>
 ADDR_154
+<Id to Class Map>
+ADDR_153
 RecordType
 <Visited Children>
-ADDR_155
+ADDR_154
 0
 <CXXRecordDeclData>
-ADDR_155
+ADDR_154
 CXXRecordDecl
-<SYSTEM_INCLUDE>/c++/ostream
-238
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+70
 3
-<SYSTEM_INCLUDE>/c++/ostream
-238
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+70
 30
 0
 1
@@ -4137,28 +4106,28 @@ sentry
 0
 External
 Default
-ADDR_154
+ADDR_153
 Class
 0
 0
 0
 nullptr_decl
 <Id to Class Map>
-ADDR_155
+ADDR_154
 CXXRecordDecl
 <Visited Children>
-ADDR_156
+ADDR_155
 0
 <AttributeData>
-ADDR_156
+ADDR_155
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-241
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+73
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -4168,27 +4137,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_156
+ADDR_155
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_156
+ADDR_155
 <Visited Children>
-ADDR_157
+ADDR_156
 0
 <AttributeData>
-ADDR_157
+ADDR_156
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-241
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+73
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -4196,23 +4165,23 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_157
+ADDR_156
 AbiTagAttr
 <Top Level Attributes>
-ADDR_157
+ADDR_156
 <Top Level Types>
-ADDR_158
+ADDR_157
 <Visited Children>
-ADDR_159
+ADDR_158
 0
 <CXXMethodDeclData>
-ADDR_159
+ADDR_158
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-241
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+73
 3
-<SYSTEM_INCLUDE>/c++/ostream
-243
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+75
 3
 0
 1
@@ -4222,8 +4191,8 @@ CXXMethodDecl
 0
 0
 2
+ADDR_155
 ADDR_156
-ADDR_157
 std::ostream
 operator<<
 6
@@ -4231,7 +4200,7 @@ operator<<
 1
 External
 Default
-ADDR_158
+ADDR_157
 0
 0
 2
@@ -4242,10 +4211,10 @@ None
 0
 0
 nullptr_decl
-ADDR_159
+ADDR_158
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -4254,26 +4223,26 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 1
 0
 <Id to Class Map>
-ADDR_159
+ADDR_158
 CXXMethodDecl
 <Visited Children>
-ADDR_160
+ADDR_159
 0
 <AttributeData>
-ADDR_160
+ADDR_159
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-245
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+77
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -4283,27 +4252,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_160
+ADDR_159
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_160
+ADDR_159
 <Visited Children>
-ADDR_161
+ADDR_160
 0
 <AttributeData>
-ADDR_161
+ADDR_160
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-245
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+77
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -4311,15 +4280,15 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_161
+ADDR_160
 AbiTagAttr
 <Top Level Attributes>
-ADDR_161
+ADDR_160
 <Visited Children>
-ADDR_162
+ADDR_161
 0
 <TemplateTypeParmTypeData>
-ADDR_162
+ADDR_161
 TemplateTypeParmType
 _CharT
 DEPENDENT
@@ -4330,21 +4299,21 @@ nullptr_type
 0
 0
 0
-ADDR_163
-<Id to Class Map>
 ADDR_162
+<Id to Class Map>
+ADDR_161
 TemplateTypeParmType
 <Visited Children>
-ADDR_163
+ADDR_162
 0
 <TemplateTypeParmDeclData>
-ADDR_163
+ADDR_162
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/ios
-519
+554
 11
 <SYSTEM_INCLUDE>/c++/ios
-519
+554
 17
 0
 1
@@ -4361,18 +4330,18 @@ _CharT
 0
 None
 Default
-ADDR_162
+ADDR_161
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_163
+ADDR_162
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_164
+ADDR_163
 0
 <TemplateTypeParmTypeData>
-ADDR_164
+ADDR_163
 TemplateTypeParmType
 _Traits
 DEPENDENT
@@ -4383,21 +4352,21 @@ nullptr_type
 0
 1
 0
-ADDR_165
-<Id to Class Map>
 ADDR_164
+<Id to Class Map>
+ADDR_163
 TemplateTypeParmType
 <Visited Children>
-ADDR_165
+ADDR_164
 0
 <TemplateTypeParmDeclData>
-ADDR_165
+ADDR_164
 TemplateTypeParmDecl
 <SYSTEM_INCLUDE>/c++/ios
-519
+554
 25
 <SYSTEM_INCLUDE>/c++/ios
-519
+554
 31
 0
 1
@@ -4414,24 +4383,24 @@ _Traits
 0
 None
 Default
-ADDR_164
+ADDR_163
 CLASS
 0
-ADDR_120
+ADDR_119
 <Id to Class Map>
-ADDR_165
+ADDR_164
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_166
+ADDR_165
 0
 <TemplateDeclData>
-ADDR_166
+ADDR_165
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/ios
-519
+554
 1
 <SYSTEM_INCLUDE>/c++/ios
-587
+630
 1
 0
 1
@@ -4449,59 +4418,59 @@ basic_ios
 External
 Default
 2
-ADDR_163
-ADDR_165
-ADDR_123
+ADDR_162
+ADDR_164
+ADDR_122
 <Id to Class Map>
-ADDR_166
+ADDR_165
 ClassTemplateDecl
 <Visited Children>
-ADDR_167
+ADDR_166
 0
 <TemplateSpecializationTypeData>
-ADDR_167
+ADDR_166
 TemplateSpecializationType
 basic_ios<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_110
+ADDR_109
 0
 nullptr_type
 basic_ios
-ADDR_166
+ADDR_165
 2
 Type
-ADDR_091
+ADDR_090
 Type
-ADDR_092
+ADDR_091
 <Id to Class Map>
-ADDR_167
+ADDR_166
 TemplateSpecializationType
 <Visited Children>
-ADDR_168
+ADDR_167
 0
 <ElaboratedTypeData>
-ADDR_168
+ADDR_167
 ElaboratedType
 basic_ios<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_167
+ADDR_166
 None
 
-ADDR_167
+ADDR_166
 <Id to Class Map>
-ADDR_168
+ADDR_167
 ElaboratedType
 <Visited Children>
-ADDR_169
+ADDR_168
 0
 <ReferenceTypeData>
-ADDR_169
+ADDR_168
 LValueReferenceType
 basic_ios<char_type, traits_type> &
 NONE
@@ -4509,57 +4478,57 @@ NONE
 0
 0
 nullptr_type
-ADDR_168
+ADDR_167
 <Id to Class Map>
-ADDR_169
+ADDR_168
 LValueReferenceType
 <Visited Children>
-ADDR_170
+ADDR_169
 0
 <TemplateSpecializationTypeData>
-ADDR_170
+ADDR_169
 TemplateSpecializationType
 basic_ios<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_110
+ADDR_109
 0
 nullptr_type
 basic_ios
-ADDR_166
+ADDR_165
 2
 Type
-ADDR_091
+ADDR_090
 Type
-ADDR_092
+ADDR_091
 <Id to Class Map>
-ADDR_170
+ADDR_169
 TemplateSpecializationType
 <Visited Children>
-ADDR_171
+ADDR_170
 0
 <ElaboratedTypeData>
-ADDR_171
+ADDR_170
 ElaboratedType
 basic_ios<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_170
+ADDR_169
 None
 
-ADDR_170
+ADDR_169
 <Id to Class Map>
-ADDR_171
+ADDR_170
 ElaboratedType
 <Visited Children>
-ADDR_172
+ADDR_171
 0
 <ReferenceTypeData>
-ADDR_172
+ADDR_171
 LValueReferenceType
 basic_ios<char_type, traits_type> &
 NONE
@@ -4567,15 +4536,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_171
+ADDR_170
 <Id to Class Map>
-ADDR_172
+ADDR_171
 LValueReferenceType
 <Visited Children>
-ADDR_173
+ADDR_172
 0
 <FunctionProtoTypeData>
-ADDR_173
+ADDR_172
 FunctionProtoType
 basic_ios<char_type, traits_type> &(basic_ios<char_type, traits_type> &)
 NONE
@@ -4591,38 +4560,38 @@ nullptr_type
 0
 0
 C
-ADDR_169
+ADDR_168
 1
 1
-ADDR_172
+ADDR_171
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_173
+ADDR_172
 FunctionProtoType
 <Visited Children>
-ADDR_174
+ADDR_173
 0
 <TypeData>
-ADDR_174
+ADDR_173
 ParenType
 basic_ios<char_type, traits_type> &(basic_ios<char_type, traits_type> &)
 NONE
 0
 0
 0
-ADDR_173
+ADDR_172
 <Id to Class Map>
-ADDR_174
+ADDR_173
 ParenType
 <Visited Children>
-ADDR_175
+ADDR_174
 0
 <PointerTypeData>
-ADDR_175
+ADDR_174
 PointerType
 basic_ios<char_type, traits_type> &(*)(basic_ios<char_type, traits_type> &)
 NONE
@@ -4630,15 +4599,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_174
+ADDR_173
 <Id to Class Map>
-ADDR_175
+ADDR_174
 PointerType
 <Visited Children>
-ADDR_176
+ADDR_175
 0
 <FunctionProtoTypeData>
-ADDR_176
+ADDR_175
 FunctionProtoType
 ostream &(basic_ios<char_type, traits_type> &(*)(basic_ios<char_type, traits_type> &))
 NONE
@@ -4654,31 +4623,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_175
+ADDR_174
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_176
+ADDR_175
 FunctionProtoType
 <Top Level Types>
-ADDR_176
+ADDR_175
 <Visited Children>
-ADDR_177
+ADDR_176
 0
 <CXXMethodDeclData>
-ADDR_177
+ADDR_176
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-245
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+77
 3
-<SYSTEM_INCLUDE>/c++/ostream
-249
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+81
 3
 0
 1
@@ -4688,8 +4657,8 @@ CXXMethodDecl
 0
 0
 2
+ADDR_159
 ADDR_160
-ADDR_161
 std::ostream
 operator<<
 6
@@ -4697,7 +4666,7 @@ operator<<
 1
 External
 Default
-ADDR_176
+ADDR_175
 0
 0
 2
@@ -4708,10 +4677,10 @@ None
 0
 0
 nullptr_decl
-ADDR_177
+ADDR_176
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -4720,26 +4689,26 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 1
 0
 <Id to Class Map>
-ADDR_177
+ADDR_176
 CXXMethodDecl
 <Visited Children>
-ADDR_178
+ADDR_177
 0
 <AttributeData>
-ADDR_178
+ADDR_177
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-251
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+83
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -4749,27 +4718,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_178
+ADDR_177
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_178
+ADDR_177
 <Visited Children>
-ADDR_179
+ADDR_178
 0
 <AttributeData>
-ADDR_179
+ADDR_178
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-251
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+83
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -4777,15 +4746,15 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_179
+ADDR_178
 AbiTagAttr
 <Top Level Attributes>
-ADDR_179
+ADDR_178
 <Visited Children>
-ADDR_180
+ADDR_179
 0
 <ReferenceTypeData>
-ADDR_180
+ADDR_179
 LValueReferenceType
 ios_base &
 NONE
@@ -4793,15 +4762,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_114
+ADDR_113
 <Id to Class Map>
-ADDR_180
+ADDR_179
 LValueReferenceType
 <Visited Children>
-ADDR_181
+ADDR_180
 0
 <FunctionProtoTypeData>
-ADDR_181
+ADDR_180
 FunctionProtoType
 ios_base &(ios_base &)
 NONE
@@ -4817,38 +4786,38 @@ nullptr_type
 0
 0
 C
-ADDR_180
+ADDR_179
 1
 1
-ADDR_180
+ADDR_179
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_181
+ADDR_180
 FunctionProtoType
 <Visited Children>
-ADDR_182
+ADDR_181
 0
 <TypeData>
-ADDR_182
+ADDR_181
 ParenType
 ios_base &(ios_base &)
 NONE
 0
 0
 0
-ADDR_181
+ADDR_180
 <Id to Class Map>
-ADDR_182
+ADDR_181
 ParenType
 <Visited Children>
-ADDR_183
+ADDR_182
 0
 <PointerTypeData>
-ADDR_183
+ADDR_182
 PointerType
 ios_base &(*)(ios_base &)
 NONE
@@ -4856,15 +4825,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_182
+ADDR_181
 <Id to Class Map>
-ADDR_183
+ADDR_182
 PointerType
 <Visited Children>
-ADDR_184
+ADDR_183
 0
 <FunctionProtoTypeData>
-ADDR_184
+ADDR_183
 FunctionProtoType
 ostream &(ios_base &(*)(ios_base &))
 NONE
@@ -4880,31 +4849,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_183
+ADDR_182
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_184
+ADDR_183
 FunctionProtoType
 <Top Level Types>
-ADDR_184
+ADDR_183
 <Visited Children>
-ADDR_185
+ADDR_184
 0
 <CXXMethodDeclData>
-ADDR_185
+ADDR_184
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-251
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+83
 3
-<SYSTEM_INCLUDE>/c++/ostream
-254
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+86
 3
 0
 1
@@ -4914,8 +4883,8 @@ CXXMethodDecl
 0
 0
 2
+ADDR_177
 ADDR_178
-ADDR_179
 std::ostream
 operator<<
 6
@@ -4923,7 +4892,7 @@ operator<<
 1
 External
 Default
-ADDR_184
+ADDR_183
 0
 0
 2
@@ -4934,10 +4903,10 @@ None
 0
 0
 nullptr_decl
-ADDR_185
+ADDR_184
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -4946,18 +4915,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 1
 0
 <Id to Class Map>
-ADDR_185
+ADDR_184
 CXXMethodDecl
 <Visited Children>
-ADDR_186
+ADDR_185
 0
 <BuiltinTypeData>
-ADDR_186
+ADDR_185
 BuiltinType
 bool
 NONE
@@ -4968,13 +4937,13 @@ nullptr_type
 Bool
 bool
 <Id to Class Map>
-ADDR_186
+ADDR_185
 BuiltinType
 <Visited Children>
-ADDR_187
+ADDR_186
 0
 <FunctionProtoTypeData>
-ADDR_187
+ADDR_186
 FunctionProtoType
 ostream &(bool)
 NONE
@@ -4990,31 +4959,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_186
+ADDR_185
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_187
+ADDR_186
 FunctionProtoType
 <Top Level Types>
-ADDR_187
+ADDR_186
 <Visited Children>
-ADDR_188
+ADDR_187
 0
 <CXXMethodDeclData>
-ADDR_188
+ADDR_187
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-256
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+88
 3
-<SYSTEM_INCLUDE>/c++/ostream
-256
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+88
 37
 0
 1
@@ -5031,7 +5000,7 @@ operator<<
 1
 External
 Default
-ADDR_187
+ADDR_186
 0
 0
 2
@@ -5042,10 +5011,10 @@ None
 0
 0
 nullptr_decl
-ADDR_188
+ADDR_187
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5054,18 +5023,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_188
+ADDR_187
 CXXMethodDecl
 <Visited Children>
-ADDR_189
+ADDR_188
 0
 <BuiltinTypeData>
-ADDR_189
+ADDR_188
 BuiltinType
 short
 NONE
@@ -5076,13 +5045,13 @@ nullptr_type
 Short
 short
 <Id to Class Map>
-ADDR_189
+ADDR_188
 BuiltinType
 <Visited Children>
-ADDR_190
+ADDR_189
 0
 <FunctionProtoTypeData>
-ADDR_190
+ADDR_189
 FunctionProtoType
 ostream &(short)
 NONE
@@ -5098,31 +5067,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_189
+ADDR_188
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_190
+ADDR_189
 FunctionProtoType
 <Top Level Types>
-ADDR_190
+ADDR_189
 <Visited Children>
-ADDR_191
+ADDR_190
 0
 <CXXMethodDeclData>
-ADDR_191
+ADDR_190
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-257
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+89
 3
-<SYSTEM_INCLUDE>/c++/ostream
-257
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+89
 38
 0
 1
@@ -5139,7 +5108,7 @@ operator<<
 1
 External
 Default
-ADDR_190
+ADDR_189
 0
 0
 2
@@ -5150,10 +5119,10 @@ None
 0
 0
 nullptr_decl
-ADDR_191
+ADDR_190
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5162,18 +5131,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_191
+ADDR_190
 CXXMethodDecl
 <Visited Children>
-ADDR_192
+ADDR_191
 0
 <BuiltinTypeData>
-ADDR_192
+ADDR_191
 BuiltinType
 unsigned short
 NONE
@@ -5184,13 +5153,13 @@ nullptr_type
 UShort
 unsigned short
 <Id to Class Map>
-ADDR_192
+ADDR_191
 BuiltinType
 <Visited Children>
-ADDR_193
+ADDR_192
 0
 <FunctionProtoTypeData>
-ADDR_193
+ADDR_192
 FunctionProtoType
 ostream &(unsigned short)
 NONE
@@ -5206,31 +5175,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_192
+ADDR_191
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_193
+ADDR_192
 FunctionProtoType
 <Top Level Types>
-ADDR_193
+ADDR_192
 <Visited Children>
-ADDR_194
+ADDR_193
 0
 <CXXMethodDeclData>
-ADDR_194
+ADDR_193
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-258
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+90
 3
-<SYSTEM_INCLUDE>/c++/ostream
-258
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+90
 47
 0
 1
@@ -5247,7 +5216,7 @@ operator<<
 1
 External
 Default
-ADDR_193
+ADDR_192
 0
 0
 2
@@ -5258,10 +5227,10 @@ None
 0
 0
 nullptr_decl
-ADDR_194
+ADDR_193
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5270,18 +5239,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_194
+ADDR_193
 CXXMethodDecl
 <Visited Children>
-ADDR_195
+ADDR_194
 0
 <FunctionProtoTypeData>
-ADDR_195
+ADDR_194
 FunctionProtoType
 ostream &(int)
 NONE
@@ -5297,7 +5266,7 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
 ADDR_002
@@ -5307,21 +5276,21 @@ None
 None
 0
 <Id to Class Map>
-ADDR_195
+ADDR_194
 FunctionProtoType
 <Top Level Types>
-ADDR_195
+ADDR_194
 <Visited Children>
-ADDR_196
+ADDR_195
 0
 <CXXMethodDeclData>
-ADDR_196
+ADDR_195
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-259
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+91
 3
-<SYSTEM_INCLUDE>/c++/ostream
-259
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+91
 36
 0
 1
@@ -5338,7 +5307,7 @@ operator<<
 1
 External
 Default
-ADDR_195
+ADDR_194
 0
 0
 2
@@ -5349,10 +5318,10 @@ None
 0
 0
 nullptr_decl
-ADDR_196
+ADDR_195
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5361,18 +5330,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_196
+ADDR_195
 CXXMethodDecl
 <Visited Children>
-ADDR_197
+ADDR_196
 0
 <BuiltinTypeData>
-ADDR_197
+ADDR_196
 BuiltinType
 unsigned int
 NONE
@@ -5383,13 +5352,13 @@ nullptr_type
 UInt
 unsigned int
 <Id to Class Map>
-ADDR_197
+ADDR_196
 BuiltinType
 <Visited Children>
-ADDR_198
+ADDR_197
 0
 <FunctionProtoTypeData>
-ADDR_198
+ADDR_197
 FunctionProtoType
 ostream &(unsigned int)
 NONE
@@ -5405,31 +5374,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_197
+ADDR_196
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_198
+ADDR_197
 FunctionProtoType
 <Top Level Types>
-ADDR_198
+ADDR_197
 <Visited Children>
-ADDR_199
+ADDR_198
 0
 <CXXMethodDeclData>
-ADDR_199
+ADDR_198
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-260
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+92
 3
-<SYSTEM_INCLUDE>/c++/ostream
-260
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+92
 45
 0
 1
@@ -5446,7 +5415,7 @@ operator<<
 1
 External
 Default
-ADDR_198
+ADDR_197
 0
 0
 2
@@ -5457,10 +5426,10 @@ None
 0
 0
 nullptr_decl
-ADDR_199
+ADDR_198
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5469,18 +5438,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_199
+ADDR_198
 CXXMethodDecl
 <Visited Children>
-ADDR_200
+ADDR_199
 0
 <BuiltinTypeData>
-ADDR_200
+ADDR_199
 BuiltinType
 long
 NONE
@@ -5491,13 +5460,13 @@ nullptr_type
 Long
 long
 <Id to Class Map>
-ADDR_200
+ADDR_199
 BuiltinType
 <Visited Children>
-ADDR_201
+ADDR_200
 0
 <FunctionProtoTypeData>
-ADDR_201
+ADDR_200
 FunctionProtoType
 ostream &(long)
 NONE
@@ -5513,31 +5482,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_200
+ADDR_199
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_201
+ADDR_200
 FunctionProtoType
 <Top Level Types>
-ADDR_201
+ADDR_200
 <Visited Children>
-ADDR_202
+ADDR_201
 0
 <CXXMethodDeclData>
-ADDR_202
+ADDR_201
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-261
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+93
 3
-<SYSTEM_INCLUDE>/c++/ostream
-261
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+93
 37
 0
 1
@@ -5554,7 +5523,7 @@ operator<<
 1
 External
 Default
-ADDR_201
+ADDR_200
 0
 0
 2
@@ -5565,10 +5534,10 @@ None
 0
 0
 nullptr_decl
-ADDR_202
+ADDR_201
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5577,18 +5546,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_202
+ADDR_201
 CXXMethodDecl
 <Visited Children>
-ADDR_203
+ADDR_202
 0
 <BuiltinTypeData>
-ADDR_203
+ADDR_202
 BuiltinType
 unsigned long
 NONE
@@ -5599,13 +5568,13 @@ nullptr_type
 ULong
 unsigned long
 <Id to Class Map>
-ADDR_203
+ADDR_202
 BuiltinType
 <Visited Children>
-ADDR_204
+ADDR_203
 0
 <FunctionProtoTypeData>
-ADDR_204
+ADDR_203
 FunctionProtoType
 ostream &(unsigned long)
 NONE
@@ -5621,31 +5590,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_203
+ADDR_202
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_204
+ADDR_203
 FunctionProtoType
 <Top Level Types>
-ADDR_204
+ADDR_203
 <Visited Children>
-ADDR_205
+ADDR_204
 0
 <CXXMethodDeclData>
-ADDR_205
+ADDR_204
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-262
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+94
 3
-<SYSTEM_INCLUDE>/c++/ostream
-262
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+94
 46
 0
 1
@@ -5662,7 +5631,7 @@ operator<<
 1
 External
 Default
-ADDR_204
+ADDR_203
 0
 0
 2
@@ -5673,10 +5642,10 @@ None
 0
 0
 nullptr_decl
-ADDR_205
+ADDR_204
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5685,18 +5654,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_205
+ADDR_204
 CXXMethodDecl
 <Visited Children>
-ADDR_206
+ADDR_205
 0
 <FunctionProtoTypeData>
-ADDR_206
+ADDR_205
 FunctionProtoType
 ostream &(long long)
 NONE
@@ -5712,31 +5681,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_064
+ADDR_063
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_206
+ADDR_205
 FunctionProtoType
 <Top Level Types>
-ADDR_206
+ADDR_205
 <Visited Children>
-ADDR_207
+ADDR_206
 0
 <CXXMethodDeclData>
-ADDR_207
+ADDR_206
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-263
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+95
 3
-<SYSTEM_INCLUDE>/c++/ostream
-263
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+95
 42
 0
 1
@@ -5753,7 +5722,7 @@ operator<<
 1
 External
 Default
-ADDR_206
+ADDR_205
 0
 0
 2
@@ -5764,10 +5733,10 @@ None
 0
 0
 nullptr_decl
-ADDR_207
+ADDR_206
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5776,18 +5745,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_207
+ADDR_206
 CXXMethodDecl
 <Visited Children>
-ADDR_208
+ADDR_207
 0
 <BuiltinTypeData>
-ADDR_208
+ADDR_207
 BuiltinType
 unsigned long long
 NONE
@@ -5798,13 +5767,13 @@ nullptr_type
 ULongLong
 unsigned long long
 <Id to Class Map>
-ADDR_208
+ADDR_207
 BuiltinType
 <Visited Children>
-ADDR_209
+ADDR_208
 0
 <FunctionProtoTypeData>
-ADDR_209
+ADDR_208
 FunctionProtoType
 ostream &(unsigned long long)
 NONE
@@ -5820,31 +5789,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_208
+ADDR_207
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_209
+ADDR_208
 FunctionProtoType
 <Top Level Types>
-ADDR_209
+ADDR_208
 <Visited Children>
-ADDR_210
+ADDR_209
 0
 <CXXMethodDeclData>
-ADDR_210
+ADDR_209
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-264
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+96
 3
-<SYSTEM_INCLUDE>/c++/ostream
-264
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+96
 51
 0
 1
@@ -5861,7 +5830,7 @@ operator<<
 1
 External
 Default
-ADDR_209
+ADDR_208
 0
 0
 2
@@ -5872,10 +5841,10 @@ None
 0
 0
 nullptr_decl
-ADDR_210
+ADDR_209
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5884,18 +5853,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_210
+ADDR_209
 CXXMethodDecl
 <Visited Children>
-ADDR_211
+ADDR_210
 0
 <BuiltinTypeData>
-ADDR_211
+ADDR_210
 BuiltinType
 float
 NONE
@@ -5906,13 +5875,13 @@ nullptr_type
 Float
 float
 <Id to Class Map>
-ADDR_211
+ADDR_210
 BuiltinType
 <Visited Children>
-ADDR_212
+ADDR_211
 0
 <FunctionProtoTypeData>
-ADDR_212
+ADDR_211
 FunctionProtoType
 ostream &(float)
 NONE
@@ -5928,31 +5897,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_211
+ADDR_210
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_212
+ADDR_211
 FunctionProtoType
 <Top Level Types>
-ADDR_212
+ADDR_211
 <Visited Children>
-ADDR_213
+ADDR_212
 0
 <CXXMethodDeclData>
-ADDR_213
+ADDR_212
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-265
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+97
 3
-<SYSTEM_INCLUDE>/c++/ostream
-265
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+97
 38
 0
 1
@@ -5969,7 +5938,7 @@ operator<<
 1
 External
 Default
-ADDR_212
+ADDR_211
 0
 0
 2
@@ -5980,10 +5949,10 @@ None
 0
 0
 nullptr_decl
-ADDR_213
+ADDR_212
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -5992,18 +5961,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_213
+ADDR_212
 CXXMethodDecl
 <Visited Children>
-ADDR_214
+ADDR_213
 0
 <BuiltinTypeData>
-ADDR_214
+ADDR_213
 BuiltinType
 double
 NONE
@@ -6014,13 +5983,13 @@ nullptr_type
 Double
 double
 <Id to Class Map>
-ADDR_214
+ADDR_213
 BuiltinType
 <Visited Children>
-ADDR_215
+ADDR_214
 0
 <FunctionProtoTypeData>
-ADDR_215
+ADDR_214
 FunctionProtoType
 ostream &(double)
 NONE
@@ -6036,31 +6005,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_214
+ADDR_213
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_215
+ADDR_214
 FunctionProtoType
 <Top Level Types>
-ADDR_215
+ADDR_214
 <Visited Children>
-ADDR_216
+ADDR_215
 0
 <CXXMethodDeclData>
-ADDR_216
+ADDR_215
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-266
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+98
 3
-<SYSTEM_INCLUDE>/c++/ostream
-266
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+98
 39
 0
 1
@@ -6077,7 +6046,7 @@ operator<<
 1
 External
 Default
-ADDR_215
+ADDR_214
 0
 0
 2
@@ -6088,10 +6057,10 @@ None
 0
 0
 nullptr_decl
-ADDR_216
+ADDR_215
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -6100,18 +6069,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_216
+ADDR_215
 CXXMethodDecl
 <Visited Children>
-ADDR_217
+ADDR_216
 0
 <BuiltinTypeData>
-ADDR_217
+ADDR_216
 BuiltinType
 long double
 NONE
@@ -6122,13 +6091,13 @@ nullptr_type
 LongDouble
 long double
 <Id to Class Map>
-ADDR_217
+ADDR_216
 BuiltinType
 <Visited Children>
-ADDR_218
+ADDR_217
 0
 <FunctionProtoTypeData>
-ADDR_218
+ADDR_217
 FunctionProtoType
 ostream &(long double)
 NONE
@@ -6144,31 +6113,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_217
+ADDR_216
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_218
+ADDR_217
 FunctionProtoType
 <Top Level Types>
-ADDR_218
+ADDR_217
 <Visited Children>
-ADDR_219
+ADDR_218
 0
 <CXXMethodDeclData>
-ADDR_219
+ADDR_218
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-267
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+99
 3
-<SYSTEM_INCLUDE>/c++/ostream
-267
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+99
 44
 0
 1
@@ -6185,7 +6154,7 @@ operator<<
 1
 External
 Default
-ADDR_218
+ADDR_217
 0
 0
 2
@@ -6196,10 +6165,10 @@ None
 0
 0
 nullptr_decl
-ADDR_219
+ADDR_218
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -6208,18 +6177,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_219
+ADDR_218
 CXXMethodDecl
 <Visited Children>
-ADDR_220
+ADDR_219
 0
 <QualTypeData>
-ADDR_220
+ADDR_219
 QualType
 const void
 NONE
@@ -6231,15 +6200,15 @@ nullptr_type
 CONST
 NONE
 0
-ADDR_075
+ADDR_074
 <Id to Class Map>
-ADDR_220
+ADDR_219
 QualType
 <Visited Children>
-ADDR_221
+ADDR_220
 0
 <PointerTypeData>
-ADDR_221
+ADDR_220
 PointerType
 const void *
 NONE
@@ -6247,15 +6216,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_220
+ADDR_219
 <Id to Class Map>
-ADDR_221
+ADDR_220
 PointerType
 <Visited Children>
-ADDR_222
+ADDR_221
 0
 <FunctionProtoTypeData>
-ADDR_222
+ADDR_221
 FunctionProtoType
 ostream &(const void *)
 NONE
@@ -6271,31 +6240,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_221
+ADDR_220
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_222
+ADDR_221
 FunctionProtoType
 <Top Level Types>
-ADDR_222
+ADDR_221
 <Visited Children>
-ADDR_223
+ADDR_222
 0
 <CXXMethodDeclData>
-ADDR_223
+ADDR_222
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-268
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+100
 3
-<SYSTEM_INCLUDE>/c++/ostream
-268
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+100
 44
 0
 1
@@ -6312,7 +6281,7 @@ operator<<
 1
 External
 Default
-ADDR_222
+ADDR_221
 0
 0
 2
@@ -6323,10 +6292,10 @@ None
 0
 0
 nullptr_decl
-ADDR_223
+ADDR_222
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -6335,60 +6304,60 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_223
+ADDR_222
 CXXMethodDecl
 <Visited Children>
-ADDR_224
+ADDR_223
 0
 <TemplateSpecializationTypeData>
-ADDR_224
+ADDR_223
 TemplateSpecializationType
 basic_streambuf<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_090
+ADDR_089
 0
 nullptr_type
 basic_streambuf
-ADDR_097
+ADDR_096
 2
 Type
-ADDR_091
+ADDR_090
 Type
-ADDR_092
+ADDR_091
 <Id to Class Map>
-ADDR_224
+ADDR_223
 TemplateSpecializationType
 <Visited Children>
-ADDR_225
+ADDR_224
 0
 <ElaboratedTypeData>
-ADDR_225
+ADDR_224
 ElaboratedType
 basic_streambuf<char_type, traits_type>
 NONE
 0
 0
 0
-ADDR_224
+ADDR_223
 None
 
-ADDR_224
+ADDR_223
 <Id to Class Map>
-ADDR_225
+ADDR_224
 ElaboratedType
 <Visited Children>
-ADDR_226
+ADDR_225
 0
 <PointerTypeData>
-ADDR_226
+ADDR_225
 PointerType
 basic_streambuf<char_type, traits_type> *
 NONE
@@ -6396,15 +6365,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_225
+ADDR_224
 <Id to Class Map>
-ADDR_226
+ADDR_225
 PointerType
 <Visited Children>
-ADDR_227
+ADDR_226
 0
 <FunctionProtoTypeData>
-ADDR_227
+ADDR_226
 FunctionProtoType
 ostream &(basic_streambuf<char_type, traits_type> *)
 NONE
@@ -6420,31 +6389,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_226
+ADDR_225
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_227
+ADDR_226
 FunctionProtoType
 <Top Level Types>
-ADDR_227
+ADDR_226
 <Visited Children>
-ADDR_228
+ADDR_227
 0
 <CXXMethodDeclData>
-ADDR_228
+ADDR_227
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-276
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+108
 3
-<SYSTEM_INCLUDE>/c++/ostream
-276
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+108
 74
 0
 1
@@ -6461,7 +6430,7 @@ operator<<
 1
 External
 Default
-ADDR_227
+ADDR_226
 0
 0
 2
@@ -6472,10 +6441,10 @@ None
 0
 0
 nullptr_decl
-ADDR_228
+ADDR_227
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -6484,26 +6453,26 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_228
+ADDR_227
 CXXMethodDecl
 <Visited Children>
-ADDR_229
+ADDR_228
 0
 <AttributeData>
-ADDR_229
+ADDR_228
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-281
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+113
 3
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -6513,27 +6482,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_229
+ADDR_228
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_229
+ADDR_228
 <Visited Children>
-ADDR_230
+ADDR_229
 0
 <AttributeData>
-ADDR_230
+ADDR_229
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-281
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+113
 3
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -6541,15 +6510,15 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_230
+ADDR_229
 AbiTagAttr
 <Top Level Attributes>
-ADDR_230
+ADDR_229
 <Visited Children>
-ADDR_231
+ADDR_230
 0
 <BuiltinTypeData>
-ADDR_231
+ADDR_230
 BuiltinType
 std::nullptr_t
 NONE
@@ -6560,15 +6529,15 @@ nullptr_type
 NullPtr
 std::nullptr_t
 <Id to Class Map>
-ADDR_231
+ADDR_230
 BuiltinType
 <Top Level Types>
-ADDR_231
+ADDR_230
 <Visited Children>
-ADDR_232
+ADDR_231
 0
 <ExprData>
-ADDR_232
+ADDR_231
 CXXNullPtrLiteralExpr
 <SYSTEM_INCLUDE>/c++/stddef.h
 41
@@ -6576,35 +6545,35 @@ CXXNullPtrLiteralExpr
 <end>
 0
 1
-ADDR_231
+ADDR_230
 0
 0
 0
 <Id to Class Map>
-ADDR_232
+ADDR_231
 CXXNullPtrLiteralExpr
 <Visited Children>
-ADDR_233
+ADDR_232
 0
 <DecltypeTypeData>
-ADDR_233
+ADDR_232
 DecltypeType
 decltype(nullptr)
 NONE
 0
 0
 0
-ADDR_231
+ADDR_230
 1
-ADDR_232
+ADDR_231
 <Id to Class Map>
-ADDR_233
+ADDR_232
 DecltypeType
 <Visited Children>
-ADDR_234
+ADDR_233
 0
 <TypedefNameDeclData>
-ADDR_234
+ADDR_233
 TypedefDecl
 <SYSTEM_INCLUDE>/c++/stddef.h
 41
@@ -6627,65 +6596,65 @@ nullptr_t
 0
 None
 Default
-ADDR_235
-ADDR_233
-<Id to Class Map>
 ADDR_234
+ADDR_232
+<Id to Class Map>
+ADDR_233
 TypedefDecl
 <Visited Children>
-ADDR_235
+ADDR_234
 0
 <TypedefTypeData>
-ADDR_235
+ADDR_234
 TypedefType
 nullptr_t
 NONE
 0
 0
 0
+ADDR_232
 ADDR_233
+<Id to Class Map>
+ADDR_234
+TypedefType
+<Visited Children>
+ADDR_235
+0
+<TypeData>
+ADDR_235
+UsingType
+nullptr_t
+NONE
+0
+0
+0
 ADDR_234
 <Id to Class Map>
 ADDR_235
-TypedefType
+UsingType
 <Visited Children>
 ADDR_236
 0
-<TypeData>
+<ElaboratedTypeData>
 ADDR_236
-UsingType
+ElaboratedType
 nullptr_t
 NONE
 0
 0
 0
 ADDR_235
-<Id to Class Map>
-ADDR_236
-UsingType
-<Visited Children>
-ADDR_237
-0
-<ElaboratedTypeData>
-ADDR_237
-ElaboratedType
-nullptr_t
-NONE
-0
-0
-0
-ADDR_236
 None
 
-ADDR_236
+ADDR_235
 <Id to Class Map>
-ADDR_237
+ADDR_236
 ElaboratedType
 <Visited Children>
-ADDR_238
+ADDR_237
 0
 <FunctionProtoTypeData>
-ADDR_238
+ADDR_237
 FunctionProtoType
 ostream &(nullptr_t)
 NONE
@@ -6701,38 +6670,38 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_237
+ADDR_236
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_238
+ADDR_237
 FunctionProtoType
 <Top Level Types>
-ADDR_238
+ADDR_237
 <Visited Children>
-ADDR_239
+ADDR_238
 0
 <CXXMethodDeclData>
-ADDR_239
+ADDR_238
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-281
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+113
 3
-<SYSTEM_INCLUDE>/c++/ostream
-281
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+113
 91
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 57
-<SYSTEM_INCLUDE>/c++/ostream
-281
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+113
 91
 1
 0
@@ -6741,8 +6710,8 @@ CXXMethodDecl
 0
 0
 2
+ADDR_228
 ADDR_229
-ADDR_230
 std::ostream
 operator<<
 6
@@ -6750,7 +6719,7 @@ operator<<
 1
 External
 Default
-ADDR_238
+ADDR_237
 0
 0
 2
@@ -6761,10 +6730,10 @@ None
 0
 0
 nullptr_decl
-ADDR_239
+ADDR_238
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -6773,18 +6742,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 1
 0
 <Id to Class Map>
-ADDR_239
+ADDR_238
 CXXMethodDecl
 <Visited Children>
-ADDR_240
+ADDR_239
 0
 <FunctionProtoTypeData>
-ADDR_240
+ADDR_239
 FunctionProtoType
 ostream &(char_type)
 NONE
@@ -6800,31 +6769,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_091
+ADDR_090
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_240
+ADDR_239
 FunctionProtoType
 <Top Level Types>
-ADDR_240
+ADDR_239
 <Visited Children>
-ADDR_241
+ADDR_240
 0
 <CXXMethodDeclData>
-ADDR_241
+ADDR_240
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-285
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+117
 3
-<SYSTEM_INCLUDE>/c++/ostream
-285
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+117
 35
 0
 1
@@ -6841,7 +6810,7 @@ put
 1
 External
 Default
-ADDR_240
+ADDR_239
 0
 0
 2
@@ -6852,10 +6821,10 @@ None
 0
 0
 nullptr_decl
-ADDR_241
+ADDR_240
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -6864,18 +6833,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_241
+ADDR_240
 CXXMethodDecl
 <Visited Children>
-ADDR_242
+ADDR_241
 0
 <QualTypeData>
-ADDR_242
+ADDR_241
 QualType
 const char
 NONE
@@ -6889,13 +6858,13 @@ NONE
 0
 ADDR_006
 <Id to Class Map>
-ADDR_242
+ADDR_241
 QualType
 <Visited Children>
-ADDR_243
+ADDR_242
 0
 <QualTypeData>
-ADDR_243
+ADDR_242
 QualType
 const char
 NONE
@@ -6909,13 +6878,13 @@ NONE
 0
 ADDR_009
 <Id to Class Map>
-ADDR_243
+ADDR_242
 QualType
 <Visited Children>
-ADDR_244
+ADDR_243
 0
 <QualTypeData>
-ADDR_244
+ADDR_243
 QualType
 const std::ostream::char_type
 NONE
@@ -6929,13 +6898,13 @@ NONE
 0
 ADDR_010
 <Id to Class Map>
-ADDR_244
+ADDR_243
 QualType
 <Visited Children>
-ADDR_245
+ADDR_244
 0
 <QualTypeData>
-ADDR_245
+ADDR_244
 QualType
 const char_type
 NONE
@@ -6947,15 +6916,15 @@ ADDR_010
 CONST
 NONE
 0
-ADDR_091
+ADDR_090
 <Id to Class Map>
-ADDR_245
+ADDR_244
 QualType
 <Visited Children>
-ADDR_246
+ADDR_245
 0
 <PointerTypeData>
-ADDR_246
+ADDR_245
 PointerType
 const char_type *
 NONE
@@ -6963,15 +6932,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_245
+ADDR_244
 <Id to Class Map>
-ADDR_246
+ADDR_245
 PointerType
 <Visited Children>
-ADDR_247
+ADDR_246
 0
 <TypedefNameDeclData>
-ADDR_247
+ADDR_246
 TypedefDecl
 <CLANG_INCLUDE>/__stddef_ptrdiff_t.h
 18
@@ -6994,71 +6963,71 @@ ptrdiff_t
 0
 None
 Default
-ADDR_248
-ADDR_064
-<Id to Class Map>
 ADDR_247
+ADDR_063
+<Id to Class Map>
+ADDR_246
 TypedefDecl
 <Visited Children>
-ADDR_248
+ADDR_247
 0
 <TypedefTypeData>
-ADDR_248
+ADDR_247
 TypedefType
 ptrdiff_t
 NONE
 0
 0
 0
-ADDR_064
+ADDR_063
+ADDR_246
+<Id to Class Map>
+ADDR_247
+TypedefType
+<Visited Children>
+ADDR_248
+0
+<TypeData>
+ADDR_248
+UsingType
+ptrdiff_t
+NONE
+0
+0
+0
 ADDR_247
 <Id to Class Map>
 ADDR_248
-TypedefType
+UsingType
 <Visited Children>
 ADDR_249
 0
-<TypeData>
+<ElaboratedTypeData>
 ADDR_249
-UsingType
+ElaboratedType
 ptrdiff_t
 NONE
 0
 0
 0
 ADDR_248
-<Id to Class Map>
-ADDR_249
-UsingType
-<Visited Children>
-ADDR_250
-0
-<ElaboratedTypeData>
-ADDR_250
-ElaboratedType
-ptrdiff_t
-NONE
-0
-0
-0
-ADDR_249
 None
 
-ADDR_249
+ADDR_248
 <Id to Class Map>
-ADDR_250
+ADDR_249
 ElaboratedType
 <Visited Children>
-ADDR_251
+ADDR_250
 0
 <TypedefNameDeclData>
-ADDR_251
+ADDR_250
 TypedefDecl
 <SYSTEM_INCLUDE>/c++/ios
-250
+247
 1
 <SYSTEM_INCLUDE>/c++/ios
-250
+247
 19
 0
 1
@@ -7075,50 +7044,50 @@ streamsize
 0
 None
 Default
-ADDR_252
-ADDR_250
-<Id to Class Map>
 ADDR_251
+ADDR_249
+<Id to Class Map>
+ADDR_250
 TypedefDecl
 <Visited Children>
-ADDR_252
+ADDR_251
 0
 <TypedefTypeData>
-ADDR_252
+ADDR_251
 TypedefType
 std::streamsize
 NONE
 0
 0
 0
+ADDR_249
 ADDR_250
-ADDR_251
 <Id to Class Map>
-ADDR_252
+ADDR_251
 TypedefType
 <Visited Children>
-ADDR_253
+ADDR_252
 0
 <ElaboratedTypeData>
-ADDR_253
+ADDR_252
 ElaboratedType
 streamsize
 NONE
 0
 0
 0
-ADDR_252
+ADDR_251
 None
 
-ADDR_252
+ADDR_251
 <Id to Class Map>
-ADDR_253
+ADDR_252
 ElaboratedType
 <Visited Children>
-ADDR_254
+ADDR_253
 0
 <FunctionProtoTypeData>
-ADDR_254
+ADDR_253
 FunctionProtoType
 ostream &(const char_type *, streamsize)
 NONE
@@ -7134,32 +7103,32 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 2
 2
-ADDR_246
-ADDR_253
+ADDR_245
+ADDR_252
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_254
+ADDR_253
 FunctionProtoType
 <Top Level Types>
-ADDR_254
+ADDR_253
 <Visited Children>
-ADDR_255
+ADDR_254
 0
 <CXXMethodDeclData>
-ADDR_255
+ADDR_254
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-286
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+118
 3
-<SYSTEM_INCLUDE>/c++/ostream
-286
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+118
 60
 0
 1
@@ -7176,7 +7145,7 @@ write
 1
 External
 Default
-ADDR_254
+ADDR_253
 0
 0
 2
@@ -7187,10 +7156,10 @@ None
 0
 0
 nullptr_decl
-ADDR_255
+ADDR_254
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -7199,18 +7168,18 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_255
+ADDR_254
 CXXMethodDecl
 <Visited Children>
-ADDR_256
+ADDR_255
 0
 <FunctionProtoTypeData>
-ADDR_256
+ADDR_255
 FunctionProtoType
 ostream &()
 NONE
@@ -7226,7 +7195,7 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 0
 0
 0
@@ -7235,21 +7204,21 @@ None
 None
 0
 <Id to Class Map>
-ADDR_256
+ADDR_255
 FunctionProtoType
 <Top Level Types>
-ADDR_256
+ADDR_255
 <Visited Children>
-ADDR_257
+ADDR_256
 0
 <CXXMethodDeclData>
-ADDR_257
+ADDR_256
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-287
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+119
 3
-<SYSTEM_INCLUDE>/c++/ostream
-287
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+119
 24
 0
 1
@@ -7266,7 +7235,7 @@ flush
 1
 External
 Default
-ADDR_256
+ADDR_255
 0
 0
 2
@@ -7277,10 +7246,10 @@ None
 0
 0
 nullptr_decl
-ADDR_257
+ADDR_256
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -7289,26 +7258,26 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_257
+ADDR_256
 CXXMethodDecl
 <Visited Children>
-ADDR_258
+ADDR_257
 0
 <AttributeData>
-ADDR_258
+ADDR_257
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-290
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+122
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -7318,33 +7287,33 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_258
+ADDR_257
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_258
+ADDR_257
 <Visited Children>
-ADDR_259
+ADDR_258
 0
 <ElaboratedTypeData>
-ADDR_259
+ADDR_258
 ElaboratedType
 pos_type
 NONE
 0
 0
 0
-ADDR_062
+ADDR_061
 None
 
-ADDR_062
+ADDR_061
 <Id to Class Map>
-ADDR_259
+ADDR_258
 ElaboratedType
 <Visited Children>
-ADDR_260
+ADDR_259
 0
 <FunctionProtoTypeData>
-ADDR_260
+ADDR_259
 FunctionProtoType
 pos_type ()
 NONE
@@ -7360,7 +7329,7 @@ nullptr_type
 0
 0
 C
-ADDR_259
+ADDR_258
 0
 0
 0
@@ -7369,21 +7338,21 @@ None
 None
 0
 <Id to Class Map>
-ADDR_260
+ADDR_259
 FunctionProtoType
 <Top Level Types>
-ADDR_260
+ADDR_259
 <Visited Children>
-ADDR_261
+ADDR_260
 0
 <CXXMethodDeclData>
-ADDR_261
+ADDR_260
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-290
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+122
 3
-<SYSTEM_INCLUDE>/c++/ostream
-290
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+122
 56
 0
 1
@@ -7393,7 +7362,7 @@ CXXMethodDecl
 0
 0
 1
-ADDR_258
+ADDR_257
 std::ostream
 tellp
 0
@@ -7401,7 +7370,7 @@ tellp
 1
 External
 Default
-ADDR_260
+ADDR_259
 0
 0
 2
@@ -7412,10 +7381,10 @@ None
 0
 0
 nullptr_decl
-ADDR_261
+ADDR_260
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -7424,26 +7393,26 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_261
+ADDR_260
 CXXMethodDecl
 <Visited Children>
-ADDR_262
+ADDR_261
 0
 <AttributeData>
-ADDR_262
+ADDR_261
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-291
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+123
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -7453,15 +7422,15 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_262
+ADDR_261
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_262
+ADDR_261
 <Visited Children>
-ADDR_263
+ADDR_262
 0
 <FunctionProtoTypeData>
-ADDR_263
+ADDR_262
 FunctionProtoType
 ostream &(pos_type)
 NONE
@@ -7477,31 +7446,31 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_259
+ADDR_258
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_263
+ADDR_262
 FunctionProtoType
 <Top Level Types>
-ADDR_263
+ADDR_262
 <Visited Children>
-ADDR_264
+ADDR_263
 0
 <CXXMethodDeclData>
-ADDR_264
+ADDR_263
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-291
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+123
 3
-<SYSTEM_INCLUDE>/c++/ostream
-291
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+123
 76
 0
 1
@@ -7511,7 +7480,7 @@ CXXMethodDecl
 0
 0
 1
-ADDR_262
+ADDR_261
 std::ostream
 seekp
 0
@@ -7519,7 +7488,7 @@ seekp
 1
 External
 Default
-ADDR_263
+ADDR_262
 0
 0
 2
@@ -7530,10 +7499,10 @@ None
 0
 0
 nullptr_decl
-ADDR_264
+ADDR_263
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -7542,26 +7511,26 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_264
+ADDR_263
 CXXMethodDecl
 <Visited Children>
-ADDR_265
+ADDR_264
 0
 <AttributeData>
-ADDR_265
+ADDR_264
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-292
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+124
 10
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -7571,39 +7540,39 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_265
+ADDR_264
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_265
+ADDR_264
 <Visited Children>
-ADDR_266
+ADDR_265
 0
 <ElaboratedTypeData>
-ADDR_266
+ADDR_265
 ElaboratedType
 off_type
 NONE
 0
 0
 0
-ADDR_071
+ADDR_070
 None
 
-ADDR_071
+ADDR_070
 <Id to Class Map>
-ADDR_266
+ADDR_265
 ElaboratedType
 <Visited Children>
-ADDR_267
+ADDR_266
 0
 <EnumDeclData>
-ADDR_267
+ADDR_266
 EnumDecl
 <SYSTEM_INCLUDE>/c++/ios
-293
+290
 3
 <SYSTEM_INCLUDE>/c++/ios
-293
+290
 32
 0
 1
@@ -7620,19 +7589,19 @@ seekdir
 0
 External
 Default
-ADDR_268
+ADDR_267
 Enum
 1
 NO_SCOPE
-ADDR_197
+ADDR_196
 <Id to Class Map>
-ADDR_267
+ADDR_266
 EnumDecl
 <Visited Children>
-ADDR_268
+ADDR_267
 0
 <TagTypeData>
-ADDR_268
+ADDR_267
 EnumType
 std::ios_base::seekdir
 NONE
@@ -7640,33 +7609,33 @@ NONE
 0
 0
 nullptr_type
-ADDR_267
+ADDR_266
 <Id to Class Map>
-ADDR_268
+ADDR_267
 EnumType
 <Visited Children>
-ADDR_269
+ADDR_268
 0
 <ElaboratedTypeData>
-ADDR_269
+ADDR_268
 ElaboratedType
 ios_base::seekdir
 NONE
 0
 0
 0
-ADDR_268
+ADDR_267
 None
 ios_base::
-ADDR_268
+ADDR_267
 <Id to Class Map>
-ADDR_269
+ADDR_268
 ElaboratedType
 <Visited Children>
-ADDR_270
+ADDR_269
 0
 <FunctionProtoTypeData>
-ADDR_270
+ADDR_269
 FunctionProtoType
 ostream &(off_type, ios_base::seekdir)
 NONE
@@ -7682,32 +7651,32 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 2
 2
-ADDR_266
-ADDR_269
+ADDR_265
+ADDR_268
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_270
+ADDR_269
 FunctionProtoType
 <Top Level Types>
-ADDR_270
+ADDR_269
 <Visited Children>
-ADDR_271
+ADDR_270
 0
 <CXXMethodDeclData>
-ADDR_271
+ADDR_270
 CXXMethodDecl
-<SYSTEM_INCLUDE>/c++/ostream
-292
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+124
 3
-<SYSTEM_INCLUDE>/c++/ostream
-292
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+124
 101
 0
 1
@@ -7717,7 +7686,7 @@ CXXMethodDecl
 0
 0
 1
-ADDR_265
+ADDR_264
 std::ostream
 seekp
 0
@@ -7725,7 +7694,7 @@ seekp
 1
 External
 Default
-ADDR_270
+ADDR_269
 0
 0
 2
@@ -7736,10 +7705,10 @@ None
 0
 0
 nullptr_decl
-ADDR_271
+ADDR_270
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -7748,24 +7717,24 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 0
 0
 <Id to Class Map>
-ADDR_271
+ADDR_270
 CXXMethodDecl
 <Visited Children>
-ADDR_272
+ADDR_271
 0
 <AccessSpecDeclData>
-ADDR_272
+ADDR_271
 AccessSpecDecl
-<SYSTEM_INCLUDE>/c++/ostream
-294
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+126
 1
-<SYSTEM_INCLUDE>/c++/ostream
-294
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+126
 10
 0
 1
@@ -7777,21 +7746,21 @@ AccessSpecDecl
 0
 PROTECTED
 <Id to Class Map>
-ADDR_272
+ADDR_271
 AccessSpecDecl
 <Visited Children>
-ADDR_273
+ADDR_272
 0
 <AttributeData>
-ADDR_273
+ADDR_272
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-295
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+127
 3
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -7801,27 +7770,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_273
+ADDR_272
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_273
+ADDR_272
 <Visited Children>
-ADDR_274
+ADDR_273
 0
 <AttributeData>
-ADDR_274
+ADDR_273
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-295
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+127
 3
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -7829,15 +7798,15 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_274
+ADDR_273
 AbiTagAttr
 <Top Level Attributes>
-ADDR_274
+ADDR_273
 <Visited Children>
-ADDR_275
+ADDR_274
 0
 <FunctionProtoTypeData>
-ADDR_275
+ADDR_274
 FunctionProtoType
 void ()
 NONE
@@ -7853,7 +7822,7 @@ nullptr_type
 0
 0
 C
-ADDR_075
+ADDR_074
 0
 0
 0
@@ -7862,28 +7831,28 @@ None
 None
 0
 <Id to Class Map>
-ADDR_275
+ADDR_274
 FunctionProtoType
 <Top Level Types>
-ADDR_275
+ADDR_274
 <Visited Children>
-ADDR_276
+ADDR_275
 0
 <CXXConstructorDeclData>
-ADDR_276
+ADDR_275
 CXXConstructorDecl
-<SYSTEM_INCLUDE>/c++/ostream
-295
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+127
 3
-<SYSTEM_INCLUDE>/c++/ostream
-295
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+127
 42
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 57
-<SYSTEM_INCLUDE>/c++/ostream
-295
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+127
 42
 1
 0
@@ -7892,8 +7861,8 @@ CXXConstructorDecl
 0
 0
 2
+ADDR_272
 ADDR_273
-ADDR_274
 std::ostream
 basic_ostream
 3
@@ -7901,7 +7870,7 @@ basic_ostream
 1
 External
 Default
-ADDR_275
+ADDR_274
 0
 0
 2
@@ -7912,10 +7881,10 @@ None
 0
 0
 nullptr_decl
-ADDR_276
+ADDR_275
 nullptr_decl
 0
-ADDR_105
+ADDR_104
 0
 0
 1
@@ -7924,8 +7893,8 @@ ADDR_105
 0
 0
 0
+ADDR_101
 ADDR_102
-ADDR_103
 1
 0
 0
@@ -7935,55 +7904,55 @@ ResolvedFalse
 nullptr_expr
 0
 <Id to Class Map>
-ADDR_276
+ADDR_275
 CXXConstructorDecl
 <Visited Children>
-ADDR_277
+ADDR_276
 0
 <TemplateSpecializationTypeData>
-ADDR_277
+ADDR_276
 TemplateSpecializationType
 basic_ios<char, std::char_traits<char>>
 NONE
 0
 0
 0
-ADDR_110
+ADDR_109
 0
 nullptr_type
 basic_ios
-ADDR_166
+ADDR_165
 2
 Type
 ADDR_009
 Type
-ADDR_028
+ADDR_027
 <Id to Class Map>
-ADDR_277
+ADDR_276
 TemplateSpecializationType
 <Visited Children>
-ADDR_278
+ADDR_277
 0
 <ElaboratedTypeData>
-ADDR_278
+ADDR_277
 ElaboratedType
 basic_ios<char, char_traits<char>>
 NONE
 0
 0
 0
-ADDR_277
+ADDR_276
 None
 
-ADDR_277
+ADDR_276
 <Id to Class Map>
-ADDR_278
+ADDR_277
 ElaboratedType
 <Visited Children>
-ADDR_279
+ADDR_278
 0
 <AttributeData>
-ADDR_279
+ADDR_278
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/ostream.h
 31
@@ -7993,10 +7962,10 @@ PreferredNameAttr
 37
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -8005,15 +7974,15 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_279
+ADDR_278
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_279
+ADDR_278
 <Visited Children>
-ADDR_280
+ADDR_279
 0
 <AttributeData>
-ADDR_280
+ADDR_279
 PreferredNameAttr
 <SYSTEM_INCLUDE>/c++/__fwd/ostream.h
 31
@@ -8023,10 +7992,10 @@ PreferredNameAttr
 98
 1
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 54
 <SYSTEM_INCLUDE>/c++/__config
-1513
+1176
 74
 1
 PreferredName
@@ -8035,21 +8004,21 @@ PreferredName
 0
 0
 <Id to Class Map>
-ADDR_280
+ADDR_279
 PreferredNameAttr
 <Top Level Attributes>
-ADDR_280
+ADDR_279
 <Visited Children>
-ADDR_281
+ADDR_280
 0
 <TemplateTypeParmDeclData>
-ADDR_281
+ADDR_280
 TemplateTypeParmDecl
-<SYSTEM_INCLUDE>/c++/ostream
-207
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+39
 11
-<SYSTEM_INCLUDE>/c++/ostream
-207
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+39
 17
 0
 1
@@ -8066,18 +8035,18 @@ _CharT
 0
 None
 Default
-ADDR_282
+ADDR_281
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_281
+ADDR_280
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_282
+ADDR_281
 0
 <TemplateTypeParmTypeData>
-ADDR_282
+ADDR_281
 TemplateTypeParmType
 _CharT
 DEPENDENT
@@ -8088,21 +8057,21 @@ nullptr_type
 0
 0
 0
-ADDR_281
+ADDR_280
 <Id to Class Map>
-ADDR_282
+ADDR_281
 TemplateTypeParmType
 <Visited Children>
-ADDR_283
+ADDR_282
 0
 <TemplateTypeParmDeclData>
-ADDR_283
+ADDR_282
 TemplateTypeParmDecl
-<SYSTEM_INCLUDE>/c++/ostream
-207
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+39
 25
-<SYSTEM_INCLUDE>/c++/ostream
-207
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+39
 31
 0
 1
@@ -8119,18 +8088,18 @@ _Traits
 0
 None
 Default
-ADDR_284
+ADDR_283
 CLASS
 0
-ADDR_027
+ADDR_026
 <Id to Class Map>
-ADDR_283
+ADDR_282
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_284
+ADDR_283
 0
 <TemplateTypeParmTypeData>
-ADDR_284
+ADDR_283
 TemplateTypeParmType
 _Traits
 DEPENDENT
@@ -8141,15 +8110,15 @@ nullptr_type
 0
 1
 0
-ADDR_283
+ADDR_282
 <Id to Class Map>
-ADDR_284
+ADDR_283
 TemplateTypeParmType
 <Visited Children>
-ADDR_285
+ADDR_284
 0
 <TemplateSpecializationTypeData>
-ADDR_285
+ADDR_284
 TemplateSpecializationType
 basic_ios<_CharT, _Traits>
 DEPENDENT
@@ -8160,44 +8129,44 @@ nullptr_type
 0
 nullptr_type
 basic_ios
-ADDR_166
+ADDR_165
 2
 Type
-ADDR_282
+ADDR_281
 Type
-ADDR_284
+ADDR_283
 <Id to Class Map>
-ADDR_285
+ADDR_284
 TemplateSpecializationType
 <Visited Children>
-ADDR_286
+ADDR_285
 0
 <ElaboratedTypeData>
-ADDR_286
+ADDR_285
 ElaboratedType
 basic_ios<_CharT, _Traits>
 DEPENDENT
 0
 0
 0
-ADDR_285
+ADDR_284
 None
 
-ADDR_285
+ADDR_284
 <Id to Class Map>
-ADDR_286
+ADDR_285
 ElaboratedType
 <Visited Children>
-ADDR_287
+ADDR_286
 0
 <CXXRecordDeclData>
-ADDR_287
+ADDR_286
 CXXRecordDecl
-<SYSTEM_INCLUDE>/c++/ostream
-208
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+40
 1
-<SYSTEM_INCLUDE>/c++/ostream
-296
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+128
 1
 0
 1
@@ -8207,8 +8176,8 @@ CXXRecordDecl
 0
 0
 2
+ADDR_278
 ADDR_279
-ADDR_280
 std
 basic_ostream
 0
@@ -8216,7 +8185,7 @@ basic_ostream
 0
 External
 Default
-ADDR_288
+ADDR_287
 Class
 1
 0
@@ -8225,16 +8194,16 @@ Class
 0
 PUBLIC
 PUBLIC
+ADDR_285
 ADDR_286
-ADDR_287
 <Id to Class Map>
-ADDR_287
+ADDR_286
 CXXRecordDecl
 <Visited Children>
-ADDR_288
+ADDR_287
 0
 <TypeData>
-ADDR_288
+ADDR_287
 InjectedClassNameType
 basic_ostream<_CharT, _Traits>
 DEPENDENT
@@ -8243,13 +8212,13 @@ DEPENDENT
 0
 nullptr_type
 <Id to Class Map>
-ADDR_288
+ADDR_287
 InjectedClassNameType
 <Visited Children>
-ADDR_289
+ADDR_288
 0
 <CXXRecordDeclData>
-ADDR_289
+ADDR_288
 CXXRecordDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ostream.h
 22
@@ -8272,7 +8241,7 @@ basic_ostream
 0
 External
 Default
-ADDR_288
+ADDR_287
 Class
 0
 0
@@ -8281,16 +8250,16 @@ Class
 0
 PUBLIC
 PUBLIC
+ADDR_285
 ADDR_286
-ADDR_287
 <Id to Class Map>
-ADDR_289
+ADDR_288
 CXXRecordDecl
 <Visited Children>
-ADDR_290
+ADDR_289
 0
 <TemplateDeclData>
-ADDR_290
+ADDR_289
 ClassTemplateDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ostream.h
 21
@@ -8316,63 +8285,63 @@ Default
 2
 ADDR_008
 ADDR_021
-ADDR_289
+ADDR_288
 <Id to Class Map>
-ADDR_290
+ADDR_289
 ClassTemplateDecl
 <Visited Children>
-ADDR_105
+ADDR_104
 42
 ADDR_005
 ADDR_011
-ADDR_030
-ADDR_034
-ADDR_063
-ADDR_072
-ADDR_104
-ADDR_131
-ADDR_132
-ADDR_137
-ADDR_141
-ADDR_145
-ADDR_150
+ADDR_029
+ADDR_033
+ADDR_062
+ADDR_071
+ADDR_103
+ADDR_130
+ADDR_136
+ADDR_139
+ADDR_140
+ADDR_144
+ADDR_147
+ADDR_151
 ADDR_152
-ADDR_153
-ADDR_155
-ADDR_159
-ADDR_177
-ADDR_185
-ADDR_188
-ADDR_191
-ADDR_194
-ADDR_196
-ADDR_199
-ADDR_202
-ADDR_205
-ADDR_207
-ADDR_210
-ADDR_213
-ADDR_216
-ADDR_219
-ADDR_223
-ADDR_228
-ADDR_239
-ADDR_241
-ADDR_255
-ADDR_257
-ADDR_261
-ADDR_264
+ADDR_154
+ADDR_158
+ADDR_176
+ADDR_184
+ADDR_187
+ADDR_190
+ADDR_193
+ADDR_195
+ADDR_198
+ADDR_201
+ADDR_204
+ADDR_206
+ADDR_209
+ADDR_212
+ADDR_215
+ADDR_218
+ADDR_222
+ADDR_227
+ADDR_238
+ADDR_240
+ADDR_254
+ADDR_256
+ADDR_260
+ADDR_263
+ADDR_270
 ADDR_271
-ADDR_272
-ADDR_276
+ADDR_275
 <ClassTemplateSpecializationDeclData>
-ADDR_105
+ADDR_104
 ClassTemplateSpecializationDecl
-<SYSTEM_INCLUDE>/c++/ostream
-1019
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+851
 1
-<SYSTEM_INCLUDE>/c++/ostream
-1019
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+851
 74
 0
 1
@@ -8390,7 +8359,7 @@ basic_ostream
 0
 External
 Default
-ADDR_103
+ADDR_102
 Class
 1
 0
@@ -8399,9 +8368,9 @@ Class
 0
 PUBLIC
 PUBLIC
-ADDR_278
-ADDR_105
-ADDR_290
+ADDR_277
+ADDR_104
+ADDR_289
 ExplicitInstantiationDeclaration
 2
 Type
@@ -8409,13 +8378,13 @@ ADDR_006
 Type
 ADDR_019
 <Id to Class Map>
-ADDR_105
+ADDR_104
 ClassTemplateSpecializationDecl
 <Visited Children>
-ADDR_103
+ADDR_102
 0
 <TagTypeData>
-ADDR_103
+ADDR_102
 RecordType
 std::ostream
 NONE
@@ -8423,33 +8392,33 @@ NONE
 0
 0
 nullptr_type
-ADDR_105
+ADDR_104
 <Id to Class Map>
-ADDR_103
+ADDR_102
 RecordType
 <Visited Children>
-ADDR_135
+ADDR_133
 0
 <ElaboratedTypeData>
-ADDR_135
+ADDR_133
 ElaboratedType
 ostream
 NONE
 0
 0
 0
-ADDR_103
+ADDR_102
 None
 
-ADDR_103
+ADDR_102
 <Id to Class Map>
-ADDR_135
+ADDR_133
 ElaboratedType
 <Visited Children>
-ADDR_140
+ADDR_138
 0
 <ReferenceTypeData>
-ADDR_140
+ADDR_138
 LValueReferenceType
 ostream &
 NONE
@@ -8457,15 +8426,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_135
+ADDR_133
 <Id to Class Map>
-ADDR_140
+ADDR_138
 LValueReferenceType
 <Visited Children>
-ADDR_291
+ADDR_290
 0
 <FunctionProtoTypeData>
-ADDR_291
+ADDR_290
 FunctionProtoType
 ostream &(ostream &)
 NONE
@@ -8481,38 +8450,38 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_140
+ADDR_138
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_291
+ADDR_290
 FunctionProtoType
 <Visited Children>
-ADDR_292
+ADDR_291
 0
 <TypeData>
-ADDR_292
+ADDR_291
 ParenType
 ostream &(ostream &)
 NONE
 0
 0
 0
-ADDR_291
+ADDR_290
 <Id to Class Map>
-ADDR_292
+ADDR_291
 ParenType
 <Visited Children>
-ADDR_293
+ADDR_292
 0
 <PointerTypeData>
-ADDR_293
+ADDR_292
 PointerType
 ostream &(*)(ostream &)
 NONE
@@ -8520,15 +8489,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_292
+ADDR_291
 <Id to Class Map>
-ADDR_293
+ADDR_292
 PointerType
 <Visited Children>
-ADDR_158
+ADDR_157
 0
 <FunctionProtoTypeData>
-ADDR_158
+ADDR_157
 FunctionProtoType
 ostream &(ostream &(*)(ostream &))
 NONE
@@ -8544,25 +8513,25 @@ nullptr_type
 0
 0
 C
-ADDR_140
+ADDR_138
 1
 1
-ADDR_293
+ADDR_292
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_158
+ADDR_157
 FunctionProtoType
 <Top Level Types>
-ADDR_158
+ADDR_157
 <Visited Children>
-ADDR_294
+ADDR_293
 0
 <DeclRefExprData>
-ADDR_294
+ADDR_293
 DeclRefExpr
 <TEST_DIR>/dummy.cpp
 6
@@ -8570,21 +8539,21 @@ DeclRefExpr
 <end>
 0
 0
-ADDR_158
+ADDR_157
 1
 0
 0
 
 0
-ADDR_159
+ADDR_158
 <Id to Class Map>
-ADDR_294
+ADDR_293
 DeclRefExpr
 <Visited Children>
-ADDR_295
+ADDR_294
 0
 <PointerTypeData>
-ADDR_295
+ADDR_294
 PointerType
 ostream &(*)(ostream &(*)(ostream &))
 NONE
@@ -8592,18 +8561,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_158
+ADDR_157
 <Id to Class Map>
-ADDR_295
+ADDR_294
 PointerType
 <Top Level Types>
-ADDR_295
-<Visited Children>
-ADDR_296
-1
 ADDR_294
+<Visited Children>
+ADDR_295
+1
+ADDR_293
 <ExprData>
-ADDR_296
+ADDR_295
 ImplicitCastExpr
 <TEST_DIR>/dummy.cpp
 6
@@ -8611,58 +8580,58 @@ ImplicitCastExpr
 <end>
 0
 0
-ADDR_295
+ADDR_294
 0
 0
 0
 <Id to Class Map>
-ADDR_296
+ADDR_295
 ImplicitCastExpr
 <Visited Children>
-ADDR_297
+ADDR_296
 0
 <TemplateSpecializationTypeData>
-ADDR_297
+ADDR_296
 TemplateSpecializationType
 ostream
 NONE
 0
 0
 0
-ADDR_103
+ADDR_102
 0
 nullptr_type
 basic_ostream
-ADDR_290
+ADDR_289
 1
 Type
 ADDR_006
 <Id to Class Map>
-ADDR_297
+ADDR_296
 TemplateSpecializationType
 <Visited Children>
-ADDR_298
+ADDR_297
 0
 <ElaboratedTypeData>
-ADDR_298
+ADDR_297
 ElaboratedType
 ostream
 NONE
 0
 0
 0
-ADDR_297
+ADDR_296
 None
 
-ADDR_297
+ADDR_296
 <Id to Class Map>
-ADDR_298
+ADDR_297
 ElaboratedType
 <Visited Children>
-ADDR_299
+ADDR_298
 0
 <TypedefNameDeclData>
-ADDR_299
+ADDR_298
 TypeAliasDecl
 <SYSTEM_INCLUDE>/c++/__fwd/ostream.h
 24
@@ -8685,60 +8654,60 @@ ostream
 0
 None
 Default
-ADDR_300
-ADDR_298
-<Id to Class Map>
 ADDR_299
+ADDR_297
+<Id to Class Map>
+ADDR_298
 TypeAliasDecl
 <Visited Children>
-ADDR_300
+ADDR_299
 0
 <TypedefTypeData>
-ADDR_300
+ADDR_299
 TypedefType
 std::ostream
 NONE
 0
 0
 0
+ADDR_297
 ADDR_298
-ADDR_299
 <Id to Class Map>
-ADDR_300
+ADDR_299
 TypedefType
 <Visited Children>
-ADDR_301
+ADDR_300
 0
 <ElaboratedTypeData>
-ADDR_301
+ADDR_300
 ElaboratedType
 ostream
 NONE
 0
 0
 0
-ADDR_300
+ADDR_299
 None
 
-ADDR_300
+ADDR_299
 <Id to Class Map>
-ADDR_301
+ADDR_300
 ElaboratedType
 <Top Level Types>
-ADDR_301
+ADDR_300
 <Top Level Types>
-ADDR_301
+ADDR_300
 <Visited Children>
-ADDR_302
+ADDR_301
 0
 <VarDeclData>
-ADDR_302
+ADDR_301
 VarDecl
 <SYSTEM_INCLUDE>/c++/iostream
-55
+54
 1
 <SYSTEM_INCLUDE>/c++/iostream
-55
+54
 42
 0
 1
@@ -8755,7 +8724,7 @@ cout
 0
 External
 Default
-ADDR_301
+ADDR_300
 0
 Extern
 NONE
@@ -8766,13 +8735,13 @@ CINIT
 0
 1
 <Id to Class Map>
-ADDR_302
+ADDR_301
 VarDecl
 <Visited Children>
-ADDR_303
+ADDR_302
 0
 <DeclRefExprData>
-ADDR_303
+ADDR_302
 DeclRefExpr
 <TEST_DIR>/dummy.cpp
 6
@@ -8782,21 +8751,21 @@ DeclRefExpr
 7
 0
 0
-ADDR_301
+ADDR_300
 1
 0
 0
 std::
 0
-ADDR_302
+ADDR_301
 <Id to Class Map>
-ADDR_303
+ADDR_302
 DeclRefExpr
 <Visited Children>
-ADDR_304
+ADDR_303
 0
 <TemplateTypeParmTypeData>
-ADDR_304
+ADDR_303
 TemplateTypeParmType
 _CharT
 DEPENDENT
@@ -8807,21 +8776,21 @@ nullptr_type
 0
 0
 0
-ADDR_305
-<Id to Class Map>
 ADDR_304
+<Id to Class Map>
+ADDR_303
 TemplateTypeParmType
 <Visited Children>
-ADDR_305
+ADDR_304
 0
 <TemplateTypeParmDeclData>
-ADDR_305
+ADDR_304
 TemplateTypeParmDecl
-<SYSTEM_INCLUDE>/c++/ostream
-890
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+722
 11
-<SYSTEM_INCLUDE>/c++/ostream
-890
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+722
 17
 0
 1
@@ -8838,18 +8807,18 @@ _CharT
 0
 None
 Default
-ADDR_304
+ADDR_303
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_305
+ADDR_304
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_306
+ADDR_305
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_306
+ADDR_305
 SubstTemplateTypeParmType
 char
 NONE
@@ -8857,16 +8826,16 @@ NONE
 0
 0
 ADDR_006
-ADDR_305
+ADDR_304
 ADDR_006
 <Id to Class Map>
-ADDR_306
+ADDR_305
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_307
+ADDR_306
 0
 <TemplateTypeParmTypeData>
-ADDR_307
+ADDR_306
 TemplateTypeParmType
 _Traits
 DEPENDENT
@@ -8877,21 +8846,21 @@ nullptr_type
 0
 1
 0
-ADDR_308
-<Id to Class Map>
 ADDR_307
+<Id to Class Map>
+ADDR_306
 TemplateTypeParmType
 <Visited Children>
-ADDR_308
+ADDR_307
 0
 <TemplateTypeParmDeclData>
-ADDR_308
+ADDR_307
 TemplateTypeParmDecl
-<SYSTEM_INCLUDE>/c++/ostream
-890
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+722
 25
-<SYSTEM_INCLUDE>/c++/ostream
-890
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+722
 31
 0
 1
@@ -8908,18 +8877,18 @@ _Traits
 0
 None
 Default
-ADDR_307
+ADDR_306
 CLASS
 0
 nullptr_type
 <Id to Class Map>
-ADDR_308
+ADDR_307
 TemplateTypeParmDecl
 <Visited Children>
-ADDR_309
+ADDR_308
 0
 <SubstTemplateTypeParmTypeData>
-ADDR_309
+ADDR_308
 SubstTemplateTypeParmType
 std::char_traits<char>
 NONE
@@ -8927,25 +8896,25 @@ NONE
 0
 0
 ADDR_019
-ADDR_308
+ADDR_307
 ADDR_019
 <Id to Class Map>
-ADDR_309
+ADDR_308
 SubstTemplateTypeParmType
 <Visited Children>
-ADDR_310
+ADDR_309
 3
-ADDR_281
-ADDR_283
-ADDR_287
+ADDR_280
+ADDR_282
+ADDR_286
 <TemplateDeclData>
-ADDR_310
+ADDR_309
 ClassTemplateDecl
-<SYSTEM_INCLUDE>/c++/ostream
-207
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+39
 1
-<SYSTEM_INCLUDE>/c++/ostream
-296
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+128
 1
 0
 1
@@ -8963,59 +8932,59 @@ basic_ostream
 External
 Default
 2
-ADDR_281
-ADDR_283
-ADDR_287
+ADDR_280
+ADDR_282
+ADDR_286
 <Id to Class Map>
-ADDR_310
+ADDR_309
 ClassTemplateDecl
 <Visited Children>
-ADDR_311
+ADDR_310
 0
 <TemplateSpecializationTypeData>
-ADDR_311
+ADDR_310
 TemplateSpecializationType
 basic_ostream<char, std::char_traits<char>>
 NONE
 0
 0
 0
-ADDR_103
+ADDR_102
 0
 nullptr_type
 basic_ostream
-ADDR_310
+ADDR_309
 2
 Type
-ADDR_306
+ADDR_305
 Type
-ADDR_309
+ADDR_308
 <Id to Class Map>
-ADDR_311
+ADDR_310
 TemplateSpecializationType
 <Visited Children>
-ADDR_312
+ADDR_311
 0
 <ElaboratedTypeData>
-ADDR_312
+ADDR_311
 ElaboratedType
 basic_ostream<char, char_traits<char>>
 NONE
 0
 0
 0
-ADDR_311
+ADDR_310
 None
 
-ADDR_311
+ADDR_310
 <Id to Class Map>
-ADDR_312
+ADDR_311
 ElaboratedType
 <Visited Children>
-ADDR_313
+ADDR_312
 0
 <ReferenceTypeData>
-ADDR_313
+ADDR_312
 LValueReferenceType
 basic_ostream<char, char_traits<char>> &
 NONE
@@ -9023,57 +8992,57 @@ NONE
 0
 0
 nullptr_type
-ADDR_312
+ADDR_311
 <Id to Class Map>
-ADDR_313
+ADDR_312
 LValueReferenceType
 <Visited Children>
-ADDR_314
+ADDR_313
 0
 <TemplateSpecializationTypeData>
-ADDR_314
+ADDR_313
 TemplateSpecializationType
 basic_ostream<char, std::char_traits<char>>
 NONE
 0
 0
 0
-ADDR_103
+ADDR_102
 0
 nullptr_type
 basic_ostream
-ADDR_310
+ADDR_309
 2
 Type
-ADDR_306
+ADDR_305
 Type
-ADDR_309
+ADDR_308
 <Id to Class Map>
-ADDR_314
+ADDR_313
 TemplateSpecializationType
 <Visited Children>
-ADDR_315
+ADDR_314
 0
 <ElaboratedTypeData>
-ADDR_315
+ADDR_314
 ElaboratedType
 basic_ostream<char, char_traits<char>>
 NONE
 0
 0
 0
-ADDR_314
+ADDR_313
 None
 
-ADDR_314
+ADDR_313
 <Id to Class Map>
-ADDR_315
+ADDR_314
 ElaboratedType
 <Visited Children>
-ADDR_316
+ADDR_315
 0
 <ReferenceTypeData>
-ADDR_316
+ADDR_315
 LValueReferenceType
 basic_ostream<char, char_traits<char>> &
 NONE
@@ -9081,15 +9050,15 @@ NONE
 0
 0
 nullptr_type
-ADDR_315
+ADDR_314
 <Id to Class Map>
-ADDR_316
+ADDR_315
 LValueReferenceType
 <Visited Children>
-ADDR_317
+ADDR_316
 0
 <FunctionProtoTypeData>
-ADDR_317
+ADDR_316
 FunctionProtoType
 basic_ostream<char, char_traits<char>> &(basic_ostream<char, char_traits<char>> &)
 NONE
@@ -9105,33 +9074,33 @@ nullptr_type
 0
 0
 C
-ADDR_313
+ADDR_312
 1
 1
-ADDR_316
+ADDR_315
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_317
+ADDR_316
 FunctionProtoType
 <Top Level Types>
-ADDR_317
+ADDR_316
 <Visited Children>
-ADDR_318
+ADDR_317
 0
 <AttributeData>
-ADDR_318
+ADDR_317
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 1
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -9141,27 +9110,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_318
+ADDR_317
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_318
+ADDR_317
 <Visited Children>
-ADDR_319
+ADDR_318
 0
 <AttributeData>
-ADDR_319
+ADDR_318
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 1
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -9169,25 +9138,25 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_319
+ADDR_318
 AbiTagAttr
 <Top Level Attributes>
-ADDR_319
+ADDR_318
 <Top Level Types>
-ADDR_317
+ADDR_316
 <Visited Children>
-ADDR_320
+ADDR_319
 0
 <AttributeData>
-ADDR_320
+ADDR_319
 ExcludeFromExplicitInstantiationAttr
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 1
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 72
 <end>
 1
@@ -9197,27 +9166,27 @@ ExcludeFromExplicitInstantiation
 0
 0
 <Id to Class Map>
-ADDR_320
+ADDR_319
 ExcludeFromExplicitInstantiationAttr
 <Top Level Attributes>
-ADDR_320
+ADDR_319
 <Visited Children>
-ADDR_321
+ADDR_320
 0
 <AttributeData>
-ADDR_321
+ADDR_320
 AbiTagAttr
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 1
 <end>
 1
 <SYSTEM_INCLUDE>/c++/__config
-857
-26
+545
+22
 <SYSTEM_INCLUDE>/c++/__config
-857
-77
+545
+73
 1
 AbiTag
 0
@@ -9225,15 +9194,15 @@ AbiTag
 0
 0
 <Id to Class Map>
-ADDR_321
+ADDR_320
 AbiTagAttr
 <Top Level Attributes>
+ADDR_320
+<Visited Children>
 ADDR_321
-<Visited Children>
-ADDR_322
 0
 <TemplateSpecializationTypeData>
-ADDR_322
+ADDR_321
 TemplateSpecializationType
 basic_ostream<_CharT, _Traits>
 DEPENDENT
@@ -9244,38 +9213,38 @@ nullptr_type
 0
 nullptr_type
 basic_ostream
-ADDR_310
+ADDR_309
 2
 Type
-ADDR_304
+ADDR_303
 Type
-ADDR_307
+ADDR_306
 <Id to Class Map>
-ADDR_322
+ADDR_321
 TemplateSpecializationType
 <Visited Children>
-ADDR_323
+ADDR_322
 0
 <ElaboratedTypeData>
-ADDR_323
+ADDR_322
 ElaboratedType
 basic_ostream<_CharT, _Traits>
 DEPENDENT
 0
 0
 0
-ADDR_322
+ADDR_321
 None
 
-ADDR_322
+ADDR_321
 <Id to Class Map>
-ADDR_323
+ADDR_322
 ElaboratedType
 <Visited Children>
-ADDR_324
+ADDR_323
 0
 <ReferenceTypeData>
-ADDR_324
+ADDR_323
 LValueReferenceType
 basic_ostream<_CharT, _Traits> &
 DEPENDENT
@@ -9283,15 +9252,15 @@ DEPENDENT
 0
 0
 nullptr_type
-ADDR_323
+ADDR_322
 <Id to Class Map>
-ADDR_324
+ADDR_323
 LValueReferenceType
 <Visited Children>
-ADDR_325
+ADDR_324
 0
 <TemplateSpecializationTypeData>
-ADDR_325
+ADDR_324
 TemplateSpecializationType
 basic_ostream<_CharT, _Traits>
 DEPENDENT
@@ -9302,38 +9271,38 @@ nullptr_type
 0
 nullptr_type
 basic_ostream
-ADDR_310
+ADDR_309
 2
 Type
-ADDR_304
+ADDR_303
 Type
-ADDR_307
+ADDR_306
 <Id to Class Map>
-ADDR_325
+ADDR_324
 TemplateSpecializationType
 <Visited Children>
-ADDR_326
+ADDR_325
 0
 <ElaboratedTypeData>
-ADDR_326
+ADDR_325
 ElaboratedType
 basic_ostream<_CharT, _Traits>
 DEPENDENT
 0
 0
 0
-ADDR_325
+ADDR_324
 None
 
-ADDR_325
+ADDR_324
 <Id to Class Map>
-ADDR_326
+ADDR_325
 ElaboratedType
 <Visited Children>
-ADDR_327
+ADDR_326
 0
 <ReferenceTypeData>
-ADDR_327
+ADDR_326
 LValueReferenceType
 basic_ostream<_CharT, _Traits> &
 DEPENDENT
@@ -9341,15 +9310,15 @@ DEPENDENT
 0
 0
 nullptr_type
-ADDR_326
+ADDR_325
 <Id to Class Map>
-ADDR_327
+ADDR_326
 LValueReferenceType
 <Visited Children>
-ADDR_328
+ADDR_327
 0
 <FunctionProtoTypeData>
-ADDR_328
+ADDR_327
 FunctionProtoType
 basic_ostream<_CharT, _Traits> &(basic_ostream<_CharT, _Traits> &)
 DEPENDENT
@@ -9365,38 +9334,38 @@ nullptr_type
 0
 0
 C
-ADDR_324
+ADDR_323
 1
 1
-ADDR_327
+ADDR_326
 0
 0
 None
 None
 0
 <Id to Class Map>
-ADDR_328
+ADDR_327
 FunctionProtoType
 <Top Level Types>
-ADDR_328
+ADDR_327
 <Visited Children>
-ADDR_329
+ADDR_328
 0
 <FunctionDeclData>
-ADDR_329
+ADDR_328
 FunctionDecl
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 1
-<SYSTEM_INCLUDE>/c++/ostream
-895
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+727
 1
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 57
-<SYSTEM_INCLUDE>/c++/ostream
-895
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+727
 1
 1
 0
@@ -9405,8 +9374,8 @@ FunctionDecl
 0
 0
 2
+ADDR_319
 ADDR_320
-ADDR_321
 std
 endl
 0
@@ -9414,7 +9383,7 @@ endl
 0
 External
 Default
-ADDR_328
+ADDR_327
 0
 0
 1
@@ -9425,25 +9394,25 @@ None
 0
 0
 nullptr_decl
-ADDR_329
+ADDR_328
 nullptr_decl
 0
 <Id to Class Map>
-ADDR_329
+ADDR_328
 FunctionDecl
 <Top Level Types>
-ADDR_316
+ADDR_315
 <Visited Children>
-ADDR_330
+ADDR_329
 0
 <ParmVarDeclData>
-ADDR_330
+ADDR_329
 ParmVarDecl
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 67
-<SYSTEM_INCLUDE>/c++/ostream
-891
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
 99
 0
 1
@@ -9460,7 +9429,7 @@ __os
 0
 None
 Default
-ADDR_316
+ADDR_315
 0
 None
 NONE
@@ -9472,27 +9441,27 @@ CINIT
 0
 0
 <Id to Class Map>
-ADDR_330
+ADDR_329
 ParmVarDecl
 <Visited Children>
-ADDR_331
-1
 ADDR_330
-<FunctionDeclData>
-ADDR_331
-FunctionDecl
-<SYSTEM_INCLUDE>/c++/ostream
-891
 1
-<SYSTEM_INCLUDE>/c++/ostream
-895
+ADDR_329
+<FunctionDeclData>
+ADDR_330
+FunctionDecl
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+723
+1
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+727
 1
 1
 <SYSTEM_INCLUDE>/c++/__config
-782
+447
 57
-<SYSTEM_INCLUDE>/c++/ostream
-895
+<SYSTEM_INCLUDE>/c++/__ostream/basic_ostream.h
+727
 1
 1
 0
@@ -9501,8 +9470,8 @@ FunctionDecl
 0
 0
 2
+ADDR_317
 ADDR_318
-ADDR_319
 std
 endl
 0
@@ -9510,7 +9479,7 @@ endl
 0
 External
 Default
-ADDR_317
+ADDR_316
 0
 0
 3
@@ -9521,21 +9490,21 @@ None
 0
 0
 nullptr_decl
-ADDR_331
-ADDR_329
+ADDR_330
+ADDR_328
 2
 Type
 ADDR_006
 Type
 ADDR_019
 <Id to Class Map>
-ADDR_331
+ADDR_330
 FunctionDecl
 <Visited Children>
-ADDR_332
+ADDR_331
 0
 <DeclRefExprData>
-ADDR_332
+ADDR_331
 DeclRefExpr
 <TEST_DIR>/dummy.cpp
 6
@@ -9545,21 +9514,21 @@ DeclRefExpr
 20
 0
 0
-ADDR_317
+ADDR_316
 1
 0
 0
 std::
 0
-ADDR_331
+ADDR_330
 <Id to Class Map>
-ADDR_332
+ADDR_331
 DeclRefExpr
 <Visited Children>
-ADDR_333
+ADDR_332
 0
 <PointerTypeData>
-ADDR_333
+ADDR_332
 PointerType
 basic_ostream<char, char_traits<char>> &(*)(basic_ostream<char, char_traits<char>> &)
 NONE
@@ -9567,18 +9536,18 @@ NONE
 0
 0
 nullptr_type
-ADDR_317
+ADDR_316
 <Id to Class Map>
-ADDR_333
+ADDR_332
 PointerType
 <Top Level Types>
-ADDR_333
-<Visited Children>
-ADDR_334
-1
 ADDR_332
+<Visited Children>
+ADDR_333
+1
+ADDR_331
 <ExprData>
-ADDR_334
+ADDR_333
 ImplicitCastExpr
 <TEST_DIR>/dummy.cpp
 6
@@ -9588,23 +9557,23 @@ ImplicitCastExpr
 20
 0
 0
-ADDR_333
+ADDR_332
 0
 0
 0
 <Id to Class Map>
-ADDR_334
+ADDR_333
 ImplicitCastExpr
 <Top Level Types>
-ADDR_135
+ADDR_133
 <Visited Children>
-ADDR_335
-3
-ADDR_296
-ADDR_303
 ADDR_334
+3
+ADDR_295
+ADDR_302
+ADDR_333
 <CallExprData>
-ADDR_335
+ADDR_334
 CXXOperatorCallExpr
 <TEST_DIR>/dummy.cpp
 6
@@ -9614,21 +9583,21 @@ CXXOperatorCallExpr
 20
 0
 0
-ADDR_135
+ADDR_133
 1
 0
 0
-ADDR_159
+ADDR_158
 <Id to Class Map>
-ADDR_335
+ADDR_334
 CXXOperatorCallExpr
 <Top Level Types>
 ADDR_002
 <Visited Children>
-ADDR_336
+ADDR_335
 0
 <IntegerLiteralData>
-ADDR_336
+ADDR_335
 IntegerLiteral
 <TEST_DIR>/dummy.cpp
 8
@@ -9645,14 +9614,14 @@ ADDR_002
 %CLAVA_SOURCE_END%
 0
 <Id to Class Map>
-ADDR_336
+ADDR_335
 IntegerLiteral
 <Visited Children>
-ADDR_337
-1
 ADDR_336
+1
+ADDR_335
 <StmtData>
-ADDR_337
+ADDR_336
 ReturnStmt
 <TEST_DIR>/dummy.cpp
 8
@@ -9663,15 +9632,15 @@ ReturnStmt
 0
 0
 <Id to Class Map>
-ADDR_337
+ADDR_336
 ReturnStmt
 <Visited Children>
-ADDR_338
-2
-ADDR_335
 ADDR_337
+2
+ADDR_334
+ADDR_336
 <StmtData>
-ADDR_338
+ADDR_337
 CompoundStmt
 <TEST_DIR>/dummy.cpp
 3
@@ -9682,12 +9651,12 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_338
+ADDR_337
 CompoundStmt
 <Visited Children>
 ADDR_001
 1
-ADDR_338
+ADDR_337
 <FunctionDeclData>
 ADDR_001
 FunctionDecl

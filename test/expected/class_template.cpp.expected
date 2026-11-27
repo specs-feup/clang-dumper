@@ -1029,9 +1029,9 @@ ADDR_039
 <Visited Children>
 ADDR_040
 0
-<CXXDependentScopeMemberExprData>
+<DependentScopeDeclRefExprData>
 ADDR_040
-CXXDependentScopeMemberExpr
+DependentScopeDeclRefExpr
 <TEST_DIR>/class_template.cpp
 13
 24
@@ -1044,15 +1044,13 @@ ADDR_039
 1
 0
 0
-1
 i
-1
 FastStack<T>::
 0
 0
 <Id to Class Map>
 ADDR_040
-CXXDependentScopeMemberExpr
+DependentScopeDeclRefExpr
 <Visited Children>
 ADDR_041
 1
@@ -1137,13 +1135,35 @@ ADDR_037
 ADDR_043
 DeclRefExpr
 <Top Level Types>
-ADDR_039
+ADDR_035
 <Visited Children>
 ADDR_044
 1
 ADDR_043
-<CXXDependentScopeMemberExprData>
+<ExprData>
 ADDR_044
+ImplicitCastExpr
+<TEST_DIR>/class_template.cpp
+14
+9
+<end>
+0
+0
+ADDR_035
+0
+0
+0
+<Id to Class Map>
+ADDR_044
+ImplicitCastExpr
+<Top Level Types>
+ADDR_039
+<Visited Children>
+ADDR_045
+1
+ADDR_044
+<CXXDependentScopeMemberExprData>
+ADDR_045
 CXXDependentScopeMemberExpr
 <TEST_DIR>/class_template.cpp
 14
@@ -1164,16 +1184,16 @@ j
 0
 0
 <Id to Class Map>
-ADDR_044
+ADDR_045
 CXXDependentScopeMemberExpr
 <Top Level Types>
 ADDR_039
 <Visited Children>
-ADDR_045
+ADDR_046
 1
-ADDR_044
-<UnaryOperatorData>
 ADDR_045
+<UnaryOperatorData>
+ADDR_046
 UnaryOperator
 <TEST_DIR>/class_template.cpp
 14
@@ -1190,15 +1210,15 @@ ADDR_039
 PostInc
 POSTFIX
 <Id to Class Map>
-ADDR_045
+ADDR_046
 UnaryOperator
 <Visited Children>
-ADDR_046
+ADDR_047
 2
 ADDR_042
-ADDR_045
-<StmtData>
 ADDR_046
+<StmtData>
+ADDR_047
 CompoundStmt
 <TEST_DIR>/class_template.cpp
 12
@@ -1209,13 +1229,13 @@ CompoundStmt
 0
 0
 <Id to Class Map>
-ADDR_046
+ADDR_047
 CompoundStmt
 <Visited Children>
-ADDR_047
+ADDR_048
 0
 <PointerTypeData>
-ADDR_047
+ADDR_048
 PointerType
 X<T> *
 DEPENDENT
@@ -1225,15 +1245,15 @@ DEPENDENT
 nullptr_type
 ADDR_028
 <Id to Class Map>
-ADDR_047
+ADDR_048
 PointerType
 <Visited Children>
-ADDR_048
+ADDR_049
 2
 ADDR_037
-ADDR_046
+ADDR_047
 <CXXMethodDeclData>
-ADDR_048
+ADDR_049
 CXXMethodDecl
 <TEST_DIR>/class_template.cpp
 12
@@ -1267,10 +1287,10 @@ None
 0
 0
 nullptr_decl
-ADDR_048
+ADDR_049
 nullptr_decl
 0
-ADDR_049
+ADDR_050
 0
 0
 1
@@ -1279,18 +1299,18 @@ ADDR_049
 0
 0
 0
-ADDR_047
+ADDR_048
 ADDR_028
 1
 0
 <Id to Class Map>
-ADDR_048
+ADDR_049
 CXXMethodDecl
 <Visited Children>
-ADDR_050
+ADDR_051
 0
 <TemplateSpecializationTypeData>
-ADDR_050
+ADDR_051
 TemplateSpecializationType
 FastStack<T>
 DEPENDENT
@@ -1306,34 +1326,34 @@ ADDR_001
 Type
 ADDR_026
 <Id to Class Map>
-ADDR_050
+ADDR_051
 TemplateSpecializationType
 <Visited Children>
-ADDR_051
+ADDR_052
 0
 <ElaboratedTypeData>
-ADDR_051
+ADDR_052
 ElaboratedType
 FastStack<T>
 DEPENDENT
 0
 0
 0
-ADDR_050
+ADDR_051
 None
 
-ADDR_050
-<Id to Class Map>
 ADDR_051
+<Id to Class Map>
+ADDR_052
 ElaboratedType
 <Visited Children>
-ADDR_049
+ADDR_050
 3
 ADDR_029
 ADDR_032
-ADDR_048
-<CXXRecordDeclData>
 ADDR_049
+<CXXRecordDeclData>
+ADDR_050
 CXXRecordDecl
 <TEST_DIR>/class_template.cpp
 6
@@ -1365,16 +1385,16 @@ Struct
 0
 NONE
 PUBLIC
-ADDR_051
-ADDR_049
+ADDR_052
+ADDR_050
 <Id to Class Map>
-ADDR_049
+ADDR_050
 CXXRecordDecl
 <Visited Children>
 ADDR_025
 2
 ADDR_027
-ADDR_049
+ADDR_050
 <TemplateDeclData>
 ADDR_025
 ClassTemplateDecl
@@ -1401,7 +1421,7 @@ External
 Default
 1
 ADDR_027
-ADDR_049
+ADDR_050
 <Id to Class Map>
 ADDR_025
 ClassTemplateDecl

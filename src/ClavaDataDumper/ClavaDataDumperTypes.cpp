@@ -7,6 +7,8 @@
 #include "../ClangEnums/ClangEnums.h"
 #include "../ClavaDataDumper/ClavaDataDumper.h"
 
+#include "clang/AST/ASTContext.h"
+#include "clang/Basic/LangOptions.h"
 #include "llvm/ADT/STLForwardCompat.h"
 
 // Data dumper selected directly by class name. Most entries dump with a
@@ -319,8 +321,8 @@ void clava::ClavaDataDumper::DumpTemplateSpecializationTypeData(
     clava::dump(clava::getId((const Type *)nullptr, id));
   }
 
-  clava::dump([&T](llvm::raw_string_ostream &stream) {
-    T->getTemplateName().dump(stream);
+  clava::dump([&T, this](llvm::raw_string_ostream &stream) {
+    T->getTemplateName().print(stream, PrintingPolicy(Context->getLangOpts()));
   });
   clava::dump(clava::getId(T->getTemplateName().getAsTemplateDecl(), id));
 

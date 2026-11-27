@@ -98,8 +98,16 @@ if(NOT TARGET LibEdit::LibEdit)
         message(WARNING "libedit not found; created empty LibEdit::LibEdit target. If link errors referencing edit/readline occur, install libedit-dev.")
     endif()
 endif()
+# Guard against a stale build cache or user-supplied LLVM_DIR configuring
+# silently against the wrong toolchain. Note: a version argument on
+# find_package() is NOT usable here, because LLVM's config rejects a
+# major-only requested version (e.g. 19 vs the real 19.1.1).
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
+
+if(NOT LLVM_PACKAGE_VERSION MATCHES "^${CLANG_VERSION}\\.")
+    message(FATAL_ERROR "LLVM ${LLVM_PACKAGE_VERSION} found, but llvm-version.env pins major version ${CLANG_VERSION}")
+endif()
 
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 
@@ -378,7 +386,21 @@ else()
     message(STATUS "Static Clang archives: ${CLANG_ARCHIVES}")
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --libs --system-libs --link-static OUTPUT_VARIABLE LLVM_LIBS_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REGEX REPLACE "\n" " " LLVM_LIBS_RAW "${LLVM_LIBS_RAW}")
-    string(REGEX MATCHALL "-l[^ ]+" LLVM_LIBS_WITH_PREFIX "${LLVM_LIBS_RAW}")
+    # Tokenize on spaces and keep "-l" flags; other tokens are full library
+    # paths (e.g. Debian's llvm-config emits z3 as an absolute path) and are
+    # appended as-is. Matching "-l..." with a regex over the raw string would
+    # also match inside paths like .../x86_64-linux-gnu/libz3.so.
+    string(REPLACE " " ";" LLVM_LIBS_TOKENS "${LLVM_LIBS_RAW}")
+    set(LLVM_LIBS_WITH_PREFIX "")
+    set(LLVM_LIBS_PATHS "")
+    foreach(token IN LISTS LLVM_LIBS_TOKENS)
+        if(token STREQUAL "")
+        elseif(token MATCHES "^-l")
+            list(APPEND LLVM_LIBS_WITH_PREFIX "${token}")
+        else()
+            list(APPEND LLVM_LIBS_PATHS "${token}")
+        endif()
+    endforeach()
     set(LLVM_LIBS_CLEAN "")
     foreach(flag IN LISTS LLVM_LIBS_WITH_PREFIX)
         string(REGEX REPLACE "^-l" "" name "${flag}")
@@ -405,6 +427,7 @@ else()
             endif()
         endif()
     endforeach()
+    list(APPEND LLVM_LIBS_CLEAN ${LLVM_LIBS_PATHS})
 
     execute_process(COMMAND ${LLVM_CONFIG_EXE} --host-target OUTPUT_VARIABLE LLVM_HOST_TARGET_RAW OUTPUT_STRIP_TRAILING_WHITESPACE)
     set(LLVM_HOST_TARGET ${LLVM_HOST_TARGET_RAW})

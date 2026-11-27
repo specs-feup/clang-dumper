@@ -24,6 +24,8 @@ msys2_sdk_archives() {
     "${triplet}" "${MSYS2_ZLIB_NG_RELEASE}"
   printf 'mingw-w64-clang-%s-zstd-%s-any.pkg.tar.zst\n' \
     "${triplet}" "${MSYS2_ZSTD_RELEASE}"
-  printf 'mingw-w64-clang-%s-openmp-%s-any.pkg.tar.zst\n' \
-    "${triplet}" "${MSYS2_OPENMP_RELEASE}"
+  # msys2 renamed the package to llvm-openmp in the 19.x toolchain era; the
+  # old name stopped at 18.1.2-1 and the new package replaces it.
+  printf 'mingw-w64-clang-%s-%s-%s-any.pkg.tar.zst\n' \
+    "${triplet}" "${MSYS2_OPENMP_PACKAGE}" "${MSYS2_OPENMP_RELEASE}"
 }

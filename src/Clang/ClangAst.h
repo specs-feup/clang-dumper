@@ -50,7 +50,8 @@ class IncludeDumper : public PPCallbacks {
     virtual void InclusionDirective(
         SourceLocation HashLoc, const Token &IncludeTok, StringRef FileName,
         bool IsAngled, CharSourceRange FilenameRange, OptionalFileEntryRef File,
-        StringRef SearchPath, StringRef RelativePath, const Module *Imported,
+        StringRef SearchPath, StringRef RelativePath,
+        const Module *SuggestedModule, bool ModuleImported,
         SrcMgr::CharacteristicKind FileType) override;
     virtual void PragmaDirective(SourceLocation Loc,
                                  PragmaIntroducerKind Introducer) override;
